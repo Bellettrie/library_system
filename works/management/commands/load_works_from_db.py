@@ -19,6 +19,6 @@ class Command(BaseCommand):
 
         for x in mycursor:
             print(x)
-        mycursor.execute("SELECT * FROM publicatie where titel=''")
+        mycursor.execute("SELECT * FROM persoon where naam != ''")
         for x in mycursor:
             print(x)
