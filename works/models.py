@@ -31,13 +31,13 @@ class Role(models.Model):
     name = models.CharField(max_length=64, unique=True)
 
 
-class AuthorToWork(models.Model):
+class CreatorToWork(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
     work = models.ForeignKey(Work, on_delete=PROTECT)
     role = models.ForeignKey(Role, on_delete=PROTECT)
 
 
-class AuthorToPublication(models.Model):
+class CreatorToPublication(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
     work = models.ForeignKey(Work, on_delete=PROTECT)
     role = models.ForeignKey(Role, on_delete=PROTECT)
