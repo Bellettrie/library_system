@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
-from works.models import Work
+from works.models import SubWork
 
 
 class Series(models.Model):
@@ -15,12 +15,12 @@ class Series(models.Model):
         # combine turtle and hare with
         found = set()
         first = True
-        for i in Work.objects.filter(series=self):
+        for i in SubWork.objects.filter(series=self):
             pass
 
 
 class WorkNode(models.Model):
-    work = models.ForeignKey(Work, null=True, blank=True, on_delete=CASCADE)
+    work = models.ForeignKey(SubWork, null=True, blank=True, on_delete=CASCADE)
     series = models.ForeignKey(Series, on_delete=PROTECT, related_name='part')
 
     def root_detect(self):
