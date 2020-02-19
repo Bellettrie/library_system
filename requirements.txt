@@ -1,3 +1,5 @@
 django
 mysql
 mysql-connector
+namegenerator
+names

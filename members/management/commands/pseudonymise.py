@@ -1,0 +1,51 @@
+from random import random, randint
+
+import mysql.connector
+
+from django.core.management.base import BaseCommand
+
+from members.management.commands.namegen import generate_name, generate_full_name
+from members.models import Member
+
+
+def get_name(x):
+    vn = x.get("voornaam").decode("utf-8")
+    if len(vn) == 0:
+        return x.get("naam").decode("utf-8")
+    return vn + " " + x.get("naam").decode("utf-8")
+
+
+class Command(BaseCommand):
+    help = 'Closes the specified poll for voting'
+
+    @staticmethod
+    def handle_author(publication, tree, finder):
+        data = finder.get(publication)
+
+    @staticmethod
+    def handle_matching(sub_work, tree, finder):
+        data = finder.get(sub_work)
+
+    def handle(self, *args, **options):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            passwd="root",
+            database="oldsystem"
+        )
+        mycursor = mydb.cursor(dictionary=True)
+
+        persons = dict()
+
+        members = Member.objects.all()
+        for member in members:
+            member.name = generate_full_name()
+            member.nickname = ""
+            member.addressLineOne = generate_name() + " " + str(randint(1, 100))
+            member.addressLineTwo = generate_name()
+            member.addressLineThree = generate_name()
+            member.phone = "06 666 666 13 13"
+            member.email = "board@bellettrie.utwente.nl"
+            member.student_number = "s123 456 789"
+            member.notes = "free member"
+            member.save()
