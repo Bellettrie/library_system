@@ -4,6 +4,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand, CommandError
 
+from series.models import Series, WorkInSeries, SeriesNode
 from works.models import Work, WorkInPublication, Publication, SubWork
 
 
@@ -13,6 +14,7 @@ class Command(BaseCommand):
     @staticmethod
     def handle_publication(publication, tree, finder):
         data = finder.get(publication)
+        print(publication)
         Publication.objects.create(title=data.get("titel"),
                                    sub_title=data.get("subtitel").decode("utf-8"),
                                    language=data.get("taal").decode("utf-8"),
@@ -44,23 +46,33 @@ class Command(BaseCommand):
                                       internal_comment=data.get("intern_commentaar"),
                                       signature_fragment=data.get("signatuurfragment").decode("utf-8"),
                                       old_id=sub_work)
-
-        print(data)
-        print(finder.get(tree.get(sub_work)))
         WorkInPublication.objects.create(work=work, publication=Publication.objects.get(
-            old_id=tree.get(sub_work)), number_in_publication=int(data.get("reeks_deelnummer")), display_number_in_publication=data.get("reeks_deelaanduiding").decode("utf-8"))
+            old_id=tree.get(sub_work)), number_in_publication=int(data.get("reeks_deelnummer")),
+                                         display_number_in_publication=data.get("reeks_deelaanduiding").decode("utf-8"))
 
     @staticmethod
     def handle_series_node(handled, node, tree, finder):
         if node in handled:
             return []
-
-        tt = finder.get(node).get("type")
+        data = finder.get(node)
+        tt = data.get("type")
         if tt != 1:
             print(finder.get(node))
         handled_list = []
-        if finder.get(tree.get(node)).get("reeks_publicatienummer") > 0:
-            handled_list += Command.handle_series_node(handled, tree.get(node), tree, finder)
+        nr = finder.get(node).get("reeks_publicatienummer")
+        if nr > 0:
+            handled_list += Command.handle_series_node(handled, nr, tree, finder)
+        if data.get("reeks_publicatienummer") > 0:
+            print(node)
+            super_series = Series.objects.get(old_id=data.get("reeks_publicatienummer"))
+            Series.objects.create(part_of_series=super_series, number=int(data.get("reeks_deelnummer")),
+                                  display_number=data.get(
+                                      "reeks_deelaanduiding").decode("utf-8"), old_id=node)
+        else:
+            Series.objects.create(number=int(data.get("reeks_deelnummer")),
+                                  display_number=data.get(
+                                      "reeks_deelaanduiding").decode("utf-8"), old_id=node)
+            print(node)
 
         handled_list.append(node)
 
@@ -68,7 +80,18 @@ class Command(BaseCommand):
 
     @staticmethod
     def handle_part_of_series(publication, tree, finder):
-        pass
+        data = finder.get(publication)
+        pub = data.get("reeks_publicatienummer")
+        print(pub)
+        series_data = finder.get(pub)
+        print(series_data)
+        if series_data.get("type") != 1:
+            return
+        ser = SeriesNode.objects.get(old_id=pub)
+        work = Work.objects.get(old_id=publication)
+        WorkInSeries.objects.create(part_of_series=ser, old_id=publication, work=work, number=int(data.get("reeks_deelnummer")),
+                                    display_number=data.get(
+                                        "reeks_deelaanduiding").decode("utf-8"))
 
     def handle(self, *args, **options):
         mydb = mysql.connector.connect(
@@ -79,8 +102,6 @@ class Command(BaseCommand):
         )
         mycursor = mydb.cursor(dictionary=True)
 
-        WorkInPublication.objects.all().delete()
-        Work.objects.all().delete()
         tree = dict()
         finder = dict()
         mycursor.execute("SELECT * FROM publicatie")
@@ -106,6 +127,6 @@ class Command(BaseCommand):
             if finder.get(t).get("type") == 1:
                 handled += Command.handle_series_node(handled, t, tree, finder)
 
-        for t in finder.keys():
+        for t in tree.keys():
             if finder.get(t).get("type") == 0 and finder.get(t).get("reeks_publicatienummer") > 0:
                 Command.handle_part_of_series(t, tree, finder)

@@ -9,14 +9,16 @@ class Work(models.Model):
     sub_title = models.CharField(max_length=255)
     language = models.CharField(max_length=64)
     is_translated = models.BooleanField()
-    original_title =  models.CharField(max_length=255)
-    original_subtitle =  models.CharField(max_length=255)
+    original_title = models.CharField(max_length=255)
+    original_subtitle = models.CharField(max_length=255)
     original_language = models.CharField(max_length=64)
     hidden = models.BooleanField()
     date_added = models.DateField()
     comment = models.CharField(max_length=1024)
     internal_comment = models.CharField(max_length=1024)
     signature_fragment = models.CharField(max_length=64)
+    isbn = models.CharField(max_length=64)
+    
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
 
 
@@ -45,10 +47,14 @@ class WorkInPublication(models.Model):
     work = models.ForeignKey(SubWork, on_delete=PROTECT)
     number_in_publication = models.IntegerField()
     display_number_in_publication = models.CharField(max_length=64)
+    unique_together = ('work', 'publication')
 
 
 class Creator(models.Model):
     name = models.CharField(max_length=255)
+    is_alias_of = models.ForeignKey("Creator", on_delete=PROTECT, null=True, blank=True)
+    comment = models.CharField(max_length=255)
+    old_id = models.IntegerField()
 
 
 class CreatorRole(models.Model):
