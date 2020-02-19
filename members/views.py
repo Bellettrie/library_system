@@ -6,3 +6,4 @@ from django.http import HttpResponse
 
 def index(request):
     return render(request, 'members_base.html', {})
+

@@ -33,10 +33,4 @@ class Command(BaseCommand):
             passwd="root",
             database="oldsystem"
         )
-        mycursor = mydb.cursor(dictionary=True)
-
-        persons = dict()
-
-        members = Member.objects.all()
-        for member in members:
-            member.anonymise_people()
+        Member.anonymise_people()

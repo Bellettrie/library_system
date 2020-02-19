@@ -37,7 +37,6 @@ class Command(BaseCommand):
         mycursor = mydb.cursor(dictionary=True)
 
         persons = dict()
-
         mycursor.execute("SELECT * FROM klant")
 
         count = 0
@@ -54,7 +53,28 @@ class Command(BaseCommand):
                     phone=x.get("telefoon").decode("utf-8"),
                     student_number=x.get("unionpluskaartnummer"),
                     notes=x.get("opmerking"),
-                    membership_type_old = x.get("herkomst"),
+                    membership_type_old=x.get("herkomst"),
+                    end_date=x.get("einde"),
                     old_customer_type=x.get("lidsoort"),
                     old_id=x.get("klantnummer")
                 )
+
+        if len(Member.objects.filter(is_anonymous_user=True)) == 0:
+            Member.objects.create(
+                name="Anonymous Monkey",
+                nickname="",
+                addressLineOne=" ",
+                addressLineTwo=" ",
+                addressLineThree=" ",
+                email="board@bellettrie.utwente.nl",
+                phone="- ---",
+                student_number="- ---",
+                notes="",
+                membership_type_old="",
+                end_date="2222-2-2",
+                old_customer_type="admin",
+                old_id=0,
+                is_anonymous_user=True
+            )
+        else:
+            print("Anonymous user was already there")
