@@ -4,8 +4,9 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand, CommandError
 
+from bellettrie_library_system.settings import OLD_DB
 from series.models import Series, WorkInSeries, SeriesNode
-from works.models import Work, WorkInPublication, Publication, SubWork
+from works.models import Work, WorkInPublication, Publication, SubWork, Item
 
 
 class Command(BaseCommand):
@@ -16,17 +17,17 @@ class Command(BaseCommand):
         data = finder.get(publication)
         print(publication)
         Publication.objects.create(title=data.get("titel"),
-                                   sub_title=data.get("subtitel").decode("utf-8"),
-                                   language=data.get("taal").decode("utf-8"),
+                                   sub_title=data.get("subtitel"),
+                                   language=data.get("taal"),
                                    is_translated=data.get("is_vertaald"),
-                                   original_title=data.get("orig_titel").decode("utf-8"),
-                                   original_subtitle=data.get("orig_subtitel").decode("utf-8"),
-                                   original_language=data.get("orig_taal").decode("utf-8"),
+                                   original_title=data.get("orig_titel"),
+                                   original_subtitle=data.get("orig_subtitel"),
+                                   original_language=data.get("orig_taal"),
                                    hidden=data.get("verbergen"),
                                    date_added=data.get("gecatalogiseerd") or datetime.datetime.today(),
                                    comment=data.get("commentaar"),
                                    internal_comment=data.get("intern_commentaar"),
-                                   signature_fragment=data.get("signatuurfragment").decode("utf-8"),
+                                   signature_fragment=data.get("signatuurfragment"),
                                    old_id=publication)
 
     @staticmethod
@@ -34,21 +35,21 @@ class Command(BaseCommand):
         data = finder.get(sub_work)
         print(sub_work)
         work = SubWork.objects.create(title=data.get("titel"),
-                                      sub_title=data.get("subtitel").decode("utf-8"),
-                                      language=data.get("taal").decode("utf-8"),
+                                      sub_title=data.get("subtitel"),
+                                      language=data.get("taal"),
                                       is_translated=data.get("is_vertaald"),
-                                      original_title=data.get("orig_titel").decode("utf-8"),
-                                      original_subtitle=data.get("orig_subtitel").decode("utf-8"),
-                                      original_language=data.get("orig_taal").decode("utf-8"),
+                                      original_title=data.get("orig_titel"),
+                                      original_subtitle=data.get("orig_subtitel"),
+                                      original_language=data.get("orig_taal"),
                                       hidden=data.get("verbergen"),
                                       date_added=data.get("gecatalogiseerd") or datetime.datetime.today(),
                                       comment=data.get("commentaar"),
                                       internal_comment=data.get("intern_commentaar"),
-                                      signature_fragment=data.get("signatuurfragment").decode("utf-8"),
+                                      signature_fragment=data.get("signatuurfragment"),
                                       old_id=sub_work)
         WorkInPublication.objects.create(work=work, publication=Publication.objects.get(
             old_id=tree.get(sub_work)), number_in_publication=int(data.get("reeks_deelnummer")),
-                                         display_number_in_publication=data.get("reeks_deelaanduiding").decode("utf-8"))
+                                         display_number_in_publication=data.get("reeks_deelaanduiding"))
 
     @staticmethod
     def handle_series_node(handled, node, tree, finder):
@@ -67,11 +68,11 @@ class Command(BaseCommand):
             super_series = Series.objects.get(old_id=data.get("reeks_publicatienummer"))
             Series.objects.create(part_of_series=super_series, number=int(data.get("reeks_deelnummer")),
                                   display_number=data.get(
-                                      "reeks_deelaanduiding").decode("utf-8"), old_id=node)
+                                      "reeks_deelaanduiding"), old_id=node)
         else:
             Series.objects.create(number=int(data.get("reeks_deelnummer")),
                                   display_number=data.get(
-                                      "reeks_deelaanduiding").decode("utf-8"), old_id=node)
+                                      "reeks_deelaanduiding"), old_id=node)
             print(node)
 
         handled_list.append(node)
@@ -91,20 +92,20 @@ class Command(BaseCommand):
         work = Work.objects.get(old_id=publication)
         WorkInSeries.objects.create(part_of_series=ser, old_id=publication, work=work, number=int(data.get("reeks_deelnummer")),
                                     display_number=data.get(
-                                        "reeks_deelaanduiding").decode("utf-8"))
+                                        "reeks_deelaanduiding"))
 
     def handle(self, *args, **options):
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
             passwd="root",
-            database="oldsystem"
+            database=OLD_DB
         )
         mycursor = mydb.cursor(dictionary=True)
 
         tree = dict()
         finder = dict()
-        mycursor.execute("SELECT * FROM publicatie")
+        mycursor.execute("SELECT * FROM publicatie where verbergen = 0")
 
         count = 0
         for x in mycursor:
@@ -130,3 +131,17 @@ class Command(BaseCommand):
         for t in tree.keys():
             if finder.get(t).get("type") == 0 and finder.get(t).get("reeks_publicatienummer") > 0:
                 Command.handle_part_of_series(t, tree, finder)
+
+        mycursor.execute("SELECT * FROM band")
+        banden = dict()
+        for x in mycursor:
+            banden[x.get("publicatienummer")] = x
+
+        for k in Publication.objects.all():
+            band = banden.get(k.old_id)
+
+            if band is None:
+                print(k.old_id)
+                print(k.title)
+                print(banden.keys())
+            Item.objects.create(old_id=k.old_id, sticker_code=band.get("signatuur"), publication=k)

@@ -9,10 +9,10 @@ from members.models import Member
 
 
 def get_name(x):
-    vn = x.get("voornaam").decode("utf-8")
+    vn = x.get("voornaam")
     if len(vn) == 0:
-        return x.get("naam").decode("utf-8")
-    return vn + " " + x.get("naam").decode("utf-8")
+        return x.get("naam")
+    return vn + " " + x.get("naam")
 
 
 class Command(BaseCommand):

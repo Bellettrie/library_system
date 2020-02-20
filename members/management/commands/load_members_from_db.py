@@ -4,16 +4,17 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand, CommandError
 
+from bellettrie_library_system.settings import OLD_DB
 from members.models import Member
 from series.models import Series, WorkInSeries, SeriesNode
 from works.models import Work, WorkInPublication, Publication, SubWork, Creator
 
 
 def get_name(x):
-    vn = x.get("voornaam").decode("utf-8")
+    vn = x.get("voornaam")
     if len(vn) == 0:
-        return x.get("naam").decode("utf-8")
-    return vn + " " + x.get("naam").decode("utf-8")
+        return x.get("naam")
+    return vn + " " + x.get("naam")
 
 
 class Command(BaseCommand):
@@ -32,7 +33,7 @@ class Command(BaseCommand):
             host="localhost",
             user="root",
             passwd="root",
-            database="oldsystem"
+            database=OLD_DB
         )
         mycursor = mydb.cursor(dictionary=True)
 
@@ -44,13 +45,13 @@ class Command(BaseCommand):
             z = Member.objects.filter(old_id=x.get("klantnummer"))
             if len(z) == 0:
                 Member.objects.create(
-                    name=x.get("voornaam").decode("utf-8") + " " + x.get("naam").decode("utf-8"),
+                    name=x.get("voornaam") + " " + x.get("naam"),
                     nickname="",
-                    addressLineOne=x.get("adres1").decode("utf-8"),
-                    addressLineTwo=x.get("adres2").decode("utf-8"),
-                    addressLineThree=x.get("adres3").decode("utf-8") + "\n" + x.get("adres4").decode("utf-8"),
-                    email=x.get("email").decode("utf-8"),
-                    phone=x.get("telefoon").decode("utf-8"),
+                    addressLineOne=x.get("adres1"),
+                    addressLineTwo=x.get("adres2"),
+                    addressLineThree=x.get("adres3") + "\n" + x.get("adres4"),
+                    email=x.get("email"),
+                    phone=x.get("telefoon"),
                     student_number=x.get("unionpluskaartnummer"),
                     notes=x.get("opmerking"),
                     membership_type_old=x.get("herkomst"),

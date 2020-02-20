@@ -1,11 +1,11 @@
-from random import random, randint
+import datetime
 
 import mysql.connector
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
-from members.management.commands.namegen import generate_name, generate_full_name
-from members.models import Member
+from series.models import Series, WorkInSeries, SeriesNode
+from works.models import Work, WorkInPublication, Publication, SubWork, Creator
 
 
 def get_name(x):
@@ -31,12 +31,12 @@ class Command(BaseCommand):
             host="localhost",
             user="root",
             passwd="root",
-            database="oldsystem"
+            database="oldsystem2"
         )
         mycursor = mydb.cursor(dictionary=True)
 
         persons = dict()
 
-        members = Member.objects.all()
-        for member in members:
-            member.pseudonymise()
+        mycursor.execute("SELECT * FROM band where signatuur like '%H-88-l%'")
+        for x in mycursor:
+            print(x)

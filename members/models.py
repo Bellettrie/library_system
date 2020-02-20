@@ -1,8 +1,12 @@
+from datetime import datetime
+from random import randint
+
 from django.db import models
 
 # Create your models here.
 from enum import Enum
 
+from members.management.commands.namegen import generate_full_name, generate_name
 
 
 class MemberType(Enum):
@@ -42,7 +46,8 @@ class Member(models.Model):
 
     @staticmethod
     def anonymise_people():
-        members = Member.objects.filter(end_date__isnull=False).filter(end_date__lte="2005-01-01")
+        now = datetime.now()
+        members = Member.objects.filter(end_date__isnull=False).filter(end_date__lte=str(now.year-10)+ "-" + str(now.month)+ "-" + str(now.day))
         print(members)
         anonymous_members = Member.objects.filter(is_anonymous_user=True)
 
@@ -50,7 +55,9 @@ class Member(models.Model):
             for lending in member.lending_set.all():
                 lending.member = anonymous_members[0]
                 lending.save()
-            member.pseudonymise()
+            member.delete()
+
+        print(anonymous_members[0].lending_set.all())
 
 
 

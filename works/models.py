@@ -29,7 +29,7 @@ class Publication(Work):
 
 class Item(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
-
+    old_id = models.IntegerField()
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
     sticker_code = models.CharField(max_length=64)
 
@@ -56,6 +56,11 @@ class Creator(models.Model):
     comment = models.CharField(max_length=255)
     old_id = models.IntegerField()
 
+    def __str__(self):
+        if self.is_alias_of != self:
+            return self.name + "<>" + self.is_alias_of.__str__()+ "::" + str(self.old_id)
+        else:
+            return self.name + "::" + str(self.old_id)
 
 class CreatorRole(models.Model):
     name = models.CharField(max_length=64, unique=True)
