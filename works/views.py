@@ -4,7 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic import DetailView, ListView
 
-from works.models import Work, Publication
+from works.models import Work, Publication, Creator
 
 
 class WorkList(ListView):
@@ -20,8 +20,24 @@ class WorkList(ListView):
 
     def get_queryset(self):  # new
         query = self.request.GET.get('q')
+        words = query.split(" ")
+        query = None
+        author_query = None
+        for word in words:
+            nq = Q(title__icontains=word)
+            aq = Q(name__icontains=word)
+
+            if query is None:
+                query = nq
+                author_query = aq
+            else:
+                query = query & nq
+                author_query = author_query & aq
+
+        authors = Creator.objects.filter(author_query)
+
         object_list = Work.objects.filter(
-            Q(title__contains=query)
+            query | Q(creatortowork__creator__in=authors)
         )
         return object_list
 
