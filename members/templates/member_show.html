@@ -19,4 +19,8 @@
     <tr><th>Anonymous user</th><td>{{member.is_anonymous_user}}</td></tr>
     <tr><th>End date</th><td>{{member.end_date}}</td></tr>
 </table>
+
+    {% for lending in member.lending_set.all %}
+        {{  lending.item.publication.title }}
+    {% endfor    %}
 {% endblock %}
