@@ -4,6 +4,10 @@ from django.db import models
 from django.db.models import PROTECT
 
 
+def simple_search(search_string: str):
+    return Work.objects.filter(title__contains=search_string)
+
+
 class Work(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)

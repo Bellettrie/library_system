@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Works</h2>
+    <ul>
+        {{ object.title }}
+
+        {{ object.item_set.all.first.lending_set.all.first.member.name }}
+    </ul>
+{% endblock %}
