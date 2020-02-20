@@ -13,6 +13,7 @@ class SeriesNode(models.Model):
     number = models.IntegerField()
     display_number = models.CharField(max_length=255)
     old_id = models.IntegerField()
+    title = models.CharField(max_length=255, blank=True, null=True)
 
 
 class Series(SeriesNode):

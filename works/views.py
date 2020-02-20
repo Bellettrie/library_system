@@ -4,6 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic import DetailView, ListView
 
+from series.models import Series
 from works.models import Work, Publication, Creator
 
 
@@ -35,9 +36,18 @@ class WorkList(ListView):
                 author_query = author_query & aq
 
         authors = Creator.objects.filter(author_query)
+        series_list = Series.objects.filter(query)
 
+        series_set = set(series_list)
+        print(series_list)
+        ssize = 0
+        while len(series_set) > ssize:
+            ssize = len(series_set)
+            series_set = series_set | set(Series.objects.filter(part_of_series__in=series_set))
+
+        print(series_set)
         object_list = Work.objects.filter(
-            query | Q(creatortowork__creator__in=authors)
+            query | Q(creatortowork__creator__in=authors) | Q(workinseries__part_of_series__in=series_set)
         )
         return object_list
 
