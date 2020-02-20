@@ -38,7 +38,7 @@ class WorkList(ListView):
         authors = Creator.objects.filter(author_query)
         series_list = Series.objects.filter(query)
 
-        series_set = set(series_list)
+        series_set = set(series_list) | set(Series.objects.filter(creatortoseries__creator__in = authors))
         print(series_list)
         ssize = 0
         while len(series_set) > ssize:
