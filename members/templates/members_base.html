@@ -5,5 +5,9 @@
 
 
 {% block content %}
-    Tekst in dit tekstvak
+<table>
+    {% for member in members %}
+    <tr><td><a href="{% url 'show' member.id %}">{{member.name}}</a></td><td>{{member.old_id}}</td></tr>
+{% endfor %}
+</table>
 {% endblock %}
