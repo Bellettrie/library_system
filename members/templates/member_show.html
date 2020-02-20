@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+
+{% block content %}
+<table>
+    <tr><th>Name</th><td>{{member.name}}</td></tr>
+    <tr><th>Nickname</th><td>{{member.nickname}}</td></tr>
+    <tr><th>Adress</th><td>{{member.addressLineOne}}</td></tr>
+    <tr><th></th><td>{{member.addressLineTwo}}</td></tr>
+    <tr><th></th><td>{{member.addressLineThree}}</td></tr>
+    <tr><th>E-mail</th><td>{{member.email}}</td></tr>
+    <tr><th>Phone #</th><td>{{member.phone}}</td></tr>
+    <tr><th>Student #</th><td>{{member.student_number}}</td></tr>
+    <tr><th>Old membership type</th><td>{{member.membership_type_old}}</td></tr>
+    <tr><th>Notes</th><td>{{member.notes}}</td></tr>
+    <tr><th>Old customer type</th><td>{{member.old_customer_type}}</td></tr>
+    <tr><th>Old id</th><td>{{member.old_id}}</td></tr>
+    <tr><th>Anonymous user</th><td>{{member.is_anonymous_user}}</td></tr>
+    <tr><th>End date</th><td>{{member.end_date}}</td></tr>
+</table>
+{% endblock %}
