@@ -11,18 +11,15 @@ def simple_search(search_string: str):
 class Work(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
-    language = models.CharField(max_length=64)
     is_translated = models.BooleanField()
     original_title = models.CharField(max_length=255)
     original_subtitle = models.CharField(max_length=255)
     original_language = models.CharField(max_length=64)
-    hidden = models.BooleanField()
     date_added = models.DateField()
     comment = models.CharField(max_length=1024)
     internal_comment = models.CharField(max_length=1024)
     signature_fragment = models.CharField(max_length=64)
-    isbn = models.CharField(max_length=64)
-    
+
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
 
 
@@ -36,6 +33,12 @@ class Item(models.Model):
     old_id = models.IntegerField()
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
     sticker_code = models.CharField(max_length=64)
+    isbn = models.CharField(max_length=64)
+    language = models.CharField(max_length=64)
+    hidden = models.BooleanField()
+    comment = models.CharField(max_length=1024, default='')
+
+
 
 
 class SubWork(Work):
@@ -66,6 +69,7 @@ class Creator(models.Model):
         else:
             return self.name + "::" + str(self.old_id)
 
+
 class CreatorRole(models.Model):
     name = models.CharField(max_length=64, unique=True)
 
@@ -73,4 +77,10 @@ class CreatorRole(models.Model):
 class CreatorToWork(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
     work = models.ForeignKey(Work, on_delete=PROTECT)
+    role = models.ForeignKey(CreatorRole, on_delete=PROTECT)
+
+
+class CreatorToItem(models.Model):
+    creator = models.ForeignKey(Creator, on_delete=PROTECT)
+    item = models.ForeignKey(Item, on_delete=PROTECT)
     role = models.ForeignKey(CreatorRole, on_delete=PROTECT)

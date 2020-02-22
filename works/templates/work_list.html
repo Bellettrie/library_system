@@ -3,8 +3,11 @@
 {% block content %}
     <h2>Works</h2>
     <ul>
-        {% for publisher in object_list %}
-            <li><a href="/works/{{publisher.pk}}">{{ publisher.title }}</a></li>
+        {% for work in object_list %}
+             {% with bork=work %}
+            {% include 'work_list_item.html' %}
+
+            {% endwith %}
         {% endfor %}
     </ul>
 {% endblock %}
