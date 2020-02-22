@@ -22,32 +22,22 @@ class WorkList(ListView):
     def get_queryset(self):  # new
         query = self.request.GET.get('q')
         words = query.split(" ")
-        query = None
-        author_query = None
+        result_set = None
         for word in words:
-            nq = Q(title__icontains=word)
-            aq = Q(name__icontains=word)
+            authors = Creator.objects.filter(name__icontains=word)
+            series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors) | Q(title__icontains=word)))
+            word_set = set(Work.objects.filter(
+                Q(creatortowork__creator__in=authors) |
+                Q(title__icontains=word) |
+                Q(workinseries__part_of_series__in=series))
+            )
 
-            if query is None:
-                query = nq
-                author_query = aq
+            if result_set is None:
+                result_set = word_set
             else:
-                query = query & nq
-                author_query = author_query & aq
+                result_set = result_set & word_set
 
-        authors = Creator.objects.filter(author_query)
-        series_list = Series.objects.filter(query)
-
-        series_set = set(series_list) | set(Series.objects.filter(creatortoseries__creator__in=authors))
-        ssize = 0
-        while len(series_set) > ssize:
-            ssize = len(series_set)
-            series_set = series_set | set(Series.objects.filter(part_of_series__in=series_set))
-
-        object_list = Work.objects.filter(
-            query | Q(creatortowork__creator__in=authors) | Q(workinseries__part_of_series__in=series_set)
-        )
-        return list(set(object_list))
+        return list(set(result_set))
 
 
 class WorkDetail(DetailView):
