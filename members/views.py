@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic import ListView
 
@@ -12,7 +13,7 @@ from django.http import HttpResponse
 class MemberList(ListView):
     model = Member
     template_name = 'members_base.html'
-    paginate_by = 30
+    paginate_by = 50
 
 
     def get_queryset(self):  # new
@@ -26,7 +27,7 @@ class MemberList(ListView):
             if len(word) > 2:
                 words.append(word)
         if len(words) == 0:
-            return Member.objects.filter(end_date__gte=datetime.now())
+            return Member.objects.filter(is_anonymous_user=False).filter(Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
 
         result_set = None
         for word in words:
