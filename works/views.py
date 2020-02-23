@@ -13,6 +13,7 @@ from works.models import Work, Publication, Creator, SubWork
 class WorkList(ListView):
     model = Work
     template_name = 'work_list.html'
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -26,9 +27,15 @@ class WorkList(ListView):
         query = self.request.GET.get('q')
         if query is None:
             return []
-        words = query.split(" ")
-        if len(words) == 0:
+        p_words = query.split(" ")
+        words = []
+        for word in p_words:
+            if len(word) > 2:
+                words.append(word)
+        if len(p_words) == 0:
             return []
+
+
 
         result_set = None
         for word in words:

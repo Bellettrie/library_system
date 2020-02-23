@@ -5,9 +5,14 @@
 
 
 {% block content %}
+    {%  include 'member_search_field.html' %}
 <table>
-    {% for member in members %}
-    <tr><td><a href="{% url 'show_member' member.id %}">{{member.name}}</a></td><td>{{member.old_id}}</td></tr>
+    {% for member in object_list %}
+        {% include 'member_list_item.html' %}
+        {% empty %}
+       <i> No results</i>
 {% endfor %}
+
 </table>
+{% include 'pagination.html' %}
 {% endblock %}

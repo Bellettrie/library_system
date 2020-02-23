@@ -62,6 +62,10 @@ TEMPLATES = [
         ,
         'APP_DIRS': True,
         'OPTIONS': {
+            'builtins':
+                [
+                    'bellettrie_library_system.templatetags.paginator_tag'
+                ],
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
