@@ -1,3 +1,5 @@
+from _testcapi import instancemethod
+
 from django.db.models import Q
 from django.shortcuts import render
 
@@ -5,7 +7,7 @@ from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 
 from series.models import Series
-from works.models import Work, Publication, Creator
+from works.models import Work, Publication, Creator, SubWork
 
 
 class WorkList(ListView):
@@ -20,17 +22,28 @@ class WorkList(ListView):
         return context
 
     def get_queryset(self):  # new
+
         query = self.request.GET.get('q')
+        if query is None:
+            return []
         words = query.split(" ")
+        if len(words) == 0:
+            return []
+
         result_set = None
         for word in words:
             authors = Creator.objects.filter(name__icontains=word)
             series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors) | Q(title__icontains=word)))
-            word_set = set(Work.objects.filter(
+
+            subworks = set(SubWork.objects.filter(
                 Q(creatortowork__creator__in=authors) |
                 Q(title__icontains=word) |
-                Q(workinseries__part_of_series__in=series))
-            )
+                Q(workinseries__part_of_series__in=series)))
+
+            word_set = set(Publication.objects.filter(
+                Q(creatortowork__creator__in=authors) |
+                Q(title__icontains=word) |
+                Q(workinseries__part_of_series__in=series) | Q(workinpublication__work__in=subworks)))
 
             if result_set is None:
                 result_set = word_set

@@ -2,12 +2,15 @@
 
 {% block content %}
     <h2>Works</h2>
+    {% include 'simple_work_search_field.html' %}
     <ul>
         {% for work in object_list %}
-             {% with bork=work %}
-            {% include 'work_list_item.html' %}
+            {% with bork=work %}
+                {% include 'work_list_item.html' %}
 
             {% endwith %}
+        {% empty %}
+            <i> No results</i>
         {% endfor %}
     </ul>
 {% endblock %}

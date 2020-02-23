@@ -39,8 +39,6 @@ class Item(models.Model):
     comment = models.CharField(max_length=1024, default='')
 
 
-
-
 class SubWork(Work):
     def is_orphaned(self):
         return len(self.workinpublication_set) == 0
