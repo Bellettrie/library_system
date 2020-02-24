@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -15,7 +17,12 @@ def work_based(request, work_id):
     return render(request, 'lending_based_on_work.html', {'members': members, 'item': Item.objects.get(pk=work_id)})
 
 
+def calc_end_date(member, item):
+    now = datetime.now()
+    return now + timedelta(days=21)
+
+
 def finalize(request, work_id, member_id):
     member = Member.objects.get(pk=member_id)
     item = Item.objects.get(pk=work_id)
-    return render(request, 'finalize_lending.html', {'member': member, 'item': item})
+    return render(request, 'finalize_lending.html', {'member': member, 'item': item, "date":calc_end_date(member, item)})
