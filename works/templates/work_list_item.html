@@ -1,1 +1,5 @@
-            <li><a href="/works/{{bork.pk}}">{{ bork.title }}</a> {{ bork.old_id }}</li>
+<div  style="width:100%" class="row table_row_{{ data }}">
+    <div class="col-8 col-md-4"><a href="/works/{{ bork.pk }}">{{ bork.title }}</a></div>
+    <div class="col-4 col-md-4">{{ bork.old_id}}</div>
+    <div class="col-4 col-md-4">{% for author in bork.get_authors %}{{ author }}<br/>{% endfor %}</div>
+</div>

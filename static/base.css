@@ -155,3 +155,11 @@
        width: auto;
     }
  }
+
+ .table_row_odd{
+     background-color:#cccccc;
+ }
+
+ .table_row_even{
+     background-color:#eeeeee;
+ }

@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 
 from series.models import Series
-from works.models import Work, Publication, Creator, SubWork
+from works.models import Work, Publication, Creator, SubWork, CreatorToWork
 
 
 class WorkList(ListView):
@@ -19,11 +19,9 @@ class WorkList(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['book_list'] = Work.objects.all()
         return context
 
     def get_queryset(self):  # new
-
         query = self.request.GET.get('q')
         if query is None:
             return []
@@ -34,8 +32,6 @@ class WorkList(ListView):
                 words.append(word)
         if len(p_words) == 0:
             return []
-
-
 
         result_set = None
         for word in words:
