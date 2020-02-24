@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+
+{% block content %}
+<form action="/members/{{ member.id }}/save" method="post">
+    {% csrf_token %}
+    {{ form }}
+</form>
+{% endblock %}
