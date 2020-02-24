@@ -20,7 +20,7 @@ class Series(SeriesNode):
     def get_authors(self):
         authors = []
         for author in CreatorToSeries.objects.filter(series=self):
-            authors.append(author.creator.name)
+            authors.append(author)
         if self.part_of_series is None:
             return authors
         else:

@@ -28,10 +28,18 @@ class Work(models.Model):
         links = CreatorToWork.objects.filter(work=self)
         authors = []
         for link in links:
-            authors.append(link.creator.name)
+            authors.append(link)
         for serie in WorkInSeries.objects.filter(work=self):
             authors = authors + serie.get_authors()
-        return authors
+        author_set = list()
+        for author in authors:
+            add = True
+            for author_2 in author_set:
+                if author.creator.name == author_2.creator.name and author.role.name == author_2.role.name:
+                    add = False
+            if add:
+                author_set.append(author)
+        return author_set
 
 
 class Publication(Work):
@@ -43,6 +51,12 @@ class Publication(Work):
         for item in self.get_items():
             if len(Lending.objects.filter(item=item)) == 0:
                 return item
+
+    def get_why_no(self):
+        if len(self.get_items()) == 0:
+            return "Not available"
+        else:
+            return "Lended out"
 
 
 

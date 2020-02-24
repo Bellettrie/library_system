@@ -5,6 +5,8 @@
     <ul>
         {% with bork=object %}
             {% include "work_list_item.html" %}
+
+            {{ bork.old_id }}
         {% endwith %}
     </ul>
 {% endblock %}
