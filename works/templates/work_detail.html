@@ -3,8 +3,8 @@
 {% block content %}
     <h2>Works</h2>
     <ul>
-        {{ object.title }}
-
-        {{ object.item_set.all.first.lending_set.all.first.member.name }}
+        {% with bork=object %}
+            {% include "work_list_item.html" %}
+        {% endwith %}
     </ul>
 {% endblock %}

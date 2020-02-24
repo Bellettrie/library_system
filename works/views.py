@@ -10,6 +10,10 @@ from series.models import Series
 from works.models import Work, Publication, Creator, SubWork, CreatorToWork
 
 
+def sort_works(work: Work):
+    return work.old_id
+
+
 class WorkList(ListView):
     model = Work
     template_name = 'work_list.html'
@@ -52,8 +56,9 @@ class WorkList(ListView):
                 result_set = word_set
             else:
                 result_set = result_set & word_set
-
-        return list(set(result_set))
+        l = list(set(result_set))
+        l.sort(key=sort_works)
+        return l
 
 
 class WorkDetail(DetailView):

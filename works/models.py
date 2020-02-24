@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
+from lendings.models import Lending
 from series.models import WorkInSeries
 
 
@@ -36,6 +37,14 @@ class Work(models.Model):
 class Publication(Work):
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
+    def get_items(self):
+        return Item.objects.filter(publication=self)
+    def get_lend_item(self):
+        for item in self.get_items():
+            if len(Lending.objects.filter(item=item)) == 0:
+                return item
+
+
 
 
 class Item(models.Model):
