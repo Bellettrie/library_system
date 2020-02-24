@@ -1,13 +1,15 @@
 from datetime import datetime
 
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from django.views.generic import ListView
 
 from .models import Member
+from .forms import EditForm
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 
 class MemberList(ListView):
@@ -43,3 +45,17 @@ class MemberList(ListView):
 
 def show(request, member_id):
     return render(request, 'member_show.html', {'member': Member.objects.get(pk=member_id)})
+
+def edit(request, member_id):
+    if request.method == 'POST':
+        return HttpResponseRedirect(reverse('show_member', args=(member_id,)))
+    else:
+        question = get_object_or_404(Member, pk=member_id)
+        form = EditForm(question)
+    return render(request, 'member_edit.html', {'member': question, 'form': form})
+
+def save(request, member_id):
+    member = get_object_or_404(Member, pk=member_id)
+    member.notes = request.POST['notes']
+    member.save()
+    return HttpResponseRedirect(reverse('show_member', args=(member_id,)))
