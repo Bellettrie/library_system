@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+    Lending for work: {{ item.publication.title }}
+    <form action="/lend/work/{{ item.pk }}" method="get">
+        <label for="Query">Query: </label>
+        <input id="q" type="text" name="q">
+        <input type="submit" value="Search">
+    </form>
+    <table>
+        {% for member in members %}
+            <tr>
+                <td><a href="{% url 'finalize_lending' item.pk  member.id %}">{{ member.name }}</a></td>
+                <td>{{ member.old_id }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

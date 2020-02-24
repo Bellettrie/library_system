@@ -23,6 +23,10 @@
 <a href="{% url 'edit_member' member.id %}">Edit</a>
 
     {% for lending in member.lending_set.all %}
-        {{  lending.item.publication.title }}
+        {% with data="odd" %}
+        {% with bork=lending.item.publication %}
+            {% include 'work_list_item.html' %}
+        {% endwith %}
+        {% endwith %}
     {% endfor    %}
 {% endblock %}

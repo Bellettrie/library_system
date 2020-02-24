@@ -3,6 +3,9 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
+from lendings.models import Lending
+from series.models import WorkInSeries
+
 
 def simple_search(search_string: str):
     return Work.objects.filter(title__contains=search_string)
@@ -19,13 +22,43 @@ class Work(models.Model):
     comment = models.CharField(max_length=1024)
     internal_comment = models.CharField(max_length=1024)
     signature_fragment = models.CharField(max_length=64)
-
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
+
+    def get_authors(self):
+        links = CreatorToWork.objects.filter(work=self)
+        authors = []
+        for link in links:
+            authors.append(link)
+        for serie in WorkInSeries.objects.filter(work=self):
+            authors = authors + serie.get_authors()
+        author_set = list()
+        for author in authors:
+            add = True
+            for author_2 in author_set:
+                if author.creator.name == author_2.creator.name and author.role.name == author_2.role.name:
+                    add = False
+            if add:
+                author_set.append(author)
+        return author_set
 
 
 class Publication(Work):
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
+    def get_items(self):
+        return Item.objects.filter(publication=self)
+    def get_lend_item(self):
+        for item in self.get_items():
+            if len(Lending.objects.filter(item=item)) == 0:
+                return item
+
+    def get_why_no(self):
+        if len(self.get_items()) == 0:
+            return "Not available"
+        else:
+            return "Lended out"
+
+
 
 
 class Item(models.Model):

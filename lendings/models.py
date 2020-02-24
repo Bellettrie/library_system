@@ -4,12 +4,11 @@ from django.db import models
 from django.db.models import PROTECT
 
 from members.models import Member
-from works.models import Item
 
 
 class Lending(models.Model):
     member = models.ForeignKey(Member, on_delete=PROTECT)
-    item = models.ForeignKey(Item, on_delete=PROTECT)
+    item = models.ForeignKey("works.Item", on_delete=PROTECT)
 
     lended_on = models.DateField()
     lended_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="lended_out", null=True, blank=True)
@@ -23,7 +22,7 @@ class Lending(models.Model):
 
 class Reservation(models.Model):
     member = models.ForeignKey(Member, on_delete=PROTECT)
-    item = models.ForeignKey(Item, on_delete=PROTECT)
+    item = models.ForeignKey("works.Item", on_delete=PROTECT)
     reserved_on = models.DateField()
     reserved_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="reservatin_action_by")
     reservation_end_date = models.DateField(null=True, blank=True)

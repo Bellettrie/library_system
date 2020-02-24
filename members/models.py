@@ -31,8 +31,10 @@ class Member(models.Model):
     old_id = models.IntegerField()
     is_anonymous_user = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
+
     def __str__(self):
         return self.name
+
     def pseudonymise(self):
         self.name = generate_full_name()
         self.nickname = ""
