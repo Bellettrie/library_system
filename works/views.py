@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 
 from series.models import Series
+from utils.get_query_words import get_query_words
 from works.models import Work, Publication, Creator, SubWork, CreatorToWork
 
 
@@ -26,15 +27,8 @@ class WorkList(ListView):
         return context
 
     def get_queryset(self):  # new
-        query = self.request.GET.get('q')
-        if query is None:
-            return []
-        p_words = query.split(" ")
-        words = []
-        for word in p_words:
-            if len(word) > 2:
-                words.append(word)
-        if len(p_words) == 0:
+        words = get_query_words(self.request)
+        if words is None or words == []:
             return []
 
         result_set = None
