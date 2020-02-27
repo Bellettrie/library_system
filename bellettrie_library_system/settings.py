@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'works',
     'members',
     'series',
-    'lendings'
+    'lendings',
+    'config'
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Holiday List</h2>
+    <ul>
+        {% for publisher in object_list %}
+            <li>{{ publisher.name }} {{  publisher.starting_date }} {{ publisher.ending_date }}
+                 <a href= {%  url 'holiday-update' publisher.id %}> edit </a>
+                <a href= {%  url 'holiday-delete' publisher.id %}> delete </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{%  url 'holiday-add' %}">add</a>
+
+{% endblock %}

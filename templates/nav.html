@@ -34,8 +34,11 @@
 <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
     <li><a href="/members/"><span class="fa-stack fa-lg pull-left"><i class="fa fa-user fa-stack-1x "></i></span>Members</a>
     </li>
-    <li><a href="/works/search"><span class="fa-stack pull-left"><i
+    <li><a href="{% url 'search-works' %}"><span class="fa-stack pull-left"><i
             class="fa fa-user fa-book "></i></span>Works</a></li>
+
+        <li><a href="{% url 'holiday-list' %}"><span class="fa-stack pull-left"><i
+            class="fa fa-user fa-book "></i></span>Holiday Setup</a></li>
     <li><a href="/admin/"><span class="fa-stack pull-left"><i class="fa fa-user fa-stack-1x "></i></span>Admin</a></li>
 
 

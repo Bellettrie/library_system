@@ -21,4 +21,5 @@ urlpatterns = [
     path('members/', include('members.urls')),
     path('works/', include('works.urls')),
     path('lend/', include('lendings.urls')),
+    path('config/', include('config.urls')),
 ]
