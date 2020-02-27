@@ -1,45 +1,10 @@
-<!--
-     <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
-            <li class="active">
-               <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-dashboard fa-stack-1x "></i></span> Dashboard</a>
-               <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                  <li><a href="#">link1</a></li>
-                  <li><a href="#">link2</a></li>
-               </ul>
-            </li>
-            <li>
-               <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x "></i></span>Shortcut</a>
-               <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                  <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x "></i></span>link1</a></li>
-                  <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x "></i></span>link2</a></li>
-               </ul>
-            </li>
-            <li>
-               <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-cloud-download fa-stack-1x "></i></span>Overview</a>
-            </li>
-            <li>
-               <a href="#"> <span class="fa-stack fa-lg pull-left"><i class="fa fa-cart-plus fa-stack-1x "></i></span>Events</a>
-            </li>
-            <li>
-               <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-youtube-play fa-stack-1x "></i></span>About</a>
-            </li>
-            <li>
-               <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-wrench fa-stack-1x "></i></span>Services</a>
-            </li>
-            <li>
-               <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-server fa-stack-1x "></i></span>Contact</a>
-            </li>
-         </ul>
--->
-<ul class="sidebar-nav nav-pills nav-stacked" id="menu">
-    <li><a href="/members/"><span class="fa-stack fa-lg pull-left"><i class="fa fa-user fa-stack-1x "></i></span>Members</a>
+<ul class="sidebar-menu">
+    <li class="treeview"><a activeclassname="active" href="{% url 'search-works' %}"><i
+            class="fa fa-book"></i><span>Books</span></a></li>
+    <li class="treeview"><a activeclassname="active" href="{% url 'members-list' %}"><i
+            class="fa fa-user"></i><span>Members</span></a>
     </li>
-    <li><a href="{% url 'search-works' %}"><span class="fa-stack pull-left"><i
-            class="fa fa-user fa-book "></i></span>Works</a></li>
-
-        <li><a href="{% url 'holiday-list' %}"><span class="fa-stack pull-left"><i
-            class="fa fa-user fa-book "></i></span>Holiday Setup</a></li>
-    <li><a href="/admin/"><span class="fa-stack pull-left"><i class="fa fa-user fa-stack-1x "></i></span>Admin</a></li>
-
-
+    <li class="treeview"><a activeclassname="active" href="{% url 'holiday-list' %}"><i
+            class="fa fa-user"></i><span>Holiday Setup</span></a>
+    </li>
 </ul>
