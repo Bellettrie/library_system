@@ -6,7 +6,6 @@ from django.db.models import PROTECT
 from members.models import Member
 
 
-
 class Lending(models.Model):
     member = models.ForeignKey(Member, on_delete=PROTECT)
     item = models.ForeignKey("works.Item", on_delete=PROTECT)
