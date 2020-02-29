@@ -18,7 +18,7 @@ class MemberType(Enum):
 
 class Member(models.Model):
     name = models.CharField(max_length=255)
-    nickname = models.CharField(max_length=255)
+    nickname = models.CharField(max_length=255, null=True, blank=True)
     addressLineOne = models.CharField(max_length=255)
     addressLineTwo = models.CharField(max_length=255)
     addressLineThree = models.CharField(max_length=255)

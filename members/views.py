@@ -42,16 +42,12 @@ def show(request, member_id):
 
 
 def edit(request, member_id):
-    if request.method == 'POST':
-        return HttpResponseRedirect(reverse('show_member', args=(member_id,)))
-    else:
-        question = get_object_or_404(Member, pk=member_id)
-        form = EditForm(question)
-    return render(request, 'member_edit.html', {'member': question, 'form': form})
-
-
-def save(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
-    member.notes = request.POST['notes']
-    member.save()
-    return HttpResponseRedirect(reverse('show_member', args=(member_id,)))
+    if request.method == 'POST':
+        form = EditForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('show_member', args=(member_id,)))
+    else:
+        form = EditForm(instance=member)
+    return render(request, 'member_edit.html', {'form': form, 'member': member})

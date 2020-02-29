@@ -3,8 +3,11 @@
 <!-- bs-example-navbar-collapse-1 -->
 
 {% block content %}
-<form action="/members/{{ member.id }}/save" method="post">
+<form action="/members/{{ member.id }}/edit" method="post">
     {% csrf_token %}
-    {{ form }}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Submit">
 </form>
 {% endblock %}
