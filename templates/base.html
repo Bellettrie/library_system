@@ -1,83 +1,73 @@
 <html>
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-<link rel="stylesheet" href="{% static 'base.css' %}">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
 <head>
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <title>Hello</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+
+    <style type="text/css">
+        .topbar{width:100%; height:50px; background-color:gray;}
+        .sidenav {
+            height: 100%;
+            width: 160px;
+            margin-top:50px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x:: hidden;
+            padding-top: 20px;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 16px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .main {
+            margin-left: 160px;
+            padding: 0px 10px;
+        }
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 </head>
+
 
 <body>
 
-<script>
-    $("#menu-toggle").click(function(e) {
-   e.preventDefault();
-   $("#wrapper").toggleClass("toggled");
-});
-$("#menu-toggle-2").click(function(e) {
-   e.preventDefault();
-   $("#wrapper").toggleClass("toggled-2");
-   $('#menu ul').hide();
-});
 
-function initMenu() {
-   $('#menu ul').hide();
-   $('#menu ul').children('.current').parent().show();
-   //$('#menu ul:first').show();
-   $('#menu li a').click(
-      function() {
-         var checkElement = $(this).next();
-         if ((checkElement.is('ul')) && (checkElement.is(':visible'))) {
-            return false;
-         }
-         if ((checkElement.is('ul')) && (!checkElement.is(':visible'))) {
-            $('#menu ul:visible').slideUp('normal');
-            checkElement.slideDown('normal');
-            return false;
-         }
-      }
-   );
-}
-$(document).ready(function() {
-   initMenu();
-});
-</script>
-
-   <nav class="navbar navbar-default no-margin">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header fixed-brand">
-         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" id="menu-toggle">
-<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
-</button>
-         <a class="navbar-brand" href="#"><i class="fa fa-rocket fa-4"></i> M-33</a>
-      </div>
-      <!-- navbar-header-->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-         <ul class="nav navbar-nav">
-            <li class="active">
-               <button class="navbar-toggle collapse in" data-toggle="collapse" id="menu-toggle-2"> <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
-               </button>
-            </li>
-         </ul>
-      </div>
-      <!-- bs-example-navbar-collapse-1 -->
-   </nav>
-   <div id="wrapper">
-      <!-- Sidebar -->
-      <div id="sidebar-wrapper">
+<div class="wrapper">
+    <div class = "topbar"><center><h1>Bellettrie System</h1></center><</div>
+    <div class="sidenav">
         {% include 'nav.html' %}
-      </div>
-      <!-- /#sidebar-wrapper -->
-      <!-- Page Content -->
-      <div id="page-content-wrapper">
-        {% block content %}{% endblock %}
+    </div>
 
-   </div>
-   <!-- /#wrapper -->
-   <!-- jQuery -->
+    <div id="content" name="content" class="main">
+        <div class="row justify-content-center">
+            <div class="col-8">
+                <hr class="mt-0 mb-4">
+                <div>
+                    {% block content %}
+                    {% endblock %}</div>
+
+            </div>
+        </div>
+    </div>
+    <!-- /#wrapper -->
+    <!-- jQuery -->
 
 </body>
 

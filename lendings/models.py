@@ -9,7 +9,6 @@ from members.models import Member
 class Lending(models.Model):
     member = models.ForeignKey(Member, on_delete=PROTECT)
     item = models.ForeignKey("works.Item", on_delete=PROTECT)
-
     lended_on = models.DateField()
     lended_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="lended_out", null=True, blank=True)
     times_extended = models.IntegerField(default=0)

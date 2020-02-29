@@ -37,10 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_tables2',
     'works',
     'members',
     'series',
-    'lendings'
+    'lendings',
+    'config'
 ]
 
 MIDDLEWARE = [
@@ -136,3 +138,4 @@ os.path.join(BASE_DIR, 'bootstrap'),
 ]
 
 OLD_DB = "oldsystem2"
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
