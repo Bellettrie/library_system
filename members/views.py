@@ -44,10 +44,21 @@ def show(request, member_id):
 def edit(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     if request.method == 'POST':
-        form = EditForm(request.POST)
+        form = EditForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('show_member', args=(member_id,)))
     else:
         form = EditForm(instance=member)
     return render(request, 'member_edit.html', {'form': form, 'member': member})
+
+
+def new(request):
+    if request.method == 'POST':
+        form = EditForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            return HttpResponseRedirect(reverse('show_member', args=(instance.pk,)))
+    else:
+        form = EditForm()
+    return render(request, 'member_edit.html', {'form': form})
