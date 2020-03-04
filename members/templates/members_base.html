@@ -6,6 +6,7 @@
 
 {% block content %}
     {%  include 'member_search_field.html' %}
+    <a href="{% url 'new_member' %}">New member</a>
 <table>
     {% for member in object_list %}
         {% include 'member_list_item.html' %}
