@@ -78,7 +78,6 @@ class Command(BaseCommand):
         data = finder.get(publication)
         pub = data.get("reeks_publicatienummer")
         series_data = finder.get(pub)
-        print(series_data)
         if series_data.get("type") != 1:
             return
         ser = Series.objects.get(old_id=pub)
@@ -138,4 +137,5 @@ class Command(BaseCommand):
                 print(k.old_id)
                 print(k.title)
                 print(banden.keys())
-            Item.objects.create(old_id=k.old_id, sticker_code=band.get("signatuur"), publication=k, hidden=False)
+            else:
+                Item.objects.create(old_id=k.old_id, sticker_code=band.get("signatuur"), publication=k, hidden=False)
