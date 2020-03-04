@@ -12,11 +12,13 @@ from django.db.models import CASCADE
 from members.management.commands.namegen import generate_full_name, generate_name
 
 
-class MemberType(Enum):
-    CUSTOMER = 1
-    ACTIVE = 2
-    LENDER = 3
-    ADMIN = 4
+class Committee(models.Model):
+    name = models.CharField(max_length=255)
+    code = models.CharField(max_length=64)
+    active_member_committee = models.BooleanField()
+
+    def __str__(self):
+        return self.name
 
 
 class Member(models.Model):
@@ -35,6 +37,7 @@ class Member(models.Model):
     is_anonymous_user = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True,  on_delete=CASCADE)
+    committees = models.ManyToManyField(Committee)
 
     def __str__(self):
         return self.name
