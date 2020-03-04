@@ -15064,7 +15064,7 @@ function _deepEqual(actual, expected, strict, memos) {
   // with Object.prototype.hasOwnProperty.call), the same set of keys
   // (although not necessarily the same order), equivalent values for every
   // corresponding key, and an identical 'prototype' property. Note: this
-  // accounts for both named and indexed properties on Arrays.
+  // registration for both named and indexed properties on Arrays.
   } else if (isBuffer(actual) !== isBuffer(expected)) {
     return false;
   } else {
@@ -56058,7 +56058,7 @@ function deepEqual(actual, expected, options) {
    * with Object.prototype.hasOwnProperty.call), the same set of keys
    * (although not necessarily the same order), equivalent values for every
    * corresponding key, and an identical 'prototype' property. Note: this
-   * accounts for both named and indexed properties on Arrays.
+   * registration for both named and indexed properties on Arrays.
    */
   // eslint-disable-next-line no-use-before-define
   return objEquiv(actual, expected, opts);

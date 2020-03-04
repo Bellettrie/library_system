@@ -758,12 +758,12 @@
          * Map a mouse position to a map position
          *      Transformation principle:
          *          ** start with (pageX, pageY) absolute mouse coordinate
-         *          - Apply translation: take into accounts the map offset in the page
+         *          - Apply translation: take into registration the map offset in the page
          *          ** from this point, we have relative mouse coordinate
-         *          - Apply homothetic transformation: take into accounts initial factor of map sizing (fullWidth / actualWidth)
-         *          - Apply homothetic transformation: take into accounts the zoom factor
+         *          - Apply homothetic transformation: take into registration initial factor of map sizing (fullWidth / actualWidth)
+         *          - Apply homothetic transformation: take into registration the zoom factor
          *          ** from this point, we have relative map coordinate
-         *          - Apply translation: take into accounts the current panning of the map
+         *          - Apply translation: take into registration the current panning of the map
          *          ** from this point, we have absolute map coordinate
          * @param pageX: mouse client coordinate on X
          * @param pageY: mouse client coordinate on Y

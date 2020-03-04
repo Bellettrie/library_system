@@ -2,7 +2,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 
 perms = dict()
-perms['admin'] = ['hoi']
+VIEW_MEMBERS='members.view'
+perms['admin'] = [VIEW_MEMBERS]
 
 def permission_required(perm, login_url=None, raise_exception=False):
     """
@@ -16,8 +17,11 @@ def permission_required(perm, login_url=None, raise_exception=False):
             perms = (perm,)
         else:
             perms = perm
-        print(type(perms))
-        print(perms)
+        if not hasattr(user, 'member'):
+            return False
+
+        print(user.member.old_customer_type)
+
         # As the last resort, show the login form
-        return True
+        return user is not None
     return user_passes_test(check_perms, login_url=login_url)

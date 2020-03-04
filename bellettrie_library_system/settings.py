@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'members',
     'series',
     'lendings',
-    'config'
+    'config',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +139,6 @@ os.path.join(BASE_DIR, 'bootstrap'),
 
 OLD_DB = "oldsystem2"
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
+
+LOGOUT_REDIRECT_URL='/accounts/login'
+LOGIN_REDIRECT_URL='/lend/me'
