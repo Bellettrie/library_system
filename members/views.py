@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
 from utils.get_query_words import get_query_words
@@ -10,7 +11,9 @@ from .models import Member
 from .forms import EditForm
 
 # Create your views here.
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
+
+from django.contrib.auth.decorators import user_passes_test, login_required
 
 
 class MemberList(ListView):
@@ -23,7 +26,8 @@ class MemberList(ListView):
         if words is None:
             return []
         if len(words) == 0:
-            return Member.objects.filter(is_anonymous_user=False).filter(Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
+            return Member.objects.filter(is_anonymous_user=False).filter(
+                Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
 
         result_set = None
         for word in words:

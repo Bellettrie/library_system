@@ -23,6 +23,7 @@ def calc_end_date(member, item):
 
 
 def finalize(request, work_id, member_id):
+
     member = Member.objects.get(pk=member_id)
     item = Item.objects.get(pk=work_id)
     return render(request, 'finalize_lending.html', {'member': member, 'item': item, "date":calc_end_date(member, item)})

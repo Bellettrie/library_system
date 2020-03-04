@@ -34,7 +34,7 @@ class Member(models.Model):
     old_id = models.IntegerField(null=True, blank=True)
     is_anonymous_user = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
-    user = models.ForeignKey(User, null=True, blank=True, unique=True, on_delete=CASCADE)
+    user = models.OneToOneField(User, null=True, blank=True,  on_delete=CASCADE)
 
     def __str__(self):
         return self.name
