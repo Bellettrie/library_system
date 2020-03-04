@@ -7,6 +7,9 @@ from lendings.models import Lending
 from members.models import Member
 from works.models import Work, Item
 
+def index(request):
+    lendings = Lending.objects.filter(handed_in=False).order_by('end_date')
+    return render(request, 'lending_base.html', {'lendings': lendings})
 
 def work_based(request, work_id):
     q = None
