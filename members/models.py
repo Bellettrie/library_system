@@ -30,6 +30,7 @@ class Member(models.Model):
     student_number = models.CharField(max_length=32)
     membership_type_old = models.CharField(max_length=32)
     notes = models.CharField(max_length=1023)
+    old_customer_type = models.CharField(max_length=64, null=True, blank=True)
     old_id = models.IntegerField(null=True, blank=True)
     is_anonymous_user = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
@@ -54,7 +55,6 @@ class Member(models.Model):
     def anonymise_people():
         now = datetime.now()
         members = Member.objects.filter(end_date__isnull=False).filter(end_date__lte=str(now.year-10)+ "-" + str(now.month)+ "-" + str(now.day))
-        print(members)
         anonymous_members = Member.objects.filter(is_anonymous_user=True)
 
         for member in members:
@@ -63,7 +63,6 @@ class Member(models.Model):
                 lending.save()
             member.delete()
 
-        print(anonymous_members[0].lending_set.all())
 
 
 
