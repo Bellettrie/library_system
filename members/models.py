@@ -1,10 +1,13 @@
 from datetime import datetime
 from random import randint
 
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
 from enum import Enum
+
+from django.db.models import CASCADE
 
 from members.management.commands.namegen import generate_full_name, generate_name
 
@@ -27,10 +30,10 @@ class Member(models.Model):
     student_number = models.CharField(max_length=32)
     membership_type_old = models.CharField(max_length=32)
     notes = models.CharField(max_length=1023)
-    old_customer_type = models.CharField(max_length=64)
-    old_id = models.IntegerField()
+    old_id = models.IntegerField(null=True, blank=True)
     is_anonymous_user = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True, unique=True, on_delete=CASCADE)
 
     def __str__(self):
         return self.name

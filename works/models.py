@@ -15,14 +15,16 @@ class Work(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
     is_translated = models.BooleanField()
-    original_title = models.CharField(max_length=255)
-    original_subtitle = models.CharField(max_length=255)
-    original_language = models.CharField(max_length=64)
+    original_title = models.CharField(max_length=255, null=True, blank=True)
+    original_subtitle = models.CharField(max_length=255, null=True, blank=True)
+    original_language = models.CharField(max_length=64, null=True, blank=True)
+    language = models.CharField(max_length=64)
     date_added = models.DateField()
     comment = models.CharField(max_length=1024)
     internal_comment = models.CharField(max_length=1024)
     signature_fragment = models.CharField(max_length=64)
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
+    hidden = models.BooleanField()
 
     def get_authors(self):
         links = CreatorToWork.objects.filter(work=self)
@@ -67,7 +69,6 @@ class Item(models.Model):
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
     sticker_code = models.CharField(max_length=64)
     isbn = models.CharField(max_length=64)
-    language = models.CharField(max_length=64)
     hidden = models.BooleanField()
     comment = models.CharField(max_length=1024, default='')
 

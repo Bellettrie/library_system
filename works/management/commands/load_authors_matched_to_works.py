@@ -45,7 +45,6 @@ class Command(BaseCommand):
             links[x.get("rol")] = creator_role
             list.append(x)
 
-        print(links)
 
         for x in list:
             if len(Creator.objects.filter(old_id=x.get("persoonnummer")))> 0:

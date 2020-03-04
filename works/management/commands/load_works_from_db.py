@@ -15,7 +15,6 @@ class Command(BaseCommand):
     @staticmethod
     def handle_publication(publication, tree, finder):
         data = finder.get(publication)
-        print(publication)
         Publication.objects.create(title=data.get("titel"),
                                    sub_title=data.get("subtitel"),
                                    language=data.get("taal"),
@@ -33,7 +32,6 @@ class Command(BaseCommand):
     @staticmethod
     def handle_subwork(sub_work, tree, finder):
         data = finder.get(sub_work)
-        print(sub_work)
         work = SubWork.objects.create(title=data.get("titel"),
                                       sub_title=data.get("subtitel"),
                                       language=data.get("taal"),
@@ -57,14 +55,11 @@ class Command(BaseCommand):
             return []
         data = finder.get(node)
         tt = data.get("type")
-        if tt != 1:
-            print(finder.get(node))
         handled_list = []
         nr = finder.get(node).get("reeks_publicatienummer")
         if nr > 0:
             handled_list += Command.handle_series_node(handled, nr, tree, finder)
         if data.get("reeks_publicatienummer") > 0:
-            print(node)
             super_series = Series.objects.get(old_id=data.get("reeks_publicatienummer"))
             Series.objects.create(part_of_series=super_series, number=int(data.get("reeks_deelnummer")),
                                   display_number=data.get(
@@ -73,7 +68,6 @@ class Command(BaseCommand):
             Series.objects.create(number=int(data.get("reeks_deelnummer")),
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node)
-            print(node)
 
         handled_list.append(node)
 
@@ -83,12 +77,11 @@ class Command(BaseCommand):
     def handle_part_of_series(publication, tree, finder):
         data = finder.get(publication)
         pub = data.get("reeks_publicatienummer")
-        print(pub)
         series_data = finder.get(pub)
         print(series_data)
         if series_data.get("type") != 1:
             return
-        ser = SeriesNode.objects.get(old_id=pub)
+        ser = Series.objects.get(old_id=pub)
         work = Work.objects.get(old_id=publication)
         WorkInSeries.objects.create(part_of_series=ser, old_id=publication, work=work, number=int(data.get("reeks_deelnummer")),
                                     display_number=data.get(
@@ -117,17 +110,18 @@ class Command(BaseCommand):
         for t in finder.keys():
             if finder.get(t).get("type") == 0:
                 Command.handle_publication(t, tree, finder)
+        print("Done publications, now subworks")
 
         for t in finder.keys():
             if finder.get(t).get("type") == -1:
                 Command.handle_subwork(t, tree, finder)
-
+        print("done subworks, now series")
         handled = []
 
         for t in finder.keys():
             if finder.get(t).get("type") == 1:
                 handled += Command.handle_series_node(handled, t, tree, finder)
-
+        print("done series, now adding works to series")
         for t in tree.keys():
             if finder.get(t).get("type") == 0 and finder.get(t).get("reeks_publicatienummer") > 0:
                 Command.handle_part_of_series(t, tree, finder)
@@ -136,7 +130,7 @@ class Command(BaseCommand):
         banden = dict()
         for x in mycursor:
             banden[x.get("publicatienummer")] = x
-
+        print("Now items")
         for k in Publication.objects.all():
             band = banden.get(k.old_id)
 
@@ -144,4 +138,4 @@ class Command(BaseCommand):
                 print(k.old_id)
                 print(k.title)
                 print(banden.keys())
-            Item.objects.create(old_id=k.old_id, sticker_code=band.get("signatuur"), publication=k)
+            Item.objects.create(old_id=k.old_id, sticker_code=band.get("signatuur"), publication=k, hidden=False)

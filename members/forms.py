@@ -17,7 +17,7 @@ class EditForm(ModelForm):
                   'student_number',
                   'notes',
                   'is_anonymous_user',
-                  'end_date']
+                  'end_date', 'user']
         labels = {'name': 'Name',
                   'nickname': 'Nickname',
                   'addressLineOne': 'Address',
@@ -28,4 +28,4 @@ class EditForm(ModelForm):
                   'student_number': 'Student #',
                   'notes': 'Notes',
                   'is_anonymous_user': 'Is anonymous user',
-                  'end_date': 'End date'}
+                  'end_date': 'End date', 'user': 'User'}
