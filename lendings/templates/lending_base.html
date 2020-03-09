@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+
+{% block content %}
+<table>
+    {% for lending in lendings %}
+    <tr><td><a href="{% url 'work.show' lending.item.publication.id %}">{{ lending.item.publication.title }}</a></td><td><a href="{% url 'show_member' lending.member.id %}">{{ lending.member.name }}</a></td><td>{{ lending.end_date }}</td></tr>
+        {% empty %}
+        BLIEP
+    {% endfor %}
+</table>
+{% endblock %}
