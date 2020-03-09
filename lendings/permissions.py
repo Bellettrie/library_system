@@ -1,9 +1,13 @@
-VIEW = 'view'
+from bellettrie_library_system.permissions import add_perm
+from members.permissions import ADMIN, LENDERS
 
-def permits(permission, committee_names, committees):
-    permissions = dict()
-    permissions[VIEW] = ["ALL"]
-    permissions['edit'] = ["BOARD", "ADMIN"]
-    permissions['list'] = ["BOARD", "ADMIN"]
+LENDING_LIST = 'lendings.list'
+LENDING_VIEW = 'lendings.view'
+LENDING_NEW = 'lendings.new'
+LENDING_FINALIZE = 'lendings.finalize'
+LENDING_MY_LENDINGS = 'lendings.me'
 
-    return len(set(permissions.get(permission, [])) & committee_names) > 0
+
+add_perm(LENDING_VIEW, [ADMIN, LENDERS])
+add_perm(LENDING_LIST, [ADMIN, LENDERS])
+add_perm(LENDING_NEW, [ADMIN, LENDERS])

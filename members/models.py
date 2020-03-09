@@ -1,7 +1,7 @@
 from datetime import datetime
 from random import randint
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 
 # Create your models here.
@@ -36,8 +36,12 @@ class Member(models.Model):
     old_id = models.IntegerField(null=True, blank=True)
     is_anonymous_user = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
-    user = models.OneToOneField(User, null=True, blank=True,  on_delete=CASCADE)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=CASCADE)
     committees = models.ManyToManyField(Committee)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return self.name
@@ -57,7 +61,8 @@ class Member(models.Model):
     @staticmethod
     def anonymise_people():
         now = datetime.now()
-        members = Member.objects.filter(end_date__isnull=False).filter(end_date__lte=str(now.year-10)+ "-" + str(now.month)+ "-" + str(now.day))
+        members = Member.objects.filter(end_date__isnull=False).filter(
+            end_date__lte=str(now.year - 10) + "-" + str(now.month) + "-" + str(now.day))
         anonymous_members = Member.objects.filter(is_anonymous_user=True)
 
         for member in members:
@@ -66,7 +71,11 @@ class Member(models.Model):
                 lending.save()
             member.delete()
 
+    def update_groups(self):
+        if self.user is not None:
+            self.user.groups.clear()
 
-
-
-
+            for c in self.committees.all():
+                g = Group.objects.get(name=c.code)
+                self.user.groups.add(g)
+            self.user.save()

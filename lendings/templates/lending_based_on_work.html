@@ -9,7 +9,7 @@
     <table>
         {% for member in members %}
             <tr>
-                <td><a href="{% url 'finalize_lending' item.pk  member.id %}">{{ member.name }}</a></td>
+                <td><a href="{% url LENDING_FINALIZE item.pk  member.id %}">{{ member.name }}</a></td>
                 <td>{{ member.old_id }}</td>
             </tr>
         {% endfor %}

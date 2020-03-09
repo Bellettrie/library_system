@@ -51,6 +51,7 @@ def edit(request, member_id):
         form = EditForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
+            member.update_groups()
             return HttpResponseRedirect(reverse('show_member', args=(member_id,)))
     else:
         form = EditForm(instance=member)

@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from lendings.models import Lending
+from lendings.permissions import LENDING_FINALIZE
 from members.models import Member
 from works.models import Work, Item
 
@@ -15,7 +16,7 @@ def work_based(request, work_id):
     members = []
     if q is not None:
         members = Member.objects.filter(name__icontains=q)
-    return render(request, 'lending_based_on_work.html', {'members': members, 'item': Item.objects.get(pk=work_id)})
+    return render(request, 'lending_based_on_work.html', {'members': members, 'item': Item.objects.get(pk=work_id), "LENDING_FINALIZE": LENDING_FINALIZE})
 
 
 def calc_end_date(member, item):
