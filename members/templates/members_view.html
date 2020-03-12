@@ -20,7 +20,7 @@
     <tr><th>End date</th><td>{{member.end_date}}</td></tr>
 </table>
 
-<a href="{% url 'edit_member' member.id %}">Edit</a>
+<a href="{% url 'members.edit' member.id %}">Edit</a>
 
     {% for lending in member.lending_set.all %}
         {% with data="odd" %}

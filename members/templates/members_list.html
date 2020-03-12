@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+
+
+{% block content %}
+    {% include 'member_search_field.html' %}
+    <table>
+        {% for member in object_list %}
+            {% include 'member_list_item.html' %}
+        {% empty %}
+            <i> No results</i>
+        {% endfor %}
+
+    </table>
+    {% include 'pagination.html' %}
+    <hr>
+    <a href="{% url 'members.new' %}">New member</a>
+{% endblock %}

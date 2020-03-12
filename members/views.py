@@ -13,12 +13,12 @@ from .forms import EditForm
 # Create your views here.
 from django.http import HttpResponseRedirect
 
-from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 
 
 class MemberList(ListView):
     model = Member
-    template_name = 'members_base.html'
+    template_name = 'members_list.html'
     paginate_by = 50
 
     def get_queryset(self):  # new
@@ -40,9 +40,9 @@ class MemberList(ListView):
 
         return list(set(result_set))
 
-
+@permission_required('members.view')
 def show(request, member_id):
-    return render(request, 'member_show.html', {'member': Member.objects.get(pk=member_id)})
+    return render(request, 'members_view.html', {'member': Member.objects.get(pk=member_id)})
 
 
 def edit(request, member_id):

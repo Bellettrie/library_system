@@ -1,7 +1,7 @@
 import datetime
 
 import mysql.connector
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 
 from django.core.management.base import BaseCommand, CommandError
 
@@ -19,9 +19,46 @@ def get_name(x):
     return vn + " " + x.get("naam")
 
 
+def p(app_label, model, z):
+    return app_label + "." + model + "." + z
+
+
+def add(app_label, model):
+    return p(app_label, model, "add_" + model)
+
+
+def change(app_label, model):
+    return p(app_label, model, "change_" + model)
+
+
+def delete(app_label, model):
+    return p(app_label, model, "delete_" + model)
+
+
+def view(app_label, model):
+    return p(app_label, model, "view_" + model)
+
+
+def view_rights(a, m):
+    return [view(a, m)]
+
+
+def all_rights(a, m):
+    return [add(a, m), change(a, m), delete(a, m), view(a, m)]
+
+
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
+    @staticmethod
+    def get_rights(committee):
+        if committee == KASCO:
+            return [""]
+        if committee == LENDERS:
+            return [] + all_rights("members", "member") + \
+                   all_rights("lendings", "lending") + \
+                   view_rights("works", "work") + \
+                   view_rights("works", "series")
 
     def handle(self, *args, **options):
         committees = [(KASCO, "Kascommittee", True),
@@ -41,3 +78,15 @@ class Command(BaseCommand):
             if len(Group.objects.filter(name=committee[0])) == 0:
                 Group.objects.create(name=committee[0])
                 print("added GROUP FOR " + committee[1])
+
+
+            for group in Group.objects.all():
+                r = Command.get_rights(group.name)
+                print(r)
+                if r is not None:
+                    for role in r:
+                        
+                        group.permissions.add(role)
+                    group.save()
+
+

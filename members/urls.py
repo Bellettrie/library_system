@@ -1,16 +1,14 @@
 from bellettrie_library_system.permissions import authorize, authorized_path
 from django.urls import path
 
-from members.permissions import MEMBERS_LIST
+from members.permissions import MEMBERS_LIST, MEMBERS_NEW, MEMBERS_VIEW, MEMBERS_EDIT
 from members.views import MemberList
 from . import views
 
 urlpatterns = [
-    authorized_path('', MemberList.as_view(), MEMBERS_LIST),
-
-    path('', MemberList.as_view(), name='members-list'),
-    path('<int:member_id>', views.show, name='show_member'),
-    path('<int:member_id>/edit', views.edit, name='edit_member'),
-    path('new', views.new, name='new_member'),
+    path('', MemberList.as_view(), name=MEMBERS_LIST),
+    path('<int:member_id>', views.show, name=MEMBERS_VIEW),
+    path('<int:member_id>/edit', views.edit, name=MEMBERS_EDIT),
+    path('new', views.new, name=MEMBERS_NEW),
 
 ]
