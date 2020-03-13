@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
@@ -42,6 +43,7 @@ class MemberList(PermissionRequiredMixin, ListView):
 
         return list(set(result_set))
 
+
 @permission_required('members.view_member')
 def show(request, member_id):
     return render(request, 'members_view.html', {'member': Member.objects.get(pk=member_id)})
@@ -65,7 +67,32 @@ def new(request):
         form = EditForm(request.POST)
         if form.is_valid():
             instance = form.save()
-            return HttpResponseRedirect(reverse('show_member', args=(instance.pk,)))
+            return HttpResponseRedirect(reverse('members', args=(instance.pk,)))
     else:
         form = EditForm()
     return render(request, 'member_edit.html', {'form': form})
+
+
+def signup(request, member_id):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+
+            instance.member = Member.objects.get(pk=member_id)
+            instance.member.user = instance
+            instance.member.save()
+            instance.save()
+            return HttpResponseRedirect(reverse('members.view', args=(instance.member.pk,)))
+    else:
+        form = UserCreationForm()
+    return render(request, 'user_edit.html', {'form': form})
+
+
+def delete_user(request, member_id):
+    member = Member.objects.get(pk=member_id)
+    member.user.delete()
+    member.user = None
+    member.save()
+
+    return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))

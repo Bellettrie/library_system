@@ -40,9 +40,8 @@ def authorize(perm, login_url=None, raise_exception=False):
     return user_passes_test(check_perms, login_url=login_url)
 
 
-def authorized_path(url, view, perm, name=None):
-    name = name or perm
-    return path(url, authorize(perm)(view), name=name)
+def simple_path(url, view, name):
+    return path(url, view, name=name)
 
 
 @register.simple_tag
