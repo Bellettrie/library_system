@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -16,7 +17,8 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 
 
-class MemberList(ListView):
+class MemberList(PermissionRequiredMixin, ListView):
+    permission_required = 'members.view_member'
     model = Member
     template_name = 'members_list.html'
     paginate_by = 50
@@ -40,7 +42,7 @@ class MemberList(ListView):
 
         return list(set(result_set))
 
-@permission_required('members.view')
+@permission_required('members.view_member')
 def show(request, member_id):
     return render(request, 'members_view.html', {'member': Member.objects.get(pk=member_id)})
 
@@ -52,7 +54,7 @@ def edit(request, member_id):
         if form.is_valid():
             form.save()
             member.update_groups()
-            return HttpResponseRedirect(reverse('show_member', args=(member_id,)))
+            return HttpResponseRedirect(reverse('members.view', args=(member_id,)))
     else:
         form = EditForm(instance=member)
     return render(request, 'member_edit.html', {'form': form, 'member': member})
