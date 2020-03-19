@@ -1,10 +1,7 @@
-from tkinter import CASCADE
-
 from django.db import models
 
 # Create your models here.
 from django.db.models import PROTECT
-
 
 
 class SeriesNode(models.Model):
@@ -13,7 +10,6 @@ class SeriesNode(models.Model):
     display_number = models.CharField(max_length=255)
     old_id = models.IntegerField()
     title = models.CharField(max_length=255, blank=True, null=True)
-
 
 
 class Series(SeriesNode):
