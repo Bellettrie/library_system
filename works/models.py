@@ -14,6 +14,8 @@ def simple_search(search_string: str):
 class ItemType(models.Model):
     name = models.CharField(max_length=255)
     old_id = models.IntegerField()
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):

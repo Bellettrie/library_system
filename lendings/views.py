@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
 
 # Create your views here.
+from config.models import LendingSettings
 from lendings.models import Lending
 from lendings.permissions import LENDING_FINALIZE
 from members.models import Member
@@ -24,12 +25,14 @@ def work_based(request, work_id):
     members = []
     if q is not None:
         members = Member.objects.filter(name__icontains=q)
-    return render(request, 'lending_based_on_work.html', {'members': members, 'item': Item.objects.get(pk=work_id), "LENDING_FINALIZE": LENDING_FINALIZE})
+    return render(request, 'lending_based_on_work.html',
+                  {'members': members, 'item': Item.objects.get(pk=work_id), "LENDING_FINALIZE": LENDING_FINALIZE})
 
 
 def calc_end_date(member, item):
     now = datetime.now()
-    return now + timedelta(days=21)
+    term = LendingSettings.get_term(item, member)
+    return now + timedelta(days=term)
 
 
 @permission_required('lendings.add_lending')
@@ -38,6 +41,7 @@ def finalize(request, work_id, member_id):
     item = Item.objects.get(pk=work_id)
     return render(request, 'finalize_lending.html',
                   {'member': member, 'item': item, "date": calc_end_date(member, item)})
+
 
 @login_required
 def me(request):

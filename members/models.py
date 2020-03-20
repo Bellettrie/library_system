@@ -39,6 +39,12 @@ class Member(models.Model):
     user = models.OneToOneField(User, null=True, blank=True, on_delete=CASCADE)
     committees = models.ManyToManyField(Committee)
 
+    def is_active(self):
+        for committee in self.committees.all():
+            if committee.active_member_committee:
+                return True
+        return False
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
