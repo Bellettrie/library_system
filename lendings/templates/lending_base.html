@@ -5,7 +5,7 @@
 {% block content %}
 <table>
     {% for lending in lendings %}
-    <tr><td><a href="{% url 'work.show' lending.item.publication.id %}">{{ lending.item.publication.title }}</a></td><td><a href="{% url 'show_member' lending.member.id %}">{{ lending.member.name }}</a></td><td>{{ lending.end_date }}</td></tr>
+    <tr><td><a href="{% url 'work.view' lending.item.publication.id %}">{{ lending.item.publication.title }}</a></td><td><a href="{% url 'members.view' lending.member.id %}">{{ lending.member.name }}</a></td><td>{{ lending.end_date }}</td></tr>
         {% empty %}
         BLIEP
     {% endfor %}

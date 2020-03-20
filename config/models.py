@@ -10,4 +10,4 @@ class Holiday(models.Model):
     ending_date = models.DateField()
 
     def get_absolute_url(self):
-        return reverse('holiday-view', kwargs={'pk': self.pk})
+        return reverse('holiday.view', kwargs={'pk': self.pk})

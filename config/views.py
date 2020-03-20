@@ -31,7 +31,7 @@ class HolidayUpdate(UpdateView):
 class HolidayDelete(DeleteView):
     model = Holiday
     template_name = 'holiday_confirm_delete.html'
-    success_url = reverse_lazy('holiday-list')
+    success_url = reverse_lazy('holiday.view')
 
 
 class HolidayDetail(DetailView):

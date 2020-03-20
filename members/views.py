@@ -86,7 +86,7 @@ def signup(request, member_id):
             return HttpResponseRedirect(reverse('members.view', args=(instance.member.pk,)))
     else:
         form = UserCreationForm()
-    return render(request, 'user_edit.html', {'form': form})
+    return render(request, 'user_edit.html', {'form': form, 'member': Member.objects.get(pk=member_id)})
 
 
 def delete_user(request, member_id):

@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from bellettrie_library_system.views import index
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include('members.urls')),
@@ -23,4 +25,5 @@ urlpatterns = [
     path('lend/', include('lendings.urls')),
     path('config/', include('config.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+path('', index),
 ]

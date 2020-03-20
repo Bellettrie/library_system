@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-
+{% block title %}Holiday details for: {{ object.name }}{% endblock %}
 {% block content %}
-{{object.name}}
+
     <a href="{%  url 'holiday.list' %}">Back to overview</a>
 {% endblock %}

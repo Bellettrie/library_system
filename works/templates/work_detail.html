@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-
+{% block title %}Details for book: {{  object.title}}{% endblock %}
 {% block content %}
-    <h2>Works</h2>
     <ul>
         {% with bork=object %}
             {% include "work_list_item.html" %}

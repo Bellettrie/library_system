@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-
+{% block title %}Holiday Form{% endblock %}
 {% block content %}
-    <h2>Insert new Holiday</h2>
     <form action="#" method="post">
         {% csrf_token %}
         <label for="your_name">Holiday Name: </label>

@@ -11,16 +11,19 @@
                     class="fa fa-user"></i><span>Members</span></a>
             </li>
         {% endif %}
-        {% if perms.lendings.view_lending %}
-            <li class="treeview"><a activeclassname="active" href="{% url 'lendings.list' %}"><i
-                    class="fa fa-book"></i><span>Lendings</span></a>
-            </li>
-        {% endif %}
-        {% if perms.config.view_holiday %}
-            <li class="treeview"><a activeclassname="active" href="{% url 'holiday.list' %}"><i
-                    class="fa fa-plane"></i><span>Holidays</span></a>
-            </li>
-        {% endif %}
+        {% include 'lending_nav.html' %}
+        <li class="active">
+
+            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+
+            {% if perms.config.view_holiday %}
+                <li class="treeview"><a activeclassname="active" href="{% url 'holiday.list' %}"><i
+                        class="fa fa-plane"></i><span>Holidays</span></a>
+                </li>
+            {% endif %}
+                    </ul>
+        </li>
         <li class="treeview"><a activeclassname="active" href="{% url 'logout' %}"><i
                 class="fa fa-plane"></i><span>Logout</span></a>
             {% else %}

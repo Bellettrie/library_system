@@ -6,9 +6,10 @@ from lendings.permissions import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, L
 
 from members.views import MemberList
 from . import views
+from .views import index
 
 urlpatterns = [
-    path('', MemberList.as_view(), name=LENDING_LIST),
+    path('', index, name=LENDING_LIST),
     path('work/<int:work_id>', views.work_based, name=LENDING_NEW_WORK),
     path('finalize/<int:work_id>/<int:member_id>', views.finalize, name=LENDING_FINALIZE),
     path('me/', views.me, name=LENDING_MY_LENDINGS),

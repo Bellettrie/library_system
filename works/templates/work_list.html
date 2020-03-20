@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-
+{% block title %}Book Search{% endblock %}
 {% block content %}
-    <h2>Works</h2>
     {% include 'simple_work_search_field.html' %}
     {% for work in object_list %}
         {% with data=forloop.counter|divisibleby:2|yesno:"even,odd" %}
