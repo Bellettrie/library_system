@@ -3,7 +3,10 @@
 Lending for work: {{ item.publication.title }} <br />
 Lending for member: {{  member.name }} <br />
 End date {{ date }}
-
 ZZ {{ d_type }}
+<form action="#" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Lend">
+</form>
 {% endblock %}
 
