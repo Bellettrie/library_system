@@ -5,7 +5,6 @@
     {% for lending in lendings %}
         <tr><td>Item</td><td>{{ lending.item.publication.title }}</td></tr>
         {% empty %}
-        BLIEP
     {% endfor %}
     </table>
 {% endblock %}

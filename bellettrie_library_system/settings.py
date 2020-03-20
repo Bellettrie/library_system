@@ -25,7 +25,7 @@ SECRET_KEY = '9_meq=rl3q!wh4=lr4g9t)ra9l*o_d7!exbh&^brhj=*_xm5y*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["nander.net"]
+ALLOWED_HOSTS = ["localhost", "nander.net"]
 
 
 # Application definition

@@ -6,8 +6,11 @@
      background-color:#eeeeee;
  }
 
+:root {
+  --main-bg-color: #eeeeee;
+    --sidebar-bg-color:#ffff66;
 
- /*!
+} /*!
  * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/template-overviews/simple-sidebar)
  * Copyright 2013-2019 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
@@ -71,11 +74,21 @@ a, a:hover, a:focus {
 }
 
 
+.header {
+  overflow: visible;
+    z-index:2000;
+      background: #eeee00;
+
+  padding: 20px 10px;
+    height:64px;
+    width:100%;
+}
+
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    background: #222222;
-    color: #ccc;
+    background: var(--sidebar-bg-color);
+    color: #222222;
     transition: all 0.6s cubic-bezier(0.945, 0.020, 0.270, 0.665);
     transform-origin: bottom left;
 }
@@ -83,10 +96,9 @@ a, a:hover, a:focus {
 #sidebar.active {
     margin-left: -250px;
 }
-
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #444444;
+    background: #ffff00;
 }
 
 #sidebar ul.components {

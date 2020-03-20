@@ -10,13 +10,13 @@ from members.models import Member
 from works.models import Work, Item
 
 
-@permission_required('lendings.lending.add_lending')
+@permission_required('lendings.add_lending')
 def index(request):
     lendings = Lending.objects.filter(handed_in=False).order_by('end_date')
     return render(request, 'lending_base.html', {'lendings': lendings})
 
 
-@permission_required('lendings.lending.add_lending')
+@permission_required('lendings.add_lending')
 def work_based(request, work_id):
     q = None
     if 'q' in request.GET.keys():
