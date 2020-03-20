@@ -11,8 +11,24 @@ def simple_search(search_string: str):
     return Work.objects.filter(title__contains=search_string)
 
 
+class ItemType(models.Model):
+    name = models.CharField(max_length=255)
+    old_id = models.IntegerField()
+
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
+
+    code = models.CharField(max_length=8)
+    item_type = models.ForeignKey(ItemType, on_delete=PROTECT)
+
+    class Meta:
+        unique_together = ['is_abc', 'code']
+
+
+class Location(models.Model):
+    category = models.ForeignKey(Category, on_delete=PROTECT)
+    name = models.CharField(null=True, blank=True)
 
 
 class Work(models.Model):
