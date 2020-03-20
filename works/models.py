@@ -18,17 +18,14 @@ class ItemType(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-
     code = models.CharField(max_length=8)
     item_type = models.ForeignKey(ItemType, on_delete=PROTECT)
-
-    class Meta:
-        unique_together = ['is_abc', 'code']
 
 
 class Location(models.Model):
     category = models.ForeignKey(Category, on_delete=PROTECT)
-    name = models.CharField(null=True, blank=True)
+    name = models.CharField(null=True, blank=True, max_length=255)
+    old_id = models.IntegerField()
 
 
 class Work(models.Model):
@@ -65,6 +62,7 @@ class Work(models.Model):
 
 
 class Publication(Work):
+    location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
     def get_items(self):
@@ -79,8 +77,6 @@ class Publication(Work):
             return "Not available"
         else:
             return "Lended out"
-
-
 
 
 class Item(models.Model):
