@@ -138,4 +138,4 @@ class Command(BaseCommand):
                 print(k.title)
                 print(banden.keys())
             else:
-                Item.objects.create(old_id=k.old_id, sticker_code=band.get("signatuur"), publication=k, hidden=False)
+                Item.objects.create(old_id=k.old_id, signature=band.get("signatuur"), publication=k, hidden=False)

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
 
 # Create your views here.
@@ -32,13 +32,14 @@ def calc_end_date(member, item):
     return now + timedelta(days=21)
 
 
+@permission_required('lendings.add_lending')
 def finalize(request, work_id, member_id):
     member = Member.objects.get(pk=member_id)
     item = Item.objects.get(pk=work_id)
     return render(request, 'finalize_lending.html',
                   {'member': member, 'item': item, "date": calc_end_date(member, item)})
 
-
+@login_required
 def me(request):
     lendings = Lending.objects.filter(member=request.user.member)
     return render(request, 'view-lending.html', {'lendings': lendings})

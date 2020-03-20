@@ -1,11 +1,9 @@
 <ul class="sidebar-menu">
 
-
-    {% if user.is_authenticated %}
-        {% if perms.works.view_work %}
             <li class="treeview"><a activeclassname="active" href="{% url 'works.list' %}"><i
                     class="fa fa-book"></i><span>Books</span></a></li>
-        {% endif %}
+    {% if user.is_authenticated %}
+
         {% if perms.members.view_member %}
             <li class="treeview"><a activeclassname="active" href="{% url 'members.list' %}"><i
                     class="fa fa-user"></i><span>Members</span></a>

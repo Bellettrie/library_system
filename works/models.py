@@ -11,6 +11,10 @@ def simple_search(search_string: str):
     return Work.objects.filter(title__contains=search_string)
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+
+
 class Work(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
@@ -67,7 +71,7 @@ class Item(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     old_id = models.IntegerField()
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
-    sticker_code = models.CharField(max_length=64)
+    signature = models.CharField(max_length=64)
     isbn = models.CharField(max_length=64)
     hidden = models.BooleanField()
     comment = models.CharField(max_length=1024, default='')
