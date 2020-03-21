@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+    Lending for member: {{ member.name }}
+    <form action="/lend/member/{{ member.pk }}" method="get">
+        <label for="Query">Query: </label>
+        <input id="q" type="text" name="q">
+        <input type="submit" value="Search">
+    </form>
+    <table>
+        {% for item in items %}
+            <tr>
+                <td><a href="{% url LENDING_FINALIZE item.pk  member.id %}">{{ item.title }}</a></td>
+                <td>{{ item.get_authors }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+{% endblock %}
+

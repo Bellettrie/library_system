@@ -5,11 +5,14 @@
     {% for work in object_list %}
         {% with data=forloop.counter|divisibleby:2|yesno:"even,odd" %}
             {% with bork=work %}
-                {% include 'work_list_item.html' %}
+{#                {% include 'work_list_item.html' %}#}
             {% endwith %}
         {% endwith %}
     {% empty %}
         <i> No results</i>
     {% endfor %}
     {% include 'pagination.html' %}
+    {% with items=object_list %}
+     {% include 'publication_table/publication_table.html' %}
+    {% endwith %}
 {% endblock %}

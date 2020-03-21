@@ -14,6 +14,7 @@ def simple_search(search_string: str):
 class ItemType(models.Model):
     name = models.CharField(max_length=255)
     old_id = models.IntegerField()
+
     def __str__(self):
         return self.name
 
@@ -65,10 +66,13 @@ class Work(models.Model):
 
 class Publication(Work):
     location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
+
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
+
     def get_items(self):
         return Item.objects.filter(publication=self)
+
     def get_lend_item(self):
         for item in self.get_items():
             if len(Lending.objects.filter(item=item)) == 0:
@@ -89,6 +93,9 @@ class Item(models.Model):
     isbn = models.CharField(max_length=64)
     hidden = models.BooleanField()
     comment = models.CharField(max_length=1024, default='')
+
+    def is_available(self):
+        return len(Lending.objects.filter(item=self, handed_in=False)) == 0
 
 
 class SubWork(Work):
@@ -115,7 +122,7 @@ class Creator(models.Model):
 
     def __str__(self):
         if self.is_alias_of != self:
-            return self.name + "<>" + self.is_alias_of.__str__()+ "::" + str(self.old_id)
+            return self.name + "<>" + self.is_alias_of.__str__() + "::" + str(self.old_id)
         else:
             return self.name + "::" + str(self.old_id)
 

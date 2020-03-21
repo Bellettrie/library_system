@@ -1,0 +1,10 @@
+{% with work=elem.publication %}
+    <div style="width:100%" class="row table_row_{{ data }}">
+        <div class="col-8 col-md-3"><a href="/works/{{ work.pk }}">
+            {% if work.title %}{{ work.title }} {{ work.sub_title }}{% else %} <i>No Title</i> {% endif %}</a></div>
+        <div class="col-4 col-md-3">
+            {% for author in work.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</div>
+        <div class="col-4 col-md-2">{% if perms.lendings.add_lending %}{% for item in elem.item_rows %}
+            {{ item.item.signature }}|{%  if item.item.is_available %}<a href="{% url "lendings.new.work"  item.item.pk %}">Lend</a>{% endif %}{% endfor %}{% endif %}</div>
+    </div>
+{% endwith %}
