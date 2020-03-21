@@ -50,7 +50,7 @@ def finalize(request, work_id, member_id):
         newlending.last_extended = datetime.now()
         newlending.handed_in = False
         newlending.save()
-        return HttpResponseRedirect('finalized_lending.html')
+        return render(request, 'finalized_lending.html')
     return render(request, 'finalize_lending.html',
                   {'member': member, 'item': item, "date": calc_end_date(member, item)})
 
