@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth.decorators import permission_required, login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from config.models import LendingSettings
@@ -52,19 +52,20 @@ def calc_end_date(member, item):
 def finalize(request, work_id, member_id):
     member = Member.objects.get(pk=member_id)
     item = Item.objects.get(pk=work_id)
-    if request.method == 'POST':
-        post_values = request.POST
-        newlending = Lending()
-        newlending.end_date = calc_end_date(member, item)
-        newlending.member = member
-        newlending.item = item
-        newlending.lended_on = datetime.now()
-        newlending.last_extended = datetime.now()
-        newlending.handed_in = False
-        newlending.save()
-        return render(request, 'finalized_lending.html')
-    return render(request, 'finalize_lending.html',
-                  {'member': member, 'item': item, "date": calc_end_date(member, item)})
+    if item.is_available:
+        if request.method == 'POST':
+            newlending = Lending()
+            newlending.end_date = calc_end_date(member, item)
+            newlending.member = member
+            newlending.item = item
+            newlending.lended_on = datetime.now()
+            newlending.last_extended = datetime.now()
+            newlending.handed_in = False
+            newlending.save()
+            return render(request, 'finalized_lending.html')
+        return render(request, 'finalize_lending.html',
+                      {'member': member, 'item': item, "date": calc_end_date(member, item)})
+    return redirect(item)
 
 
 @login_required
