@@ -4,7 +4,6 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from members.management.commands.namegen import generate_name, generate_full_name
 from members.models import Member
 
 
@@ -27,16 +26,6 @@ class Command(BaseCommand):
         data = finder.get(sub_work)
 
     def handle(self, *args, **options):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="root",
-            database="oldsystem"
-        )
-        mycursor = mydb.cursor(dictionary=True)
-
-        persons = dict()
-
         members = Member.objects.all()
         for member in members:
             member.pseudonymise()

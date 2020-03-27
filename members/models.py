@@ -55,9 +55,9 @@ class Member(models.Model):
     def pseudonymise(self):
         self.name = generate_full_name()
         self.nickname = ""
-        self.addressLineOne = generate_name() + " " + str(randint(1, 100))
-        self.addressLineTwo = generate_name()
-        self.addressLineThree = generate_name()
+        self.addressLineOne = "Hollandstraat 66"
+        self.addressLineTwo = "6666 HL Enschede"
+        self.addressLineThree = "Holland"
         self.phone = "06 666 666 13 13"
         self.email = "board@bellettrie.utwente.nl"
         self.student_number = "s123 456 789"
