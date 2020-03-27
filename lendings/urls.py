@@ -11,7 +11,7 @@ from .views import index
 urlpatterns = [
     path('', index, name=LENDING_LIST),
     path('work/<int:work_id>', views.work_based, name=LENDING_NEW_WORK),
-path('member/<int:member_id>', views.member_based, name=LENDING_NEW_MEMBER),
+    path('member/<int:member_id>', views.member_based, name=LENDING_NEW_MEMBER),
     path('finalize/<int:work_id>/<int:member_id>', views.finalize, name=LENDING_FINALIZE),
     path('me/', views.me, name=LENDING_MY_LENDINGS),
 
