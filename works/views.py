@@ -92,6 +92,7 @@ class WorkList(ListView):
         result = get_works(self.request)
         for row in result:
             row.set_item_options(["lend", "reserve"])
+            row.publication_options=["edit"]
         return result
 
 

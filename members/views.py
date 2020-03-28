@@ -21,7 +21,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required, per
 class MemberList(PermissionRequiredMixin, ListView):
     permission_required = 'members.view_member'
     model = Member
-    template_name = 'members_list.html'
+    template_name = 'member_list.html'
     paginate_by = 50
 
     def get_queryset(self):  # new
@@ -46,7 +46,7 @@ class MemberList(PermissionRequiredMixin, ListView):
 
 @permission_required('members.view_member')
 def show(request, member_id):
-    return render(request, 'members_view.html', {'member': Member.objects.get(pk=member_id)})
+    return render(request, 'member_detail.html', {'member': Member.objects.get(pk=member_id)})
 
 
 def edit(request, member_id):

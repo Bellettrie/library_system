@@ -16,7 +16,7 @@ from works.views import get_works
 @permission_required('lendings.add_lending')
 def index(request):
     lendings = Lending.objects.filter(handed_in=False).order_by('end_date')
-    return render(request, 'lending_base.html', {'lendings': lendings})
+    return render(request, 'lending_list.html', {'lendings': lendings})
 
 
 @permission_required('lendings.add_lending')
@@ -67,8 +67,8 @@ def finalize(request, work_id, member_id):
             newlending.last_extended = datetime.now()
             newlending.handed_in = False
             newlending.save()
-            return render(request, 'finalized_lending.html')
-        return render(request, 'finalize_lending.html',
+            return render(request, 'lending_finalized.html')
+        return render(request, 'lending_finalize.html',
                       {'member': member, 'item': item, "date": calc_end_date(member, item)})
     return redirect(item)
 
@@ -76,4 +76,4 @@ def finalize(request, work_id, member_id):
 @login_required
 def me(request):
     lendings = Lending.objects.filter(member=request.user.member)
-    return render(request, 'view-lending.html', {'lendings': lendings})
+    return render(request, 'lending_detail.html', {'lendings': lendings})

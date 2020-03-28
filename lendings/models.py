@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 # Create your models here.
@@ -17,6 +19,9 @@ class Lending(models.Model):
     handed_in = models.BooleanField()
     handed_in_on = models.DateField(null=True, blank=True)
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
+
+    def is_late(self):
+        return datetime.now() > self.end_date
 
 
 class Reservation(models.Model):
