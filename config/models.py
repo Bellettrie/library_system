@@ -25,6 +25,8 @@ class LendingSettings(models.Model):
     term_for_active = models.IntegerField()
     borrow_money_inactive = models.IntegerField()     # in cents
     borrow_money_active = models.IntegerField()     # in cents
+    fine_amount = models.IntegerField() # in cents
+    max_fine = models.IntegerField()  # in cents
 
     @staticmethod
     def get_term(item: Item, member: Member):
@@ -38,6 +40,16 @@ class LendingSettings(models.Model):
         except ObjectDoesNotExist:
             print("Term not found")
             return 7
+
+    @staticmethod
+    def get_fine_settings(item, member):
+        try:
+        # try something
+            ls = LendingSettings.objects.get(item_type=item.publication.location.category.item_type)
+            return ls.fine_amount, ls.max_fine
+        except ObjectDoesNotExist:
+            print("Term not found")
+            return 10000, 1000000
 
     def __str__(self):
         return self.item_type.name

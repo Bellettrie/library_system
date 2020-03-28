@@ -1,3 +1,4 @@
+import math
 from datetime import datetime
 
 from django.db import models
@@ -22,6 +23,14 @@ class Lending(models.Model):
 
     def is_late(self):
         return datetime.now() > self.end_date
+
+    def calculate_fine(self):
+        from config.models import LendingSettings
+
+        if self.end_date > datetime.date(datetime.now()):
+            return 0
+        fine_per_week, max_fine = LendingSettings.get_fine_settings(self.item, self.member)
+        return "EUR" + str(min((math.ceil((datetime.date(datetime.now()) - self.end_date).days / 7)*fine_per_week), max_fine)/100)
 
 
 class Reservation(models.Model):
