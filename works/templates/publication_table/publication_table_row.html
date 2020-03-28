@@ -4,7 +4,12 @@
             {% if publication.title %}{{ publication.title }} {{ publication.sub_title }}{% else %} <i>No Title</i> {% endif %}</a></div>
         <div class="col-4 col-md-3">
             {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</div>
+
 {% with item=item_rows.0.item %}
+
+    {% if item_rows.0.extra_info%}
+        <div>{{ item_rows.0.extra_info }}</div>
+    {% endif %}
         <div class="col-4 col-md-2"> {{ item.signature }}
         {% for option in item_rows.0.options %}
             {% include 'publication_table/buttons/button_switcher.html' %}

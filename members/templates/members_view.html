@@ -78,12 +78,6 @@
     </table>
 
     <a href="{% url 'members.edit' member.id %}">Edit</a>
-
-    {% for lending in member.lending_set.all %}
-        {% with data="odd" %}
-            {% with bork=lending.item.publication %}
-                {% include 'work_list_item.html' %}
-            {% endwith %}
-        {% endwith %}
-    {% endfor %}
+{% load books %}
+    {% get_user_books member perms %}
 {% endblock %}

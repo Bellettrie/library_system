@@ -17,12 +17,11 @@ def sort_works(work: Work):
 
 
 class ItemRow:
-    def __init__(self, item: Item, is_lendable=False, is_reserveable=False, book_result=None, options=[]):
+    def __init__(self, item: Item, book_result=None, options=[], extra_info = None):
         self.item = item
-        self.is_lendable = is_lendable
-        self.is_reserveable = is_reserveable
         self.book_result = book_result
         self.options = options
+        self.extra_info = extra_info
 
     def __str__(self):
         return self.item.signature

@@ -1,12 +1,20 @@
 {% load books_buttons %}
 {% if option == "lend" %}
-{% lend_button item perms %}
+    {% lend_button item perms %}
 {% endif %}
 
 {% if option == "reserve" %}
-{% lend_button item perms %}
+    {% lend_button item perms %}
 {% endif %}
 
 {% if option == "finalize" %}
-{% finalize_button item perms member %}
+    {% finalize_button item perms member %}
+{% endif %}
+
+{% if option == "extend" %}
+    {% extend_button item perms member %}
+{% endif %}
+
+{% if option == "return" %}
+    {% return_button item perms member %}
 {% endif %}
