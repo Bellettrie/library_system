@@ -48,9 +48,8 @@ def member_based(request, member_id):
 
 
 def calc_end_date(member, item):
-    now = datetime.now()
-    term = LendingSettings.get_term(item, member)
-    return now + timedelta(days=term)
+    now = datetime.date(datetime.now())
+    return LendingSettings.get_end_date(item, member, now)
 
 
 @permission_required('lendings.add_lending')
