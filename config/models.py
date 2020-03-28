@@ -35,10 +35,9 @@ class LendingSettings(models.Model):
                 return ls.term_for_active
             else:
                 return ls.term_for_inactive
-
-
         except ObjectDoesNotExist:
             print("Term not found")
             return 7
+
     def __str__(self):
         return self.item_type.name

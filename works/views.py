@@ -16,24 +16,31 @@ def sort_works(work: Work):
     return work.old_id
 
 
-class ItemTask:
-    def __init__(self, name, url):
-        self.name = name
-        self.url = url
-
-
 class ItemRow:
-    def __init__(self, item: Item, options: List[ItemTask]):
+    def __init__(self, item: Item, is_lendable=False, is_reserveable=False, book_result=None, options=[]):
         self.item = item
+        self.is_lendable = is_lendable
+        self.is_reserveable = is_reserveable
+        self.book_result = book_result
         self.options = options
+
     def __str__(self):
         return self.item.signature
 
 
 class BookResult:
-    def __init__(self, publication: Publication, item_rows=List[ItemRow]):
+    def __init__(self, publication: Publication, item_rows: List[ItemRow], item_options = [], publication_options = []):
         self.publication = publication
         self.item_rows = item_rows
+        self.item_options = item_options
+        self.publication_options = publication_options
+        for row in self.item_rows:
+            row.options = item_options
+            row.book_result = self
+
+    def set_item_options(self, item_options):
+        for row in self.item_rows:
+            row.options = item_options
 
 
 def get_works(request):
@@ -66,12 +73,8 @@ def get_works(request):
     for row in l:
         item_rows = []
         for item in row.item_set.all():
-
             item_rows.append(ItemRow(item, []))
-            print(item_rows[-1])
-        print(item_rows)
         result.append(BookResult(row, item_rows))
-    print(result)
     return result
 
 
@@ -87,7 +90,10 @@ class WorkList(ListView):
         return context
 
     def get_queryset(self):  # new
-        return get_works(self.request)
+        result = get_works(self.request)
+        for row in result:
+            row.set_item_options(["lend", "reserve"])
+        return result
 
 
 class WorkDetail(DetailView):

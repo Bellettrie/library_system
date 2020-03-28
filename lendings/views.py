@@ -38,9 +38,14 @@ def member_based(request, member_id):
         q = request.GET.get('q')
     items = []
     if q is not None:
-         items = get_works(request)
+        items = get_works(request)
+        for row in items:
+            row.set_item_options(["finalize"])
+
+
     return render(request, 'lending_based_on_member.html',
                   {'items': items, 'member': Member.objects.get(pk=member_id), "LENDING_FINALIZE": LENDING_FINALIZE})
+
 
 def calc_end_date(member, item):
     now = datetime.now()

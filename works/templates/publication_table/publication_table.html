@@ -1,9 +1,8 @@
-{% for elem in items %}
-
+{% load books_table %}
+{{ items }}
+{% for elem in contents %}
     {% with data=forloop.counter|divisibleby:2|yesno:"even,odd" %}
-        {% with bork=work %}
-            {#                {% include 'work_list_item.html' %}#}
-            {% include 'publication_table/publication_table_row.html' %}
-        {% endwith %}
+            {% show_row elem data perms member%}
     {% endwith %}
-    {% endfor %}
+{% endfor %}
+

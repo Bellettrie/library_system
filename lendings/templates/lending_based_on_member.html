@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load books_table %}
 {% block content %}
     Lending for member: {{ member.name }}
     <form action="/lend/member/{{ member.pk }}" method="get">
@@ -7,12 +8,7 @@
         <input type="submit" value="Search">
     </form>
     <table>
-        {% for item in items %}
-            <tr>
-                <td><a href="{% url LENDING_FINALIZE item.pk  member.id %}">{{ item.title }}</a></td>
-                <td>{{ item.get_authors }}</td>
-            </tr>
-        {% endfor %}
+        {% show_table items perms member %}
     </table>
 
 
