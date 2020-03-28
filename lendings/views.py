@@ -42,7 +42,6 @@ def member_based(request, member_id):
         for row in items:
             row.set_item_options(["finalize"])
 
-
     return render(request, 'lending_based_on_member.html',
                   {'items': items, 'member': Member.objects.get(pk=member_id), "LENDING_FINALIZE": LENDING_FINALIZE})
 
@@ -66,11 +65,28 @@ def finalize(request, work_id, member_id):
             newlending.lended_on = datetime.now()
             newlending.last_extended = datetime.now()
             newlending.handed_in = False
+            newlending.lended_by = request.user.member
             newlending.save()
             return render(request, 'lending_finalized.html')
         return render(request, 'lending_finalize.html',
                       {'member': member, 'item': item, "date": calc_end_date(member, item)})
     return redirect(item)
+
+
+@permission_required('lendings.returnbook')
+def returnbook(request, work_id):
+    item = Item.objects.get(pk=work_id)
+    lending = item.current_lending().get()
+    late_days = datetime.now().date() - lending.end_date
+    if request.method == 'POST':
+        lending.handed_in = True
+        lending.handed_in_on = datetime.now()
+        lending.handed_in_by = request.user.member
+        lending.save()
+        return redirect('/members/' + str(lending.member.pk))
+    return render(request, 'return_book.html', {'item': item, 'lending': lending,
+                                                'late': lending.end_date < datetime.now().date(),
+                                                'days_late': late_days.days })
 
 
 @login_required

@@ -97,6 +97,9 @@ class Item(models.Model):
     def is_available(self):
         return len(Lending.objects.filter(item=self, handed_in=False)) == 0
 
+    def current_lending(self):
+        return Lending.objects.filter(item=self, handed_in=False)
+
 
 class SubWork(Work):
     def is_orphaned(self):
