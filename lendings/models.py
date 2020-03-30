@@ -30,7 +30,7 @@ class Lending(models.Model):
         if self.end_date > datetime.date(datetime.now()):
             return 0
         fine_per_week, max_fine = LendingSettings.get_fine_settings(self.item, self.member)
-        return "EUR" + str(min((math.ceil((datetime.date(datetime.now()) - self.end_date).days / 7)*fine_per_week), max_fine)/100)
+        return format(min((math.ceil((datetime.date(datetime.now()) - self.end_date).days / 7)*fine_per_week), max_fine)/100, '.2f')
 
 
 class Reservation(models.Model):

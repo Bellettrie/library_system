@@ -85,7 +85,8 @@ def returnbook(request, work_id):
         return redirect('/members/' + str(lending.member.pk))
     return render(request, 'return_book.html', {'item': item, 'lending': lending,
                                                 'late': lending.end_date < datetime.now().date(),
-                                                'days_late': late_days.days })
+                                                'days_late': late_days.days,
+                                                'fine': lending.calculate_fine()})
 
 
 @login_required

@@ -3,7 +3,8 @@
 Returning work: {{ item.publication.title }} <br />
 Return date {{ lending.end_date }} <br />
 {% if late %}
-    Book is {{ days_late }} days late!
+    Book is {{ days_late }} days late! <br />
+    {{ lending.member }} needs to pay a &euro;{{ fine }} fine.
 {% endif %}
 <form action="#" method="post">
     {% csrf_token %}
