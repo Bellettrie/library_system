@@ -95,7 +95,7 @@ class Item(models.Model):
     comment = models.CharField(max_length=1024, default='')
 
     def is_available(self):
-        return len(Lending.objects.filter(item=self, handed_in=False)) == 0
+        return Lending.objects.filter(item=self, handed_in=False).count() == 0
 
     def current_lending(self):
         return Lending.objects.filter(item=self, handed_in=False)

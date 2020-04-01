@@ -68,7 +68,6 @@ class LendingSettings(models.Model):
             total_days = total_days + 1
             is_holiday_day = False
             now_date = start_date + timedelta(days=total_days)
-            print(now_date)
             if len(holidays) > 0:
                 while holidays[0].ending_date < now_date:
                     holidays = holidays[1:]

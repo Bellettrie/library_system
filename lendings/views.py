@@ -55,7 +55,7 @@ def calc_end_date(member, item):
 def finalize(request, work_id, member_id):
     member = Member.objects.get(pk=member_id)
     item = Item.objects.get(pk=work_id)
-    if item.is_available:
+    if item.is_available():
         if request.method == 'POST':
             newlending = Lending()
             newlending.end_date = calc_end_date(member, item)
@@ -69,13 +69,13 @@ def finalize(request, work_id, member_id):
             return render(request, 'lending_finalized.html')
         return render(request, 'lending_finalize.html',
                       {'member': member, 'item': item, "date": calc_end_date(member, item)})
-    return redirect(item)
+    return redirect('/members/' + str(member_id))
 
 
 @permission_required('lendings.returnbook')
 def returnbook(request, work_id):
     item = Item.objects.get(pk=work_id)
-    lending = item.current_lending().get()
+    lending = item.current_lending().first()
     late_days = datetime.now().date() - lending.end_date
     if request.method == 'POST':
         lending.handed_in = True
