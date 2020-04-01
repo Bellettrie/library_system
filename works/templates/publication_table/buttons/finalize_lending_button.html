@@ -1,1 +1,3 @@
-<a href="{% url "lendings.finalize" item.pk member.pk %}">Finalize</a>
+{% if perms.lendings.add_lending %}
+    <a href="{% url "lendings.finalize" item.pk member.pk %}">Finalize</a>
+{% endif %}
