@@ -4,11 +4,29 @@ from django.db import models
 from django.db.models import PROTECT
 
 from lendings.models import Lending
-from series.models import WorkInSeries
 
 
 def simple_search(search_string: str):
     return Work.objects.filter(title__contains=search_string)
+
+
+class NamedThing(models.Model):
+    class Meta:
+        abstract = True
+
+    language = models.CharField(max_length=64)
+    title = models.CharField(max_length=255)
+    sub_title = models.CharField(max_length=255)
+    is_translated = models.BooleanField()
+
+
+class NamedTranslatableThing(NamedThing):
+    class Meta:
+        abstract = True
+
+    original_language = models.CharField(max_length=64, null=True, blank=True)
+    original_title = models.CharField(max_length=255, null=True, blank=True)
+    original_subtitle = models.CharField(max_length=255, null=True, blank=True)
 
 
 class ItemType(models.Model):
@@ -31,15 +49,9 @@ class Location(models.Model):
     old_id = models.IntegerField()
 
 
-class Work(models.Model):
-    title = models.CharField(max_length=255)
-    sub_title = models.CharField(max_length=255)
-    is_translated = models.BooleanField()
-    original_title = models.CharField(max_length=255, null=True, blank=True)
-    original_subtitle = models.CharField(max_length=255, null=True, blank=True)
-    original_language = models.CharField(max_length=64, null=True, blank=True)
-    language = models.CharField(max_length=64)
+class Work(NamedThing):
     date_added = models.DateField()
+    sorting = models.CharField(max_length=64, default='TITLE', choices=[("AUTHOR", 'Author'), ("TITLE", "Title")])
     comment = models.CharField(max_length=1024)
     internal_comment = models.CharField(max_length=1024)
     signature_fragment = models.CharField(max_length=64)
@@ -47,6 +59,8 @@ class Work(models.Model):
     hidden = models.BooleanField()
 
     def get_authors(self):
+        from series.models import WorkInSeries
+
         links = CreatorToWork.objects.filter(work=self)
         authors = []
         for link in links:
@@ -65,7 +79,6 @@ class Work(models.Model):
 
 
 class Publication(Work):
-    location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
 
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
@@ -85,14 +98,20 @@ class Publication(Work):
             return "Lended out"
 
 
-class Item(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
+class Item(NamedThing):
     old_id = models.IntegerField()
+    location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
     signature = models.CharField(max_length=64)
-    isbn = models.CharField(max_length=64)
+    signature_extension = models.CharField(max_length=64)  # For getting a second copy of the same publication
+    isbn10 = models.CharField(max_length=64)
+    isbn13 = models.CharField(max_length=64)
+    pages = models.IntegerField()
     hidden = models.BooleanField()
-    comment = models.CharField(max_length=1024, default='')
+    comment = models.TextField()
+    publication_year = models.IntegerField()
+    bought_date = models.DateField()
+    last_seen = models.DateField()
 
     def is_available(self):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0
