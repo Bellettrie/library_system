@@ -43,5 +43,5 @@ class Command(BaseCommand):
             for item in z:
                 if x.get("locatienummer") == 0:
                     print(x)
-                item.publication.location = Location.objects.get(old_id=x.get("locatienummer"))
-                item.publication.save()
+                item.location = Location.objects.get(old_id=x.get("locatienummer"))
+                item.save()

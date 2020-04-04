@@ -145,4 +145,10 @@ class Command(BaseCommand):
                 print(banden.keys())
             else:
                 data = finder[k.old_id]
-                Item.objects.create(old_id=k.old_id, signature=band.get("signatuur"), publication=k, hidden=False)
+                s = data.get("sortering")
+                if s == "titel":
+                    k.sorting = "TITLE"
+                else:
+                    k.sorting = "AUTHOR"
+                k.save()
+                Item.objects.create(old_id=k.old_id, signature=band.get("signatuur"), publication=k, hidden=False, isbn10=data.get("isbn10"), isbn13=data.get("isbn13"))
