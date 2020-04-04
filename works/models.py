@@ -1,3 +1,6 @@
+from datetime import datetime
+
+import django
 from django.db import models
 
 # Create your models here.
@@ -13,20 +16,25 @@ def simple_search(search_string: str):
 class NamedThing(models.Model):
     class Meta:
         abstract = True
-
     language = models.CharField(max_length=64)
-    title = models.CharField(max_length=255)
-    sub_title = models.CharField(max_length=255)
+    article = models.CharField(max_length=64, null=True, blank=True)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    sub_title = models.CharField(max_length=255, null=True, blank=True)
     is_translated = models.BooleanField()
 
 
-class NamedTranslatableThing(NamedThing):
+class TranslatedThing(models.Model):
     class Meta:
         abstract = True
-
     original_language = models.CharField(max_length=64, null=True, blank=True)
+    original_article = models.CharField(max_length=64, null=True, blank=True)
     original_title = models.CharField(max_length=255, null=True, blank=True)
     original_subtitle = models.CharField(max_length=255, null=True, blank=True)
+
+
+class NamedTranslatableThing(NamedThing, TranslatedThing):
+    class Meta:
+        abstract = True
 
 
 class ItemType(models.Model):
@@ -49,7 +57,7 @@ class Location(models.Model):
     old_id = models.IntegerField()
 
 
-class Work(NamedThing):
+class Work(NamedTranslatableThing):
     date_added = models.DateField()
     sorting = models.CharField(max_length=64, default='TITLE', choices=[("AUTHOR", 'Author'), ("TITLE", "Title")])
     comment = models.CharField(max_length=1024)
@@ -111,6 +119,7 @@ class Item(NamedThing):
     comment = models.TextField()
     publication_year = models.IntegerField()
     bought_date = models.DateField()
+    added_on = models.DateField(default="django.utils.timezone.now")
     last_seen = models.DateField()
 
     def is_available(self):
@@ -120,7 +129,7 @@ class Item(NamedThing):
         return Lending.objects.filter(item=self, handed_in=False)
 
 
-class SubWork(Work):
+class SubWork(Work, TranslatedThing):
     def is_orphaned(self):
         return len(self.workinpublication_set) == 0
 

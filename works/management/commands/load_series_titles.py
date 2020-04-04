@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 from bellettrie_library_system.settings import OLD_DB
 from series.models import Series, WorkInSeries, SeriesNode
+from works.management.commands.load_works_from_db import fill_name
 from works.models import Work, WorkInPublication, Publication, SubWork, Item
 
 
@@ -18,7 +19,7 @@ class Command(BaseCommand):
         data = finder.get(node)
 
         series = Series.objects.get(old_id=node)
-        series.title = data.get("titel")
+        fill_name(series, data)
         series.save()
         return
 
