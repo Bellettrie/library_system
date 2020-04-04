@@ -1,3 +1,5 @@
+rm db.sqlite3
+python manage.py migrate
 python manage.py load_works_from_db
 python manage.py load_authors_from_db
 python manage.py load_authors_matched_to_works

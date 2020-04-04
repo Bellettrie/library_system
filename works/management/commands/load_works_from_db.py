@@ -68,11 +68,11 @@ class Command(BaseCommand):
             super_series = Series.objects.get(old_id=data.get("reeks_publicatienummer"))
             Series.objects.create(part_of_series=super_series, number=int(data.get("reeks_deelnummer")),
                                   display_number=data.get(
-                                      "reeks_deelaanduiding"), old_id=node)
+                                      "reeks_deelaanduiding"), old_id=node, is_translated=False, language=data.get('taal'))
         else:
             Series.objects.create(number=int(data.get("reeks_deelnummer")),
                                   display_number=data.get(
-                                      "reeks_deelaanduiding"), old_id=node)
+                                      "reeks_deelaanduiding"), old_id=node, is_translated=False, language=data.get('taal'))
 
         handled_list.append(node)
 
@@ -151,4 +151,5 @@ class Command(BaseCommand):
                 else:
                     k.sorting = "AUTHOR"
                 k.save()
-                Item.objects.create(old_id=k.old_id, signature=band.get("signatuur"), publication=k, hidden=False, isbn10=data.get("isbn10"), isbn13=data.get("isbn13"))
+                Item.objects.create(old_id=k.old_id, signature=band.get("signatuur"), publication=k, hidden=False,
+                                    isbn10=data.get("isbn10"), isbn13=data.get("isbn13"), bought_date=data.get('inkoopdatum'),last_seen=data.get('laatst_gezien'), pages=data.get('pagina'))

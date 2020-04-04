@@ -6,14 +6,14 @@ from django.db.models import PROTECT
 from works.models import NamedTranslatableThing
 
 
-class SeriesNode(NamedTranslatableThing):
+class SeriesNode(models.Model):
     part_of_series = models.ForeignKey("Series", on_delete=PROTECT, related_name="part", null=True, blank=True)
     number = models.IntegerField()
     display_number = models.CharField(max_length=255)
     old_id = models.IntegerField()
 
 
-class Series(SeriesNode):
+class Series(SeriesNode, NamedTranslatableThing):
     def get_authors(self):
         authors = []
         for author in CreatorToSeries.objects.filter(series=self):
