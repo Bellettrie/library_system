@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content%}
-Lending for work: {{ item.publication.title }} <br />
+Lending for work: {{ item.get_title }} <br />
 Lending for member: {{  member.name }} <br />
 End date {{ date }}
 ZZ {{ d_type }}

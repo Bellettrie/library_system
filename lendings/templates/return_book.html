@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content%}
-Returning work: {{ item.publication.title }} <br />
+Returning work: {{ item.get_title }} <br />
 Return date {{ lending.end_date }} <br />
 {% if late %}
     Book is {{ days_late }} days late! <br />

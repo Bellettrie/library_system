@@ -128,6 +128,30 @@ class Item(NamedThing):
     def current_lending(self):
         return Lending.objects.filter(item=self, handed_in=False)
 
+    def get_title(self):
+        return self.title or self.publication.title
+
+    def get_article(self):
+        return self.article or self.publication.article
+
+    def get_sub_title(self):
+        return self.sub_title or self.publication.sub_title
+
+    def get_language(self):
+        return self.language or self.publication.language
+
+    def get_original_title(self):
+        return self.publication.original_title
+
+    def get_original_sub_title(self):
+        return self.publication.original_subtitle
+
+    def get_original_article(self):
+        return self.publication.original_article
+
+    def get_original_language(self):
+        return self.publication.original_language
+
 
 class SubWork(Work, TranslatedThing):
     def is_orphaned(self):

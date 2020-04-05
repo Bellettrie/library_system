@@ -3,7 +3,7 @@
 {% block content %}
     <table>
     {% for lending in lendings %}
-        <tr><td>Item</td><td>{{ lending.item.publication.title }}</td></tr>
+        <tr><td>Item</td><td>{{ lending.item.get_title }}</td></tr>
         {% empty %}
     {% endfor %}
     </table>
