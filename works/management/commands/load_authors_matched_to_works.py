@@ -60,4 +60,4 @@ class Command(BaseCommand):
                         role = links.get(x.get("rol"))
                         CreatorToSeries.objects.get_or_create(series=w, creator=a, role=role)
                     else:
-                        print(x.get("publicatienummer"))
+                        print("Z"+str(x.get("publicatienummer")))

@@ -8,3 +8,4 @@ python manage.py load_members_from_db
 python manage.py pseudonymise
 python manage.py load_lendings_from_db
 python manage.py load_categories
+python manage.py add_committees

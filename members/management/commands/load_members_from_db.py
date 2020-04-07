@@ -57,7 +57,10 @@ class Command(BaseCommand):
                     membership_type_old=x.get("herkomst"),
                     end_date=x.get("einde"),
                     old_customer_type=x.get("lidsoort"),
-                    old_id=x.get("klantnummer")
+                    old_id=x.get("klantnummer"),
+                    privacy_activities=x.get('activiteiten') or False,
+                    privacy_publications=x.get('publiceren') or False,
+                    privacy_reunions=x.get('reunie') or False
                 )
 
         if len(Member.objects.filter(is_anonymous_user=True)) == 0:

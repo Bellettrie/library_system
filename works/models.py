@@ -16,16 +16,17 @@ def simple_search(search_string: str):
 class NamedThing(models.Model):
     class Meta:
         abstract = True
+
     language = models.CharField(max_length=64)
     article = models.CharField(max_length=64, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     sub_title = models.CharField(max_length=255, null=True, blank=True)
-    is_translated = models.BooleanField()
 
 
 class TranslatedThing(models.Model):
     class Meta:
         abstract = True
+
     original_language = models.CharField(max_length=64, null=True, blank=True)
     original_article = models.CharField(max_length=64, null=True, blank=True)
     original_title = models.CharField(max_length=255, null=True, blank=True)
@@ -33,6 +34,8 @@ class TranslatedThing(models.Model):
 
 
 class NamedTranslatableThing(NamedThing, TranslatedThing):
+    is_translated = models.BooleanField()
+
     class Meta:
         abstract = True
 
@@ -112,15 +115,15 @@ class Item(NamedThing):
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
     signature = models.CharField(max_length=64)
     signature_extension = models.CharField(max_length=64)  # For getting a second copy of the same publication
-    isbn10 = models.CharField(max_length=64)
-    isbn13 = models.CharField(max_length=64)
-    pages = models.IntegerField()
+    isbn10 = models.CharField(max_length=64, null=True, blank=True)
+    isbn13 = models.CharField(max_length=64, null=True, blank=True)
+    pages = models.IntegerField(null=True, blank=True)
     hidden = models.BooleanField()
-    comment = models.TextField()
-    publication_year = models.IntegerField()
-    bought_date = models.DateField()
-    added_on = models.DateField(default="django.utils.timezone.now")
-    last_seen = models.DateField()
+    comment = models.TextField(default='')
+    publication_year = models.IntegerField(null=True, blank=True)
+    bought_date = models.DateField(default="1900-01-01")
+    added_on = models.DateField(auto_now_add=True)
+    last_seen = models.DateField(null=True, blank=True)
 
     def is_available(self):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0

@@ -37,7 +37,12 @@ class Member(models.Model):
     is_anonymous_user = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True, on_delete=CASCADE)
-    committees = models.ManyToManyField(Committee)
+    committees = models.ManyToManyField(Committee, blank=True)
+
+    privacy_activities = models.BooleanField(default=False)
+    privacy_publications = models.BooleanField(default=False)
+    privacy_reunions = models.BooleanField(default=False)
+    privacy_reunion_end_date = models.DateField(auto_now=True)
 
     def is_active(self):
         for committee in self.committees.all():
@@ -47,7 +52,6 @@ class Member(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-
 
     def __str__(self):
         return self.name
