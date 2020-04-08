@@ -43,7 +43,7 @@
     <nav id="sidebar">
 
         <div class="sidebar-header">
-       {% if not user.is_anonymous %} [{{ user.member.name }}] {% endif %}
+       {% if not user.is_anonymous %} <a href="{% url 'members.view' user.member.id %}">{{user.member.name}}</a> {% endif %}
         </div>
 
         {% include 'nav.html' %}

@@ -66,10 +66,38 @@ def finalize(request, work_id, member_id):
             newlending.handed_in = False
             newlending.lended_by = request.user.member
             newlending.save()
-            return render(request, 'lending_finalized.html')
+            return render(request, 'lending_finalized.html',
+                          {'member': member, 'item': item, "date": calc_end_date(member, item)})
         return render(request, 'lending_finalize.html',
                       {'member': member, 'item': item, "date": calc_end_date(member, item)})
     return redirect('/members/' + str(member_id))
+
+
+@permission_required('lendings.extend')
+def extend(request, work_id):
+    item = Item.objects.get(pk=work_id)
+    lending = item.current_lending().first()
+    late_days = datetime.now().date() - lending.end_date
+    if lending.is_extendable(request.user.has_perm('lendings.getfine')):
+        if (request.method == 'POST'):
+            lending.end_date = calc_end_date(lending.member, item)
+            lending.last_extended = datetime.now()
+            lending.times_extended = lending.times_extended + 1
+            lending.save()
+            return render(request, 'lending_finalized.html',
+                          {'member': lending.member,
+                           'item': item,
+                           "date": calc_end_date(lending.member, item)
+                           })
+        return render(request, 'lending_extend.html',
+                      {'member': lending.member,
+                       'item': item,
+                       "date": calc_end_date(lending.member, item),
+                       'late': lending.end_date < datetime.now().date(),
+                       'days_late': late_days.days,
+                       'fine': lending.calculate_fine()
+                       })
+    return redirect('/members/' + str(lending.member.pk))
 
 
 @permission_required('lendings.returnbook')

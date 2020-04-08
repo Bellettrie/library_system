@@ -21,6 +21,9 @@ class Lending(models.Model):
     handed_in_on = models.DateField(null=True, blank=True)
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
 
+    def is_extendable(self, getfine):
+        return (datetime.now().date() <= self.end_date) | getfine
+
     def is_late(self):
         return datetime.now() > self.end_date
 

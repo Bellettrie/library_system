@@ -2,7 +2,7 @@ from django.urls import path
 
 from bellettrie_library_system.permissions import simple_path, PERM_ALL
 from lendings.permissions import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, LENDING_FINALIZE, \
-    LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK
+    LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK, LENDING_EXTEND
 
 from members.views import MemberList
 from . import views
@@ -13,6 +13,7 @@ urlpatterns = [
     path('work/<int:work_id>', views.work_based, name=LENDING_NEW_WORK),
     path('member/<int:member_id>', views.member_based, name=LENDING_NEW_MEMBER),
     path('finalize/<int:work_id>/<int:member_id>', views.finalize, name=LENDING_FINALIZE),
+    path('extend/<int:work_id>', views.extend, name=LENDING_EXTEND),
     path('return/<int:work_id>', views.returnbook, name=LENDING_RETURNBOOK),
     path('me/', views.me, name=LENDING_MY_LENDINGS),
 

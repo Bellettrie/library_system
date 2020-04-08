@@ -1,3 +1,4 @@
 {% extends 'base.html' %}
-{%block content %}Superjoepie!
+{%block content %}Lended!
+<a href="{% url 'members.view' member.id %}">{{member.name}}</a> may keep {{ item.publication.title }} until: {{ date }}
 {% endblock %}
