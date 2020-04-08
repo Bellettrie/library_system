@@ -10,6 +10,8 @@ from members.models import Member
 
 
 class Lending(models.Model):
+    class Meta:
+        permissions = [('extend', 'Can extend lending'), ('extend_with_fine', 'Extend book even though it has a fine'), ('return', 'Return book')]
     member = models.ForeignKey(Member, on_delete=PROTECT)
     item = models.ForeignKey("works.Item", on_delete=PROTECT)
     lended_on = models.DateField()

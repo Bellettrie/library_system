@@ -78,7 +78,7 @@ def extend(request, work_id):
     item = Item.objects.get(pk=work_id)
     lending = item.current_lending().first()
     late_days = datetime.now().date() - lending.end_date
-    if lending.is_extendable(request.user.has_perm('lendings.getfine')):
+    if lending.is_extendable(request.user.has_perm('lendings.extend_with_fine')):
         if (request.method == 'POST'):
             lending.end_date = calc_end_date(lending.member, item)
             lending.last_extended = datetime.now()
@@ -100,7 +100,7 @@ def extend(request, work_id):
     return redirect('/members/' + str(lending.member.pk))
 
 
-@permission_required('lendings.returnbook')
+@permission_required('lendings.return')
 def returnbook(request, work_id):
     item = Item.objects.get(pk=work_id)
     lending = item.current_lending().first()

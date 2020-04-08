@@ -12,6 +12,7 @@ class HolidayList(ListView):
     template_name = 'holiday_list.html'
     model = Holiday
     pagination_class = LazyPaginator
+
     def get_queryset(self):  # new
         return Holiday.objects.all().order_by('-ending_date')
 
