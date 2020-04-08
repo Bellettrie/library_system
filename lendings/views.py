@@ -78,8 +78,8 @@ def extend(request, work_id):
     item = Item.objects.get(pk=work_id)
     lending = item.current_lending().first()
     late_days = datetime.now().date() - lending.end_date
-    if lending.is_extendable():
-        if request.method == 'POST':
+    if lending.is_extendable(request.user.has_perm('lendings.getfine')):
+        if (request.method == 'POST'):
             lending.end_date = calc_end_date(lending.member, item)
             lending.last_extended = datetime.now()
             lending.times_extended = lending.times_extended + 1
