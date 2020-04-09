@@ -15,16 +15,6 @@ from works.models import Work, WorkInPublication, Publication, SubWork, Creator
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
-    @staticmethod
-    def get_rights(committee):
-        if committee == KASCO:
-            return [""]
-        if committee == LENDERS:
-            return [] + all_rights("members", "member") + \
-                   all_rights("lendings", "lending") + \
-                   view_rights("works", "work") + \
-                   view_rights("works", "series")
-
     def handle(self, *args, **options):
         committees = [(KASCO, "Kascommittee", True),
                       (BOARD, "Board", True),

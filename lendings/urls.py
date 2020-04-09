@@ -1,10 +1,8 @@
 from django.urls import path
 
-from bellettrie_library_system.permissions import simple_path, PERM_ALL
 from lendings.permissions import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, LENDING_FINALIZE, \
     LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK, LENDING_EXTEND
 
-from members.views import MemberList
 from . import views
 from .views import index
 
