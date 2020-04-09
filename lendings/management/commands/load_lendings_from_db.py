@@ -21,14 +21,6 @@ def get_name(x):
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
-    @staticmethod
-    def handle_author(publication, tree, finder):
-        data = finder.get(publication)
-
-    @staticmethod
-    def handle_matching(sub_work, tree, finder):
-        data = finder.get(sub_work)
-
     def handle(self, *args, **options):
         mydb = mysql.connector.connect(
             host="localhost",
@@ -40,10 +32,9 @@ class Command(BaseCommand):
 
         mycursor.execute("SELECT * FROM uitlening")
         Lending.objects.all().delete()
-        count = 0
         for x in mycursor:
             member = Member.objects.get(old_id=x.get("klantnummer"))
-            if len(Item.objects.filter(old_id=x.get("publicatienummer")))> 0:
+            if len(Item.objects.filter(old_id=x.get("publicatienummer"))) > 0:
                 item = Item.objects.get(old_id=x.get("publicatienummer"))
                 handed_in = x.get("ingenomen_op")
                 handed_in_by = Member.objects.filter(old_id=x.get("ingenomen_door")).first()

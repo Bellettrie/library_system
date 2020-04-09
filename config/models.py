@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-from django.contrib.admin import register
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 

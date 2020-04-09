@@ -50,8 +50,10 @@ class Command(BaseCommand):
                        signature_fragment=data.get("signatuurfragment"),
                        old_id=sub_work)
         fill_data(work, data)
-        WorkInPublication.objects.create(work=work, publication=Publication.objects.get(
-            old_id=tree.get(sub_work)), number_in_publication=int(data.get("reeks_deelnummer")),
+        pub = Publication.objects.get(old_id=tree.get(sub_work))
+        WorkInPublication.objects.create(work=work,
+                                         publication=pub,
+                                         number_in_publication=int(data.get("reeks_deelnummer")),
                                          display_number_in_publication=data.get("reeks_deelaanduiding"))
 
     @staticmethod

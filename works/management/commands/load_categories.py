@@ -18,8 +18,6 @@ class Command(BaseCommand):
         )
         mycursor = mydb.cursor(dictionary=True)
 
-        tree = dict()
-        finder = dict()
         mycursor.execute("SELECT * FROM locatie where zichtbaar = 1")
 
         t1, new = ItemType.objects.get_or_create(name="Book", old_id=1)

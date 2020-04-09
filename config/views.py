@@ -1,5 +1,4 @@
-from django.contrib.auth.decorators import permission_required
-from django.shortcuts import render
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 # Create your views here.
 from django.urls import reverse_lazy
@@ -8,7 +7,8 @@ from django_tables2 import LazyPaginator
 
 from config.models import Holiday
 
-class HolidayList(ListView):
+
+class HolidayList(PermissionRequiredMixin, ListView):
     permission_required = 'config.view_holiday'
     template_name = 'holiday_list.html'
     model = Holiday
@@ -18,28 +18,28 @@ class HolidayList(ListView):
         return Holiday.objects.all().order_by('-ending_date')
 
 
-class HolidayCreate(CreateView):
+class HolidayCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'config.add_holiday'
     model = Holiday
     fields = ['name', 'starting_date', 'ending_date']
     template_name = 'holiday_form.html'
 
 
-class HolidayUpdate(UpdateView):
+class HolidayUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'config.change_holiday'
     model = Holiday
     fields = ['name', 'starting_date', 'ending_date']
     template_name = 'holiday_form.html'
 
 
-class HolidayDelete(DeleteView):
+class HolidayDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'config.delete_holiday'
     model = Holiday
     template_name = 'holiday_confirm_delete.html'
     success_url = reverse_lazy('holiday.view')
 
 
-class HolidayDetail(DetailView):
+class HolidayDetail(PermissionRequiredMixin, DetailView):
     permission_required = 'config.view_holiday'
     template_name = 'holiday_detail.html'
     model = Holiday

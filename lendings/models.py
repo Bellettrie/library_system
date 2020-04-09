@@ -11,7 +11,10 @@ from members.models import Member
 
 class Lending(models.Model):
     class Meta:
-        permissions = [('extend', 'Can extend lending'), ('extend_with_fine', 'Extend book even though it has a fine'), ('return', 'Return book')]
+        permissions = [('extend', 'Can extend lending'),
+                       ('extend_with_fine', 'Extend book even though it has a fine'),
+                       ('return', 'Return book')]
+
     member = models.ForeignKey(Member, on_delete=PROTECT)
     item = models.ForeignKey("works.Item", on_delete=PROTECT)
     lended_on = models.DateField()
@@ -35,7 +38,9 @@ class Lending(models.Model):
         if self.end_date > datetime.date(datetime.now()):
             return 0
         fine_per_week, max_fine = LendingSettings.get_fine_settings(self.item, self.member)
-        return format(min((math.ceil((datetime.date(datetime.now()) - self.end_date).days / 7)*fine_per_week), max_fine)/100, '.2f')
+        return format(
+            min((math.ceil((datetime.date(datetime.now()) - self.end_date).days / 7) * fine_per_week), max_fine) / 100,
+            '.2f')
 
 
 class Reservation(models.Model):

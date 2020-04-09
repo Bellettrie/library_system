@@ -2,6 +2,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
+
 def get_name(x):
     vn = x.get("voornaam")
     if len(vn) == 0:
@@ -20,8 +21,6 @@ class Command(BaseCommand):
             database="oldsystem2"
         )
         mycursor = mydb.cursor(dictionary=True)
-
-        persons = dict()
 
         mycursor.execute("SELECT * FROM band where signatuur like '%H-88-l%'")
         for x in mycursor:

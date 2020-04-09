@@ -53,14 +53,15 @@ def get_works(request):
         series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors) | Q(title__icontains=word)))
 
         subworks = set(SubWork.objects.filter(
-            Q(creatortowork__creator__in=authors) |
-            Q(title__icontains=word) |
-            Q(workinseries__part_of_series__in=series)))
+            Q(creatortowork__creator__in=authors)
+            | Q(title__icontains=word)
+            | Q(workinseries__part_of_series__in=series)))
 
         word_set = set(Publication.objects.filter(
-            Q(creatortowork__creator__in=authors) |
-            Q(title__icontains=word) |
-            Q(workinseries__part_of_series__in=series) | Q(workinpublication__work__in=subworks)))
+            Q(creatortowork__creator__in=authors)
+            | Q(title__icontains=word)
+            | Q(workinseries__part_of_series__in=series)
+            | Q(workinpublication__work__in=subworks)))
 
         if result_set is None:
             result_set = word_set
