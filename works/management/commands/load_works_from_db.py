@@ -61,7 +61,6 @@ class Command(BaseCommand):
         if node in handled:
             return []
         data = finder.get(node)
-        tt = data.get("type")
         handled_list = []
         nr = finder.get(node).get("reeks_publicatienummer")
         if nr > 0:
