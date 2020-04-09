@@ -1,4 +1,3 @@
-from bellettrie_library_system.permissions import authorize, simple_path
 from django.urls import path
 
 from members.permissions import MEMBERS_LIST, MEMBERS_NEW, MEMBERS_VIEW, MEMBERS_EDIT
