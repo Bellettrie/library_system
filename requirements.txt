@@ -1,6 +1,4 @@
 django
-mysql
-mysql-connector
 namegenerator
 names
 django-tables2
