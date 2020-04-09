@@ -35,7 +35,7 @@ class LendingSettings(models.Model):
     def get_term(item: Item, member: Member):
         try:
             # try something
-            ls = LendingSettings.objects.get(item_type=item.publication.location.category.item_type)
+            ls = LendingSettings.objects.get(item_type=item.location.category.item_type)
             if member.is_active():
                 return ls.term_for_active
             else:
@@ -48,7 +48,7 @@ class LendingSettings(models.Model):
     def get_handin_days(item: Item, member: Member):
         try:
             # try something
-            ls = LendingSettings.objects.get(item_type=item.publication.location.category.item_type)
+            ls = LendingSettings.objects.get(item_type=item.location.category.item_type)
             return ls.hand_in_days
         except ObjectDoesNotExist:
             print("Term not found")
@@ -83,7 +83,7 @@ class LendingSettings(models.Model):
     def get_fine_settings(item, member):
         try:
             # try something
-            ls = LendingSettings.objects.get(item_type=item.publication.location.category.item_type)
+            ls = LendingSettings.objects.get(item_type=item.location.category.item_type)
             return ls.fine_amount, ls.max_fine
         except ObjectDoesNotExist:
             print("Term not found")
