@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from config.models import LendingSettings
 from lendings.models import Lending
-from lendings.permissions import LENDING_FINALIZE
+from lendings.path_names import LENDING_FINALIZE
 from members.models import Member
 from works.models import Work, Item
 from works.views import get_works

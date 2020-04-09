@@ -2,11 +2,11 @@ import datetime
 
 import mysql.connector
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB
-from series.models import Series, WorkInSeries, SeriesNode
-from works.models import Work, WorkInPublication, Publication, SubWork, Item, NamedThing, NamedTranslatableThing
+from series.models import Series, WorkInSeries
+from works.models import Work, WorkInPublication, Publication, SubWork, Item, NamedTranslatableThing
 
 
 def fill_name(thing: NamedTranslatableThing, data):
@@ -50,8 +50,10 @@ class Command(BaseCommand):
                        signature_fragment=data.get("signatuurfragment"),
                        old_id=sub_work)
         fill_data(work, data)
-        WorkInPublication.objects.create(work=work, publication=Publication.objects.get(
-            old_id=tree.get(sub_work)), number_in_publication=int(data.get("reeks_deelnummer")),
+        pub = Publication.objects.get(old_id=tree.get(sub_work))
+        WorkInPublication.objects.create(work=work,
+                                         publication=pub,
+                                         number_in_publication=int(data.get("reeks_deelnummer")),
                                          display_number_in_publication=data.get("reeks_deelaanduiding"))
 
     @staticmethod
@@ -59,7 +61,6 @@ class Command(BaseCommand):
         if node in handled:
             return []
         data = finder.get(node)
-        tt = data.get("type")
         handled_list = []
         nr = finder.get(node).get("reeks_publicatienummer")
         if nr > 0:

@@ -1,12 +1,9 @@
-import datetime
-
 import mysql.connector
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB
-from series.models import Series, WorkInSeries, SeriesNode
-from works.models import Work, WorkInPublication, Publication, SubWork, Item, Category, ItemType, Location
+from works.models import Item, Category, ItemType, Location
 
 
 class Command(BaseCommand):
@@ -21,8 +18,6 @@ class Command(BaseCommand):
         )
         mycursor = mydb.cursor(dictionary=True)
 
-        tree = dict()
-        finder = dict()
         mycursor.execute("SELECT * FROM locatie where zichtbaar = 1")
 
         t1, new = ItemType.objects.get_or_create(name="Book", old_id=1)

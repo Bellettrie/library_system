@@ -1,5 +1,3 @@
-
-
 LENDING_LIST = 'lendings.list'
 LENDING_VIEW = 'lendings.view'
 LENDING_NEW_WORK = 'lendings.new.work'
@@ -10,6 +8,3 @@ LENDING_RETURNBOOK = 'lendings.returnbook'
 LENDING_GET_FINE = 'lendings.getfine'
 LENDING_EXTEND = 'lendings.extend'
 LENDING_MY_LENDINGS = 'lendings.me'
-
-
-

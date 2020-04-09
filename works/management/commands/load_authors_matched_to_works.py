@@ -1,12 +1,10 @@
-import datetime
-
 import mysql.connector
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB
-from series.models import Series, WorkInSeries, SeriesNode, CreatorToSeries
-from works.models import Work, WorkInPublication, Publication, SubWork, Creator, CreatorRole, CreatorToWork
+from series.models import Series, CreatorToSeries
+from works.models import Work, Creator, CreatorRole, CreatorToWork
 
 
 def get_name(x):
@@ -18,14 +16,6 @@ def get_name(x):
 
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
-
-    @staticmethod
-    def handle_author(publication, tree, finder):
-        data = finder.get(publication)
-
-    @staticmethod
-    def handle_matching(sub_work, tree, finder):
-        data = finder.get(sub_work)
 
     def handle(self, *args, **options):
         mydb = mysql.connector.connect(
@@ -45,9 +35,8 @@ class Command(BaseCommand):
             links[x.get("rol")] = creator_role
             list.append(x)
 
-
         for x in list:
-            if len(Creator.objects.filter(old_id=x.get("persoonnummer")))> 0:
+            if len(Creator.objects.filter(old_id=x.get("persoonnummer"))) > 0:
                 a = Creator.objects.get(old_id=x.get("persoonnummer"))
                 if len(Work.objects.filter(old_id=x.get("publicatienummer"))) > 0:
                     w = Work.objects.get(old_id=x.get("publicatienummer"))
@@ -60,4 +49,4 @@ class Command(BaseCommand):
                         role = links.get(x.get("rol"))
                         CreatorToSeries.objects.get_or_create(series=w, creator=a, role=role)
                     else:
-                        print("Z"+str(x.get("publicatienummer")))
+                        print("Z" + str(x.get("publicatienummer")))

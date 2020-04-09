@@ -4,3 +4,4 @@ mysql-connector
 namegenerator
 names
 django-tables2
+flake8

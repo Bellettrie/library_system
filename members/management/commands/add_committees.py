@@ -1,15 +1,9 @@
-import datetime
+from django.contrib.auth.models import Group
 
-import mysql.connector
-from django.contrib.auth.models import Group, Permission
+from django.core.management.base import BaseCommand
 
-from django.core.management.base import BaseCommand, CommandError
-
-from bellettrie_library_system.settings import OLD_DB
-from members.models import Member, Committee
+from members.models import Committee
 from members.permissions import KASCO, BOARD, ADMIN, COMCO, BOOKBUYERS, KICKIN, LENDERS, BOOKS
-from series.models import Series, WorkInSeries, SeriesNode
-from works.models import Work, WorkInPublication, Publication, SubWork, Creator
 
 
 class Command(BaseCommand):
@@ -33,6 +27,3 @@ class Command(BaseCommand):
             if len(Group.objects.filter(name=committee[0])) == 0:
                 Group.objects.create(name=committee[0])
                 print("added GROUP FOR " + committee[1])
-
-
-

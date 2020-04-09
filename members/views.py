@@ -48,6 +48,7 @@ class MemberList(PermissionRequiredMixin, ListView):
 def show(request, member_id):
     return render(request, 'member_detail.html', {'member': Member.objects.get(pk=member_id)})
 
+
 @permission_required('members.change_member')
 def edit(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
@@ -61,6 +62,7 @@ def edit(request, member_id):
         form = EditForm(instance=member)
     return render(request, 'member_edit.html', {'form': form, 'member': member})
 
+
 @permission_required('members.add_member')
 def new(request):
     if request.method == 'POST':
@@ -71,6 +73,7 @@ def new(request):
     else:
         form = EditForm()
     return render(request, 'member_edit.html', {'form': form})
+
 
 @permission_required('auth.add_user')
 def signup(request, member_id):
@@ -87,6 +90,7 @@ def signup(request, member_id):
     else:
         form = UserCreationForm()
     return render(request, 'user_edit.html', {'form': form, 'member': Member.objects.get(pk=member_id)})
+
 
 @permission_required('auth.delete_user')
 def delete_user(request, member_id):

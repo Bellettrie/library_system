@@ -1,13 +1,9 @@
-import datetime
-
 import mysql.connector
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB
 from members.models import Member
-from series.models import Series, WorkInSeries, SeriesNode
-from works.models import Work, WorkInPublication, Publication, SubWork, Creator
 
 
 def get_name(x):
@@ -20,14 +16,6 @@ def get_name(x):
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
-    @staticmethod
-    def handle_author(publication, tree, finder):
-        data = finder.get(publication)
-
-    @staticmethod
-    def handle_matching(sub_work, tree, finder):
-        data = finder.get(sub_work)
-
     def handle(self, *args, **options):
         mydb = mysql.connector.connect(
             host="localhost",
@@ -37,10 +25,8 @@ class Command(BaseCommand):
         )
         mycursor = mydb.cursor(dictionary=True)
 
-        persons = dict()
         mycursor.execute("SELECT * FROM klant")
 
-        count = 0
         for x in mycursor:
             z = Member.objects.filter(old_id=x.get("klantnummer"))
             if len(z) == 0:
