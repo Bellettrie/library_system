@@ -1,12 +1,9 @@
-import datetime
-
 import mysql.connector
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB
-from series.models import Series, WorkInSeries, SeriesNode
-from works.models import Work, WorkInPublication, Publication, SubWork, Item, Category, ItemType, Location
+from works.models import Item, Category, ItemType, Location
 
 
 class Command(BaseCommand):

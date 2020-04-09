@@ -17,7 +17,7 @@ def sort_works(work: Work):
 
 
 class ItemRow:
-    def __init__(self, item: Item, book_result=None, options=[], extra_info = None):
+    def __init__(self, item: Item, book_result=None, options=[], extra_info=None):
         self.item = item
         self.book_result = book_result
         self.options = options
@@ -28,7 +28,7 @@ class ItemRow:
 
 
 class BookResult:
-    def __init__(self, publication: Publication, item_rows: List[ItemRow], item_options = [], publication_options = []):
+    def __init__(self, publication: Publication, item_rows: List[ItemRow], item_options=[], publication_options=[]):
         self.publication = publication
         self.item_rows = item_rows
         self.item_options = item_options
@@ -66,10 +66,10 @@ def get_works(request):
             result_set = word_set
         else:
             result_set = result_set & word_set
-    l = list(set(result_set))
-    l.sort(key=sort_works)
+    work_list = list(set(result_set))
+    work_list.sort(key=sort_works)
     result = []
-    for row in l:
+    for row in work_list:
         item_rows = []
         for item in row.item_set.all():
             item_rows.append(ItemRow(item, []))
@@ -92,7 +92,7 @@ class WorkList(ListView):
         result = get_works(self.request)
         for row in result:
             row.set_item_options(["lend", "reserve"])
-            row.publication_options=["edit"]
+            row.publication_options = ["edit"]
         return result
 
 

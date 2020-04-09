@@ -22,6 +22,7 @@ def extend_button(item, perms, member):
 def return_button(item, perms, member):
     return {"item": item, "perms": perms, "member": member}
 
+
 @register.inclusion_tag('publication_table/buttons/reserve_button.html')
 def reserve_button(item, perms, member):
     return {"item": item, "perms": perms, "member": member}

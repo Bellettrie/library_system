@@ -2,11 +2,11 @@ import datetime
 
 import mysql.connector
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB
-from series.models import Series, WorkInSeries, SeriesNode
-from works.models import Work, WorkInPublication, Publication, SubWork, Item, NamedThing, NamedTranslatableThing
+from series.models import Series, WorkInSeries
+from works.models import Work, WorkInPublication, Publication, SubWork, Item, NamedTranslatableThing
 
 
 def fill_name(thing: NamedTranslatableThing, data):
