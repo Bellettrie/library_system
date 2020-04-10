@@ -28,4 +28,4 @@ class LendingTermTestCase(TestCase):
         self.member = Member.objects.create(end_date=datetime.date(2021, 4, 4))
 
     def test_holiday_one_day(self):
-        self.assertEqual(datetime.date(2019,1,2),LendingSettings.get_end_date(self.item, self.member, datetime.date(2018, 12, 31-6)))
+        self.assertEqual(datetime.date(2019, 1, 2), LendingSettings.get_end_date(self.item, self.member, datetime.date(2018, 12, 31 - 6)))
