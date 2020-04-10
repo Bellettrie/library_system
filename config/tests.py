@@ -31,14 +31,14 @@ class LendingTermTestCase(TestCase):
         self.member3 = Member.objects.create(end_date=datetime.date(2021, 4, 4))
         self.member3.committees.add(committee)
         self.member3.save()
-        LendingSettings.objects.create(item_type=item_type,
-                                       term_for_inactive=7,
-                                       term_for_active=14,
-                                       hand_in_days=1,
-                                       borrow_money_inactive=0,
-                                       borrow_money_active=0,
-                                       fine_amount=50,
-                                       max_fine=500)
+        self.lending_settings = LendingSettings.objects.create(item_type=item_type,
+                                                               term_for_inactive=7,
+                                                               term_for_active=14,
+                                                               hand_in_days=1,
+                                                               borrow_money_inactive=0,
+                                                               borrow_money_active=0,
+                                                               fine_amount=50,
+                                                               max_fine=500)
 
     def test_holiday_one_day(self):
         self.assertEqual(datetime.date(2019, 1, 2), LendingSettings.get_end_date(self.item, self.member, datetime.date(2018, 12, 31 - 6)))
@@ -57,3 +57,22 @@ class LendingTermTestCase(TestCase):
 
     def test_active_member(self):
         self.assertEqual(datetime.date(2019, 1, 2), LendingSettings.get_end_date(self.item, self.member3, datetime.date(2018, 12, 31 - 6 - 7)))
+
+    def test_overlapping_holidays_abba(self):
+        Holiday.objects.create(name='Sleeping holiday',
+                               starting_date=datetime.date(2022, 4, 8),
+                               ending_date=datetime.date(2022, 5, 2),
+                               skipped_for_fine=False)
+        self.assertEqual(datetime.date(2022, 5, 5), LendingSettings.get_end_date(self.item, self.member, datetime.date(2022, 3, 30)))
+
+    def test_overlapping_holidays_abab(self):
+        Holiday.objects.create(name='Sleeping holiday',
+                               starting_date=datetime.date(2022, 4, 8),
+                               ending_date=datetime.date(2022, 5, 8),
+                               skipped_for_fine=False)
+        self.assertEqual(datetime.date(2022, 5, 9), LendingSettings.get_end_date(self.item, self.member, datetime.date(2022, 3, 30)))
+
+    def test_more_handin_days(self):
+        self.lending_settings.hand_in_days = 6
+        self.lending_settings.save()
+        self.assertEqual(datetime.date(2022, 5, 10), LendingSettings.get_end_date(self.item, self.member, datetime.date(2022, 4, 4)))
