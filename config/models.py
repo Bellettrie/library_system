@@ -84,11 +84,18 @@ class LendingSettings(models.Model):
         return len(holiday_list) > 0 and holiday_list[0].starting_date <= current_date, holiday_list
 
     @staticmethod
+    def get_borrow_money(ls, member):
+        if member.is_active():
+            return ls.borrow_money_active
+        else:
+            return ls.borrow_money_inactive
+
+    @staticmethod
     def get_fine_settings(item, member):
         try:
             # try something
             ls = LendingSettings.objects.get(item_type=item.location.category.item_type)
-            return ls.fine_amount, ls.max_fine
+            return ls.fine_amount + LendingSettings.get_borrow_money(ls, member), ls.max_fine
         except ObjectDoesNotExist:
             print("Term not found")
             return 10000, 1000000
