@@ -76,3 +76,32 @@ class LendingTermTestCase(TestCase):
         self.lending_settings.hand_in_days = 6
         self.lending_settings.save()
         self.assertEqual(datetime.date(2022, 5, 10), LendingSettings.get_end_date(self.item, self.member, datetime.date(2022, 4, 4)))
+
+
+class FineTestCase(TestCase):
+    def setUp(self):
+        Holiday.objects.create(name='Sleeping holiday',
+                               starting_date=datetime.date(2022, 4, 4),
+                               ending_date=datetime.date(2022, 5, 4),
+                               skipped_for_fine=True)
+        Holiday.objects.create(name='Very Short Holiday',
+                               starting_date=datetime.date(2019, 1, 1),
+                               ending_date=datetime.date(2019, 1, 1),
+                               skipped_for_fine=True)
+
+        Holiday.objects.create(name='Very Short Holiday',
+                               starting_date=datetime.date(2018, 1, 2),
+                               ending_date=datetime.date(2018, 1, 2),
+                               skipped_for_fine=False)
+
+    def test_simple_fine(self):
+        self.assertEquals(11, LendingSettings.get_fine_days(datetime.date(2020, 1, 1), datetime.date(2020, 1, 12)))
+
+    def test_early(self):
+        self.assertEquals(0, LendingSettings.get_fine_days(datetime.date(2021, 1, 1), datetime.date(2020, 1, 12)))
+
+    def test_on_time(self):
+        self.assertEquals(0, LendingSettings.get_fine_days(datetime.date(2020, 1, 1), datetime.date(2020, 1, 1)))
+
+    def test_holiday_skip(self):
+        self.assertEquals(0, LendingSettings.get_fine_days(datetime.date(2018, 1, 1), datetime.date(2018, 1, 2)))
