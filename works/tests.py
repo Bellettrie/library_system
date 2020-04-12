@@ -1,3 +1,4 @@
+from django.test import TestCase
 from works.models import Publication
 
 
