@@ -90,8 +90,11 @@ class Command(BaseCommand):
             return
         ser = Series.objects.get(old_id=pub)
         work = Work.objects.get(old_id=publication)
+        nr = int(data.get("reeks_deelnummer"))
+        if nr == 0:
+            nr = None
         WorkInSeries.objects.create(part_of_series=ser, old_id=publication, work=work,
-                                    number=int(data.get("reeks_deelnummer")),
+                                    number=nr,
                                     display_number=data.get(
                                         "reeks_deelaanduiding"))
 
