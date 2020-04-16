@@ -1,11 +1,8 @@
-import datetime
 from django.test import TestCase
 from members.models import Member, Committee
-
-
-# Create your tests here.
-from members.models import Member
 from works.models import ItemType
+
+import datetime
 
 
 class LendingCountTest(TestCase):
