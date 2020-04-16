@@ -1,3 +1,4 @@
+import math
 from datetime import datetime, timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -57,37 +58,69 @@ class LendingSettings(models.Model):
     @staticmethod
     def get_end_date(item: Item, member: Member, start_date=None):
         if start_date is None:
-            start_date = datetime.date(datetime.now)
+            start_date = datetime.date(datetime.now())
         term = LendingSettings.get_term(item, member)
         hand_in_days = LendingSettings.get_handin_days(item, member)
-        holidays = Holiday.objects.filter(ending_date__gte=start_date).order_by('-starting_date')
+        holidays = Holiday.objects.filter(ending_date__gte=start_date).order_by('starting_date')
 
         total_days = 0
         while term > 0:
             total_days = total_days + 1
-            is_holiday_day = False
             now_date = start_date + timedelta(days=total_days)
-            if len(holidays) > 0:
-                while holidays[0].ending_date < now_date:
-                    holidays = holidays[1:]
-                    if len(holidays) == 0:
-                        break
-            if len(holidays) > 0 and holidays[0].starting_date > start_date + timedelta(days=term):
-                is_holiday_day = True
+            is_holiday_day, holidays = LendingSettings.handle_holiday_day(holidays, now_date)
+
             if not (term <= hand_in_days and is_holiday_day):
                 term = term - 1
 
         return min(start_date + timedelta(days=total_days), member.end_date)
 
     @staticmethod
+    def handle_holiday_day(holiday_list, current_date):
+        if len(holiday_list) > 0:
+            while holiday_list[0].ending_date < current_date:
+                holiday_list = holiday_list[1:]
+                if len(holiday_list) == 0:
+                    break
+        return len(holiday_list) > 0 and holiday_list[0].starting_date <= current_date, holiday_list
+
+    @staticmethod
+    def get_borrow_money(ls, member):
+        if member.is_active():
+            return ls.borrow_money_active
+        else:
+            return ls.borrow_money_inactive
+
+    @staticmethod
     def get_fine_settings(item, member):
         try:
             # try something
             ls = LendingSettings.objects.get(item_type=item.location.category.item_type)
-            return ls.fine_amount, ls.max_fine
+            return ls.fine_amount + LendingSettings.get_borrow_money(ls, member), ls.max_fine
         except ObjectDoesNotExist:
             print("Term not found")
             return 10000, 1000000
 
     def __str__(self):
         return self.item_type.name
+
+    @staticmethod
+    def get_fine_days(ending_date: datetime.date, current_date=None):
+        if current_date is None:
+            current_date = datetime.date(datetime.now())
+        holidays = Holiday.objects.filter(ending_date__gte=ending_date, skipped_for_fine=False).order_by('starting_date')
+        counted_date = ending_date
+        days = 0
+        while counted_date < current_date:
+            counted_date = counted_date + timedelta(days=1)
+            is_holiday_day, holidays = LendingSettings.handle_holiday_day(holidays, counted_date)
+
+            if not is_holiday_day:
+                days = days + 1
+        return days
+
+    @staticmethod
+    def get_fine(item: Item, member: Member, ending_date: datetime.date, current_date=None):
+        days = LendingSettings.get_fine_days(ending_date, current_date)
+        fine_per_week, max_fine = LendingSettings.get_fine_settings(item, member)
+        weeks = math.ceil(days / 7)
+        return min(max_fine, fine_per_week * weeks)
