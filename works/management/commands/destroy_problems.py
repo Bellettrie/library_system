@@ -17,11 +17,6 @@ def destroy_problems(self, *args, **options):
             for row in ddict[z]:
                 row.number = None
                 row.save()
-def get_name(x):
-    vn = x.get("voornaam")
-    if len(vn) == 0:
-        return x.get("naam")
-    return vn + " " + x.get("naam")
 
 
 class Command(BaseCommand):
