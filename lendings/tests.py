@@ -26,4 +26,3 @@ class LendingPreLendingTestCase(BasicTestCase):
     def test_late_items(self):
         self.assertTrue(self.member.has_late_items(datetime.date(datetime.fromisoformat("2021-02-02"))))
         self.assertFalse(self.member.has_late_items(datetime.date(datetime.fromisoformat("2020-02-03"))))
-
