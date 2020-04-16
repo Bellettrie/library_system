@@ -12,7 +12,7 @@ urlpatterns = [
     path('member/<int:member_id>', views.member_based, name=LENDING_NEW_MEMBER),
     path('finalize/<int:work_id>/<int:member_id>', views.finalize, name=LENDING_FINALIZE),
     path('extend/<int:work_id>', views.extend, name=LENDING_EXTEND),
-    path('return/<int:work_id>', views.returnbook, name=LENDING_RETURNBOOK),
+    path('return/<int:work_id>', views.return_book, name=LENDING_RETURNBOOK),
     path('me/', views.me, name=LENDING_MY_LENDINGS),
 
 ]

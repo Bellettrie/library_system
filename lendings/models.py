@@ -26,15 +26,56 @@ class Lending(models.Model):
     handed_in_on = models.DateField(null=True, blank=True)
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
 
-    def is_extendable(self, getfine):
-        return (datetime.now().date() <= self.end_date) | getfine
+    def is_extendable(self, get_fine):
+        return (datetime.now().date() <= self.end_date) | get_fine
 
-    def is_late(self):
-        return datetime.now() > self.end_date
+    def is_late(self, now=None):
+        if now is None:
+            now = datetime.now()
+        return now > self.end_date
 
     def calculate_fine(self):
         from config.models import LendingSettings
         return format(LendingSettings.get_fine(self.item, self.member, self.end_date) / 100, '.2f')
+
+    def extend(self, member: Member, now=None):
+        if now is None:
+            now = datetime.date(datetime.now())
+        self.end_date = Lending.calc_end_date(self.member, self.item)
+        self.last_extended = now
+        self.times_extended = self.times_extended + 1
+        self.save()
+
+    def register_returned(self, member: Member, now=None):
+        if now is None:
+            now = datetime.date(datetime.now())
+        self.handed_in = True
+        self.handed_in_on = now
+        self.handed_in_by = member
+        self.save()
+
+    @staticmethod
+    def create_lending(item, member: Member, edited_member: Member, now=None):
+        from works.models import Item
+        if now is None:
+            now = datetime.date(datetime.now())
+        new_lending = Lending()
+        new_lending.end_date = Lending.calc_end_date(member, item, now)
+        new_lending.member = member
+        new_lending.item = item
+        new_lending.lended_on = datetime.now()
+        new_lending.last_extended = datetime.now()
+        new_lending.handed_in = False
+        new_lending.lended_by = edited_member
+        new_lending.save()
+        return new_lending
+
+    @staticmethod
+    def calc_end_date(member, item, now=None):
+        if now is None:
+            now = datetime.date(datetime.now())
+        from config.models import LendingSettings
+        return LendingSettings.get_end_date(item, member, now)
 
 
 class Reservation(models.Model):
