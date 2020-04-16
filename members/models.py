@@ -56,6 +56,19 @@ class Member(models.Model):
 
         return len(lendings) < 5
 
+    def has_late_items(self, current_date=None):
+        current_date = current_date or datetime.date(datetime.now())
+
+        from lendings.models import Lending
+        from works.models import ItemType, Category
+
+        lendings = Lending.objects.filter(member=self)
+
+        for lending in lendings:
+            if lending.is_late(current_date):
+                return True
+        return False
+
     def is_active(self):
         for committee in self.committees.all():
             if committee.active_member_committee:

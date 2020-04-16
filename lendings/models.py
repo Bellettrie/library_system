@@ -31,7 +31,7 @@ class Lending(models.Model):
 
     def is_late(self, now=None):
         if now is None:
-            now = datetime.now()
+            now = datetime.date(datetime.now())
         return now > self.end_date
 
     def calculate_fine(self):

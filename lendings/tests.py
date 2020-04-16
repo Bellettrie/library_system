@@ -22,3 +22,8 @@ class LendingPreLendingTestCase(BasicTestCase):
     def test_return_book(self):
         self.item2.current_lending().register_returned(self.member, datetime.date(datetime.fromisoformat("2020-03-02")))
         self.assertTrue(self.item2.is_available())
+
+    def test_late_items(self):
+        self.assertTrue(self.member.has_late_items(datetime.date(datetime.fromisoformat("2021-02-02"))))
+        self.assertFalse(self.member.has_late_items(datetime.date(datetime.fromisoformat("2020-02-03"))))
+
