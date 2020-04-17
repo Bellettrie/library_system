@@ -1,4 +1,6 @@
 import datetime
+
+from django.contrib.auth.models import User, Group
 from django.test import TestCase
 from members.models import Member, Committee
 
@@ -12,6 +14,10 @@ class MemberTestCase(TestCase):
             code="open",
             active_member_committee=True
         )
+
+        self.group1 = Group.objects.create(name="open")
+        self.group2 = Group.objects.create(name="test")
+
         self.committe2 = Committee.objects.create(
             name="testers",
             code="test",
@@ -43,7 +49,23 @@ class MemberTestCase(TestCase):
             notes="",
             is_anonymous_user=False
         )
+        self.member3 = Member.objects.create(
+            name="Testname3",
+            nickname="Nickname2",
+            addressLineOne="Hollandstraat 66",
+            addressLineTwo="6666 HL Enschede",
+            addressLineThree="Holland",
+            email="board@bellettrie.utwente.nl",
+            phone="06 666 666 13 13",
+            student_number="s123 456 789",
+            end_date=datetime.date(2023, 4, 4),
+            notes="",
+            is_anonymous_user=False
+        )
+        self.user1 = User.objects.create()
+
         self.member.committees.add(self.committe1)
+        self.member.user = self.user1
         self.member.save()
         self.member2.committees.add(self.committe2)
         self.member2.save()
@@ -65,3 +87,19 @@ class MemberTestCase(TestCase):
         self.member.committees.remove(self.committe1)
         self.member.save()
         self.assertEqual(self.member.is_active(), False)
+
+    def test_starts_with_correct_committee(self):
+        self.assertIsNotNone(self.member.user)
+        self.assertEqual(1, self.member.user.groups.all().__len__())
+        self.assertEqual("open", self.member.user.groups.first().name)
+
+    def test_correct_rights_when_adding_user(self):
+        self.user2 = User.objects.create(username="Bob")
+        self.member2.user = self.user2
+        self.member2.save()
+        self.assertEqual(1, self.member2.user.groups.all().__len__())
+
+    def test_removing_committee(self):
+        self.member.committees.clear()
+        self.member.save()
+        self.assertEqual(0, self.member.user.groups.all().__len__())
