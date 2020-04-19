@@ -11,11 +11,11 @@ from works.tests import create_work
 
 class BasicTestCase(TestCase):
     def setUp(self):
-        p = create_work("The one book")
+        self.publication = create_work("The one book")
         item_type = ItemType.objects.create(name="Strip", old_id=0)
         category = Category.objects.create(name="TestCat", item_type=item_type)
-        location = Location.objects.create(name="TestLoc", category=category, old_id=0)
-        self.item = Item.objects.create(publication=p, old_id=0, hidden=False, location=location)
+        self.location = Location.objects.create(name="TestLoc", category=category, old_id=0)
+        self.item = Item.objects.create(publication=self.publication, old_id=0, hidden=False, location=self.location)
         self.member = Member.objects.create(end_date=datetime.date(2023, 4, 4))
         self.member2 = Member.objects.create(end_date=datetime.date(2021, 4, 4))
         committee = Committee.objects.create(active_member_committee=True, name="Active com")

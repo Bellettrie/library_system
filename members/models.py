@@ -44,6 +44,31 @@ class Member(models.Model):
     privacy_reunions = models.BooleanField(default=False)
     privacy_reunion_end_date = models.DateField(auto_now=True)
 
+    def is_currently_member(self, current_date=None):
+        current_date = current_date or datetime.date(datetime.now())
+        return self.end_date is None or current_date < self.end_date
+
+    def can_lend_item_type(self, item_type, current_date=None):
+        from lendings.models import Lending
+        from works.models import ItemType, Category
+
+        lendings = Lending.objects.filter(member=self, item__location__category__item_type=item_type)
+
+        return len(lendings) < 5
+
+    def has_late_items(self, current_date=None):
+        current_date = current_date or datetime.date(datetime.now())
+
+        from lendings.models import Lending
+        from works.models import ItemType, Category
+
+        lendings = Lending.objects.filter(member=self)
+
+        for lending in lendings:
+            if lending.is_late(current_date):
+                return True
+        return False
+
     def is_active(self):
         for committee in self.committees.all():
             if committee.active_member_committee:
