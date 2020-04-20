@@ -5,8 +5,6 @@ from django.test import TestCase
 from members.models import Member, Committee
 from works.models import ItemType
 
-import datetime
-
 
 class LendingCountTest(TestCase):
     def setUp(self):
