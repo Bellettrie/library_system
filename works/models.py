@@ -126,7 +126,7 @@ class Item(NamedThing):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0
 
     def current_lending(self):
-        return Lending.objects.filter(item=self, handed_in=False)
+        return Lending.objects.get(item=self, handed_in=False)
 
     def get_title(self):
         return self.title or self.publication.title
