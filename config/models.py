@@ -71,8 +71,11 @@ class LendingSettings(models.Model):
 
             if not (term <= hand_in_days and is_holiday_day):
                 term = term - 1
-
-        return min(start_date + timedelta(days=total_days), member.end_date)
+        end_date = start_date + timedelta(days=total_days)
+        if member.end_date is None:
+            return end_date
+        else:
+            return min(end_date, member.end_date)
 
     @staticmethod
     def handle_holiday_day(holiday_list, current_date):
