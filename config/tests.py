@@ -54,6 +54,11 @@ class LendingTermTestCase(BasicTestCase):
     def test_membership_ends_early(self):
         self.assertEqual(datetime.date(2021, 4, 4), LendingSettings.get_end_date(self.item, self.member2, datetime.date(2022, 3, 30)))
 
+    def test_membership_no_end_date(self):
+        self.member2.end_date = None
+        self.member2.save()
+        self.assertEqual(datetime.date(2022, 5, 5), LendingSettings.get_end_date(self.item, self.member2, datetime.date(2022, 3, 30)))
+
     def test_no_holidays(self):
         self.assertEqual(datetime.date(2017, 1, 8), LendingSettings.get_end_date(self.item, self.member2, datetime.date(2017, 1, 1)))
 
