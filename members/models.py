@@ -77,6 +77,7 @@ class Member(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        self.update_groups()
 
     def __str__(self):
         return self.name
@@ -108,9 +109,18 @@ class Member(models.Model):
 
     def update_groups(self):
         if self.user is not None:
-            self.user.groups.clear()
-
-            for c in self.committees.all():
-                g = Group.objects.get(name=c.code)
-                self.user.groups.add(g)
+            committees = self.committees.all()
+            groups = self.user.groups.all()
+            for group in groups:
+                found = False
+                for committee in committees:
+                    found = found or committee.code == group.name
+                if not found:
+                    self.user.groups.remove(group)
+            for committee in committees:
+                found = False
+                for group in groups:
+                    found = found or committee.code == group.name
+                if not found:
+                    self.user.groups.add(Group.objects.get(name=committee.code))
             self.user.save()
