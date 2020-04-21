@@ -112,7 +112,7 @@ def extend(request, work_id):
 @permission_required('lendings.return')
 def return_book(request, work_id):
     item = Item.objects.get(pk=work_id)
-    lending = item.current_lending().first()
+    lending = item.current_lending()
     late_days = datetime.now().date() - lending.end_date
     if request.method == 'POST':
         lending.register_returned(request.user.member)
