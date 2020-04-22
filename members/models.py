@@ -1,15 +1,9 @@
 from datetime import datetime
-from random import randint
-
 from django.contrib.auth.models import User, Group
 from django.db import models
-
-# Create your models here.
-from enum import Enum
-
 from django.db.models import CASCADE
 
-from members.management.commands.namegen import generate_full_name, generate_name
+from members.management.commands.namegen import generate_full_name
 
 
 class Committee(models.Model):
