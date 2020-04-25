@@ -46,8 +46,8 @@ class Member(models.Model):
         from lendings.models import Lending
         from works.models import ItemType, Category
 
-        lendings = Lending.objects.filter(member=self, item__location__category__item_type=item_type)
-
+        lendings = Lending.objects.filter(member=self, item__location__category__item_type=item_type, handed_in=False)
+        print(lendings)
         return len(lendings) < 5
 
     def has_late_items(self, current_date=None):

@@ -46,7 +46,9 @@ class InventarisationCreate(PermissionRequiredMixin, CreateView):
 
 def inventarisation_form(request, inventarisation_id, page_id):
     inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
-    group = get_groups(inventarisation)[int(page_id)]
+    groups = get_groups(inventarisation)
+    page_id=max(0,min(len(groups)-1, int(page_id)))
+    group = groups[page_id]
     if request.method == "POST":
         for z in request.POST:
             if z.startswith('seen'):
@@ -90,8 +92,6 @@ def get_cur_block(inventarisation, page_id):
         if page_counter == 0:
             if cur_block > int(page_id) and not current_block_clear:
                 return cur_block
-
-
             current_block_clear = True
             page_counter = 10
             cur_block = cur_block + 1
