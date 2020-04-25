@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'lendings',
     'news',
     'config',
+    'inventarisation'
 ]
 
 MIDDLEWARE = [

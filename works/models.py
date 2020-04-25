@@ -5,6 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
+from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
 
@@ -51,7 +52,8 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=8)
     item_type = models.ForeignKey(ItemType, on_delete=PROTECT)
-
+    def __str__(self):
+        return self.name
 
 class Location(models.Model):
     category = models.ForeignKey(Category, on_delete=PROTECT)
@@ -175,6 +177,7 @@ class ItemState(models.Model):
     dateTime = models.DateTimeField(auto_now=True)
     type = models.CharField(max_length=64, choices=(("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken")))
     reason = models.TextField()
+    inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
 
 
 class SubWork(Work, TranslatedThing):
