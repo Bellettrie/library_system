@@ -54,14 +54,14 @@ def inventarisation_form(request, inventarisation_id, page_id):
                 if request.POST[z] == "yes":
                     try:
                         item_state = ItemState.objects.get(item_id=code, inventarisation=inventarisation)
-                        item_state.type="AVAILABLE"
+                        item_state.type = "AVAILABLE"
                         item_state.save()
                     except ItemState.DoesNotExist:
                         ItemState.objects.create(item_id=code, type="AVAILABLE", inventarisation=inventarisation)
                 elif request.POST[z] == "no":
                     try:
                         item_state = ItemState.objects.get(item_id=code, inventarisation=inventarisation)
-                        item_state.type="MISSING"
+                        item_state.type = "MISSING"
                         item_state.save()
                     except ItemState.DoesNotExist:
                         ItemState.objects.create(item_id=code, type="MISSING", inventarisation=inventarisation)
@@ -69,8 +69,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
                     ItemState.objects.filter(item_id=code, inventarisation=inventarisation).delete()
         if request.POST.get("next"):
             return get_inventarisation_next(request, inventarisation_id, page_id)
-        else:
-            print(request.POST)
+
 
     pre_filled = {}
     for item in group:
@@ -81,8 +80,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
     return render(request, "inventarisation_form.html", {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled})
 
 
-def get_inventarisation_next(request, inventarisation_id, page_id):
-    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+def get_cur_block(inventarisation, page_id):
     items = Item.objects.filter(location=inventarisation.location).order_by('signature')
     page_counter = 10
     current_block_clear = True
@@ -91,16 +89,30 @@ def get_inventarisation_next(request, inventarisation_id, page_id):
     for item in items:
         if page_counter == 0:
             if cur_block > int(page_id) and not current_block_clear:
-                return HttpResponseRedirect(reverse('inventarisation.by_number', args=(inventarisation_id, cur_block)))
-            current_block_clear = True
+                return cur_block
 
+
+            current_block_clear = True
             page_counter = 10
             cur_block = cur_block + 1
-
         page_counter -= 1
         if cur_block >= int(page_id):
             item_states = ItemState.objects.filter(inventarisation=inventarisation, item=item)
             if len(item_states) == 0:
-                print(item.get_title())
                 current_block_clear = False
-    print("OOF")
+    return -2
+
+
+def get_inventarisation_next(request, inventarisation_id, page_id):
+    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    page_id = get_cur_block(inventarisation, page_id)
+    if page_id > -2:
+        return HttpResponseRedirect(reverse('inventarisation.by_number', args=(inventarisation_id, page_id)))
+
+    page_id = get_cur_block(inventarisation, -1)
+    if  page_id == -2:
+        print("TO finished page")
+        return HttpResponseRedirect(reverse('inventarisation.list'))
+    else:
+        print("Retry")
+        return HttpResponseRedirect(reverse('inventarisation.list'))
