@@ -13,7 +13,7 @@
         {% for member in members %}
             <tr>
                 <td><a href="{% url LENDING_FINALIZE item.pk  member.id %}">{{ member.name }}</a></td>
-                <td>{{ member.old_id }}</td>
+                <td><a href="{% url LENDING_FINALIZE item.pk  member.id %}" class="btn btn-sm btn-primary">Finish lending</a></td>
             </tr>
         {% endfor %}
     </table>
