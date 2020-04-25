@@ -56,7 +56,7 @@ class Member(models.Model):
         from lendings.models import Lending
         from works.models import ItemType, Category
 
-        lendings = Lending.objects.filter(member=self)
+        lendings = Lending.objects.filter(member=self, handed_in=False)
 
         for lending in lendings:
             if lending.is_late(current_date):

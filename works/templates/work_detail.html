@@ -9,6 +9,6 @@
     <tr><th>Signature</th><th>Status</th><th>Settings</th></tr>
     {% for item in object.get_items %}
 
-        <tr><td>{{ item.signature }}</td><td>{{ item.get_state.type }}</td></tr>
+        <tr><td>{{ item.signature }}</td><td>{{ item.get_state.type }}</td><td><a href="{% url "works.item_state.create" item.pk %}" class="btn btn-primary bdn-sm">Change state</a></td></tr>
     {% endfor    %}</table>
 {% endblock %}

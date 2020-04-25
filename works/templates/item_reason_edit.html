@@ -3,12 +3,12 @@
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
+        {{ form.type }} <br />
         <label for="type">Type: </label>
-        {{ form.type }}
+<hr>
 
-        <label for="reason">Reason: </label>
-        {{ form.reason }}
-
+        {{ form.reason }}<br />
+    <label for="reason">Reason </label><hr>
         <input type="submit" value="OK">
     </form>
 
