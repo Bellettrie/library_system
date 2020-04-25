@@ -52,13 +52,18 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=8)
     item_type = models.ForeignKey(ItemType, on_delete=PROTECT)
+
     def __str__(self):
         return self.name
+
 
 class Location(models.Model):
     category = models.ForeignKey(Category, on_delete=PROTECT)
     name = models.CharField(null=True, blank=True, max_length=255)
     old_id = models.IntegerField()
+
+    def __str__(self):
+        return self.category.name + "-" + self.name
 
 
 class Work(NamedTranslatableThing):

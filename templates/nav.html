@@ -1,7 +1,7 @@
 <ul class="sidebar-menu">
 
-            <li class="treeview"><a activeclassname="active" href="{% url 'works.list' %}"><i
-                    class="fa fa-book"></i><span>Books</span></a></li>
+    <li class="treeview"><a activeclassname="active" href="{% url 'works.list' %}"><i
+            class="fa fa-book"></i><span>Books</span></a></li>
     {% if user.is_authenticated %}
 
         {% if perms.members.view_member %}
@@ -11,16 +11,27 @@
         {% endif %}
         {% include 'lending_nav.html' %}
         <li class="active">
-
             <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
-                    <ul class="collapse list-unstyled" id="homeSubmenu">
+            <ul class="collapse list-unstyled" id="homeSubmenu">
 
-            {% if perms.config.view_holiday %}
-                <li class="treeview"><a activeclassname="active" href="{% url 'holiday.list' %}"><i
-                        class="fa fa-plane"></i><span>Holidays</span></a>
-                </li>
-            {% endif %}
-                    </ul>
+                {% if perms.config.view_holiday %}
+                    <li class="treeview"><a activeclassname="active" href="{% url 'holiday.list' %}"><i
+                            class="fa fa-plane"></i><span>Holidays</span></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </li>
+
+          <li class="active">
+            <a href="#catalogSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Catalog Management</a>
+            <ul class="collapse list-unstyled" id="catalogSubmenu">
+
+                {% if perms.inventarisation.view_inventarisation %}
+                    <li class="treeview"><a activeclassname="active" href="{% url 'inventarisation.list' %}"><i
+                            class="fa fa-plane"></i><span>Inventarisations</span></a>
+                    </li>
+                {% endif %}
+            </ul>
         </li>
         <li class="treeview"><a activeclassname="active" href="{% url 'logout' %}"><i
                 class="fa fa-plane"></i><span>Logout</span></a>

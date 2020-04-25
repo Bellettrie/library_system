@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}
+    Inventarisation List
+{% endblock %}
+{% block content %}
+    <table>
+        {% for inv in inventarisations %}
+            <tr>
+                <td>{{ inv.location.name }}{{ inv.location.category.name }}</td>
+                <td>{{ inv.dateTime }}</td>
+
+
+                {% if inv.is_active %}
+
+                    <td><a href="{% url 'inventarisation.print' inv.pk %}" class="btn-primary btn btn-sm">Print List</a></td>
+                    <td><a href="{% url 'inventarisation.next' inv.pk -1 %}" class="btn-primary btn btn-sm">First inactive</a></td>
+
+                {% else %}
+                    <td>No longer active</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    <a href="{% url 'inventarisation.new' %}" class="btn-primary btn">New</a>
+
+{% endblock %}

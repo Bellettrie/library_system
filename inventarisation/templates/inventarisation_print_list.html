@@ -1,23 +1,25 @@
 {% for items in groups %}
-
-    <table>
-        <tr>
-            <th width="150px" style="font-size:10px">Author</th>
-            <th width="200px" style="font-size:10px">Title</th>
-            <th width="150px" style="font-size:10px">Signature</th>
-            <th width="60px" style="font-size:10px">State</th>
-            <th style="font-size:10px">Selector</th>
-        </tr>
-        {% for item in items %}
+    {% with x=forloop.counter0 %}
+        <h4>List {{ x }}</h4>
+        <table>
             <tr>
-                <td style="font-size:10px">{{ item.publication.get_authors.0.creator.name|truncatechars:20 }}</td>
-                <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
-                <td style="font-size:10px">{{ item.signature }}</td>
-                <td style="font-size:10px">{{ item.get_state.type }}</td>
+                <th width="150px" style="font-size:10px">Author</th>
+                <th width="200px" style="font-size:10px">Title</th>
+                <th width="150px" style="font-size:10px">Signature</th>
+                <th width="60px" style="font-size:10px">State</th>
+                <th style="font-size:10px">Selector</th>
             </tr>
-        {% endfor %}
-    </table>
-    <hr>
-    {% if forloop.counter|divisibleby:4 %}
-        <p style="page-break-after: always" style="font-size:6px"></p>     {% endif %}
+            {% for item in items %}
+                <tr>
+                    <td style="font-size:10px">{{ item.publication.get_authors.0.creator.name|truncatechars:20 }}</td>
+                    <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
+                    <td style="font-size:10px">{{ item.signature }}</td>
+                    <td style="font-size:10px">{{ item.get_state.type }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <hr>
+        {% if forloop.counter|divisibleby:4 %}
+            <p style="page-break-after: always" style="font-size:6px"></p>     {% endif %}
+    {% endwith %}
 {% endfor %}

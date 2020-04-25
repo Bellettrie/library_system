@@ -8,3 +8,17 @@ class Inventarisation(models.Model):
     location = models.ForeignKey("works.Location", on_delete=PROTECT)
     dateTime = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        print(self.location.pk)
+        print(self.location.category.pk)
+
+        super().save(*args, **kwargs)
+        if self.is_active:
+            for inv in Inventarisation.objects.filter(location=self.location):
+                if inv != self:
+                    inv.is_active = False
+                    inv.save()
+
+    def get_absolute_url(self):
+        return ""
