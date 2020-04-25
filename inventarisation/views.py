@@ -58,13 +58,15 @@ def inventarisation_form(request, inventarisation_id, page_id):
                         item_state.save()
                     except ItemState.DoesNotExist:
                         ItemState.objects.create(item_id=code, type="AVAILABLE", inventarisation=inventarisation)
-                if request.POST[z] == "no":
+                elif request.POST[z] == "no":
                     try:
                         item_state = ItemState.objects.get(item_id=code, inventarisation=inventarisation)
                         item_state.type="MISSING"
                         item_state.save()
                     except ItemState.DoesNotExist:
                         ItemState.objects.create(item_id=code, type="MISSING", inventarisation=inventarisation)
+                else:
+                    ItemState.objects.filter(item_id=code, inventarisation=inventarisation).delete()
         if request.POST.get("next"):
             return get_inventarisation_next(request, inventarisation_id, page_id)
         else:
