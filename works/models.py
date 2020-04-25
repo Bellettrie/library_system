@@ -164,7 +164,7 @@ class Item(NamedThing):
         state = self.get_state()
         if state.type != "AVAILABLE":
             if state.type not in not_switch_to_available:
-                ItemState.objects.create(item=self, type="AVAILABLE", reason="Automatically switched because of reason: "+ reason)
+                ItemState.objects.create(item=self, type="AVAILABLE", reason="Automatically switched because of reason: " + reason)
 
 
 not_switch_to_available = ["BROKEN", "SOLD"]
