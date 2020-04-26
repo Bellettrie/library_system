@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Details for book: {{  object.title}}{% endblock %}
 {% block content %}
-    <ul>
-        {% with bork=object %}
+
         Details page under construction
-            {{ bork.old_id }}
-        {% endwith %}
-    </ul>
+
+    <h4>Items for this publication</h4>
+    <table>
+    <tr><th>Signature</th><th>Status</th><th>Settings</th></tr>
+    {% for item in object.get_items %}
+
+        <tr><td>{{ item.signature }}</td><td>{{ item.get_state.type }}</td><td><a href="{% url "works.item_state.create" item.pk %}" class="btn btn-primary bdn-sm">Change state</a></td></tr>
+    {% endfor    %}</table>
 {% endblock %}

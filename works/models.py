@@ -1,7 +1,9 @@
+from datetime import datetime
+
 from django.db import models
 
 # Create your models here.
-from django.db.models import PROTECT
+from django.db.models import PROTECT, CASCADE
 
 from lendings.models import Lending
 
@@ -151,6 +153,28 @@ class Item(NamedThing):
 
     def get_original_language(self):
         return self.publication.original_language
+
+    def get_state(self):
+        states = ItemState.objects.filter(item=self).order_by("-dateTime")
+        if len(states) == 0:
+            return ItemState(item=self, dateTime=datetime.now(), type="AVAILABLE")
+        return states[0]
+
+    def is_seen(self, reason):
+        state = self.get_state()
+        if state.type != "AVAILABLE":
+            if state.type not in not_switch_to_available:
+                ItemState.objects.create(item=self, type="AVAILABLE", reason="Automatically switched because of reason: " + reason)
+
+
+not_switch_to_available = ["BROKEN", "SOLD"]
+
+
+class ItemState(models.Model):
+    item = models.ForeignKey(Item, on_delete=CASCADE)
+    dateTime = models.DateTimeField(auto_now=True)
+    type = models.CharField(max_length=64, choices=(("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken")))
+    reason = models.TextField()
 
 
 class SubWork(Work, TranslatedThing):

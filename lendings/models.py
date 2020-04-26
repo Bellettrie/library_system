@@ -55,6 +55,7 @@ class Lending(models.Model):
         self.handed_in_on = now
         self.handed_in_by = member
         self.save()
+        self.item.is_seen("Book was returned")
 
     @staticmethod
     def create_lending(item, member: Member, edited_member: Member, now=None):
@@ -70,6 +71,7 @@ class Lending(models.Model):
         new_lending.handed_in = False
         new_lending.lended_by = edited_member
         new_lending.save()
+        item.is_seen("Book was lent out.")
         return new_lending
 
     @staticmethod

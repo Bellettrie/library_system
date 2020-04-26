@@ -1,15 +1,20 @@
 from _testcapi import instancemethod
 from typing import List
 
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
-from django.views.generic import DetailView, ListView
+from django.urls import reverse
+from django.views.generic import DetailView, ListView, CreateView
 
 from series.models import Series
 from utils.get_query_words import get_query_words
-from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item
+from works.forms import ItemStateCreateForm
+from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState
 
 
 def sort_works(work: Work):
@@ -99,5 +104,18 @@ class WorkList(ListView):
 
 class WorkDetail(DetailView):
     template_name = 'work_detail.html'
-
     model = Publication
+
+
+@permission_required('auth.add_item_state')
+def create_item_state(request, item_id):
+    if request.method == 'POST':
+        form = ItemStateCreateForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.item = Item.objects.get(pk=item_id)
+            instance.save()
+            return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
+    else:
+        form = ItemStateCreateForm()
+    return render(request, 'item_reason_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
