@@ -8,6 +8,6 @@ Return date {{ lending.end_date }} <br />
 {% endif %}
 <form action="#" method="post">
     {% csrf_token %}
-    <input type="submit" value="Return it">
+    <input type="submit" value="Return it" class="btn btn-success" >
 </form>
 {% endblock %}
