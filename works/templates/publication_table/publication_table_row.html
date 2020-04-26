@@ -6,8 +6,8 @@
         <div class="col-4 col-md-3">
             {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</div>
 
-{% with item=item_rows.0.item %}
-    {% if item.get_state.type != "AVAILABLE" %}{{ item.get_state.type }}{% endif %}
+        {% with item=item_rows.0.item %}
+            {% if item.get_state.type != "AVAILABLE" %}{{ item.get_state.type }}{% endif %}
 
             {% if item_rows.0.extra_info %}
                 <div>{{ item_rows.0.extra_info }}</div>
