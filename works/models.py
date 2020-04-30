@@ -167,6 +167,12 @@ class Item(NamedThing):
             return ItemState(item=self, dateTime=datetime.now(), type="AVAILABLE")
         return states[0]
 
+    def get_prev_state(self):
+        states = ItemState.objects.filter(item=self).order_by("-dateTime")
+        if len(states) <= 1:
+            return ItemState(item=self, dateTime=datetime.now(), type="AVAILABLE")
+        return states[1]
+
     def is_seen(self, reason):
         state = self.get_state()
         if state.type != "AVAILABLE":

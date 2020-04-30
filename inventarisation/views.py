@@ -51,6 +51,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
     group = groups[page_id]
     if request.method == "POST":
         for z in request.POST:
+            print(z)
             if z.startswith('seen'):
                 code = int(z[4:])
                 if request.POST[z] == "yes":

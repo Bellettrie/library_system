@@ -17,7 +17,8 @@
                     <td style="font-size:10px">{{ item.publication.get_authors.0.creator.name|truncatechars:20 }}</td>
                     <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
                     <td style="font-size:10px">{{ item.signature }}</td>
-                    <td style="font-size:10px">{{ item.get_state.type }}</td>
+                    <td style="font-size:10px">{{ item.get_prev_state.type }}{%  if not item.is_available %}U{% endif %}</td>
+
                     <td style="font-size:10px">
                         <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
                                {% if defaults|get_value_from_dict:item == "AVAILABLE" %}checked{% else %}autofocus{% endif %}>
@@ -25,12 +26,11 @@
                         <input type="radio" id="no" name="seen{{ item.pk }}" value="no" {% if defaults|get_value_from_dict:item == "MISSING" %}checked{% endif %}>
                         <label for="no">No</label>
                         <input type="radio" id="maybe" name="seen{{ item.pk }}" value="maybe">
-                        <label for="maybe">Maybe</label>
+                        <label for="maybe">Skip</label>
                     </td>
                 </tr>
             {% endfor %}
         </table>
-        <input type="checkbox" checked name="next" aria-label="next">
-        <input type="submit" value="OK">
+        <input type="submit" name="next" value="Save and Next" class="btn btn-success"><input type="submit" value="Save" class="btn btn-primary">
     </form>
 {% endblock %}
