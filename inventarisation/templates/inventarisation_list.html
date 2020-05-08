@@ -20,7 +20,7 @@
 
                     <td><a href="{% url 'inventarisation.print' inv.pk %}" class="btn-primary btn btn-sm">Print List</a></td>
                     <td><a href="{% url 'inventarisation.next' inv.pk -1 %}" class="btn-primary btn btn-sm">First inactive</a></td>
-                   <td> <input width="50px" id="pageNr{{ inv.pk }}" /><button onclick="doClick({{ inv.pk }})">Continue</button></td>
+                   <td> <input width="50px" id="pageNr{{ inv.pk }}" /><button onclick="doClick({{ inv.pk }})">Go to Page</button></td>
 
                 {% else %}
                     <td>No longer active</td>
