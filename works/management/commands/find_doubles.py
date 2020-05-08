@@ -2,6 +2,8 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
+from bellettrie_library_system.settings import OLD_DB
+
 
 def get_name(x):
     vn = x.get("voornaam")
@@ -18,7 +20,7 @@ class Command(BaseCommand):
             host="localhost",
             user="root",
             passwd="root",
-            database="oldsystem2"
+            database=OLD_DB
         )
         mycursor = mydb.cursor(dictionary=True)
 

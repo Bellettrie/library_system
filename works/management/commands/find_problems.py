@@ -15,13 +15,6 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        # mydb = mysql.connector.connect(
-        #     host="localhost",
-        #     user="root",
-        #     passwd="root",
-        #     database="oldsystem2"
-        # )
-
         category_dict = dict()
         ddict = dict()
         for s in SeriesNode.objects.all():
