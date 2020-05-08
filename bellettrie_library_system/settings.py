@@ -140,4 +140,3 @@ DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
 
 LOGOUT_REDIRECT_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/lend/me'
-
