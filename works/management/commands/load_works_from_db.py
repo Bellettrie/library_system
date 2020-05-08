@@ -9,6 +9,10 @@ from series.models import Series, WorkInSeries, SeriesNode
 from works.models import Work, WorkInPublication, Publication, SubWork, Item, NamedTranslatableThing
 
 
+def round_number(number: int):
+    return int(number * 10) / 10
+
+
 def fill_name(thing: NamedTranslatableThing, data):
     thing.title = data.get("titel")
     thing.article = data.get("lidwoord")
@@ -53,7 +57,7 @@ class Command(BaseCommand):
         pub = Publication.objects.get(old_id=tree.get(sub_work))
         WorkInPublication.objects.create(work=work,
                                          publication=pub,
-                                         number_in_publication=int(data.get("reeks_deelnummer")),
+                                         number_in_publication=round_number(data.get("reeks_deelnummer")),
                                          display_number_in_publication=data.get("reeks_deelaanduiding"))
 
     @staticmethod
@@ -61,7 +65,7 @@ class Command(BaseCommand):
         if node in handled:
             return []
         data = finder.get(node)
-        my_num = int(data.get("reeks_deelnummer"))
+        my_num = round_number(data.get("reeks_deelnummer"))
 
         handled_list = []
         nr = finder.get(node).get("reeks_publicatienummer")
@@ -72,7 +76,7 @@ class Command(BaseCommand):
             if nr > 0:
                 print(str(data.get("reeks_publicatienummer")) + ": 0 to None")
             my_num = None
-        if my_num is not None and duds[data.get("reeks_publicatienummer"), int(data.get("reeks_deelnummer"))] > 1:
+        if my_num is not None and duds[data.get("reeks_publicatienummer"), round_number(data.get("reeks_deelnummer"))] > 1:
             print(str(data.get("reeks_publicatienummer")) + ": Double part for number " + str(data.get("reeks_deelnummer")) + " (after rounding down)")
             my_num = None
         if data.get("reeks_publicatienummer") > 0:
@@ -100,13 +104,13 @@ class Command(BaseCommand):
             return
         ser = Series.objects.get(old_id=pub)
         work = Work.objects.get(old_id=publication)
-        nr = int(data.get("reeks_deelnummer"))
+        nr = round_number(data.get("reeks_deelnummer"))
 
         if nr == 0:
             if pub > 0:
                 print(str(data.get("reeks_publicatienummer")) + ": 0 to None")
             nr = None
-        if nr  is not None and duds[data.get("reeks_publicatienummer"), int(data.get("reeks_deelnummer"))] > 1:
+        if nr is not None and duds[data.get("reeks_publicatienummer"), round_number(data.get("reeks_deelnummer"))] > 1:
             print(str(data.get("reeks_publicatienummer")) + ": Double part for number " + str(data.get("reeks_deelnummer")) + " (after rounding down)")
             nr = None
         WorkInSeries.objects.create(part_of_series=ser, old_id=publication, work=work,
@@ -132,10 +136,8 @@ class Command(BaseCommand):
         for x in mycursor:
             if x.get("reeks_publicatienummer") > 0:
                 tree[x.get("publicatienummer")] = x.get("reeks_publicatienummer")
-                countz = duds.get((x.get("reeks_publicatienummer"), int(x.get("reeks_deelnummer"))), 0)
-
-                duds[(x.get("reeks_publicatienummer"), int(x.get("reeks_deelnummer")))] = countz + 1
-
+                countz = duds.get((x.get("reeks_publicatienummer"), round_number(x.get("reeks_deelnummer"))), 0)
+                duds[(x.get("reeks_publicatienummer"), round_number(x.get("reeks_deelnummer")))] = countz + 1
                 count += 1
             finder[x.get("publicatienummer")] = x
         print(duds[15501, 5.0])

@@ -9,8 +9,9 @@ from works.models import NamedTranslatableThing
 class SeriesNode(models.Model):
     class Meta:
         unique_together = [['number', 'part_of_series']]
+
     part_of_series = models.ForeignKey("Series", on_delete=PROTECT, related_name="part", null=True, blank=True)
-    number = models.IntegerField(null=True, blank=True)
+    number = models.DecimalField(null=True, blank=True, decimal_places=1, max_digits=5)
     display_number = models.CharField(max_length=255)
     old_id = models.IntegerField()
 
