@@ -6,11 +6,11 @@
             </a>
         </td>
         <td>
-            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}
+            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}{% if not forloop.last %}<br/>{% endif %}{% endfor %}
         </td>
         <td>
             {% with item=item_rows.0.item %}
-                {{ item.signature }}<br/>
+                {{ item.signature }}{% if not forloop.last %}<br/>{% endif %}
             {% endwith %}
         </td>
         <td>
@@ -18,7 +18,7 @@
                 {% for option in item_rows.0.options %}
                     {% include 'publication_table/buttons/button_switcher.html' %}
                 {% endfor %}
-                <br/>
+            {% if not forloop.last %}<br/>{% endif %}
             {% endwith %}
         </td>
     </tr>
