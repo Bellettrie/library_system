@@ -1,35 +1,37 @@
 {% if is_single_item_row %}
-    <div style="width:100%" class="row table_row_{{ is_even_row }}">
-        <div class="col-8 col-md-3"><a href="/works/{{ publication.pk }}">
+    <tr>
+        <td>
+            <a href="/works/{{ publication.pk }}">
             {% if publication.title %}{{ publication.title }} {{ publication.sub_title }}{% else %} <i>No Title</i> {% endif %}
-        </a></div>
-        <div class="col-4 col-md-3">
-            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</div>
-
-        {% with item=item_rows.0.item %}
-            {% if item.get_state.type != "AVAILABLE" %}{{ item.get_state.type }}{% endif %}
-
-            {% if item_rows.0.extra_info %}
-                <div>{{ item_rows.0.extra_info }}</div>
-            {% endif %}
-            <div class="col-2 col-md-2">
-                {{ item.signature }}
-            </div>
-            <div class="col-2 col-md-2">
+            </a>
+        </td>
+        <td>
+            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}
+        </td>
+        <td>
+            {% with item=item_rows.0.item %}
+                {{ item.signature }}<br/>
+            {% endwith %}
+        </td>
+        <td>
+            {% with item=item_rows.0.item %}
                 {% for option in item_rows.0.options %}
                     {% include 'publication_table/buttons/button_switcher.html' %}
                 {% endfor %}
-            </div>
-        {% endwith %}
-    </div>
+                <br/>
+            {% endwith %}
+        </td>
+    </tr>
 {% else %}
-    <div style="width:100%" class="row table_row_{{ is_even_row }}">
-        <div class="col-8 col-md-3"><a href="/works/{{ publication.pk }}">
+    <tr>
+        <td><a href="/works/{{ publication.pk }}">
             {% if publication.title %}{{ publication.title }} {{ publication.sub_title }}{% else %} <i>No Title</i> {% endif %}
-        </a></div>
-        <div class="col-4 col-md-3">
-            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</div>
-        <div class="col-4 col-md-2">
+        </a></td>
+        <td>
+            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</td>
+        <td></td>
+        <td>
             Lending of multiple items with the same publication is not yet possible.
-        </div>
+        </td>
+    </tr>
 {% endif %}

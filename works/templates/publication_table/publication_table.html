@@ -1,8 +1,17 @@
 {% load books_table %}
 {{ items }}
-{% for elem in contents %}
-    {% with data=forloop.counter|divisibleby:2|yesno:"even,odd" %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Signature</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for elem in contents %}
             {% show_row elem data perms member%}
-    {% endwith %}
-{% endfor %}
-
+        {% endfor %}
+    </tbody>
+</table>
