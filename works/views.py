@@ -111,7 +111,6 @@ def get_works(request):
 
     results = []
     if len(words) == 1:
-
         results += get_works_by_signature(words[0])
     results += get_works_for_publication(words)
     return results
