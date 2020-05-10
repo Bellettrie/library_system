@@ -7,7 +7,7 @@
     {% include 'member_search_field.html' %}
         {% include 'pagination.html' %}
 
-    <table>
+    <table class="table table-striped" style="width: auto;">
         {% for member in object_list %}
             {% include 'member_list_item.html' %}
         {% empty %}
