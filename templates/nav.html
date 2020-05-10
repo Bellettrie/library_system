@@ -1,32 +1,33 @@
 <ul class="sidebar-menu">
-
-            <li class="treeview"><a activeclassname="active" href="{% url 'works.list' %}"><i
-                    class="fa fa-book"></i><span>Books</span></a></li>
+    <li class="treeview"><a href="{% url 'works.list' %}">
+        <i class="fa fa-book"></i><span>Books</span>
+    </a></li>
     {% if user.is_authenticated %}
 
         {% if perms.members.view_member %}
-            <li class="treeview"><a activeclassname="active" href="{% url 'members.list' %}"><i
-                    class="fa fa-user"></i><span>Members</span></a>
-            </li>
+            <li class="treeview"><a href="{% url 'members.list' %}">
+                <i class="fa fa-user"></i><span>Members</span>
+            </a></li>
         {% endif %}
         {% include 'lending_nav.html' %}
         <li class="active">
 
             <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
-                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                <ul class="collapse list-unstyled" id="homeSubmenu">
 
-            {% if perms.config.view_holiday %}
-                <li class="treeview"><a activeclassname="active" href="{% url 'holiday.list' %}"><i
-                        class="fa fa-plane"></i><span>Holidays</span></a>
-                </li>
-            {% endif %}
-                    </ul>
+                    {% if perms.config.view_holiday %}
+                        <li class="treeview"><a href="{% url 'holiday.list' %}">
+                            <i class="fa fa-plane"></i><span>Holidays</span></a>
+                        </li>
+                    {% endif %}
+                </ul>
         </li>
-        <li class="treeview"><a activeclassname="active" href="{% url 'logout' %}"><i
-                class="fa fa-plane"></i><span>Logout</span></a>
+        <li class="treeview"><a href="{% url 'logout' %}">
+            <i class="fa fa-plane"></i><span>Logout</span>
+        </a></li>
             {% else %}
-        <li class="treeview"><a activeclassname="active" href="{% url 'login' %}"><i
-            class="fa fa-plane"></i><span>Login</span></a>
+        <li class="treeview"><a href="{% url 'login' %}"><i
+            class="fa fa-plane"></i><span>Login</span>
+        </a></li>
     {% endif %}
-    </li>
 </ul>
