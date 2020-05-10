@@ -51,7 +51,12 @@ def get_works_for_publication(words):
     result_set = None
     for word in words:
         authors = Creator.objects.filter(name__icontains=word)
-        series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors) | Q(title__icontains=word)))
+        series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors)
+                                           | Q(title__icontains=word)
+                                           | Q(sub_title__icontains=word)
+                                           | Q(original_title__icontains=word)
+                                           | Q(original_subtitle__icontains=word)
+                                           ))
 
         subworks = set(SubWork.objects.filter(
             Q(creatortowork__creator__in=authors)
