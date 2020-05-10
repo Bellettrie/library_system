@@ -97,7 +97,7 @@ def get_works_by_signature(word):
     items = Item.objects.filter(signature__contains=word)
     for item in items:
         dz = pub_dict.get(item.publication, [])
-        dz.append(item)
+        dz.append(ItemRow(item, []))
         pub_dict[item.publication] = dz
     for key in pub_dict.keys():
         results.append(BookResult(key, pub_dict[key]))
