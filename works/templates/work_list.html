@@ -9,7 +9,8 @@
     {% show_table object_list perms %}
 
     <h3>How to use Search</h3>
-    The search function tries to match the search query to words in the title of books, series, as well as the names of authors. <br />
+    The search function tries to match the search query to words in the title of books, series, as well as the names of authors. It also matches on parts of books.<br />
+    It will display all books that match to <b>all</b> words in the query. <br />
     There are two special cases to keep in mind:<br>
     <b>Signatures:</b> The system will search for book signatures, but only if it's fed only one word. So do not put spaces in the query if you want to find something. <br />
     It will try to complete though, so, for instance, SF-T-370 will find all Tolkien books, and possibly some more.<br/>
