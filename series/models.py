@@ -38,4 +38,9 @@ class WorkInSeries(SeriesNode):
 class CreatorToSeries(models.Model):
     creator = models.ForeignKey("works.Creator", on_delete=PROTECT)
     series = models.ForeignKey(Series, on_delete=PROTECT)
+    number = models.IntegerField()
+
+    class Meta:
+        unique_together = ("creator", "series", "number")
+
     role = models.ForeignKey("works.CreatorRole", on_delete=PROTECT)

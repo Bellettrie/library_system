@@ -6,7 +6,7 @@
             </a>
         </td>
         <td>
-            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.given_names }} <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
         </td>
         <td>
             {% with item=item_rows.0.item %}
