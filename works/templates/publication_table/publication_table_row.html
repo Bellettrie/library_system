@@ -2,7 +2,7 @@
     <tr>
         <td>
             <a href="/works/{{ publication.pk }}">
-            {% if publication.title %}{{ publication.title }} {{ publication.sub_title }}{% else %} <i>No Title</i> {% endif %}
+            {% if publication.title %}{{ publication.article }} {{ publication.title }} {{ publication.sub_title }}{% else %} <i>No Title</i> {% endif %}
             </a>
         </td>
         <td>
@@ -25,7 +25,7 @@
 {% else %}
     <tr>
         <td><a href="/works/{{ publication.pk }}">
-            {% if publication.title %}{{ publication.title }} {{ publication.sub_title }}{% else %} <i>No Title</i> {% endif %}
+            {% if publication.title %}{{ publication.article }}  {{ publication.title }} {{ publication.sub_title }}{% else %} <i>No Title</i> {% endif %}
         </a></td>
         <td>
             {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</td>
