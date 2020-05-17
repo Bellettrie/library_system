@@ -55,7 +55,6 @@ class BookResult:
 
 def get_works_for_publication(words):
     result_set = None
-    pub_score = dict()
     for word in words:
         if re.match('^[\\w-]+?$', word.replace("*", "").replace("+", "").replace("?", "")) is None:
             return []
@@ -98,7 +97,7 @@ def get_works_for_publication(words):
         else:
             result_set = result_set & word_set
     work_list = list(set(result_set))
-    work_list.sort(key=lambda a:a.listed_author)
+    work_list.sort(key=lambda a: a.listed_author)
 
     result = []
     for row in work_list:
