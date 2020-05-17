@@ -1,5 +1,3 @@
-import mysql.connector
-
 from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB
