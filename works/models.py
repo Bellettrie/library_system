@@ -67,6 +67,15 @@ class Work(NamedTranslatableThing):
     signature_fragment = models.CharField(max_length=64)
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
     hidden = models.BooleanField()
+    listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
+
+    def update_listed_author(self):
+        authors = self.get_authors()
+        if len(authors) == 0:
+            self.listed_author = "ZZZZZZ"
+        else:
+            self.listed_author = authors[0].creator.name + ", " + authors[0].creator.given_names  + str(authors[0].creator.pk)
+        self.save()
 
     def get_authors(self):
         from series.models import WorkInSeries
@@ -76,7 +85,7 @@ class Work(NamedTranslatableThing):
         for link in links:
             authors.append(link)
         for serie in WorkInSeries.objects.filter(work=self):
-            authors = authors + serie.get_authors()
+            authors = serie.get_authors() + authors
         author_set = list()
         for author in authors:
             add = True
@@ -224,6 +233,10 @@ class CreatorToWork(models.Model):
         unique_together = ("creator", "work", "number")
 
     role = models.ForeignKey(CreatorRole, on_delete=PROTECT)
+
+    def save(self):
+        super().save()
+        self.work.update_listed_author()
 
 
 class CreatorToItem(models.Model):

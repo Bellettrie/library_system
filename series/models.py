@@ -24,7 +24,7 @@ class Series(SeriesNode, NamedTranslatableThing):
         if self.part_of_series is None:
             return authors
         else:
-            authors += self.part_of_series.get_authors()
+            authors = self.part_of_series.get_authors() + authors
             return authors
 
 

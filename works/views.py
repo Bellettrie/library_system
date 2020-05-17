@@ -70,6 +70,14 @@ def get_works_for_publication(words):
                                            | Q(original_title__icontains=word)
                                            | Q(original_subtitle__icontains=word)
                                            ))
+
+        prev_len = 0
+        series_len = len(series)
+
+        while prev_len < series_len:
+            prev_len = series_len
+            series = set(series | set(Series.objects.filter(part_of_series__in=series)))
+            series_len = len(series)
         work_q = Q(Q(title__iregex="(?<!\\S)" + word + "(?!\\S)")
                    | Q(sub_title__iregex="(?<!\\S)" + word + "(?!\\S)")
                    | Q(original_title__iregex="(?<!\\S)" + word + "(?!\\S)")
@@ -83,19 +91,14 @@ def get_works_for_publication(words):
         word_set = set(Publication.objects.filter(
             work_q
             | Q(workinpublication__work__in=subworks)))
-        for r in word_set:
-            pub_score[r] = pub_score.get(r, 0) + 1
         res2 = set(Publication.objects.filter(creatortowork__creator__in=authors))
-        for r in res2:
-            pub_score[r] = pub_score.get(r, 0) + 10
         word_set = word_set | res2
         if result_set is None:
             result_set = word_set
         else:
             result_set = result_set & word_set
-    print(result_set)
     work_list = list(set(result_set))
-    work_list.sort(key=sorter(pub_score))
+    work_list.sort(key=lambda a:a.listed_author)
 
     result = []
     for row in work_list:
