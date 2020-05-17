@@ -74,7 +74,7 @@ class Work(NamedTranslatableThing):
         if len(authors) == 0:
             self.listed_author = "ZZZZZZ"
         else:
-            self.listed_author = authors[0].creator.name + ", " + authors[0].creator.given_names  + str(authors[0].creator.pk)
+            self.listed_author = authors[0].creator.name + ", " + authors[0].creator.given_names + str(authors[0].creator.pk)
         self.save()
 
     def get_authors(self):
