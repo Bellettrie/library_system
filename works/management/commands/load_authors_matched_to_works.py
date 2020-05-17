@@ -41,12 +41,12 @@ class Command(BaseCommand):
                 if len(Work.objects.filter(old_id=x.get("publicatienummer"))) > 0:
                     w = Work.objects.get(old_id=x.get("publicatienummer"))
                     role = links.get(x.get("rol"))
-                    CreatorToWork.objects.get_or_create(work=w, creator=a, role=role)
+                    CreatorToWork.objects.get_or_create(work=w, creator=a, role=role, number=x.get("lopend_nummer"))
                 else:
                     if len(Series.objects.filter(old_id=x.get("publicatienummer"))) > 0:
                         w = Series.objects.get(old_id=x.get("publicatienummer"))
 
                         role = links.get(x.get("rol"))
-                        CreatorToSeries.objects.get_or_create(series=w, creator=a, role=role)
+                        CreatorToSeries.objects.get_or_create(series=w, creator=a, role=role, number=x.get("lopend_nummer"))
                     else:
                         print("Z" + str(x.get("publicatienummer")))

@@ -24,7 +24,7 @@ class Series(SeriesNode, NamedTranslatableThing):
         if self.part_of_series is None:
             return authors
         else:
-            authors += self.part_of_series.get_authors()
+            authors = self.part_of_series.get_authors() + authors
             return authors
 
 
@@ -38,4 +38,9 @@ class WorkInSeries(SeriesNode):
 class CreatorToSeries(models.Model):
     creator = models.ForeignKey("works.Creator", on_delete=PROTECT)
     series = models.ForeignKey(Series, on_delete=PROTECT)
+    number = models.IntegerField()
+
+    class Meta:
+        unique_together = ("creator", "series", "number")
+
     role = models.ForeignKey("works.CreatorRole", on_delete=PROTECT)

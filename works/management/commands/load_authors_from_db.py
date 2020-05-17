@@ -37,7 +37,7 @@ class Command(BaseCommand):
         for p in persons.keys():
             old_id = persons.get(p).get("persoonnummer")
             comment = persons.get(p).get("commentaar")
-            creator = Creator.objects.create(name=get_name(persons.get(p)), old_id=old_id, comment=comment)
+            creator = Creator.objects.create(name=persons.get(p).get("naam"), given_names=persons.get(p).get("voornaam"), old_id=old_id, comment=comment)
             creators[old_id] = creator
 
         for p in persons.keys():
