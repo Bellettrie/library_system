@@ -32,28 +32,22 @@
 </head>
 
 <body>
-  <div class="header" >
-                    <img src="{% static 'images/wurm.png' %}" style="height:100%" > Bellettrie
 
+<div id="wrapper">
+    <div id="header">
+        <img src="{% static 'images/wurm.png' %}" style="height:100%"> Bellettrie
     </div>
-<div class="wrapper">
-
     <!-- Sidebar Holder -->
+    <button id="toggle-sidebar"><</button>
 
-    <nav id="sidebar">
+    <div id="sidebar-header" class="collapsed">
+        {% if not user.is_anonymous %} <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a> {% endif %}
+    </div>
 
-        <div class="sidebar-header">
-       {% if not user.is_anonymous %} <a href="{% url 'members.view' user.member.id %}">{{user.member.name}}</a> {% endif %}
-        </div>
+    <nav id="sidebar" class="collapsed">
 
         {% include 'nav.html' %}
     </nav>
-
-    <button type="button" id="sidebarCollapse" class="navbar-btn">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
 
     <!-- Page Content Holder -->
     <div id="content">
@@ -78,14 +72,16 @@
         integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
         crossorigin="anonymous"></script>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-            $(this).toggleClass('active');
-        });
-    });
+<script>
+    const sidebar = document.querySelector('#sidebar');
+    const sidebarH = document.querySelector('#sidebar-header');
+    const toggleSidebar = document.querySelector('#toggle-sidebar');
+
+    toggleSidebar.onclick = () => {
+        sidebar.classList.toggle('collapsed');
+        sidebarH.classList.toggle('collapsed');
+        toggleSidebar.innerText = sidebar.classList.contains('collapsed') ? '>' : '<';
+    };
 </script>
-</body>
 
 </html>
