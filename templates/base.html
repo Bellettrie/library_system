@@ -39,20 +39,24 @@
     </div>
     <!-- Sidebar Holder -->
     <button id="toggle-sidebar"><</button>
+    {% if not user.is_anonymous %}
+        <div id="sidebar-header" class="collapsed">
+            <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a>
+        </div>
+        {% else %}
+        <div id="sidebar-header" class="collapsed">
 
-    <div id="sidebar-header" class="collapsed">
-        {% if not user.is_anonymous %} <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a> {% endif %}
-    </div>
+        </div>
+         {% endif %}
 
-    <nav id="sidebar" class="collapsed">
+
+    <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %}">
 
         {% include 'nav.html' %}
     </nav>
 
     <!-- Page Content Holder -->
     <div id="content">
-
-
         <h2>{% block title %}Title{% endblock %}</h2>
         {% block content %}
         {% endblock %}
