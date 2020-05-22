@@ -164,7 +164,7 @@ a, a:hover, a:focus {
 
 @media (max-width: 700px) {
     #wrapper {
-        grid-template-rows: 75px 75px;
+        grid-template-rows: 75px 75px auto;
         grid-template-columns: 1fr;
     }
 
