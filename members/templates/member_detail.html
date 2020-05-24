@@ -3,7 +3,7 @@
 <!-- bs-example-navbar-collapse-1 -->
 {% block title %}Member: {{  member.name}}{% endblock %}
 {% block content %}
-    <table>
+    <table class="table table-striped" style="width: auto;">
         <tr>
             <th>Name</th>
             <td>{{ member.name }}</td>
@@ -67,17 +67,17 @@
             </tr>
             <tr>
                 <th>Delete User</th>
-                <td><a href="{% url "members.delete_user" member.pk %}">Delete</a></td>
+                <td><a href="{% url "members.delete_user" member.pk %}" class="btn-sm btn-danger">Delete</a></td>
             </tr>
         {% else %}
             <tr>
                 <th>Add user</th>
-                <td><td><a href="{% url "members.signup" member.pk %}">Add new</a></td></td>
+                <td><a href="{% url "members.signup" member.pk %}" class="btn-sm btn-outline-primary">Add new</a></td>
             </tr>
         {% endif %}
     </table>
 
-    <a href="{% url 'members.edit' member.id %}">Edit</a>
+    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
 {% load books %}
     {% get_user_books member perms %}
 {% endblock %}

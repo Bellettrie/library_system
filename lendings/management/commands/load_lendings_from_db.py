@@ -42,8 +42,8 @@ class Command(BaseCommand):
                 lended_by = Member.objects.filter(old_id=x.get("uitgeleend_door")).first()
                 end_date = x.get("termijn")
                 final_time = x.get("verlengd2_op") or x.get("verlengd1_op") or x.get("uitgeleend_op")
-                if handed_in is not None:
-                    continue
+                # if handed_in is not None:
+                #     continue
                 times_extended = 0
                 if x.get("verlengd2_op"):
                     times_extended += 1

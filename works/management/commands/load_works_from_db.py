@@ -5,8 +5,12 @@ import mysql.connector
 from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB
-from series.models import Series, WorkInSeries
+from series.models import Series, WorkInSeries, SeriesNode
 from works.models import Work, WorkInPublication, Publication, SubWork, Item, NamedTranslatableThing
+
+
+def round_number(number: int):
+    return int(number * 10) / 10
 
 
 def fill_name(thing: NamedTranslatableThing, data):
@@ -53,26 +57,36 @@ class Command(BaseCommand):
         pub = Publication.objects.get(old_id=tree.get(sub_work))
         WorkInPublication.objects.create(work=work,
                                          publication=pub,
-                                         number_in_publication=int(data.get("reeks_deelnummer")),
+                                         number_in_publication=round_number(data.get("reeks_deelnummer")),
                                          display_number_in_publication=data.get("reeks_deelaanduiding"))
 
     @staticmethod
-    def handle_series_node(handled, node, tree, finder):
+    def handle_series_node(handled, node, tree, finder, duds):
         if node in handled:
             return []
         data = finder.get(node)
+        my_num = round_number(data.get("reeks_deelnummer"))
+
         handled_list = []
         nr = finder.get(node).get("reeks_publicatienummer")
+
         if nr > 0:
-            handled_list += Command.handle_series_node(handled, nr, tree, finder)
+            handled_list += Command.handle_series_node(handled, nr, tree, finder, duds)
+        if my_num == 0:
+            if nr > 0:
+                print(str(data.get("reeks_publicatienummer")) + ": 0 to None")
+            my_num = None
+        if my_num is not None and duds[data.get("reeks_publicatienummer"), round_number(data.get("reeks_deelnummer"))] > 1:
+            print(str(data.get("reeks_publicatienummer")) + ": Double part for number " + str(data.get("reeks_deelnummer")) + " (after rounding down)")
+            my_num = None
         if data.get("reeks_publicatienummer") > 0:
             super_series = Series.objects.get(old_id=data.get("reeks_publicatienummer"))
-            Series.objects.create(part_of_series=super_series, number=int(data.get("reeks_deelnummer")),
+            Series.objects.create(part_of_series=super_series, number=my_num,
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
                                   language=data.get('taal'))
         else:
-            Series.objects.create(number=int(data.get("reeks_deelnummer")),
+            Series.objects.create(number=my_num,
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
                                   language=data.get('taal'))
@@ -82,7 +96,7 @@ class Command(BaseCommand):
         return handled_list
 
     @staticmethod
-    def handle_part_of_series(publication, tree, finder):
+    def handle_part_of_series(publication, tree, finder, duds):
         data = finder.get(publication)
         pub = data.get("reeks_publicatienummer")
         series_data = finder.get(pub)
@@ -90,8 +104,14 @@ class Command(BaseCommand):
             return
         ser = Series.objects.get(old_id=pub)
         work = Work.objects.get(old_id=publication)
-        nr = int(data.get("reeks_deelnummer"))
+        nr = round_number(data.get("reeks_deelnummer"))
+
         if nr == 0:
+            if pub > 0:
+                print(str(data.get("reeks_publicatienummer")) + ": 0 to None")
+            nr = None
+        if nr is not None and duds[data.get("reeks_publicatienummer"), round_number(data.get("reeks_deelnummer"))] > 1:
+            print(str(data.get("reeks_publicatienummer")) + ": Double part for number " + str(data.get("reeks_deelnummer")) + " (after rounding down)")
             nr = None
         WorkInSeries.objects.create(part_of_series=ser, old_id=publication, work=work,
                                     number=nr,
@@ -110,13 +130,17 @@ class Command(BaseCommand):
         tree = dict()
         finder = dict()
         mycursor.execute("SELECT * FROM publicatie where verbergen = 0")
+        duds = dict()
 
         count = 0
         for x in mycursor:
             if x.get("reeks_publicatienummer") > 0:
                 tree[x.get("publicatienummer")] = x.get("reeks_publicatienummer")
+                countz = duds.get((x.get("reeks_publicatienummer"), round_number(x.get("reeks_deelnummer"))), 0)
+                duds[(x.get("reeks_publicatienummer"), round_number(x.get("reeks_deelnummer")))] = countz + 1
                 count += 1
             finder[x.get("publicatienummer")] = x
+        print(duds[15501, 5.0])
 
         for t in finder.keys():
             if finder.get(t).get("type") == 0:
@@ -131,11 +155,11 @@ class Command(BaseCommand):
 
         for t in finder.keys():
             if finder.get(t).get("type") == 1:
-                handled += Command.handle_series_node(handled, t, tree, finder)
+                handled += Command.handle_series_node(handled, t, tree, finder, duds)
         print("done series, now adding works to series")
         for t in tree.keys():
             if finder.get(t).get("type") == 0 and finder.get(t).get("reeks_publicatienummer") > 0:
-                Command.handle_part_of_series(t, tree, finder)
+                Command.handle_part_of_series(t, tree, finder, duds)
 
         mycursor.execute("SELECT * FROM band")
         banden = dict()

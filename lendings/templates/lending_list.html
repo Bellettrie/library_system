@@ -4,16 +4,26 @@
 
 {% block title %}All current lendings{% endblock %}
 {% block content %}
-    <table>
-        {% for lending in lendings %}
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td><a href="{% url 'work.view' lending.item.publication.id %}">{{ lending.item.get_title }}</a></td>
-                <td><a href="{% url 'members.view' lending.member.id %}">{{ lending.member.name }}</a></td>
-                <td>{{ lending.end_date }}</td>
-                <td>&euro;{{ lending.calculate_fine }}</td>
+                <th>Book</th>
+                <th>Member</th>
+                <th>Lending end date</th>
+                <th>Lending fine amount</th>
             </tr>
-        {% empty %}
-            No Lendings
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for lending in lendings %}
+                <tr>
+                    <td><a href="{% url 'work.view' lending.item.publication.id %}">{{ lending.item.get_title }}</a></td>
+                    <td><a href="{% url 'members.view' lending.member.id %}">{{ lending.member.name }}</a></td>
+                    <td>{{ lending.end_date }}</td>
+                    <td>&euro;{{ lending.calculate_fine }}</td>
+                </tr>
+            {% empty %}
+                No Lendings
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% if perms.lendings.extend %}
     {% if item.current_lending.first.is_extendable or perms.lendings.getfine %}
-        <a href="{% url "lendings.extend" item.pk %}">Extend</a>
+
+        <a href="{% url "lendings.extend" item.pk  %}" class="btn btn-primary btn-sm" role="button">Extend</a>
     {% endif %}
 {% endif %}

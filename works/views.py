@@ -47,24 +47,31 @@ class BookResult:
             row.options = item_options
 
 
-def get_works(request):
-    words = get_query_words(request)
-    if words is None or words == []:
-        return []
-
+def get_works_for_publication(words):
     result_set = None
     for word in words:
         authors = Creator.objects.filter(name__icontains=word)
-        series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors) | Q(title__icontains=word)))
+        series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors)
+                                           | Q(title__icontains=word)
+                                           | Q(sub_title__icontains=word)
+                                           | Q(original_title__icontains=word)
+                                           | Q(original_subtitle__icontains=word)
+                                           ))
 
         subworks = set(SubWork.objects.filter(
             Q(creatortowork__creator__in=authors)
             | Q(title__icontains=word)
+            | Q(sub_title__icontains=word)
+            | Q(original_title__icontains=word)
+            | Q(original_subtitle__icontains=word)
             | Q(workinseries__part_of_series__in=series)))
 
         word_set = set(Publication.objects.filter(
             Q(creatortowork__creator__in=authors)
             | Q(title__icontains=word)
+            | Q(sub_title__icontains=word)
+            | Q(original_title__icontains=word)
+            | Q(original_subtitle__icontains=word)
             | Q(workinseries__part_of_series__in=series)
             | Q(workinpublication__work__in=subworks)))
 
@@ -81,6 +88,32 @@ def get_works(request):
             item_rows.append(ItemRow(item, []))
         result.append(BookResult(row, item_rows))
     return result
+
+
+def get_works_by_signature(word):
+    results = []
+    pub_dict = dict()
+
+    items = Item.objects.filter(signature__contains=word)
+    for item in items:
+        dz = pub_dict.get(item.publication, [])
+        dz.append(ItemRow(item, []))
+        pub_dict[item.publication] = dz
+    for key in pub_dict.keys():
+        results.append(BookResult(key, pub_dict[key]))
+    return results
+
+
+def get_works(request):
+    words = get_query_words(request)
+    if words is None or words == []:
+        return []
+
+    results = []
+    if len(words) == 1:
+        results += get_works_by_signature(words[0])
+    results += get_works_for_publication(words)
+    return results
 
 
 class WorkList(ListView):

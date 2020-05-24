@@ -38,5 +38,9 @@ class Command(BaseCommand):
             for item in z:
                 if x.get("locatienummer") == 0:
                     print(x)
-                item.location = Location.objects.get(old_id=x.get("locatienummer"))
+                loc = x.get("locatienummer")
+                if x.get("locatienummer") == 3:
+                    print(x)
+                    loc = 4
+                item.location = Location.objects.get(old_id=loc)
                 item.save()
