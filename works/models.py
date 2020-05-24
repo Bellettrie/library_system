@@ -74,6 +74,15 @@ class Work(NamedTranslatableThing):
     signature_fragment = models.CharField(max_length=64)
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
     hidden = models.BooleanField()
+    listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
+
+    def update_listed_author(self):
+        authors = self.get_authors()
+        if len(authors) == 0:
+            self.listed_author = "ZZZZZZ"
+        else:
+            self.listed_author = authors[0].creator.name + ", " + authors[0].creator.given_names + str(authors[0].creator.pk)
+        self.save()
 
     def get_authors(self):
         from series.models import WorkInSeries
@@ -83,7 +92,7 @@ class Work(NamedTranslatableThing):
         for link in links:
             authors.append(link)
         for serie in WorkInSeries.objects.filter(work=self):
-            authors = authors + serie.get_authors()
+            authors = serie.get_authors() + authors
         author_set = list()
         for author in authors:
             add = True
@@ -92,6 +101,7 @@ class Work(NamedTranslatableThing):
                     add = False
             if add:
                 author_set.append(author)
+        author_set.sort(key=lambda a: a.number)
         return author_set
 
 
@@ -208,6 +218,7 @@ class WorkInPublication(models.Model):
 
 
 class Creator(models.Model):
+    given_names = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     is_alias_of = models.ForeignKey("Creator", on_delete=PROTECT, null=True, blank=True)
     comment = models.CharField(max_length=255)
@@ -219,6 +230,9 @@ class Creator(models.Model):
         else:
             return self.name + "::" + str(self.old_id)
 
+    def get_name(self):
+        return self.given_names + ":" + self.name
+
 
 class CreatorRole(models.Model):
     name = models.CharField(max_length=64, unique=True)
@@ -227,10 +241,24 @@ class CreatorRole(models.Model):
 class CreatorToWork(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
     work = models.ForeignKey(Work, on_delete=PROTECT)
+    number = models.IntegerField()
+
+    class Meta:
+        unique_together = ("creator", "work", "number")
+
     role = models.ForeignKey(CreatorRole, on_delete=PROTECT)
+
+    def save(self):
+        super().save()
+        self.work.update_listed_author()
 
 
 class CreatorToItem(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
     item = models.ForeignKey(Item, on_delete=PROTECT)
+    number = models.IntegerField()
+
+    class Meta:
+        unique_together = ("creator", "item", "number")
+
     role = models.ForeignKey(CreatorRole, on_delete=PROTECT)

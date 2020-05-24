@@ -34,7 +34,8 @@ class MemberList(PermissionRequiredMixin, ListView):
 
         result_set = None
         for word in words:
-            members = Member.objects.filter(name__icontains=word)
+            members = Member.objects.filter(Q(name__icontains=word) | Q(nickname__icontains=word)).filter(
+                Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
 
             if result_set is None:
                 result_set = members

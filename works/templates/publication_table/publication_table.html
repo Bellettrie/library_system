@@ -1,5 +1,4 @@
 {% load books_table %}
-{{ items }}
 <table class="table table-striped">
     <thead>
         <tr>
@@ -12,6 +11,8 @@
     <tbody>
         {% for elem in contents %}
             {% show_row elem data perms member%}
+        {% empty %}
+            <tr><td colspan=3  style="align-content: center;" ><i>No results</i></td></tr>
         {% endfor %}
     </tbody>
 </table>

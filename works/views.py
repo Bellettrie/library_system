@@ -1,3 +1,4 @@
+import re
 from _testcapi import instancemethod
 from typing import List
 
@@ -21,6 +22,10 @@ def sort_works(work: Work):
     return work.old_id
 
 
+def sorter(dictt):
+    return lambda a: -dictt[a]
+
+
 class ItemRow:
     def __init__(self, item: Item, book_result=None, options=[], extra_info=None):
         self.item = item
@@ -38,6 +43,7 @@ class BookResult:
         self.item_rows = item_rows
         self.item_options = item_options
         self.publication_options = publication_options
+        self.score = 0
         for row in self.item_rows:
             row.options = item_options
             row.book_result = self
@@ -50,7 +56,13 @@ class BookResult:
 def get_works_for_publication(words):
     result_set = None
     for word in words:
-        authors = Creator.objects.filter(name__icontains=word)
+        if re.match('^[\\w-]+?$', word.replace("*", "").replace("+", "").replace("?", "")) is None:
+            return []
+        word = word.replace("*", ".*")
+        word = word.replace("?", ".?")
+        word = word.replace("+", ".+")
+        authors = Creator.objects.filter(Q(name__iregex="(?<!\\S)" + word + "(?!\\S)") | Q(given_names__iregex="(?<!\\S)" + word + "(?!\\S)"))
+
         series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors)
                                            | Q(title__icontains=word)
                                            | Q(sub_title__icontains=word)
@@ -58,29 +70,35 @@ def get_works_for_publication(words):
                                            | Q(original_subtitle__icontains=word)
                                            ))
 
+        prev_len = 0
+        series_len = len(series)
+
+        while prev_len < series_len:
+            prev_len = series_len
+            series = set(series | set(Series.objects.filter(part_of_series__in=series)))
+            series_len = len(series)
+        work_q = Q(Q(title__iregex="(?<!\\S)" + word + "(?!\\S)")
+                   | Q(sub_title__iregex="(?<!\\S)" + word + "(?!\\S)")
+                   | Q(original_title__iregex="(?<!\\S)" + word + "(?!\\S)")
+                   | Q(original_subtitle__iregex="(?<!\\S)" + word + "(?!\\S)")
+                   | Q(workinseries__part_of_series__in=series))
+
         subworks = set(SubWork.objects.filter(
             Q(creatortowork__creator__in=authors)
-            | Q(title__icontains=word)
-            | Q(sub_title__icontains=word)
-            | Q(original_title__icontains=word)
-            | Q(original_subtitle__icontains=word)
-            | Q(workinseries__part_of_series__in=series)))
+            | work_q))
 
         word_set = set(Publication.objects.filter(
-            Q(creatortowork__creator__in=authors)
-            | Q(title__icontains=word)
-            | Q(sub_title__icontains=word)
-            | Q(original_title__icontains=word)
-            | Q(original_subtitle__icontains=word)
-            | Q(workinseries__part_of_series__in=series)
+            work_q
             | Q(workinpublication__work__in=subworks)))
-
+        res2 = set(Publication.objects.filter(creatortowork__creator__in=authors))
+        word_set = word_set | res2
         if result_set is None:
             result_set = word_set
         else:
             result_set = result_set & word_set
     work_list = list(set(result_set))
-    work_list.sort(key=sort_works)
+    work_list.sort(key=lambda a: a.listed_author)
+
     result = []
     for row in work_list:
         item_rows = []
