@@ -9,5 +9,6 @@ Start a new Inventarisation
         {{ form.location }}
 
         <input type="submit" value="OK">
-    </form>
+    </form><br />
+    <a href="{% url "inventarisation.forAll" %}" class="btn btn-danger">Add for all</a>
 {% endblock %}

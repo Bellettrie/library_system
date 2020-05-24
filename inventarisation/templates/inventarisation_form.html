@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-    Inventarisation Form {{ page_id }} for {{ inventarisation.location }}{% endblock %}
+    Inventarisation Form {{ page_id }} (of {{ counts }}) for {{ inventarisation.location }}{% endblock %}
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}

@@ -4,10 +4,9 @@
 {% endblock %}
 {% block content %}
     <script>
-    function doClick(id){
-        console.log(id);
-        window.location.href="/inventarisation/list/"+id+"/"+document.getElementById("pageNr"+id).value;
-    }
+        function doClick(id) {
+            window.location.href = "/inventarisation/list/" + id + "/" + document.getElementById("pageNr" + id).value;
+        }
     </script>
     <table>
         {% for inv in inventarisations %}
@@ -19,11 +18,42 @@
                 {% if inv.is_active %}
 
                     <td><a href="{% url 'inventarisation.print' inv.pk %}" class="btn-primary btn btn-sm">Print List</a></td>
-                    <td><a href="{% url 'inventarisation.next' inv.pk -1 %}" class="btn-primary btn btn-sm">First inactive</a></td>
-                   <td> <input width="50px" id="pageNr{{ inv.pk }}" /><button onclick="doClick({{ inv.pk }})">Go to Page</button></td>
+                    <td><a href="{% url 'inventarisation.next' inv.pk -1 %}" class="btn-primary btn btn-sm">First inactive</a>
+                    </td>
+                    <td>
+
+
+                        <div class="input-group sm-3">
+                            <input type="text" class="form-control" placeholder="Number" style="width:120px"
+                                   aria-label="Page Number" aria-describedby="basic-addon2" id="pageNr{{ inv.pk }}">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" onclick="doClick({{ inv.pk }})" type="button">To
+                                    page
+                                </button>
+                                <script>
+                                    var input = document.getElementById("pageNr{{ inv.pk }}");
+
+                                    // Execute a function when the user releases a key on the keyboard
+                                    input.addEventListener("keyup", function (event) {
+                                        // Number 13 is the "Enter" key on the keyboard
+                                        if (event.keyCode === 13) {
+                                            // Cancel the default action, if needed
+                                            event.preventDefault();
+                                            // Trigger the button element with a click
+                                            doClick({{ inv.pk }})
+                                        }
+                                    });
+                                </script>
+                            </div>
+
+                        </div>
+
+                    </td>
 
                 {% else %}
-                    <td>No longer active</td>
+                    <td colspan="3"><i>
+                        <div style="align-content: center">Already finished, start new count</div>
+                    </i></td>
                 {% endif %}
             </tr>
         {% endfor %}

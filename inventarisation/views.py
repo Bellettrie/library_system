@@ -47,7 +47,10 @@ class InventarisationCreate(PermissionRequiredMixin, CreateView):
 def inventarisation_form(request, inventarisation_id, page_id):
     inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
     groups = get_groups(inventarisation)
-    page_id=max(0,min(len(groups)-1, int(page_id)))
+    page_id = max(0, min(len(groups) - 1, int(page_id)))
+
+    if len(groups) == 0:
+        return HttpResponseRedirect(reverse('inventarisation.finish', args=[inventarisation_id]))
     group = groups[page_id]
     if request.method == "POST":
         for z in request.POST:
@@ -72,15 +75,13 @@ def inventarisation_form(request, inventarisation_id, page_id):
                     ItemState.objects.filter(item_id=code, inventarisation=inventarisation).delete()
         if request.POST.get("next"):
             return get_inventarisation_next(request, inventarisation_id, page_id)
-
-
     pre_filled = {}
     for item in group:
         try:
             pre_filled[item] = ItemState.objects.get(item=item, inventarisation=inventarisation).type
         except ItemState.DoesNotExist:
             pass
-    return render(request, "inventarisation_form.html", {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled})
+    return render(request, "inventarisation_form.html", {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled, "counts": len(groups)})
 
 
 def get_cur_block(inventarisation, page_id):
@@ -101,6 +102,10 @@ def get_cur_block(inventarisation, page_id):
             item_states = ItemState.objects.filter(inventarisation=inventarisation, item=item)
             if len(item_states) == 0:
                 current_block_clear = False
+    if not current_block_clear and cur_block > int(page_id):
+        print("HERE")
+        return cur_block
+    print("FAAL")
     return -2
 
 
@@ -109,11 +114,32 @@ def get_inventarisation_next(request, inventarisation_id, page_id):
     page_id = get_cur_block(inventarisation, page_id)
     if page_id > -2:
         return HttpResponseRedirect(reverse('inventarisation.by_number', args=(inventarisation_id, page_id)))
-
     page_id = get_cur_block(inventarisation, -1)
-    if  page_id == -2:
-        print("TO finished page")
-        return HttpResponseRedirect(reverse('inventarisation.list'))
+    if page_id == -2:
+        return HttpResponseRedirect(reverse('inventarisation.finish', args=[inventarisation_id]))
     else:
-        print("Retry")
-        return HttpResponseRedirect(reverse('inventarisation.list'))
+        return HttpResponseRedirect(reverse('inventarisation.early', args=[inventarisation_id]))
+
+
+def get_inventarisation_finish(request, inventarisation_id):
+    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    return render(request, "inventarisation_finish.html", {'inventarisation': inventarisation})
+
+
+def get_inventarisation_finished(request, inventarisation_id):
+    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    inventarisation.is_active = False
+    inventarisation.save()
+    return render(request, "inventarisation_finished.html", {'inventarisation': inventarisation})
+
+
+def get_inventarisation_early_end(request, inventarisation_id):
+    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    return render(request, "inventarisation_early_end.html", {'inventarisation': inventarisation})
+
+
+def get_inventarisation_for_all(request):
+    inventarisations = []
+    for location in Location.objects.all():
+        inventarisations.append(Inventarisation.objects.create(location=location))
+    return render(request, "inventarisation_add_for_all.html", {'inventarisations': inventarisations})
