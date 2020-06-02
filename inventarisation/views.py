@@ -38,7 +38,7 @@ def print_list(request, inventarisation_id):
 
 
 class InventarisationCreate(PermissionRequiredMixin, CreateView):
-    permission_required = 'config.add_inventarisation'
+    permission_required = 'inventarisation.add_inventarisation'
     model = Inventarisation
     fields = ['location']
     template_name = 'inventarisation_new.html'
