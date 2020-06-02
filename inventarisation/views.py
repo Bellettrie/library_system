@@ -11,6 +11,7 @@ from django.views.generic import CreateView
 from inventarisation.models import Inventarisation
 from works.models import Item, ItemState, Location
 
+
 @permission_required('inventarisation.view_inventarisation')
 def list_inventarisations(request):
     inventarisations = Inventarisation.objects.order_by('-is_active', '-dateTime')
@@ -29,6 +30,7 @@ def get_groups(inventarisation):
         groups[len(groups) - 1].append(item)
         counter -= 1
     return groups
+
 
 @permission_required('inventarisation.view_inventarisation')
 def print_list(request, inventarisation_id):
@@ -85,6 +87,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
             pass
     return render(request, "inventarisation_form.html", {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled, "counts": len(groups)})
 
+
 @permission_required('inventarisation.view_inventarisation')
 def get_cur_block(inventarisation, page_id):
     items = Item.objects.filter(location=inventarisation.location).order_by('signature')
@@ -123,6 +126,7 @@ def get_inventarisation_next(request, inventarisation_id, page_id):
     else:
         return HttpResponseRedirect(reverse('inventarisation.early', args=[inventarisation_id]))
 
+
 @permission_required('inventarisation.view_inventarisation')
 def get_inventarisation_finish(request, inventarisation_id):
     inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
@@ -135,6 +139,7 @@ def get_inventarisation_finished(request, inventarisation_id):
     inventarisation.is_active = False
     inventarisation.save()
     return render(request, "inventarisation_finished.html", {'inventarisation': inventarisation})
+
 
 @permission_required('inventarisation.view_inventarisation')
 def get_inventarisation_early_end(request, inventarisation_id):
