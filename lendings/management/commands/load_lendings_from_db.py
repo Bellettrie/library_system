@@ -24,8 +24,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         mydb = mysql.connector.connect(
             host="localhost",
-            user="root",
-            passwd="root",
+            user=OLD_USN,
+passwd=OLD_PWD,
             database=OLD_DB
         )
         mycursor = mydb.cursor(dictionary=True)
