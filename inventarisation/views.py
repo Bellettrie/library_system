@@ -58,7 +58,6 @@ def inventarisation_form(request, inventarisation_id, page_id):
     group = groups[page_id]
     if request.method == "POST":
         for z in request.POST:
-            print(z)
             if z.startswith('seen'):
                 code = int(z[4:])
                 if request.POST[z] == "yes":
@@ -88,7 +87,6 @@ def inventarisation_form(request, inventarisation_id, page_id):
     return render(request, "inventarisation_form.html", {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled, "counts": len(groups)})
 
 
-@permission_required('inventarisation.view_inventarisation')
 def get_cur_block(inventarisation, page_id):
     items = Item.objects.filter(location=inventarisation.location).order_by('signature')
     page_counter = 10
@@ -108,9 +106,7 @@ def get_cur_block(inventarisation, page_id):
             if len(item_states) == 0:
                 current_block_clear = False
     if not current_block_clear and cur_block > int(page_id):
-        print("HERE")
         return cur_block
-    print("FAAL")
     return -2
 
 

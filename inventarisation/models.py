@@ -10,9 +10,6 @@ class Inventarisation(models.Model):
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
-        print(self.location.pk)
-        print(self.location.category.pk)
-
         super().save(*args, **kwargs)
         if self.is_active:
             for inv in Inventarisation.objects.filter(location=self.location):
