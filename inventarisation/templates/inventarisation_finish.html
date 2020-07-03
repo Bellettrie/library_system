@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}
+    Inventarisation Form {{ page_id }} for {{ inventarisation.location }}{% endblock %}
+{% block content %}
+    Finishing inventarisation for {{ inventarisation.location }}.<br>
+
+    <a class="btn btn-success" href="{% url 'inventarisation.finished' inventarisation.pk   %}">Finish it</a>
+{% endblock %}
