@@ -1,6 +1,9 @@
 .idea/
 /venv/
+*.pyc
 */*.pyc
+*/*/*.pyc
+*/*/*/*.pyc
 /db.sqlite3
 root/*
 /bellettrie_library_system/settings.py
