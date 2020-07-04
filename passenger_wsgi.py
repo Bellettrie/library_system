@@ -1,3 +1,4 @@
+# flake8: noqa
 # Hornet starts python on python2
 # This script starts python within the right venv.
 import os
