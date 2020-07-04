@@ -11,5 +11,5 @@ if sys.executable != PYTHON_BIN:
     os.execl(PYTHON_BIN, PYTHON_BIN, *sys.argv)
 sys.path.insert(0, '/home/bellettrie/.local/lib/python3.6/site-packages'.format(v=VENV))
 
-import bellettrie_library_system.wsgi
+import bellettrie_library_system.wsgi  # noqa E402
 application = bellettrie_library_system.wsgi.application

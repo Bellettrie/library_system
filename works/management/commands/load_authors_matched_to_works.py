@@ -38,7 +38,7 @@ class Command(BaseCommand):
         for x in list:
             if len(Creator.objects.filter(old_id=x.get("persoonnummer"))) > 0:
                 a = Creator.objects.get(old_id=x.get("persoonnummer"))
-                #print(a.name)
+                # print(a.name)
                 if len(Work.objects.filter(old_id=x.get("publicatienummer"))) > 0:
                     w = Work.objects.get(old_id=x.get("publicatienummer"))
                     role = links.get(x.get("rol"))

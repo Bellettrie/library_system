@@ -248,7 +248,7 @@ class CreatorToWork(models.Model):
 
     role = models.ForeignKey(CreatorRole, on_delete=PROTECT)
 
-    def save(self, *args ,**kwargs):
+    def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.work.update_listed_author()
 
