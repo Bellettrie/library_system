@@ -10,14 +10,8 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-
-
-        rights = Permission.objects.all()
         f = open("committees.csv", "r")
-        str = ""
         firstLine = f.readline().replace("\n", "").split(",")[1:]
-        count = 1
-
 
         committees = []
         for com in firstLine:
@@ -32,14 +26,14 @@ class Command(BaseCommand):
             line = f.readline()
             if not line:
                 break
-            line = line.replace("\n","").split(",")
+            line = line.replace("\n", "").split(",")
             perm = line[0]
             codes = line[1:]
             print(perm)
             permission = Permission.objects.get(codename=perm)
             counter = 0
             for code in codes:
-                if code=="0":
+                if code == "0":
                     groups[counter].permissions.remove(permission)
                 else:
                     groups[counter].permissions.add(permission)
