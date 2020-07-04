@@ -37,6 +37,7 @@ class Command(BaseCommand):
     @staticmethod
     def handle_publication(publication, tree, finder):
         data = finder.get(publication)
+        print(publication)
         publication = Publication(
             date_added=data.get("gecatalogiseerd") or datetime.datetime.today(),
             comment=data.get("commentaar"),

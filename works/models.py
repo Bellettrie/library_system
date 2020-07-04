@@ -69,7 +69,7 @@ class Location(models.Model):
 class Work(NamedTranslatableThing):
     date_added = models.DateField()
     sorting = models.CharField(max_length=64, default='TITLE', choices=[("AUTHOR", 'Author'), ("TITLE", "Title")])
-    comment = models.CharField(max_length=1024)
+    comment = models.TextField()
     internal_comment = models.CharField(max_length=1024)
     signature_fragment = models.CharField(max_length=64)
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
@@ -248,8 +248,8 @@ class CreatorToWork(models.Model):
 
     role = models.ForeignKey(CreatorRole, on_delete=PROTECT)
 
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         self.work.update_listed_author()
 
 

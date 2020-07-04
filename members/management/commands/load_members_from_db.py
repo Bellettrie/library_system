@@ -30,6 +30,7 @@ class Command(BaseCommand):
         for x in mycursor:
             z = Member.objects.filter(old_id=x.get("klantnummer"))
             if len(z) == 0:
+                print(x.get("klantnummer"))
                 Member.objects.create(
                     name=x.get("voornaam") + " " + x.get("naam"),
                     nickname="",
