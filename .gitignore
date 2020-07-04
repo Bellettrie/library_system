@@ -6,4 +6,4 @@
 */*/*/*.pyc
 /db.sqlite3
 root/*
-/bellettrie_library_system/settings.py
+/bellettrie_library_system/settings_production.py
