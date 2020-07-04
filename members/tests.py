@@ -113,6 +113,7 @@ class MemberTestCase(TestCase):
         self.user2 = User.objects.create(username="Bob")
         self.member2.user = self.user2
         self.member2.save()
+        self.member2.update_groups()
         self.assertEqual(1, self.member2.user.groups.all().__len__())
 
     def test_removing_committee(self):
