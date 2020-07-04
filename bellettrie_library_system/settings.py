@@ -1,8 +1,11 @@
-from bellettrie_library_system.base_settings import BASE_DIR
+from bellettrie_library_system.base_settings import *
 import os
 
 WSGI_APPLICATION = 'bellettrie_library_system.wsgi.application'
 
+SECRET_KEY = '9_meq=rl3q!wh4=lr4g9t)ra9l*o_d7!exbh&^brhj=*_xm5y*'
+
+DEBUG = True
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
