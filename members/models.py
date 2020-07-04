@@ -38,6 +38,9 @@ class Member(models.Model):
     privacy_reunions = models.BooleanField(default=False)
     privacy_reunion_end_date = models.DateField(auto_now=True)
 
+    class Meta:
+        permissions = [('committee_update', 'Can update committee')]
+
     def is_currently_member(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
         return self.end_date is None or current_date < self.end_date
@@ -71,7 +74,6 @@ class Member(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.update_groups()
 
     def __str__(self):
         return self.name

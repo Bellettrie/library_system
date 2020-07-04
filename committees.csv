@@ -48,6 +48,7 @@ delete_committee,0,1,1,0,0,0,0,0,0,0,0
 view_committee,0,1,1,0,0,0,0,0,0,0,0
 add_member,0,1,1,0,0,0,0,1,0,0,1
 change_member,0,1,1,0,0,0,0,1,0,0,1
+committee_update,0,1,1,0,0,0,0,0,0,0,0
 delete_member,0,1,1,0,0,0,0,1,0,0,1
 view_member,0,1,1,0,0,0,0,1,0,0,1
 add_article,0,1,1,0,0,0,0,0,0,0,0
