@@ -5,6 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
+from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
 
@@ -52,11 +53,17 @@ class Category(models.Model):
     code = models.CharField(max_length=8)
     item_type = models.ForeignKey(ItemType, on_delete=PROTECT)
 
+    def __str__(self):
+        return self.name
+
 
 class Location(models.Model):
     category = models.ForeignKey(Category, on_delete=PROTECT)
     name = models.CharField(null=True, blank=True, max_length=255)
     old_id = models.IntegerField()
+
+    def __str__(self):
+        return self.category.name + "-" + self.name
 
 
 class Work(NamedTranslatableThing):
@@ -170,6 +177,12 @@ class Item(NamedThing):
             return ItemState(item=self, dateTime=datetime.now(), type="AVAILABLE")
         return states[0]
 
+    def get_prev_state(self):
+        states = ItemState.objects.filter(item=self).order_by("-dateTime")
+        if len(states) <= 1:
+            return ItemState(item=self, dateTime=datetime.now(), type="AVAILABLE")
+        return states[1]
+
     def is_seen(self, reason):
         state = self.get_state()
         if state.type != "AVAILABLE":
@@ -185,6 +198,7 @@ class ItemState(models.Model):
     dateTime = models.DateTimeField(auto_now=True)
     type = models.CharField(max_length=64, choices=(("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken")))
     reason = models.TextField()
+    inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
 
 
 class SubWork(Work, TranslatedThing):
