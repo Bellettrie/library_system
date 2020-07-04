@@ -1,5 +1,6 @@
-from bellettrie_library_system.base_settings import *
+from bellettrie_library_system.base_settings import BASE_DIR
 import os
+
 WSGI_APPLICATION = 'bellettrie_library_system.wsgi.application'
 
 # Database
@@ -11,7 +12,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 STATIC_URL = '/root/'
 # --------------------------------------------------
@@ -25,4 +25,3 @@ STATICFILES_DIRS = [
 OLD_DB = "oldsystem2"
 OLD_USN = 'root'
 OLD_PWD = 'root'
-
