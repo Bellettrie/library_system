@@ -1,3 +1,4 @@
+# flake8: noqa
 from bellettrie_library_system.base_settings import *
 import os
 
