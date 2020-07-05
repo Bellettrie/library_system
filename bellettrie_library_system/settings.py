@@ -26,6 +26,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'bootstrap'),
 ]
 
-OLD_DB = "oldsystem2"
+OLD_DB = "bellettrie"
 OLD_USN = 'root'
 OLD_PWD = 'root'
