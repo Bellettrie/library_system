@@ -17,6 +17,7 @@ class SeriesNode(models.Model):
 
 
 class Series(SeriesNode, NamedTranslatableThing):
+    signature_fragment = models.CharField(max_length=64)
     def get_authors(self):
         authors = []
         for author in CreatorToSeries.objects.filter(series=self):

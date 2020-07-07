@@ -85,12 +85,14 @@ class Command(BaseCommand):
             Series.objects.create(part_of_series=super_series, number=my_num,
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
-                                  language=data.get('taal'))
+                                  language=data.get('taal'),
+                                  signature_fragment=data.get("signatuurfragment"))
         else:
             Series.objects.create(number=my_num,
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
-                                  language=data.get('taal'))
+                                  language=data.get('taal'),
+                                  signature_fragment=data.get("signatuurfragment"))
 
         handled_list.append(node)
 
