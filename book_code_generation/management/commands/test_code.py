@@ -5,10 +5,10 @@ import mysql.connector
 from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB, OLD_USN, OLD_PWD
-from book_code_generation.models import CutterCodeRange
+from book_code_generation.models import CutterCodeRange, generate_code_from_author, generate_code_from_author_translated, generate_code_from_title
 from members.management.commands.namegen import generate_name, generate_full_name
 from members.models import Member
-from works.models import Item, Creator
+from works.models import Item, Creator, Location
 
 
 class Command(BaseCommand):
@@ -17,3 +17,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         cutter = CutterCodeRange.get_cutter_number("Pratchett")
         print(cutter.generated_affix)
+        items = Item.objects.filter(location=Location.objects.get(pk=3))
+
+        for item in items:
+            print(item.generate_code_prefix())
+            print(item.old_id)

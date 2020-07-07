@@ -1,7 +1,6 @@
 from django.db import models
 
 # Create your models here.
-from works.models import Creator
 
 
 class CutterCodeRange(models.Model):
@@ -19,3 +18,36 @@ class CutterCodeRange(models.Model):
                 return result
             result = cutter
         return result
+
+
+def generate_code_from_author(item):
+    pub = item.publication
+    auth = pub.get_authors()
+    if len(auth) > 0:
+        author = auth[0].creator.name
+        return item.location.category.code + "-" + CutterCodeRange.get_cutter_number(author).generated_affix + "-"
+    else:
+        pass
+
+
+def generate_code_from_author_translated(item):
+    pub = item.publication
+    prefix = "N"
+    if pub.is_translated:
+        prefix = "V"
+    auth = item.publication.get_authors()
+    if len(auth) > 0:
+        author = auth[0].creator.name
+        return prefix + "-" + CutterCodeRange.get_cutter_number(author).generated_affix + "-"
+    else:
+        pass
+
+
+def generate_code_from_title(item):
+    title = item.publication.title[0:4]
+    if item.location.category.code == "":
+        return title+"-"
+    else:
+        return item.location.category.code+"-"+title + "-"
+
+

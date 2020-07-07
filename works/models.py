@@ -5,6 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
+from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title
 from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
@@ -57,10 +58,18 @@ class Category(models.Model):
         return self.name
 
 
+GENERATORS = {
+    'author': generate_code_from_author,
+    'author_translated': generate_code_from_author_translated,
+    'title': generate_code_from_title,
+}
+
+
 class Location(models.Model):
     category = models.ForeignKey(Category, on_delete=PROTECT)
     name = models.CharField(null=True, blank=True, max_length=255)
     old_id = models.IntegerField()
+    sig_gen = models.CharField(max_length=64, choices=[("Author", "author"), ("Author_Translated", "author_translated"), ("Title", "title")], default='author')
 
     def __str__(self):
         return self.category.name + "-" + self.name
@@ -188,6 +197,32 @@ class Item(NamedThing):
         if state.type != "AVAILABLE":
             if state.type not in not_switch_to_available:
                 ItemState.objects.create(item=self, type="AVAILABLE", reason="Automatically switched because of reason: " + reason)
+
+    def generate_code_full(self):
+        first_letters = self.publication.title[0:2].lower()
+
+        from series.models import Series, WorkInSeries
+        series_list = WorkInSeries.objects.filter(work=self.publication).order_by('number')
+        if len(series_list) > 0:
+            if series_list[0].number is None:
+                return series_list[0].part_of_series.signature_fragment + first_letters
+
+            if series_list[0].number == float(int(series_list[0].number)):
+                return series_list[0].part_of_series.signature_fragment + str(int(series_list[0].number))
+            else:
+                return series_list[0].part_of_series.signature_fragment + str(series_list[0].number)
+
+        generator = GENERATORS[self.location.sig_gen]
+        return generator(self) + first_letters
+
+    def generate_code_prefix(self):
+        from series.models import Series, WorkInSeries
+        series_list = WorkInSeries.objects.filter(work=self.publication).order_by('number')
+        if len(series_list) > 0:
+            return series_list[0].part_of_series.signature_fragment
+
+        generator = GENERATORS[self.location.sig_gen]
+        return generator(self)
 
 
 not_switch_to_available = ["BROKEN", "SOLD"]
