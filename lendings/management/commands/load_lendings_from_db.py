@@ -4,7 +4,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from bellettrie_library_system.settings import OLD_DB
+from bellettrie_library_system.settings import OLD_DB, OLD_USN, OLD_PWD
 from lendings.models import Lending
 from members.management.commands.namegen import generate_name, generate_full_name
 from members.models import Member
@@ -24,8 +24,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         mydb = mysql.connector.connect(
             host="localhost",
-            user="root",
-            passwd="root",
+            user=OLD_USN,
+            passwd=OLD_PWD,
             database=OLD_DB
         )
         mycursor = mydb.cursor(dictionary=True)

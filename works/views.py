@@ -1,9 +1,7 @@
 import re
-from _testcapi import instancemethod
 from typing import List
 
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render

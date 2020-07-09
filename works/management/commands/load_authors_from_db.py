@@ -2,7 +2,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from bellettrie_library_system.settings import OLD_DB
+from bellettrie_library_system.settings import OLD_DB, OLD_PWD, OLD_USN
 
 from works.models import Creator
 
@@ -20,8 +20,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         mydb = mysql.connector.connect(
             host="localhost",
-            user="root",
-            passwd="root",
+            user=OLD_USN,
+            passwd=OLD_PWD,
             database=OLD_DB
         )
         mycursor = mydb.cursor(dictionary=True)

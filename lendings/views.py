@@ -123,7 +123,7 @@ def return_book(request, work_id):
                                                 'fine': lending.calculate_fine()})
 
 
-@login_required
+@login_required()
 def me(request):
     lendings = Lending.objects.filter(member=request.user.member)
     return render(request, 'lending_detail.html', {'lendings': lendings})

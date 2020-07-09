@@ -4,7 +4,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from bellettrie_library_system.settings import OLD_DB
+from bellettrie_library_system.settings import OLD_DB, OLD_PWD, OLD_USN
 from series.models import Series, WorkInSeries, SeriesNode
 from works.models import Work, WorkInPublication, Publication, SubWork, Item, NamedTranslatableThing
 
@@ -37,6 +37,7 @@ class Command(BaseCommand):
     @staticmethod
     def handle_publication(publication, tree, finder):
         data = finder.get(publication)
+        print(publication)
         publication = Publication(
             date_added=data.get("gecatalogiseerd") or datetime.datetime.today(),
             comment=data.get("commentaar"),
@@ -121,8 +122,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         mydb = mysql.connector.connect(
             host="localhost",
-            user="root",
-            passwd="root",
+            user=OLD_USN,
+            passwd=OLD_PWD,
             database=OLD_DB
         )
         mycursor = mydb.cursor(dictionary=True)
