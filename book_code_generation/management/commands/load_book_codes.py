@@ -15,13 +15,8 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        mydb = mysql.connector.connect(
-            unix_socket="/run/mysqld/mysqld.sock",
-            user=OLD_USN,
-            passwd=OLD_PWD,
-            database=OLD_DB
-        )
-        mycursor = mydb.cursor(dictionary=True)
+        from bellettrie_library_system.settings_migration import migration_database
+        mycursor = migration_database.cursor(dictionary=True)
 
         mycursor.execute("SELECT * FROM cutter")
         CutterCodeRange.objects.all().delete()

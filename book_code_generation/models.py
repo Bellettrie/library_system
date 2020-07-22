@@ -1,6 +1,24 @@
+import unidecode as unidecode
 from django.db import models
 
 # Create your models here.
+
+import re
+import unicodedata
+
+
+def strip_accents(text):
+    """
+    Strip accents from input String.
+
+    :param text: The input string.
+    :type text: String.
+
+    :returns: The processed String.
+    :rtype: String.
+    """
+
+    return unidecode.unidecode(text)
 
 
 class CutterCodeRange(models.Model):
@@ -14,7 +32,9 @@ class CutterCodeRange(models.Model):
         cutters = CutterCodeRange.objects.all().order_by("from_affix")
         result = None
         for cutter in cutters:
-            if name.upper() < cutter.from_affix:
+            if result is None:
+                result = cutter
+            if strip_accents(name.upper()) < cutter.from_affix:
                 return result
             result = cutter
         return result

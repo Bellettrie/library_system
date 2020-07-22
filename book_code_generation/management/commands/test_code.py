@@ -17,8 +17,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         cutter = CutterCodeRange.get_cutter_number("Pratchett")
         print(cutter.generated_affix)
-        items = Item.objects.filter(location=Location.objects.get(pk=3))
+        items = Item.objects.filter(location=Location.objects.get(pk=3), publication__signature_fragment__contains="-10-")
 
         for item in items:
-            print(item.generate_code_prefix())
-            print(item.old_id)
+            print(item)
+            if not item.publication.signature_fragment.startswith(item.generate_code_prefix()):
+                print(item.publication.signature_fragment, item.generate_code_prefix(), item.old_id)

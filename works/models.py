@@ -100,7 +100,7 @@ class Work(NamedTranslatableThing):
         authors = []
         for link in links:
             authors.append(link)
-        for serie in WorkInSeries.objects.filter(work=self):
+        for serie in WorkInSeries.objects.filter(work=self, is_primary=True):
             authors = serie.get_authors() + authors
         author_set = list()
         for author in authors:
@@ -202,7 +202,7 @@ class Item(NamedThing):
         first_letters = self.publication.title[0:2].lower()
 
         from series.models import Series, WorkInSeries
-        series_list = WorkInSeries.objects.filter(work=self.publication).order_by('number')
+        series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
         if len(series_list) > 0:
             if series_list[0].number is None:
                 return series_list[0].part_of_series.signature_fragment + first_letters
@@ -217,10 +217,9 @@ class Item(NamedThing):
 
     def generate_code_prefix(self):
         from series.models import Series, WorkInSeries
-        series_list = WorkInSeries.objects.filter(work=self.publication).order_by('number')
-        if len(series_list) > 0:
-            return series_list[0].part_of_series.signature_fragment
-
+        series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
+        if len(series_list) > 0 and  len(series_list[0].part_of_series.signature_fragment.split("-")) > 1:
+            return  series_list[0].part_of_series.signature_fragment
         generator = GENERATORS[self.location.sig_gen]
         return generator(self)
 

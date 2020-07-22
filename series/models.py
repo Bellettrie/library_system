@@ -31,6 +31,13 @@ class Series(SeriesNode, NamedTranslatableThing):
 
 class WorkInSeries(SeriesNode):
     work = models.ForeignKey("works.Work", on_delete=PROTECT)
+    is_primary = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if self.is_primary and len(WorkInSeries.objects.filter(work=self.work, is_primary=True))>0:
+            raise RuntimeError("Cannot Save")
+        super().save(*args, **kwargs)
+
 
     def get_authors(self):
         return self.part_of_series.get_authors()
