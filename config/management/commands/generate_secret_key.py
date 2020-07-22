@@ -9,4 +9,3 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         print(get_random_secret_key())
-        
