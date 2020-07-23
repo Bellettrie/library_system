@@ -57,6 +57,8 @@ def edit(request, member_id):
         form = EditForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
+            if request.user.has_perm('committee_update'):
+                member.update_groups()
             return HttpResponseRedirect(reverse('members.view', args=(member_id,)))
     else:
         form = EditForm(instance=member)
@@ -69,6 +71,8 @@ def new(request):
         form = EditForm(request.POST)
         if form.is_valid():
             instance = form.save()
+            if request.user.has_perm('committee_update'):
+                instance.update_groups()
             return HttpResponseRedirect(reverse('members', args=(instance.pk,)))
     else:
         form = EditForm()
