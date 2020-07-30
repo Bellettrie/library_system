@@ -66,13 +66,16 @@
                 <td>{{ member.user }}</td>
             </tr>
             <tr>
-                <th>Delete User</th>
-                <td><a href="{% url "members.delete_user" member.pk %}" class="btn-sm btn-danger">Delete</a></td>
+                <th>User control</th>
+                <td>
+                    <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete</a>
+                </td>
             </tr>
         {% else %}
             <tr>
                 <th>Add user</th>
-                <td><a href="{% url "members.signup" member.pk %}" class="btn-sm btn-outline-primary">Add new</a></td>
+                <td><a href="{% url 'members.signup' member.pk %}" class="btn-sm btn-outline-primary">Add new</a></td>
             </tr>
         {% endif %}
     </table>
