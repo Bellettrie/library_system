@@ -1,6 +1,5 @@
 import datetime
 
-import mysql.connector
 
 from django.core.management.base import BaseCommand
 
@@ -32,18 +31,24 @@ def fill_data(thing: NamedTranslatableThing, data):
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = '0 for only publications, 1 for extras, 2 for everything. -1 for reload names etc.'
+
+    def add_arguments(self, parser):
+        parser.add_argument('everything', nargs='+', type=int)
 
     @staticmethod
-    def handle_publication(publication, tree, finder):
-        data = finder.get(publication)
-        print(publication)
-        publication = Publication(
-            date_added=data.get("gecatalogiseerd") or datetime.datetime.today(),
-            comment=data.get("commentaar"),
-            internal_comment=data.get("intern_commentaar"),
-            signature_fragment=data.get("signatuurfragment"),
-            old_id=publication)
+    def handle_publication(publication_id, tree, finder):
+        data = finder.get(publication_id)
+        publication = None
+        if len(Publication.objects.filter(old_id=publication_id)):
+            publication = Publication.objects.get(old_id=publication_id)
+        else:
+            publication = Publication(
+                date_added=data.get("gecatalogiseerd") or datetime.datetime.today(),
+                comment=data.get("commentaar"),
+                internal_comment=data.get("intern_commentaar"),
+                signature_fragment=data.get("signatuurfragment"),
+                old_id=publication_id)
         fill_data(publication, data)
 
     @staticmethod
@@ -85,12 +90,14 @@ class Command(BaseCommand):
             Series.objects.create(part_of_series=super_series, number=my_num,
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
-                                  language=data.get('taal'))
+                                  language=data.get('taal'),
+                                  signature_fragment=data.get("signatuurfragment"))
         else:
             Series.objects.create(number=my_num,
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
-                                  language=data.get('taal'))
+                                  language=data.get('taal'),
+                                  signature_fragment=data.get("signatuurfragment"))
 
         handled_list.append(node)
 
@@ -120,13 +127,10 @@ class Command(BaseCommand):
                                         "reeks_deelaanduiding"))
 
     def handle(self, *args, **options):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user=OLD_USN,
-            passwd=OLD_PWD,
-            database=OLD_DB
-        )
-        mycursor = mydb.cursor(dictionary=True)
+        opt = (options['everything'][0])
+
+        from bellettrie_library_system.settings_migration import migration_database
+        mycursor = migration_database.cursor(dictionary=True)
 
         tree = dict()
         finder = dict()
@@ -141,49 +145,54 @@ class Command(BaseCommand):
                 duds[(x.get("reeks_publicatienummer"), round_number(x.get("reeks_deelnummer")))] = countz + 1
                 count += 1
             finder[x.get("publicatienummer")] = x
-        print(duds[15501, 5.0])
 
-        for t in finder.keys():
-            if finder.get(t).get("type") == 0:
-                Command.handle_publication(t, tree, finder)
-        print("Done publications, now subworks")
+        if opt%2 == 0:
+            for t in finder.keys():
+                if finder.get(t).get("type") == 0:
+                    Command.handle_publication(t, tree, finder)
+            print("Done publications, now subworks")
+        else:
+            print("skipping publication adding")
 
-        for t in finder.keys():
-            if finder.get(t).get("type") == -1:
-                Command.handle_subwork(t, tree, finder)
-        print("done subworks, now series")
-        handled = []
+        if opt > 0:
+            for t in finder.keys():
+                if finder.get(t).get("type") == -1:
+                    Command.handle_subwork(t, tree, finder)
+            print("done subworks, now series")
+            handled = []
 
-        for t in finder.keys():
-            if finder.get(t).get("type") == 1:
-                handled += Command.handle_series_node(handled, t, tree, finder, duds)
-        print("done series, now adding works to series")
-        for t in tree.keys():
-            if finder.get(t).get("type") == 0 and finder.get(t).get("reeks_publicatienummer") > 0:
-                Command.handle_part_of_series(t, tree, finder, duds)
+            for t in finder.keys():
+                if finder.get(t).get("type") == 1:
+                    handled += Command.handle_series_node(handled, t, tree, finder, duds)
+            print("done series, now adding works to series")
+            for t in tree.keys():
+                if finder.get(t).get("type") == 0 and finder.get(t).get("reeks_publicatienummer") > 0:
+                    Command.handle_part_of_series(t, tree, finder, duds)
 
-        mycursor.execute("SELECT * FROM band")
+        mycursor.execute("SELECT * FROM band JOIN publicatie USING (publicatienummer);")
         banden = dict()
         for x in mycursor:
             banden[x.get("publicatienummer")] = x
         print("Now items")
-        for k in Publication.objects.all():
-            band = banden.get(k.old_id)
+        if opt%2 == 0:
+            for k in Publication.objects.all():
+                band = banden.get(k.old_id)
 
-            if band is None:
-                print(k.old_id)
-                print(k.title)
-                print(banden.keys())
-            else:
-                data = finder[k.old_id]
-                s = data.get("sortering")
-                if s == "titel":
-                    k.sorting = "TITLE"
+                if band is None:
+                    print(k.old_id)
+                    print(k.title)
+                    print(banden.keys())
                 else:
-                    k.sorting = "AUTHOR"
-                k.save()
-                Item.objects.create(old_id=k.old_id, signature=band.get("signatuur"), publication=k, hidden=False,
-                                    isbn10=data.get("isbn10"), isbn13=data.get("isbn13"),
-                                    bought_date=data.get('inkoopdatum') or "1900-01-01",
-                                    last_seen=data.get('laatst_gezien'), pages=data.get('pagina'))
-        print("Work import done")
+                    if len(Item.objects.filter(old_id=k.old_id)) > 0:
+                        continue
+                    s = band.get("sortering")
+                    if s == "titel":
+                        k.sorting = "TITLE"
+                    else:
+                        k.sorting = "AUTHOR"
+                    k.save()
+                    Item.objects.create(old_id=k.old_id, signature=band.get("signatuur"), publication=k, hidden=False,
+                                        isbn10=band.get("isbn10"), isbn13=band.get("isbn13"),
+                                        bought_date=band.get('inkoopdatum') or "1900-01-01",
+                                        last_seen=band.get('laatst_gezien'), pages=band.get('pagina'))
+            print("Work import done")
