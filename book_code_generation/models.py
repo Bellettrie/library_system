@@ -7,6 +7,14 @@ import re
 import unicodedata
 
 
+class BookCode(models.Model):
+    class Meta:
+        abstract = True
+    location_part = models.CharField(max_length=8)  # Where in the library is it?
+    grouping_part = models.CharField(max_length=8)  # in most cases, this is the author
+    identifying_part = models.CharField(max_length=12)  # which object is it?
+    full_string = models.CharField(max_length=64)
+
 def strip_accents(text):
     """
     Strip accents from input String.
@@ -66,8 +74,6 @@ def generate_code_from_author_translated(item):
 def generate_code_from_title(item):
     title = item.publication.title[0:4]
     if item.location.category.code == "":
-        return title+"-"
+        return title + "-"
     else:
-        return item.location.category.code+"-"+title + "-"
-
-
+        return item.location.category.code + "-" + title + "-"
