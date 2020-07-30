@@ -39,7 +39,7 @@
     </div>
     <!-- Sidebar Holder -->
     <button id="toggle-sidebar"><</button>
-    {% if not user.is_anonymous %}
+    {% if not user.is_anonymous and user.member %}
         <div id="sidebar-header" class="collapsed loggedin">
             <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a></div>
     {% else %}

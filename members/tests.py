@@ -78,8 +78,10 @@ class MemberTestCase(TestCase):
 
         self.member.committees.add(self.committe1)
         self.member.user = self.user1
+        self.member.update_groups()
         self.member.save()
         self.member2.committees.add(self.committe2)
+        self.member2.update_groups()
         self.member2.save()
 
     def test_is_active_member(self):
@@ -91,12 +93,14 @@ class MemberTestCase(TestCase):
     def test_become_active(self):
         self.assertEqual(self.member2.is_active(), False)
         self.member2.committees.add(self.committe1)
+        self.member2.update_groups()
         self.member2.save()
         self.assertEqual(self.member2.is_active(), True)
 
     def test_become_inactive(self):
         self.assertEqual(self.member.is_active(), True)
         self.member.committees.remove(self.committe1)
+        self.member.update_groups()
         self.member.save()
         self.assertEqual(self.member.is_active(), False)
 
@@ -109,9 +113,11 @@ class MemberTestCase(TestCase):
         self.user2 = User.objects.create(username="Bob")
         self.member2.user = self.user2
         self.member2.save()
+        self.member2.update_groups()
         self.assertEqual(1, self.member2.user.groups.all().__len__())
 
     def test_removing_committee(self):
         self.member.committees.clear()
+        self.member.update_groups()
         self.member.save()
         self.assertEqual(0, self.member.user.groups.all().__len__())

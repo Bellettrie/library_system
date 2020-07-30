@@ -26,16 +26,21 @@ class MemberList(PermissionRequiredMixin, ListView):
 
     def get_queryset(self):  # new
         words = get_query_words(self.request)
+        get_previous = self.request.GET.get('previous', False)
+
         if words is None:
             return []
         if len(words) == 0:
-            return Member.objects.filter(is_anonymous_user=False).filter(
-                Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
+            m = Member.objects.filter(is_anonymous_user=False)
+            if not get_previous:
+                m = m.filter(Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
+            return m
 
         result_set = None
         for word in words:
-            members = Member.objects.filter(Q(name__icontains=word) | Q(nickname__icontains=word)).filter(
-                Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
+            members = Member.objects.filter(Q(name__icontains=word) | Q(nickname__icontains=word))
+            if not get_previous:
+                members = members.filter(Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
 
             if result_set is None:
                 result_set = members

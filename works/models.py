@@ -139,11 +139,11 @@ class Item(NamedThing, BookCode):
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
     isbn13 = models.CharField(max_length=64, null=True, blank=True)
-    pages = models.IntegerField(null=True, blank=True)
+    pages = models.CharField(null=True, blank=True, max_length=32)
     hidden = models.BooleanField()
-    comment = models.TextField(default='')
+    comment = models.TextField(default='', null=True, blank=True)
     publication_year = models.IntegerField(null=True, blank=True)
-    bought_date = models.DateField(default="1900-01-01")
+    bought_date = models.DateField(default="1900-01-01", null=True, blank=True)
     added_on = models.DateField(auto_now_add=True)
     last_seen = models.DateField(null=True, blank=True)
 
@@ -219,6 +219,24 @@ class Item(NamedThing, BookCode):
             return series_list[0].part_of_series.signature_fragment
         generator = GENERATORS[self.location.sig_gen]
         return generator(self)
+
+    def get_isbn10(self):
+        if self.isbn10 is not None:
+            return self.isbn10
+        else:
+            return ''
+
+    def get_isbn13(self):
+        if self.isbn13 is not None:
+            return self.isbn13
+        else:
+            return ''
+
+    def get_pages(self):
+        if self.pages is not None:
+            return self.pages
+        else:
+            return ''
 
 
 not_switch_to_available = ["BROKEN", "SOLD"]

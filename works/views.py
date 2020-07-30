@@ -4,7 +4,7 @@ from typing import List
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse
@@ -12,7 +12,7 @@ from django.views.generic import DetailView, ListView, CreateView
 
 from series.models import Series
 from utils.get_query_words import get_query_words
-from works.forms import ItemStateCreateForm
+from works.forms import ItemStateCreateForm, ItemCreateForm
 from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState
 
 
@@ -168,3 +168,18 @@ def create_item_state(request, item_id):
     else:
         form = ItemStateCreateForm()
     return render(request, 'item_reason_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
+
+
+@permission_required('works.change_item')
+def item_edit(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    if request.method == 'POST':
+        form = ItemCreateForm(request.POST, instance=item)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.item = Item.objects.get(pk=item_id)
+            instance.save()
+            return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
+    else:
+        form = ItemCreateForm(instance=item)
+    return render(request, 'item_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
