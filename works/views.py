@@ -169,6 +169,7 @@ def create_item_state(request, item_id):
         form = ItemStateCreateForm()
     return render(request, 'item_reason_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
 
+
 @permission_required('works.change_item')
 def item_edit(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
