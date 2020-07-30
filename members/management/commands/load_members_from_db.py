@@ -17,13 +17,8 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user=OLD_USN,
-            passwd=OLD_PWD,
-            database=OLD_DB
-        )
-        mycursor = mydb.cursor(dictionary=True)
+        from bellettrie_library_system.settings_migration import migration_database
+        mycursor = migration_database.cursor(dictionary=True)
 
         mycursor.execute("SELECT * FROM klant")
 
@@ -36,7 +31,8 @@ class Command(BaseCommand):
                     nickname="",
                     addressLineOne=x.get("adres1"),
                     addressLineTwo=x.get("adres2"),
-                    addressLineThree=x.get("adres3") + "\n" + x.get("adres4"),
+                    addressLineThree=x.get("adres3"),
+                    addressLineFour=x.get("adres4"),
                     email=x.get("email"),
                     phone=x.get("telefoon"),
                     student_number=x.get("unionpluskaartnummer"),
