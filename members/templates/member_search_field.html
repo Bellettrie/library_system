@@ -1,5 +1,9 @@
 <form action="/members" method="get">
-    <label for="Query">Search: </label>
-    <input id="q" type="text" name="q">
-    <input type="submit" value="Search">
+    <table>
+    <tr><td><label for="q">Search: </label></td>
+    <td><input id="q" type="text" name="q"></td></tr>
+    <tr><td><label for="previous">Also previous years?</label></td>
+        <td><input type="checkbox" id="previous" name="previous"></td></tr>
+        <tr> <td colspan="2"><input type="submit" value="Search"></td></tr>
+        </table>
 </form>
