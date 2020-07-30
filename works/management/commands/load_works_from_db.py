@@ -169,7 +169,7 @@ class Command(BaseCommand):
                 if finder.get(t).get("type") == 0 and finder.get(t).get("reeks_publicatienummer") > 0:
                     Command.handle_part_of_series(t, tree, finder, duds)
 
-        mycursor.execute("SELECT * FROM band")
+        mycursor.execute("SELECT * FROM band JOIN publicatie USING (publicatienummer);")
         banden = dict()
         for x in mycursor:
             banden[x.get("publicatienummer")] = x
@@ -185,15 +185,14 @@ class Command(BaseCommand):
                 else:
                     if len(Item.objects.filter(old_id=k.old_id)) > 0:
                         continue
-                    data = finder[k.old_id]
-                    s = data.get("sortering")
+                    s = band.get("sortering")
                     if s == "titel":
                         k.sorting = "TITLE"
                     else:
                         k.sorting = "AUTHOR"
                     k.save()
                     Item.objects.create(old_id=k.old_id, signature=band.get("signatuur"), publication=k, hidden=False,
-                                        isbn10=data.get("isbn10"), isbn13=data.get("isbn13"),
-                                        bought_date=data.get('inkoopdatum') or "1900-01-01",
-                                        last_seen=data.get('laatst_gezien'), pages=data.get('pagina'))
+                                        isbn10=band.get("isbn10"), isbn13=band.get("isbn13"),
+                                        bought_date=band.get('inkoopdatum') or "1900-01-01",
+                                        last_seen=band.get('laatst_gezien'), pages=band.get('pagina'))
             print("Work import done")
