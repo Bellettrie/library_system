@@ -118,10 +118,12 @@ def change_user(request, member_id):
         form = PasswordChangeForm(member.user)
     return render(request, 'user_edit.html', {'form': form, 'member': member, 'user': member.user})
 
+
 @permission_required('auth.delete_user')
 def remove_user(request, member_id):
     member = Member.objects.get(pk=member_id)
     return render(request, 'user_delete.html', {'member': member, 'user': member.user})
+
 
 @permission_required('auth.delete_user')
 def delete_user(request, member_id):
