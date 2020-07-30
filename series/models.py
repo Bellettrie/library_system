@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
+from book_code_generation.models import BookCode
 from works.models import NamedTranslatableThing
 
 
@@ -16,8 +17,7 @@ class SeriesNode(models.Model):
     old_id = models.IntegerField()
 
 
-class Series(SeriesNode, NamedTranslatableThing):
-    signature_fragment = models.CharField(max_length=64)
+class Series(SeriesNode, NamedTranslatableThing, BookCode):
     def get_authors(self):
         authors = []
         for author in CreatorToSeries.objects.filter(series=self):

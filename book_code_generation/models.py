@@ -10,10 +10,12 @@ import unicodedata
 class BookCode(models.Model):
     class Meta:
         abstract = True
-    location_part = models.CharField(max_length=8)  # Where in the library is it?
-    grouping_part = models.CharField(max_length=8)  # in most cases, this is the author
-    identifying_part = models.CharField(max_length=12)  # which object is it?
-    full_string = models.CharField(max_length=64)
+    book_code = models.CharField(max_length=16)  # Where in the library is it?
+    code_extension = models.CharField(max_length=8, blank=True)
+
+    def display_code(self):
+        return self.book_code + self.code_extension
+
 
 def strip_accents(text):
     """
@@ -52,7 +54,8 @@ def generate_code_from_author(item):
     pub = item.publication
     auth = pub.get_authors()
     if len(auth) > 0:
-        author = auth[0].creator.name
+        author = auth[0].creator
+        code = author.identifying_code or CutterCodeRange.get_cutter_number(author).generated_affix
         return item.location.category.code + "-" + CutterCodeRange.get_cutter_number(author).generated_affix + "-"
     else:
         pass

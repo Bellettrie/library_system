@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
-from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title
+from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, BookCode, CutterCodeRange
 from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
@@ -75,12 +75,11 @@ class Location(models.Model):
         return self.category.name + "-" + self.name
 
 
-class Work(NamedTranslatableThing):
+class Work(NamedTranslatableThing, BookCode):
     date_added = models.DateField()
     sorting = models.CharField(max_length=64, default='TITLE', choices=[("AUTHOR", 'Author'), ("TITLE", "Title")])
     comment = models.TextField()
     internal_comment = models.CharField(max_length=1024)
-    signature_fragment = models.CharField(max_length=64)
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
@@ -134,12 +133,10 @@ class Publication(Work):
             return "Lended out"
 
 
-class Item(NamedThing):
+class Item(NamedThing, BookCode):
     old_id = models.IntegerField()
     location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
-    signature = models.CharField(max_length=64)
-    signature_extension = models.CharField(max_length=64)  # For getting a second copy of the same publication
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
     isbn13 = models.CharField(max_length=64, null=True, blank=True)
     pages = models.IntegerField(null=True, blank=True)
@@ -219,7 +216,7 @@ class Item(NamedThing):
         from series.models import Series, WorkInSeries
         series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
         if len(series_list) > 0 and  len(series_list[0].part_of_series.signature_fragment.split("-")) > 1:
-            return  series_list[0].part_of_series.signature_fragment
+            return series_list[0].part_of_series.signature_fragment
         generator = GENERATORS[self.location.sig_gen]
         return generator(self)
 
@@ -267,6 +264,11 @@ class Creator(models.Model):
     def get_name(self):
         return self.given_names + ":" + self.name
 
+    identifying_code = models.CharField(null=True, max_length=16)
+
+    def fill_identifying_code(self):
+        self.identifying_code = CutterCodeRange.get_cutter_number(self.name).generated_affix
+        self.save()
 
 class CreatorRole(models.Model):
     name = models.CharField(max_length=64, unique=True)
@@ -291,6 +293,7 @@ class CreatorToItem(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
     item = models.ForeignKey(Item, on_delete=PROTECT)
     number = models.IntegerField()
+
 
     class Meta:
         unique_together = ("creator", "item", "number")
