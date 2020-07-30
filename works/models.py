@@ -133,7 +133,7 @@ class Item(NamedThing):
     signature_extension = models.CharField(max_length=64)  # For getting a second copy of the same publication
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
     isbn13 = models.CharField(max_length=64, null=True, blank=True)
-    pages = models.IntegerField(null=True, blank=True)
+    pages = models.CharField(null=True, blank=True, max_length=32)
     hidden = models.BooleanField()
     comment = models.TextField(default='')
     publication_year = models.IntegerField(null=True, blank=True)
