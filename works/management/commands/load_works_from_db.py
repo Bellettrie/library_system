@@ -1,6 +1,5 @@
 import datetime
 
-
 from django.core.management.base import BaseCommand
 
 from bellettrie_library_system.settings import OLD_DB, OLD_PWD, OLD_USN
@@ -91,13 +90,13 @@ class Command(BaseCommand):
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
                                   language=data.get('taal'),
-                                  signature_fragment=data.get("signatuurfragment"))
+                                  )
         else:
             Series.objects.create(number=my_num,
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
                                   language=data.get('taal'),
-                                  signature_fragment=data.get("signatuurfragment"))
+                                  )
 
         handled_list.append(node)
 
@@ -146,7 +145,7 @@ class Command(BaseCommand):
                 count += 1
             finder[x.get("publicatienummer")] = x
 
-        if opt%2 == 0:
+        if opt % 2 == 0:
             for t in finder.keys():
                 if finder.get(t).get("type") == 0:
                     Command.handle_publication(t, tree, finder)
@@ -174,7 +173,7 @@ class Command(BaseCommand):
         for x in mycursor:
             banden[x.get("publicatienummer")] = x
         print("Now items")
-        if opt%2 == 0:
+        if opt % 2 == 0:
             for k in Publication.objects.all():
                 band = banden.get(k.old_id)
 
