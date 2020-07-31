@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
-from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, BookCode, CutterCodeRange
+from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CutterCodeRange
 from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
@@ -75,7 +75,7 @@ class Location(models.Model):
         return self.category.name + "-" + self.name
 
 
-class Work(NamedTranslatableThing, BookCode):
+class Work(NamedTranslatableThing):
     date_added = models.DateField()
     sorting = models.CharField(max_length=64, default='TITLE', choices=[("AUTHOR", 'Author'), ("TITLE", "Title")])
     comment = models.TextField()
@@ -83,7 +83,6 @@ class Work(NamedTranslatableThing, BookCode):
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
-
     def update_listed_author(self):
         authors = self.get_authors()
         if len(authors) == 0:
@@ -114,6 +113,7 @@ class Work(NamedTranslatableThing, BookCode):
 
 
 class Publication(Work):
+    book_code = models.CharField(max_length=16)  # Where in the library is it?
 
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
@@ -133,7 +133,7 @@ class Publication(Work):
             return "Lended out"
 
 
-class Item(NamedThing, BookCode):
+class Item(NamedThing):
     old_id = models.IntegerField()
     location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
@@ -146,6 +146,11 @@ class Item(NamedThing, BookCode):
     bought_date = models.DateField(default="1900-01-01", null=True, blank=True)
     added_on = models.DateField(auto_now_add=True)
     last_seen = models.DateField(null=True, blank=True)
+    book_code = models.CharField(max_length=16)  # Where in the library is it?
+    book_code_extension = models.CharField(max_length=16)  # Where in the library is it?
+
+    def display_code(self):
+        return self.book_code + self.book_code_extension
 
     def is_available(self):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0
@@ -287,6 +292,7 @@ class Creator(models.Model):
     def fill_identifying_code(self):
         self.identifying_code = CutterCodeRange.get_cutter_number(self.name).generated_affix
         self.save()
+
 
 class CreatorRole(models.Model):
     name = models.CharField(max_length=64, unique=True)

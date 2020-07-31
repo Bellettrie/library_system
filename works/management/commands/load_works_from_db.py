@@ -56,7 +56,6 @@ class Command(BaseCommand):
         work = SubWork(date_added=data.get("gecatalogiseerd") or datetime.datetime.today(),
                        comment=data.get("commentaar"),
                        internal_comment=data.get("intern_commentaar"),
-                       book_code=data.get("signatuurfragment"),
                        old_id=sub_work)
         fill_data(work, data)
         pub = Publication.objects.get(old_id=tree.get(sub_work))

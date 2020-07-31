@@ -7,14 +7,6 @@ import re
 import unicodedata
 
 
-class BookCode(models.Model):
-    class Meta:
-        abstract = True
-    book_code = models.CharField(max_length=16)  # Where in the library is it?
-    book_code_extension = models.CharField(max_length=8, blank=True)
-
-    def display_code(self):
-        return self.book_code + self.code_extension
 
 
 def strip_accents(text):
