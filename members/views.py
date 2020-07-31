@@ -1,13 +1,17 @@
+import random
+import string
 from datetime import datetime
 
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
+from bellettrie_library_system.settings import BASE_URL
 from utils.get_query_words import get_query_words
 from .models import Member
 from .forms import EditForm
@@ -15,7 +19,7 @@ from .forms import EditForm
 # Create your views here.
 from django.http import HttpResponseRedirect
 
-from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 
 
 class MemberList(PermissionRequiredMixin, ListView):
@@ -50,8 +54,13 @@ class MemberList(PermissionRequiredMixin, ListView):
         return list(set(result_set))
 
 
-@permission_required('members.view_member')
 def show(request, member_id):
+    if not request.user.has_perm('members.view_member'):
+        if not hasattr(request.user, 'member'):
+            raise PermissionDenied
+        member = request.user.member
+        if not (member and member.pk == member_id):
+            raise PermissionDenied
     return render(request, 'member_detail.html', {'member': Member.objects.get(pk=member_id)})
 
 
@@ -84,28 +93,87 @@ def new(request):
     return render(request, 'member_edit.html', {'form': form})
 
 
-@permission_required('auth.add_user')
 def signup(request, member_id):
+    member = Member.objects.get(pk=member_id)
+    if not request.user.has_perm('auth.add_user'):
+        members = Member.objects.filter(pk=member_id, invitation_code=request.GET.get('key', ''))
+
+        if len(members) != 1:
+            raise PermissionDenied
+        if not members[0].invitation_code_valid:
+            raise PermissionDenied
+        else:
+            print(members[0].invitation_code)
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             instance = form.save()
 
-            instance.member = Member.objects.get(pk=member_id)
+            instance.member = member
             instance.member.user = instance
+            instance.member.invitation_code_valid = False
             instance.member.save()
             instance.save()
             return HttpResponseRedirect(reverse('members.view', args=(instance.member.pk,)))
     else:
         form = UserCreationForm()
-    return render(request, 'user_edit.html', {'form': form, 'member': Member.objects.get(pk=member_id)})
+    return render(request, 'user_create.html', {'form': form, 'member': member})
+
+
+@permission_required('auth.change_user')
+def change_user(request, member_id):
+    member = Member.objects.get(pk=member_id)
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=member.user, data=request.POST)
+        if form.is_valid():
+            instance = form.save()
+
+            instance.member = member
+            instance.member.user = instance
+            instance.member.save()
+            instance.save()
+            return HttpResponseRedirect(reverse('members.view', args=(instance.member.pk,)))
+    else:
+        form = PasswordChangeForm(member.user)
+    return render(request, 'user_edit.html', {'form': form, 'member': member, 'user': member.user})
+
+
+@permission_required('auth.delete_user')
+def remove_user(request, member_id):
+    member = Member.objects.get(pk=member_id)
+    return render(request, 'user_delete.html', {'member': member, 'user': member.user})
 
 
 @permission_required('auth.delete_user')
 def delete_user(request, member_id):
     member = Member.objects.get(pk=member_id)
-    member.user.delete()
+    user = member.user
     member.user = None
     member.save()
+    user.delete()
 
+    return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+
+
+@permission_required('auth.add_user')
+def generate_invite_code(request, member_id):
+    letters = string.ascii_letters + string.digits
+    result_str = ''.join(random.choice(letters) for i in range(16))
+    member = Member.objects.get(pk=member_id)
+    if member.user:
+        member.invitation_code_valid = False
+        member.save()
+
+        return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+    member.invitation_code = result_str
+    member.invitation_code_valid = True
+    member.save()
+    return render(request, 'member_generate_code.html', {'base_url': BASE_URL, 'member': Member.objects.get(pk=member_id)})
+
+
+@permission_required('auth.add_user')
+def disable_invite_code(request, member_id):
+    member = Member.objects.get(pk=member_id)
+    member.invitation_code_valid = False
+    member.save()
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))

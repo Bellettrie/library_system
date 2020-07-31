@@ -39,6 +39,9 @@ class Member(models.Model):
     privacy_reunions = models.BooleanField(default=False)
     privacy_reunion_end_date = models.DateField(auto_now=True)
 
+    invitation_code = models.CharField(max_length=64, null=True, blank=True)
+    invitation_code_valid = models.BooleanField(default=False)
+
     class Meta:
         permissions = [('committee_update', 'Can update committee')]
 
