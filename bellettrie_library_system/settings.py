@@ -29,3 +29,5 @@ STATICFILES_DIRS = [
 OLD_DB = "bellettrie"
 OLD_USN = 'root'
 OLD_PWD = 'root'
+
+BASE_URL = 'http://127.0.0.1:8000/'
