@@ -160,7 +160,7 @@ def generate_invite_code(request, member_id):
     letters = string.ascii_letters + string.digits
     result_str = ''.join(random.choice(letters) for i in range(16))
     member = Member.objects.get(pk=member_id)
-    if member.user is not None:
+    if member.user:
         member.invitation_code_valid = False
         member.save()
 
