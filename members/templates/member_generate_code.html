@@ -3,6 +3,8 @@
 <!-- bs-example-navbar-collapse-1 -->
 {% block title %}Member: {{  member.name}}{% endblock %}
 {% block content %}
+    <h1>Generated link for member.</h1>
+    Code: <a href="{{ base_url }}members/signup/{{ member.pk }}?key={{ member.invitation_code }}">Link</a>
     <table class="table table-striped" style="width: auto;">
         <tr>
             <th>Name</th>
@@ -60,7 +62,7 @@
             <th>End date</th>
             <td>{{ member.end_date }}</td>
         </tr>
-        {% if member.user %}
+             {% if member.user %}
             <tr>
                 <th>User</th>
                 <td>{{ member.user }}</td>
