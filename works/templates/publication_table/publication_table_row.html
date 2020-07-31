@@ -13,6 +13,16 @@
                 {{ item.signature }}{% if not forloop.last %}<br/>{% endif %}
             {% endwith %}
         </td>
+        {% if member is not Null %}
+        <td>
+            {% with item=item_rows.0.extra_info %}
+                {{ item }}{% if not forloop.last %}<br/>{% endif %}
+            {% endwith %}
+        </td>
+        {% endif %}
+        <td>
+
+        </td>
         <td>
             {% with item=item_rows.0.item %}
                 {% for option in item_rows.0.options %}
