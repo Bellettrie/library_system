@@ -66,8 +66,11 @@
                 <td>{{ member.user }}</td>
             </tr>
             <tr>
-                <th>Delete User</th>
-                <td><a href="{% url "members.delete_user" member.pk %}" class="btn-sm btn-danger">Delete</a></td>
+                <th>User control</th>
+                <td>
+                    <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete</a>
+                </td>
             </tr>
         {% else %}
             <tr>
