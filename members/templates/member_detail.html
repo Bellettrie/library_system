@@ -75,13 +75,14 @@
         {% else %}
             <tr>
                 <th>Add user</th>
-                <td><a href="{% url "members.signup" member.pk %}" class="btn-sm btn-outline-primary">Add new</a>
-                {% if not member.invitation_code_valid %}
-                <a href="{% url "members.generate_invite" member.pk %}" class="btn-sm btn-outline-primary">Invite</a>
+                <td>
+                    <a href="{% url 'members.signup' member.pk %}" class="btn-sm btn-outline-primary">Add new</a>
+                    {% if not member.invitation_code_valid %}
+                        <a href="{% url 'members.generate_invite' member.pk %}" class="btn-sm btn-outline-primary">Invite</a>
                     {% else %}
-                <a href="{% url "members.disable_invite" member.pk %}" class="btn-sm btn-outline-primary">Uninvite</a>
+                        <a href="{% url 'members.disable_invite' member.pk %}" class="btn-sm btn-outline-primary">Uninvite</a>
                     {% endif %}
-            <td>
+                </td>
             </tr>
         {% endif %}
     </table>
