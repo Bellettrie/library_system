@@ -11,7 +11,7 @@ class BookCode(models.Model):
     class Meta:
         abstract = True
     book_code = models.CharField(max_length=16)  # Where in the library is it?
-    code_extension = models.CharField(max_length=8, blank=True)
+    book_code_extension = models.CharField(max_length=8, blank=True)
 
     def display_code(self):
         return self.book_code + self.code_extension
@@ -55,8 +55,8 @@ def generate_code_from_author(item):
     auth = pub.get_authors()
     if len(auth) > 0:
         author = auth[0].creator
-        code = author.identifying_code or CutterCodeRange.get_cutter_number(author).generated_affix
-        return item.location.category.code + "-" + CutterCodeRange.get_cutter_number(author).generated_affix + "-"
+        code = author.identifying_code or CutterCodeRange.get_cutter_number(author.name).generated_affix
+        return item.location.category.code + "-"+ code + "-"
     else:
         pass
 

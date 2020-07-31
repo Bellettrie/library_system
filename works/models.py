@@ -215,8 +215,8 @@ class Item(NamedThing, BookCode):
     def generate_code_prefix(self):
         from series.models import Series, WorkInSeries
         series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
-        if len(series_list) > 0 and  len(series_list[0].part_of_series.signature_fragment.split("-")) > 1:
-            return series_list[0].part_of_series.signature_fragment
+        if len(series_list) > 0 and  len(series_list[0].part_of_series.book_code.split("-")) > 1:
+            return series_list[0].part_of_series.book_code
         generator = GENERATORS[self.location.sig_gen]
         return generator(self)
 

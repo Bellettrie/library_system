@@ -38,7 +38,6 @@ class WorkInSeries(SeriesNode):
             raise RuntimeError("Cannot Save")
         super().save(*args, **kwargs)
 
-
     def get_authors(self):
         return self.part_of_series.get_authors()
 

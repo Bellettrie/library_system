@@ -17,8 +17,8 @@ class ItemStateCreateForm(ModelForm):
 class ItemCreateForm(ModelForm):
     class Meta:
         model = Item
-        fields = ['signature',
-                  'signature_extension',
+        fields = ['book_code',
+                  'book_code_extension',
                   'isbn10',
                   'isbn13',
                   'pages',
