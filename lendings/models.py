@@ -89,7 +89,7 @@ class Lending(models.Model):
         lendings = Lending.objects.filter(handed_in=False)
         late_dict = dict()
         for lending in lendings:
-            if lending.is_late() and (not lending.mailed_for_late or lending.last_mailed + timedelta(days=7) < timezone.now()):
+            if lending.is_late() and (not lending.mailed_for_late or lending.last_mailed + timedelta(minutes=7) < timezone.now()):
                 my_list = late_dict.get(lending.member, [])
                 my_list.append(lending)
                 late_dict[lending.member] = my_list
