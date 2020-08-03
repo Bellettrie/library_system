@@ -8,7 +8,7 @@
             <tr>
                 <th width="150px" style="font-size:10px">Author</th>
                 <th width="200px" style="font-size:10px">Title</th>
-                <th width="150px" style="font-size:10px">Signature</th>
+                <th width="150px" style="font-size:10px">Book Code</th>
                 <th width="60px" style="font-size:10px">State</th>
                 <th style="font-size:10px">Selector</th>
             </tr>
@@ -16,7 +16,7 @@
                 <tr>
                     <td style="font-size:10px">{{ item.publication.get_authors.0.creator.name|truncatechars:20 }}</td>
                     <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
-                    <td style="font-size:10px">{{ item.signature }}</td>
+                    <td style="font-size:10px">{{ item.display_code }}</td>
                     <td style="font-size:10px">{{ item.get_prev_state.type }}{%  if not item.is_available %}U{% endif %}</td>
 
                     <td style="font-size:10px">

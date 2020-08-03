@@ -19,7 +19,7 @@ def list_inventarisations(request):
 
 
 def get_groups(inventarisation):
-    items = Item.objects.filter(location=inventarisation.location).order_by('signature')
+    items = Item.objects.filter(location=inventarisation.location).order_by('book_code_sortable')
     groups = []
     counter = 0
 
@@ -88,7 +88,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
 
 
 def get_cur_block(inventarisation, page_id):
-    items = Item.objects.filter(location=inventarisation.location).order_by('signature')
+    items = Item.objects.filter(location=inventarisation.location).order_by('book_code_sortable')
     page_counter = 10
     current_block_clear = True
 

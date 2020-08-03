@@ -5,6 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
+from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CutterCodeRange, BookCode
 from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
@@ -57,10 +58,18 @@ class Category(models.Model):
         return self.name
 
 
+GENERATORS = {
+    'author': generate_code_from_author,
+    'author_translated': generate_code_from_author_translated,
+    'title': generate_code_from_title,
+}
+
+
 class Location(models.Model):
     category = models.ForeignKey(Category, on_delete=PROTECT)
     name = models.CharField(null=True, blank=True, max_length=255)
     old_id = models.IntegerField()
+    sig_gen = models.CharField(max_length=64, choices=[("Author", "author"), ("Author_Translated", "author_translated"), ("Title", "title")], default='author')
 
     def __str__(self):
         return self.category.name + "-" + self.name
@@ -71,7 +80,6 @@ class Work(NamedTranslatableThing):
     sorting = models.CharField(max_length=64, default='TITLE', choices=[("AUTHOR", 'Author'), ("TITLE", "Title")])
     comment = models.TextField()
     internal_comment = models.CharField(max_length=1024)
-    signature_fragment = models.CharField(max_length=64)
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
@@ -91,7 +99,7 @@ class Work(NamedTranslatableThing):
         authors = []
         for link in links:
             authors.append(link)
-        for serie in WorkInSeries.objects.filter(work=self):
+        for serie in WorkInSeries.objects.filter(work=self, is_primary=True):
             authors = serie.get_authors() + authors
         author_set = list()
         for author in authors:
@@ -105,8 +113,7 @@ class Work(NamedTranslatableThing):
         return author_set
 
 
-class Publication(Work):
-
+class Publication(Work, BookCode):
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
 
@@ -124,13 +131,19 @@ class Publication(Work):
         else:
             return "Lended out"
 
+    def get_primary_series_or_none(self):
+        from series.models import Series, WorkInSeries
+        series_list = WorkInSeries.objects.filter(work=self, is_primary=True)
+        if len(series_list) > 0:
+            return series_list[0]
+        else:
+            return None
 
-class Item(NamedThing):
+
+class Item(NamedThing, BookCode):
     old_id = models.IntegerField()
     location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
-    signature = models.CharField(max_length=64)
-    signature_extension = models.CharField(max_length=64, null=True, blank=True)  # For getting a second copy of the same publication
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
     isbn13 = models.CharField(max_length=64, null=True, blank=True)
     pages = models.CharField(null=True, blank=True, max_length=32)
@@ -140,6 +153,10 @@ class Item(NamedThing):
     bought_date = models.DateField(default="1900-01-01", null=True, blank=True)
     added_on = models.DateField(auto_now_add=True)
     last_seen = models.DateField(null=True, blank=True)
+    book_code_extension = models.CharField(max_length=16)  # Where in the library is it?
+
+    def display_code(self):
+        return self.book_code + self.book_code_extension
 
     def is_available(self):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0
@@ -188,6 +205,31 @@ class Item(NamedThing):
         if state.type != "AVAILABLE":
             if state.type not in not_switch_to_available:
                 ItemState.objects.create(item=self, type="AVAILABLE", reason="Automatically switched because of reason: " + reason)
+
+    def generate_code_full(self):
+        first_letters = self.publication.title[0:2].lower()
+
+        from series.models import Series, WorkInSeries
+        series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
+        if len(series_list) > 0:
+            if series_list[0].number is None:
+                return series_list[0].part_of_series.book_code + first_letters
+
+            if series_list[0].number == float(int(series_list[0].number)):
+                return series_list[0].part_of_series.book_code + str(int(series_list[0].number))
+            else:
+                return series_list[0].part_of_series.book_code + str(series_list[0].number)
+
+        generator = GENERATORS[self.location.sig_gen]
+        return generator(self) + first_letters
+
+    def generate_code_prefix(self):
+        from series.models import Series, WorkInSeries
+        series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
+        if len(series_list) > 0 and len(series_list[0].part_of_series.book_code.split("-")) > 1:
+            return series_list[0].part_of_series.book_code
+        generator = GENERATORS[self.location.sig_gen]
+        return generator(self)
 
     def get_isbn10(self):
         if self.isbn10 is not None:
@@ -250,6 +292,12 @@ class Creator(models.Model):
 
     def get_name(self):
         return self.given_names + ":" + self.name
+
+    identifying_code = models.CharField(null=True, max_length=16)
+
+    def fill_identifying_code(self):
+        self.identifying_code = CutterCodeRange.get_cutter_number(self.name).generated_affix
+        self.save()
 
 
 class CreatorRole(models.Model):

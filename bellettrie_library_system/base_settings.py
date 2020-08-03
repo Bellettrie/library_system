@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'news',
     'config',
     'inventarisation',
+    'book_code_generation'
 ]
 
 MIDDLEWARE = [

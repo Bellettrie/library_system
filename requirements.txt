@@ -3,3 +3,5 @@ namegenerator
 names
 django-tables2
 flake8
+unidecode
+mysql
