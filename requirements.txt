@@ -3,4 +3,9 @@ namegenerator
 names
 django-tables2
 flake8
+<<<<<<< HEAD
 django-mail-templated
+=======
+unidecode
+mysql
+>>>>>>> origin/develop

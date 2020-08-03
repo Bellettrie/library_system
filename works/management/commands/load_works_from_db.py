@@ -46,7 +46,7 @@ class Command(BaseCommand):
                 date_added=data.get("gecatalogiseerd") or datetime.datetime.today(),
                 comment=data.get("commentaar"),
                 internal_comment=data.get("intern_commentaar"),
-                signature_fragment=data.get("signatuurfragment"),
+                book_code=data.get("signatuurfragment"),
                 old_id=publication_id)
         fill_data(publication, data)
 
@@ -56,7 +56,6 @@ class Command(BaseCommand):
         work = SubWork(date_added=data.get("gecatalogiseerd") or datetime.datetime.today(),
                        comment=data.get("commentaar"),
                        internal_comment=data.get("intern_commentaar"),
-                       signature_fragment=data.get("signatuurfragment"),
                        old_id=sub_work)
         fill_data(work, data)
         pub = Publication.objects.get(old_id=tree.get(sub_work))
@@ -87,12 +86,16 @@ class Command(BaseCommand):
         if data.get("reeks_publicatienummer") > 0:
             super_series = Series.objects.get(old_id=data.get("reeks_publicatienummer"))
             Series.objects.create(part_of_series=super_series, number=my_num,
+                                  book_code=data.get("signatuurfragment"),
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
                                   language=data.get('taal'),
                                   )
         else:
+            if data.get("signatuur") is None:
+                print(data)
             Series.objects.create(number=my_num,
+                                  book_code=data.get("signatuurfragment"),
                                   display_number=data.get(
                                       "reeks_deelaanduiding"), old_id=node, is_translated=False,
                                   language=data.get('taal'),
@@ -190,7 +193,7 @@ class Command(BaseCommand):
                     else:
                         k.sorting = "AUTHOR"
                     k.save()
-                    Item.objects.create(old_id=k.old_id, signature=band.get("signatuur"), publication=k, hidden=False,
+                    Item.objects.create(old_id=k.old_id, book_code=band.get("signatuur"), book_code_extension=band.get("exemplaar"), publication=k, hidden=False,
                                         isbn10=band.get("isbn10"), isbn13=band.get("isbn13"),
                                         bought_date=band.get('inkoopdatum') or "1900-01-01",
                                         last_seen=band.get('laatst_gezien'), pages=band.get('pagina'))

@@ -3,11 +3,11 @@
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        {{ form.signature }} <br />
-        <label for="signature">Signature: </label><hr>
+        {{ form.book_code }} <br />
+        <label for="book_code">Book code: </label><hr>
 
-        {{ form.signature_extension }} <br />
-        <label for="signature_extension">Signature extension: </label><hr>
+        {{ form.book_code_extension }} <br />
+        <label for="book_code_extension">Book Code extension: </label><hr>
 
         {{ form.isbn10 }} <br />
         <label for="isbn10">ISBN 10: </label><hr>

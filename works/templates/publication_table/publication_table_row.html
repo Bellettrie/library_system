@@ -10,7 +10,7 @@
         </td>
         <td>
             {% with item=item_rows.0.item %}
-                {{ item.signature }}{% if not forloop.last %}<br/>{% endif %}
+                {{ item.display_code }}{% if not forloop.last %}<br/>{% endif %}
             {% endwith %}
         </td>
         {% if member is not Null %}

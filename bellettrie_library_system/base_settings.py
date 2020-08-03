@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'news',
     'config',
     'inventarisation',
-    'mail'
+    'mail',
+    'book_code_generation',
 ]
 
 MIDDLEWARE = [
