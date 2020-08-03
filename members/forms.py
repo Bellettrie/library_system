@@ -26,7 +26,7 @@ class EditForm(ModelForm):
                   'addressLineOne': 'Address',
                   'addressLineTwo': '',
                   'addressLineThree': '',
-                  'email': 'E-mails',
+                  'email': 'E-mail',
                   'phone': 'Phone #',
                   'student_number': 'Student #',
                   'notes': 'Notes',

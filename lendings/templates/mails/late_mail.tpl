@@ -13,7 +13,7 @@ You have items that are late. Please hand them in as soon as possible. This will
 {{lending.item.display_code}}:  {{lending.item.publication.title}} -- Due: {{lending.end_date}}
 {% endfor %}
 
-If you have any questions regarding this process, feel free to contact us by replying to this email.
+If you have any questions regarding your lendings, feel free to contact us by replying to this email.
 
 Kind regards,
 
@@ -34,7 +34,7 @@ You have items that are late. Please hand them in as soon as possible. This will
  <tr><td>{{lending.item.display_code}}</td><td>{{lending.item.publication.title}} </td><td>{{lending.end_date}}</td></tr>
 {% endfor %}
 </table>
- If you have any questions regarding this process, feel free to contact us by replying to this email. <br />
+ If you have any questions regarding your lendings, feel free to contact us by replying to this email. <br />
  <br />
 
 Kind regards, <br />
