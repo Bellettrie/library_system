@@ -168,7 +168,7 @@ def generate_invite_code(request, member_id):
         return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
     member.invitation_code = result_str
     member.invitation_code_valid = True
-    mail_member('mails/invitation.tpl', {member: member}, member, True)
+    mail_member('mails/invitation.tpl', {'member': member}, member, True)
     member.save()
 
     return render(request, 'member_generate_code.html', {'base_url': BASE_URL, 'member': Member.objects.get(pk=member_id)})
