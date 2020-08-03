@@ -3,9 +3,9 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
-from bellettrie_library_system.settings import BASE_URL, FAKE_MAIL
 from members.models import Member
 from mail_templated import send_mail
+from django.conf import settings
 
 
 class MailLog(models.Model):
@@ -14,11 +14,11 @@ class MailLog(models.Model):
 
 
 def mail_member(template_string: str, context: dict, member: Member, is_logged: bool, connection=None):
-    context['BASE_URL'] = BASE_URL
+    context['BASE_URL'] = settings.BASE_URL
     if not member.is_anonymous_user:
         mail = member.email
-        if FAKE_MAIL:
-            mail = 'nander@nander.net'
+        if settings.FAKE_MAIL:
+            mail = settings.FAKE_MAIL_ADDRESS
         if connection:
             send_mail(template_string, context, 'info@bellettrie.utwente.nl', [mail], connection=connection)
         else:
