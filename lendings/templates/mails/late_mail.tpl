@@ -7,12 +7,10 @@ Bellettrie - Some of your books are late
 {% block body %}
 Dear {{member.name}},
 
-As a member of Bellettrie, you can have an account on the catalog system. This will allow you, among other things, to extend and reserve books.
-
-To create an account, follow the link below, and use this to create an account. After that, you can log in and start using the system.
+You have items that are late. Please hand them in as soon as possible. This will limit the fine.
 
 {%for lending in lendings %}
- {{lending.item.publication.title}}
+{{lending.item.display_code}}:  {{lending.item.publication.title}} -- Due: {{lending.end_date}}
 {% endfor %}
 
 If you have any questions regarding this process, feel free to contact us by replying to this email.
@@ -26,20 +24,22 @@ Ps. This email was sent automatically
 {% endblock %}
 
 {% block html %}
-Dear {{member.name}},
-
-You have items that are late. Please hand them in as soon as possible. This will limit the fine.
+Dear {{member.name}}, <br />
+<br />
+You have items that are late. Please hand them in as soon as possible. This will limit the fine.<br />
  <br />
+ <table>
+ <tr><th>Book Code</th><th>Title</th><th>Due Date<th></th></tr>
 {%for lending in lendings %}
- {{lending.item.publication.title}} <br />
+ <tr><td>{{lending.item.display_code}}</td><td>{{lending.item.publication.title}} </td><td>{{lending.end_date}}</td></tr>
 {% endfor %}
- <br />
-If you have any questions regarding this process, feel free to contact us by replying to this email. <br />
+</table>
+ If you have any questions regarding this process, feel free to contact us by replying to this email. <br />
  <br />
 
 Kind regards, <br />
  <br />
-The board of Bellettrie
-
-
+The board of Bellettrie<br />
+<br />
+Ps. This email was sent automatically
 {% endblock %}
