@@ -24,4 +24,3 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         Lending.late_mails()
-

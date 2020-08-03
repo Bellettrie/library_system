@@ -171,7 +171,7 @@ def generate_invite_code(request, member_id):
     mail_member('mails/invitation.tpl', {'member': member}, member, True)
     member.save()
 
-    return render(request, 'member_generate_code.html', {'base_url': BASE_URL, 'member': Member.objects.get(pk=member_id)})
+    return render(request, 'member_detail.html', {'member': member, 'extra': "Invitation mail sent"})
 
 
 @permission_required('auth.add_user')
