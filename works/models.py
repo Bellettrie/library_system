@@ -71,7 +71,7 @@ class Work(NamedTranslatableThing):
     sorting = models.CharField(max_length=64, default='TITLE', choices=[("AUTHOR", 'Author'), ("TITLE", "Title")])
     comment = models.TextField()
     internal_comment = models.CharField(max_length=1024)
-    signature_fragment = models.CharField(max_length=64)
+    # signature_fragment = models.CharField(max_length=64)
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
