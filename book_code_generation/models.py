@@ -7,7 +7,7 @@ import re
 import unicodedata
 
 
-def standardize_code(code : str):
+def standardize_code(code: str):
     code_parts = code.split("-")
     if len(code_parts) > 2:
         try:
@@ -21,6 +21,8 @@ def standardize_code(code : str):
     for i in range(1, len(code_parts)):
         return_value = return_value + "-" + code_parts[i]
     return return_value
+
+
 class BookCode(models.Model):
     class Meta:
         abstract = True
