@@ -26,7 +26,12 @@ class Lending(models.Model):
     handed_in = models.BooleanField()
     handed_in_on = models.DateField(null=True, blank=True)
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
+
+    # When did we last send an email about this lending? This can either be for an 'almost-late', or for a 'too late'  mail.
     last_mailed = models.DateTimeField(default=datetime.now() - timedelta(14))
+
+    # This flag will be used to differentiate between having mailed for being almost too late, and having mailed for being late.
+    # Almost-too-late is not implemented yet.
     mailed_for_late = models.BooleanField(default=False)
 
     def is_extendable(self, get_fine, now=None):
