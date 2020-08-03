@@ -23,14 +23,5 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        lendings = Lending.objects.filter(handed_in=False)
-        late_dict = dict()
-        for lending in lendings:
-            if lending.is_late():
-                my_list = late_dict.get(lending.member, [])
-                my_list.append(lending)
-                late_dict[lending.member] = my_list
-        print("HERE")
-        for member in late_dict.keys():
-            print(member.name)
-            mail_member('mails/late_mail.tpl', {'member': member, 'lendings' : late_dict[member]}, member, True)
+        Lending.late_mails()
+

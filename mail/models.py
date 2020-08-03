@@ -10,7 +10,8 @@ from django.conf import settings
 
 class MailLog(models.Model):
     member = models.ForeignKey(Member, on_delete=PROTECT)
-    subject = models.CharField(max_length=255)
+    contents = models.TextField()
+    date = models.DateTimeField(auto_now=True)
 
 
 def mail_member(template_string: str, context: dict, member: Member, is_logged: bool, connection=None):
@@ -24,4 +25,4 @@ def mail_member(template_string: str, context: dict, member: Member, is_logged: 
         else:
             send_mail(template_string, context, 'info@bellettrie.utwente.nl', [mail])
         if is_logged:
-            MailLog.objects.create(member=member, subject=str(context))
+            MailLog.objects.create(member=member, contents=str(context))
