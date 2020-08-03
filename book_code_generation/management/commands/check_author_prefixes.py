@@ -24,7 +24,7 @@ class Command(BaseCommand):
 
             sigs = (sig or "").split("-")
 
-            cut = item.signature.split("-")
+            cut = item.book_code.split("-")
             if cut[1] == "ABC":
                 continue
             if sigs[0] != cut[0]:

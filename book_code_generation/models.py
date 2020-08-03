@@ -7,6 +7,20 @@ import re
 import unicodedata
 
 
+def standardize_code(code : str):
+    code_parts = code.split("-")
+    if len(code_parts) > 2:
+        try:
+            z = code_parts[2]
+            code_parts[2] = str(float("0." + code_parts[2])).split(".")[1]
+            if z != code_parts[2]:
+                print(z)
+        except ValueError:
+            pass
+    return_value = code_parts[0]
+    for i in range(1, len(code_parts)):
+        return_value = return_value + "-" + code_parts[i]
+    return return_value
 class BookCode(models.Model):
     class Meta:
         abstract = True
@@ -15,18 +29,7 @@ class BookCode(models.Model):
     book_code_sortable = models.CharField(max_length=128, blank=True)
 
     def save(self, *args, **kwargs):
-        code_parts = self.book_code.split("-")
-        if len(code_parts) > 2:
-            try:
-                z = code_parts[2]
-                code_parts[2] = str(float("0." + code_parts[2])).split(".")[1]
-                if z != code_parts[2]:
-                    print(z)
-            except ValueError:
-                pass
-        self.book_code_sortable = code_parts[0]
-        for i in range(1, len(code_parts)):
-            self.book_code_sortable = self.book_code_sortable + "-" + code_parts[i]
+        self.book_code_sortable = standardize_code(self.book_code)
         super().save(*args, **kwargs)
 
 

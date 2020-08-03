@@ -10,6 +10,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic import DetailView, ListView, CreateView
 
+from book_code_generation.models import standardize_code
 from series.models import Series
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm
@@ -32,7 +33,7 @@ class ItemRow:
         self.extra_info = extra_info
 
     def __str__(self):
-        return self.item.signature
+        return self.item.book_code + self.item.book_code_extension
 
 
 class BookResult:
@@ -106,11 +107,11 @@ def get_works_for_publication(words):
     return result
 
 
-def get_works_by_signature(word):
+def get_works_by_book_code(word):
     results = []
     pub_dict = dict()
 
-    items = Item.objects.filter(signature__contains=word)
+    items = Item.objects.filter(Q(book_code__contains=word) | Q(book_code_sortable__contains=standardize_code(word)))
     for item in items:
         dz = pub_dict.get(item.publication, [])
         dz.append(ItemRow(item, []))
@@ -127,7 +128,7 @@ def get_works(request):
 
     results = []
     if len(words) == 1:
-        results += get_works_by_signature(words[0])
+        results += get_works_by_book_code(words[0])
     results += get_works_for_publication(words)
     return results
 

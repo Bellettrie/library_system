@@ -26,7 +26,7 @@
     <h4>Items for this publication</h4>
     <table class="table table-striped" style="width: auto;">
         <tr>
-            <th>Signature</th>
+            <th>Book code</th>
             <th>ISBN</th>
             <th>pages</th>
             <th>year</th>
@@ -41,7 +41,7 @@
         {% for item in object.get_items %}
 
             <tr>
-                <td>{{ item.signature }}</td>
+                <td>{{ item.display_code }}</td>
                 <td>{{ item.get_isbn10 }} {{ item.get_isbn13 }}</td>
                 <td>{{ item.get_pages }}</td>
                 <td>{{ item.year }}</td>

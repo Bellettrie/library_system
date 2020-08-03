@@ -213,12 +213,12 @@ class Item(NamedThing, BookCode):
         series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
         if len(series_list) > 0:
             if series_list[0].number is None:
-                return series_list[0].part_of_series.signature_fragment + first_letters
+                return series_list[0].part_of_series.book_code + first_letters
 
             if series_list[0].number == float(int(series_list[0].number)):
-                return series_list[0].part_of_series.signature_fragment + str(int(series_list[0].number))
+                return series_list[0].part_of_series.book_code + str(int(series_list[0].number))
             else:
-                return series_list[0].part_of_series.signature_fragment + str(series_list[0].number)
+                return series_list[0].part_of_series.book_code + str(series_list[0].number)
 
         generator = GENERATORS[self.location.sig_gen]
         return generator(self) + first_letters
