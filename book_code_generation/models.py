@@ -7,6 +7,27 @@ import re
 import unicodedata
 
 
+class BookCode(models.Model):
+    class Meta:
+        abstract = True
+
+    book_code = models.CharField(max_length=64, blank=True)
+    book_code_sortable = models.CharField(max_length=128, blank=True)
+
+    def save(self, *args, **kwargs):
+        code_parts = self.book_code.split("-")
+        if len(code_parts) > 2:
+            try:
+                z = code_parts[2]
+                code_parts[2] = str(float("0." + code_parts[2])).split(".")[1]
+                if z != code_parts[2]:
+                    print(z)
+            except ValueError:
+                pass
+        self.book_code_sortable = code_parts[0]
+        for i in range(1, len(code_parts)):
+            self.book_code_sortable = self.book_code_sortable + "-" + code_parts[i]
+        super().save(*args, **kwargs)
 
 
 def strip_accents(text):
@@ -48,7 +69,7 @@ def generate_code_from_author(item):
     if len(auth) > 0:
         author = auth[0].creator
         code = author.identifying_code or CutterCodeRange.get_cutter_number(author.name).generated_affix
-        return item.location.category.code + "-"+ code + "-"
+        return item.location.category.code + "-" + code + "-"
     else:
         pass
 
@@ -64,6 +85,10 @@ def generate_code_from_author_translated(item):
         return prefix + "-" + CutterCodeRange.get_cutter_number(author).generated_affix + "-"
     else:
         pass
+
+
+def generate_code_abc(item):
+    return item.location.category.code + "-ABC-"
 
 
 def generate_code_from_title(item):

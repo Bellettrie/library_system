@@ -21,7 +21,7 @@ class Command(BaseCommand):
         for pub in Publication.objects.all():
             if pub.listed_author not in authors:
                 if len(pub.get_authors()) > 0:
-                    for item in Item.objects.filter(publication = pub):
+                    for item in Item.objects.filter(publication=pub):
                         code = item.generate_code_prefix()
                         codes[code] = codes.get(code, [])
 

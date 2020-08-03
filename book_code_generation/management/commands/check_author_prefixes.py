@@ -18,7 +18,6 @@ class Command(BaseCommand):
         cutter = CutterCodeRange.get_cutter_number("Pratchett")
         print(cutter.generated_affix)
         items = Item.objects.filter(location__sig_gen__contains="author")
-        cuts = dict()
         wrongs = 0
         for item in items:
             sig = item.generate_code_prefix()
@@ -30,7 +29,7 @@ class Command(BaseCommand):
                 continue
             if sigs[0] != cut[0]:
                 print("wrong first part: ", str(sigs), str(cut), item.publication.listed_author, item.old_id)
-                wrongs +=1
+                wrongs += 1
 
             if len(sigs) > 1 and sigs[1] != cut[1]:
                 print("wrong snd part: ", str(sigs), str(cut), item.publication.listed_author, item.old_id)

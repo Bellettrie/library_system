@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
-from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CutterCodeRange
+from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CutterCodeRange, BookCode
 from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
@@ -83,6 +83,7 @@ class Work(NamedTranslatableThing):
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
+
     def update_listed_author(self):
         authors = self.get_authors()
         if len(authors) == 0:
@@ -112,9 +113,7 @@ class Work(NamedTranslatableThing):
         return author_set
 
 
-class Publication(Work):
-    book_code = models.CharField(max_length=16)  # Where in the library is it?
-
+class Publication(Work, BookCode):
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
 
@@ -132,8 +131,16 @@ class Publication(Work):
         else:
             return "Lended out"
 
+    def get_primary_series_or_none(self):
+        from series.models import Series, WorkInSeries
+        series_list = WorkInSeries.objects.filter(work=self, is_primary=True)
+        if len(series_list) > 0:
+            return series_list[0]
+        else:
+            return None
 
-class Item(NamedThing):
+
+class Item(NamedThing, BookCode):
     old_id = models.IntegerField()
     location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
@@ -146,7 +153,6 @@ class Item(NamedThing):
     bought_date = models.DateField(default="1900-01-01", null=True, blank=True)
     added_on = models.DateField(auto_now_add=True)
     last_seen = models.DateField(null=True, blank=True)
-    book_code = models.CharField(max_length=16)  # Where in the library is it?
     book_code_extension = models.CharField(max_length=16)  # Where in the library is it?
 
     def display_code(self):
@@ -220,7 +226,7 @@ class Item(NamedThing):
     def generate_code_prefix(self):
         from series.models import Series, WorkInSeries
         series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
-        if len(series_list) > 0 and  len(series_list[0].part_of_series.book_code.split("-")) > 1:
+        if len(series_list) > 0 and len(series_list[0].part_of_series.book_code.split("-")) > 1:
             return series_list[0].part_of_series.book_code
         generator = GENERATORS[self.location.sig_gen]
         return generator(self)
@@ -317,7 +323,6 @@ class CreatorToItem(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
     item = models.ForeignKey(Item, on_delete=PROTECT)
     number = models.IntegerField()
-
 
     class Meta:
         unique_together = ("creator", "item", "number")

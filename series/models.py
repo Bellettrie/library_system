@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
+from book_code_generation.models import BookCode
 from works.models import NamedTranslatableThing
 
 
@@ -16,8 +17,9 @@ class SeriesNode(models.Model):
     old_id = models.IntegerField()
 
 
-class Series(SeriesNode, NamedTranslatableThing):
+class Series(SeriesNode, NamedTranslatableThing, BookCode):
     book_code = models.CharField(max_length=16)  # Where in the library is it?
+
     def get_authors(self):
         authors = []
         for author in CreatorToSeries.objects.filter(series=self):
@@ -34,7 +36,7 @@ class WorkInSeries(SeriesNode):
     is_primary = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
-        if self.is_primary and len(WorkInSeries.objects.filter(work=self.work, is_primary=True))>0:
+        if self.is_primary and len(WorkInSeries.objects.filter(work=self.work, is_primary=True)) > 0:
             raise RuntimeError("Cannot Save")
         super().save(*args, **kwargs)
 
