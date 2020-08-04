@@ -31,7 +31,7 @@ class Lending(models.Model):
         if now is None:
             now = datetime.date(datetime.now())
 
-        return now <= self.end_date
+        return not self.handed_in and now <= self.end_date
 
     def is_extendable(self, get_fine):
         return self.is_simple_extendable() | get_fine
