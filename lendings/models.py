@@ -27,7 +27,7 @@ class Lending(models.Model):
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
     start_date = models.DateField(auto_now_add=True)
 
-    def is_simple_extendable(self,  now=None):
+    def is_simple_extendable(self, now=None):
         if now is None:
             now = datetime.date(datetime.now())
 

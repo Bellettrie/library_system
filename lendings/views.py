@@ -131,5 +131,4 @@ def return_book(request, work_id):
 
 @login_required()
 def me(request):
-    lendings = Lending.objects.filter(member=request.user.member)
     return render(request, 'lending_detail.html', {"member": request.user.member})
