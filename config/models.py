@@ -21,6 +21,25 @@ class Holiday(models.Model):
     def get_absolute_url(self):
         return reverse('holiday.view', kwargs={'pk': self.pk})
 
+    def save(self, *args, **kwargs):
+        from lendings.models import Lending
+        super().save(*args, **kwargs)
+        lendings = Lending.objects.filter(end_date__gt=self.starting_date, handed_in=False)
+        print("A")
+        print(len(lendings))
+        for lending in lendings:
+            if lending.is_late():
+                print("LATE")
+
+                continue
+            new_end = lending.calc_end_date(lending.member, lending.item, lending.start_date)
+
+            print(new_end)
+            if lending.end_date < new_end:
+
+                lending.end_date = new_end
+                lending.save()
+
 
 class LendingSettings(models.Model):
     item_type = models.ForeignKey(ItemType, on_delete=PROTECT)

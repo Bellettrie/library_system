@@ -25,6 +25,7 @@ class Lending(models.Model):
     handed_in = models.BooleanField()
     handed_in_on = models.DateField(null=True, blank=True)
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
+    start_date = models.DateField(auto_now_add=True)
 
     def is_extendable(self, get_fine, now=None):
         if now is None:
