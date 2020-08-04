@@ -156,6 +156,7 @@ class LendingSettings(models.Model):
                 return ls.max_count_inactive
         except LendingSettings.DoesNotExist:
             return 5
+
     @staticmethod
     def get_extend_count(item_type: ItemType, member: Member):
         try:
