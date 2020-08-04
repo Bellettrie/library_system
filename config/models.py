@@ -25,18 +25,13 @@ class Holiday(models.Model):
         from lendings.models import Lending
         super().save(*args, **kwargs)
         lendings = Lending.objects.filter(end_date__gt=self.starting_date, handed_in=False)
-        print("A")
-        print(len(lendings))
+
         for lending in lendings:
             if lending.is_late():
-                print("LATE")
-
                 continue
             new_end = lending.calc_end_date(lending.member, lending.item, lending.start_date)
 
-            print(new_end)
             if lending.end_date < new_end:
-
                 lending.end_date = new_end
                 lending.save()
 
