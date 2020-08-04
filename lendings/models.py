@@ -36,6 +36,10 @@ class Lending(models.Model):
     def is_extendable(self, get_fine, now=None):
         return self.is_simple_extendable(now) | get_fine
 
+    def is_at_extend_limit(self):
+        from config.models import LendingSettings
+        return self.times_extended < LendingSettings.get_extend_count(self.item.location.category.item_type, self.member)
+
     def is_late(self, now=None):
         if now is None:
             now = datetime.date(datetime.now())

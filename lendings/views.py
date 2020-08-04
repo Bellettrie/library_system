@@ -99,7 +99,7 @@ def extend(request, work_id):
     if lending.is_extendable(request.user.has_perm('lendings.extend_with_fine')):
         if request.method == 'POST':
             lending.extend(request.user.member)
-            return render(request, 'lending_finalized.html',
+            return render(request, 'lending_extended.html',
                           {'member': lending.member,
                            'item': item,
                            "date": lending.end_date
@@ -107,11 +107,14 @@ def extend(request, work_id):
         return render(request, 'lending_extend.html',
                       {'member': lending.member,
                        'item': item,
+                       'end_date': lending.end_date,
+                       'is_changed': lending.end_date > Lending.calc_end_date(lending.member, item),
                        "date": Lending.calc_end_date(lending.member, item),
                        'late': lending.end_date < datetime.now().date(),
                        'days_late': late_days.days,
                        'fine': lending.calculate_fine()
                        })
+    print("Cannot extend")
     return redirect('/members/' + str(lending.member.pk))
 
 

@@ -45,6 +45,10 @@ class LendingSettings(models.Model):
     borrow_money_active = models.IntegerField()  # in cents
     fine_amount = models.IntegerField()  # in cents
     max_fine = models.IntegerField()  # in cents
+    max_count_inactive = models.IntegerField()
+    max_count_active = models.IntegerField()
+    extend_count_active = models.IntegerField()
+    extend_count_inactive = models.IntegerField()
 
     @staticmethod
     def get_term(item: Item, member: Member):
@@ -141,3 +145,24 @@ class LendingSettings(models.Model):
         fine_per_week, max_fine = LendingSettings.get_fine_settings(item, member)
         weeks = math.ceil(days / 7)
         return min(max_fine, fine_per_week * weeks)
+
+    @staticmethod
+    def get_max_count(item_type: ItemType, member: Member):
+        try:
+            ls = LendingSettings.objects.get(item_type=item_type)
+            if member.is_active():
+                return ls.max_count_active
+            else:
+                return ls.max_count_inactive
+        except LendingSettings.DoesNotExist:
+            return 5
+    @staticmethod
+    def get_extend_count(item_type: ItemType, member: Member):
+        try:
+            ls = LendingSettings.objects.get(item_type=item_type)
+            if member.is_active():
+                return ls.extend_count_active
+            else:
+                return ls.extend_count_inactive
+        except LendingSettings.DoesNotExist:
+            return 1
