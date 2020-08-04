@@ -2,11 +2,13 @@
     <tr>
         <td>
             <a href="/works/{{ publication.pk }}">
-            {% if publication.title %}{{ publication.article }} {{ publication.title }} {% if publication.sub_title %}<br /><i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                {% if publication.title %}{{ publication.article }} {{ publication.title }} {% if publication.sub_title %}<br/>
+                    <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
             </a>
         </td>
         <td>
-            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.given_names }} <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.given_names }}
+                <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
         </td>
         <td>
             {% with item=item_rows.0.item %}
@@ -14,11 +16,11 @@
             {% endwith %}
         </td>
         {% if member is not Null %}
-        <td>
-            {% with item=item_rows.0.extra_info %}
-                {{ item }}{% if not forloop.last %}<br/>{% endif %}
-            {% endwith %}
-        </td>
+            <td>
+                {% with item=item_rows.0.extra_info %}
+                    {{ item }}{% if not forloop.last %}<br/>{% endif %}
+                {% endwith %}
+            </td>
         {% endif %}
         <td>
 
@@ -28,20 +30,25 @@
                 {% for option in item_rows.0.options %}
                     {% include 'publication_table/buttons/button_switcher.html' %}
                 {% endfor %}
-            {% if not forloop.last %}<br/>{% endif %}
+                {% if not forloop.last %}<br/>{% endif %}
             {% endwith %}
         </td>
     </tr>
 {% else %}
     <tr>
         <td><a href="/works/{{ publication.pk }}">
-            {% if publication.title %}{{ publication.article }}  {{ publication.title }}  {% else %} <i>No Title</i> {% endif %}
+            {% if publication.title %}{{ publication.article }}  {{ publication.title }}  {% else %}
+                <i>No Title</i> {% endif %}
         </a></td>
         <td>
             {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</td>
         <td></td>
         <td>
-            Lending of multiple items with the same publication is not yet possible.
+            {% if publication.has_no_items %}
+                Not in collection
+            {% else %}
+                Lending of multiple items with the same publication is not yet possible.
+            {% endif %}
         </td>
     </tr>
 {% endif %}
