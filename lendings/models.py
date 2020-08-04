@@ -33,8 +33,8 @@ class Lending(models.Model):
 
         return not self.handed_in and now <= self.end_date
 
-    def is_extendable(self, get_fine):
-        return self.is_simple_extendable() | get_fine
+    def is_extendable(self, get_fine, now=True):
+        return self.is_simple_extendable(now) | get_fine
 
     def is_late(self, now=None):
         if now is None:
