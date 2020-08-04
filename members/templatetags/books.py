@@ -11,5 +11,8 @@ def get_user_books(member: Member, perms, handed_in=False):
     result = []
     for lending in member.lending_set.filter(handed_in=handed_in):
         it = ItemRow(lending.item, extra_info=str(lending.end_date))
-        result.append(BookResult(lending.item.publication, [it], item_options=["extend", "return"]))
+        if handed_in:
+            result.append(BookResult(lending.item.publication, [it], item_options=[]))
+        else:
+            result.append(BookResult(lending.item.publication, [it], item_options=["extend", "return"]))
     return {"member": member, "perms": perms, "contents": result}
