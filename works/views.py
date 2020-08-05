@@ -205,4 +205,4 @@ def publication_edit(request, publication_id):
             return HttpResponseRedirect(reverse('work.view', args=(publication_id,)))
     else:
         form = PublicationCreateForm(instance=publication)
-    return render(request, 'publication_edit.html', {'form': form, 'creators': creators, 'member': Publication.objects.get(pk=publication)})
+    return render(request, 'publication_edit.html', { 'publication': publication, 'form': form, 'creators': creators, 'member': Publication.objects.get(pk=publication)})

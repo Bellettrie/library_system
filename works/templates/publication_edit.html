@@ -1,34 +1,20 @@
 {% extends 'base.html' %}
-
+{% block title %}{{ publication.title }}{% endblock %}
 {% block content %}
 
 
     <form action="#" method="post">
         {% csrf_token %}
-        {{ form.book_code }} <br/>
-        <label for="book_code">Book code: </label>
-        <hr>
+        <h2> Base info</h2>
+     <table>
+         {{ form.as_table }}
 
-        {{ form.title }} <br/>
-        <label for="title">Title: </label>
-        <hr>
-
-        {{ form.sub_title }} <br/>
-        <label for="sub_title">Sub Title: </label>
-        <hr>
-
-
-
-        {{ form.hidden }} <br/>
-        <label for="hidden">Hidden: </label>
-        <hr>
-
-
+     </table>
+        <h2> Creators</h2>
         <table>
-            {{ creators.as_table }}
-            {#        {{ creators.as_table }}#}
-        </table>
-        <input type="submit" value="OK">
+        {{ creators.as_table }}
+            </table>
+        <input class="btn btn-primary" type="submit" value="Save">
 
     </form>
 
