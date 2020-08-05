@@ -14,7 +14,7 @@ class SeriesNode(models.Model):
     part_of_series = models.ForeignKey("Series", on_delete=PROTECT, related_name="part", null=True, blank=True)
     number = models.DecimalField(null=True, blank=True, decimal_places=1, max_digits=5)
     display_number = models.CharField(max_length=255)
-    old_id = models.IntegerField()
+    old_id = models.IntegerField(null=True)
 
 
 class Series(SeriesNode, NamedTranslatableThing, BookCode):
@@ -29,6 +29,12 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
         else:
             authors = self.part_of_series.get_authors() + authors
             return authors
+
+    def get_canonical_title(self):
+        str = ""
+        if self.part_of_series:
+            str = self.part_of_series.get_canonical_title() + " > "
+        return str + self.title
 
 
 class WorkInSeries(SeriesNode):

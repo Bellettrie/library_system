@@ -2,6 +2,8 @@ from django import forms
 from django.forms import ModelForm, inlineformset_factory
 
 from creators.forms import CreatorWidget
+from series.forms import SeriesWidget
+from series.models import WorkInSeries
 from works.models import ItemState, Item, Publication, CreatorToWork, Work
 from django.forms import formset_factory
 
@@ -31,17 +33,19 @@ class ItemCreateForm(ModelForm):
                   'last_seen']
 
 
-NAMED_TRANSLATED_LIST = ['title', 'sub_title', 'article', 'original_title', 'original_subtitle', 'original_article','language', 'original_language' ]
+NAMED_TRANSLATED_LIST = ['title', 'sub_title', 'article', 'original_title', 'original_subtitle', 'original_article', 'language', 'original_language']
+
+
 class PublicationCreateForm(ModelForm):
     class Meta:
         model = Publication
         z_fields = [
-                  'hidden',
-                  'sorting',
-                  'comment',
-                  'internal_comment',
-                  'date_added'
-                  ]
+            'hidden',
+            'sorting',
+            'comment',
+            'internal_comment',
+            'date_added'
+        ]
         fields = ['book_code']
         for i in NAMED_TRANSLATED_LIST:
             fields.append(i)
@@ -49,13 +53,5 @@ class PublicationCreateForm(ModelForm):
             fields.append(field)
 
 
-class CreatorToWorkForm(ModelForm):
-    class Meta:
-        model = CreatorToWork
-        fields = ['creator',
-                  'number',
-                  'role'
-                  ]
-
-
 CreatorToWorkFormSet = inlineformset_factory(Work, CreatorToWork, can_delete=True, fields=['creator', 'number', 'role'], widgets={'creator': CreatorWidget})
+SeriesToWorkFomSet = inlineformset_factory(Work, WorkInSeries, can_delete=True, fields=['part_of_series', 'number', 'is_primary'], widgets={'part_of_series': SeriesWidget})
