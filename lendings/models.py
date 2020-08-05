@@ -1,11 +1,12 @@
-import math
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db import models
 
 # Create your models here.
 from django.db.models import PROTECT
+from django.utils import timezone
 
+from mail.models import mail_member
 from members.models import Member
 
 
@@ -25,6 +26,13 @@ class Lending(models.Model):
     handed_in = models.BooleanField()
     handed_in_on = models.DateField(null=True, blank=True)
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
+
+    # When did we last send an email about this lending? This can either be for an 'almost-late', or for a 'too late'  mail.
+    last_mailed = models.DateTimeField(default=datetime.now() - timedelta(14))
+
+    # This flag will be used to differentiate between having mailed for being almost too late, and having mailed for being late.
+    # Almost-too-late is not implemented yet.
+    mailed_for_late = models.BooleanField(default=False)
 
     def is_extendable(self, get_fine, now=None):
         if now is None:
@@ -80,6 +88,25 @@ class Lending(models.Model):
             now = datetime.date(datetime.now())
         from config.models import LendingSettings
         return LendingSettings.get_end_date(item, member, now)
+
+    @staticmethod
+    def late_mails():
+        lendings = Lending.objects.filter(handed_in=False)
+        late_dict = dict()
+        for lending in lendings:
+            if lending.is_late() and (not lending.mailed_for_late or lending.last_mailed + timedelta(minutes=7) < timezone.now()):
+                my_list = late_dict.get(lending.member, [])
+                my_list.append(lending)
+                late_dict[lending.member] = my_list
+
+        for member in late_dict.keys():
+            print(member.name)
+            mail_member('mails/late_mail.tpl', {'member': member, 'lendings': late_dict[member]}, member, True)
+            for lending in late_dict[member]:
+                lending.last_mailed = timezone.now()
+
+                lending.mailed_for_late = True
+                lending.save()
 
 
 class Reservation(models.Model):

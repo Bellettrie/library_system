@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mail_templated',
     'django_tables2',
     'works',
     'members',
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'inventarisation',
     'book_code_generation',
     'creators',
+    'mail',
 ]
 
 MIDDLEWARE = [
