@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm, inlineformset_factory
 
+from creators.forms import CreatorWidget
 from works.models import ItemState, Item, Publication, CreatorToWork
 from django.forms import formset_factory
 
@@ -49,8 +50,4 @@ class CreatorToWorkForm(ModelForm):
                   ]
 
 
-CreatorToWorkFormSet = inlineformset_factory(Publication, CreatorToWork, can_delete=True, fields=['creator', 'number', 'role'])
-
-def test():
-    for form in CreatorToWorkFormSet():
-        print(form.as_table())
+CreatorToWorkFormSet = inlineformset_factory(Publication, CreatorToWork, can_delete=True, fields=['creator', 'number', 'role'], widgets={'creator': CreatorWidget})
