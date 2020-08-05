@@ -54,7 +54,8 @@ class Member(models.Model):
         from works.models import ItemType, Category
 
         lendings = Lending.objects.filter(member=self, item__location__category__item_type=item_type, handed_in=False)
-        return len(lendings) < 5
+        from config.models import LendingSettings
+        return len(lendings) < LendingSettings.get_max_count(item_type, self)
 
     def has_late_items(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())

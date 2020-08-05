@@ -26,18 +26,25 @@ class Lending(models.Model):
     handed_in = models.BooleanField()
     handed_in_on = models.DateField(null=True, blank=True)
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
-
-    # When did we last send an email about this lending? This can either be for an 'almost-late', or for a 'too late'  mail.
+    start_date = models.DateField(auto_now_add=True)
     last_mailed = models.DateTimeField(default=datetime.now() - timedelta(14))
 
     # This flag will be used to differentiate between having mailed for being almost too late, and having mailed for being late.
     # Almost-too-late is not implemented yet.
     mailed_for_late = models.BooleanField(default=False)
 
-    def is_extendable(self, get_fine, now=None):
+    def is_simple_extendable(self, now=None):
         if now is None:
             now = datetime.date(datetime.now())
-        return (now <= self.end_date) | get_fine
+
+        return not self.handed_in and now <= self.end_date
+
+    def is_extendable(self, get_fine, now=None):
+        return self.is_simple_extendable(now) | get_fine
+
+    def is_at_extend_limit(self):
+        from config.models import LendingSettings
+        return self.times_extended < LendingSettings.get_extend_count(self.item.location.category.item_type, self.member)
 
     def is_late(self, now=None):
         if now is None:
