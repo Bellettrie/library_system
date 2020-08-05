@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.views.generic import ListView
 
 from bellettrie_library_system.settings import BASE_URL
+from mail.models import mail_member
 from utils.get_query_words import get_query_words
 from .models import Member
 from .forms import EditForm
@@ -167,8 +168,10 @@ def generate_invite_code(request, member_id):
         return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
     member.invitation_code = result_str
     member.invitation_code_valid = True
+    mail_member('mails/invitation.tpl', {'member': member}, member, True)
     member.save()
-    return render(request, 'member_generate_code.html', {'base_url': BASE_URL, 'member': Member.objects.get(pk=member_id)})
+
+    return render(request, 'member_detail.html', {'member': member, 'extra': "Invitation mail sent"})
 
 
 @permission_required('auth.add_user')
