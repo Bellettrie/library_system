@@ -12,5 +12,5 @@ def get_authors_by_query(request, search_text):
         creators = creators & zz
     list = []
     for creator in creators:
-        list.append({'id': creator.pk, 'text': creator.get_name()})
+        list.append({'id': creator.pk, 'text': creator.get_canonical_name()})
     return JsonResponse({'results': list}, safe=False)

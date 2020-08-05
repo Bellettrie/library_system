@@ -20,13 +20,16 @@ class Creator(models.Model):
             return self.name + "::" + str(self.old_id)
 
     def get_name(self):
-        return self.given_names + ":" + self.name
+        return self.given_names + " " + self.name
 
     identifying_code = models.CharField(null=True, max_length=16)
 
     def fill_identifying_code(self):
         self.identifying_code = CutterCodeRange.get_cutter_number(self.name).generated_affix
         self.save()
+
+    def get_canonical_name(self):
+        return self.given_names + " " + self.name  + "   (" + str(self.pk) +")"
 
 
 class CreatorRole(models.Model):

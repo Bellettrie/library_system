@@ -2,7 +2,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <select class="js-example-basic-single form-control" style="width:100%" id="{{ name }}" name="{{ name }}">
     {% if default %}
-    <option value="{{  default.pk }}" selected="selected">{{ default }}</option>
+    <option value="{{  default.pk }}" selected="selected">{{ default.get_canonical_name }}</option>
     {% endif %}
 </select>
 <script>

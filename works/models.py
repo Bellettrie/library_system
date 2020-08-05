@@ -291,14 +291,3 @@ class CreatorToWork(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.work.update_listed_author()
-
-
-class CreatorToItem(models.Model):
-    creator = models.ForeignKey(Creator, on_delete=PROTECT)
-    item = models.ForeignKey(Item, on_delete=PROTECT)
-    number = models.IntegerField()
-
-    class Meta:
-        unique_together = ("creator", "item", "number")
-
-    role = models.ForeignKey(CreatorRole, on_delete=PROTECT)
