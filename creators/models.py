@@ -29,7 +29,7 @@ class Creator(models.Model):
         self.save()
 
     def get_canonical_name(self):
-        return self.given_names + " " + self.name  + "   (" + str(self.pk) +")"
+        return self.given_names + " " + self.name + "   (" + str(self.pk) + ")"
 
 
 class CreatorRole(models.Model):
