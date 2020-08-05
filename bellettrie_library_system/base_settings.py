@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'news',
     'config',
     'inventarisation',
+    'recode',
     'mail',
     'book_code_generation',
 ]
