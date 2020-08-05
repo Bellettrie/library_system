@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form action="#" method="post">
+        {% csrf_token %}
+        {{ form.book_code }} <br />
+        <label for="book_code">Book code: </label><hr>
+
+            {{ form.title }} <br />
+        <label for="title">Title: </label><hr>
+
+    {{ form.sub_title }} <br />
+        <label for="sub_title">Sub Title: </label><hr>
+
+
+
+
+        {{ form.comment }} <br />
+        <label for="comment">Comment: </label><hr>
+
+        {{ form.publication_year }} <br />
+        <label for="publication_year">Publication year: </label><hr>
+
+
+        {{ form.hidden }} <br />
+        <label for="hidden">Hidden: </label><hr>
+
+        <table>
+        {{ creators.as_table }}
+            </table>
+        <input type="submit" value="OK">
+    </form>
+
+{% endblock %}

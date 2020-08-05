@@ -13,7 +13,7 @@ from django.views.generic import DetailView, ListView, CreateView
 from book_code_generation.models import standardize_code
 from series.models import Series
 from utils.get_query_words import get_query_words
-from works.forms import ItemStateCreateForm, ItemCreateForm
+from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, CreatorToWorkForm
 from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState
 
 
@@ -184,3 +184,25 @@ def item_edit(request, item_id):
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'item_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
+
+
+@permission_required('works.change_publication')
+def publication_edit(request, publication_id):
+    from works.forms import CreatorToWorkFormSet
+
+    publication = get_object_or_404(Publication, pk=publication_id)
+
+    creators = CreatorToWorkFormSet(instance=publication)
+    if request.method == 'POST':
+        form = PublicationCreateForm(request.POST, instance=publication)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.item = Publication.objects.get(pk=publication_id)
+            instance.save()
+            formset = CreatorToWorkFormSet(request.POST, request.FILES, instance=publication)
+            if formset.is_valid():
+                formset.save()
+            return HttpResponseRedirect(reverse('work.view', args=(publication_id,)))
+    else:
+        form = PublicationCreateForm(instance=publication)
+    return render(request, 'publication_edit.html', {'form': form, 'creators': creators, 'member': Publication.objects.get(pk=publication)})

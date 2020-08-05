@@ -303,6 +303,9 @@ class Creator(models.Model):
 class CreatorRole(models.Model):
     name = models.CharField(max_length=64, unique=True)
 
+    def __str__(self):
+        return self.name
+
 
 class CreatorToWork(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
