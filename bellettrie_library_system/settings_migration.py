@@ -1,9 +1,10 @@
-from bellettrie_library_system.settings import OLD_USN, OLD_PWD, OLD_DB
+from django.conf import settings
 import mysql.connector
 
 migration_database = mysql.connector.connect(
     unix_socket='/var/run/mysqld/mysqld.sock',
-    user=OLD_USN,
-    passwd=OLD_PWD,
-    database=OLD_DB
+    # host='localhost',
+    user=settings.OLD_USN,
+    passwd=settings.OLD_PWD,
+    database=settings.OLD_DB
 )
