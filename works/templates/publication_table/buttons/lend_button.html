@@ -1,5 +1,9 @@
 {% if not item.is_available %}
-            <a class="btn btn-primary btn-sm disabled" role="button" >Lend</a>
+    {% if perms.lendings.add_lending %}
+        <a class="btn btn-primary btn-sm disabled" role="button">Lend</a>
+    {% else %}
+        Lent out
+    {% endif %}
     {% else %}{% if perms.lendings.add_lending %}
         <a href="{% url "lendings.new.work" item.pk %}" class="btn btn-primary btn-sm" role="button">Lend</a>
     {% else %}

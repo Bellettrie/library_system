@@ -140,6 +140,9 @@ class Publication(Work, BookCode):
         else:
             return None
 
+    def has_no_items(self):
+        return len(self.get_items) == 0
+
 
 class Item(NamedThing, BookCode):
     old_id = models.IntegerField()
