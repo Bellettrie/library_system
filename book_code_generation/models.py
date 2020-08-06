@@ -13,8 +13,6 @@ def standardize_code(code: str):
         try:
             z = code_parts[2]
             code_parts[2] = str(float("0." + code_parts[2])).split(".")[1]
-            if z != code_parts[2]:
-                print(z)
         except ValueError:
             pass
     return_value = code_parts[0]
