@@ -1,9 +1,9 @@
 <form action="/members" method="get">
     <table>
     <tr><td><label for="q">Search: </label></td>
-    <td><input id="q" type="text" name="q"></td></tr>
+    <td><input id="q" type="text" name="q" value="{{ request.GET.q }}"></td></tr>
     <tr><td><label for="previous">Also previous years?</label></td>
-        <td><input type="checkbox" id="previous" name="previous"></td></tr>
+        <td><input type="checkbox" id="previous" name="previous"  {% if  request.GET.previous %} checked {% endif %}></td></tr>
         <tr> <td colspan="2"><input type="submit" value="Search"></td></tr>
         </table>
 </form>

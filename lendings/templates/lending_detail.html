@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}Lendings{% endblock %}
 {% block content %}
-    <table>
-    {% for lending in lendings %}
-        <tr><td>Item</td><td>{{ lending.item.get_title }}</td></tr>
-        {% empty %}
-    {% endfor %}
-    </table>
+    {% load books %}
+    {% get_user_books member perms %}
+    Older lendings:
+    {% get_user_books member perms True %}
 {% endblock %}

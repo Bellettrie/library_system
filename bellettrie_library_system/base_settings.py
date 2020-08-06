@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mail_templated',
     'django_tables2',
     'works',
     'members',
@@ -43,6 +44,11 @@ INSTALLED_APPS = [
     'news',
     'config',
     'inventarisation',
+    'ratings',
+    'recode',
+    'book_code_generation',
+    'creators',
+    'mail',
     'book_code_generation',
     'public_pages'
 ]

@@ -29,7 +29,11 @@ class BasicTestCase(TestCase):
                                                                borrow_money_inactive=0,
                                                                borrow_money_active=0,
                                                                fine_amount=50,
-                                                               max_fine=500)
+                                                               max_fine=500,
+                                                               max_count_active=5,
+                                                               max_count_inactive=5,
+                                                               extend_count_active=2,
+                                                               extend_count_inactive=2)
 
 
 class LendingTermTestCase(BasicTestCase):

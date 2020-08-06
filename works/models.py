@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import PROTECT, CASCADE
 
 from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CutterCodeRange, BookCode
+from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
@@ -22,6 +23,9 @@ class NamedThing(models.Model):
     article = models.CharField(max_length=64, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     sub_title = models.CharField(max_length=255, null=True, blank=True)
+
+    def get_title(self):
+        return self.article + " " + self.title if self.article else self.title
 
 
 class TranslatedThing(models.Model):
@@ -78,8 +82,8 @@ class Location(models.Model):
 class Work(NamedTranslatableThing):
     date_added = models.DateField()
     sorting = models.CharField(max_length=64, default='TITLE', choices=[("AUTHOR", 'Author'), ("TITLE", "Title")])
-    comment = models.TextField()
-    internal_comment = models.CharField(max_length=1024)
+    comment = models.TextField(blank=True)
+    internal_comment = models.CharField(max_length=1024, blank=True)
     old_id = models.IntegerField(blank=True, null=True)  # The ID of the same thing, in the old system.
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
@@ -139,9 +143,12 @@ class Publication(Work, BookCode):
         else:
             return None
 
+    def has_no_items(self):
+        return len(self.get_items()) == 0
+
 
 class Item(NamedThing, BookCode):
-    old_id = models.IntegerField()
+    old_id = models.IntegerField(null=True)
     location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
@@ -277,33 +284,6 @@ class WorkInPublication(models.Model):
     unique_together = ('work', 'publication')
 
 
-class Creator(models.Model):
-    given_names = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    is_alias_of = models.ForeignKey("Creator", on_delete=PROTECT, null=True, blank=True)
-    comment = models.CharField(max_length=255)
-    old_id = models.IntegerField()
-
-    def __str__(self):
-        if self.is_alias_of != self:
-            return self.name + "<>" + self.is_alias_of.__str__() + "::" + str(self.old_id)
-        else:
-            return self.name + "::" + str(self.old_id)
-
-    def get_name(self):
-        return self.given_names + ":" + self.name
-
-    identifying_code = models.CharField(null=True, max_length=16)
-
-    def fill_identifying_code(self):
-        self.identifying_code = CutterCodeRange.get_cutter_number(self.name).generated_affix
-        self.save()
-
-
-class CreatorRole(models.Model):
-    name = models.CharField(max_length=64, unique=True)
-
-
 class CreatorToWork(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
     work = models.ForeignKey(Work, on_delete=PROTECT)
@@ -317,14 +297,3 @@ class CreatorToWork(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.work.update_listed_author()
-
-
-class CreatorToItem(models.Model):
-    creator = models.ForeignKey(Creator, on_delete=PROTECT)
-    item = models.ForeignKey(Item, on_delete=PROTECT)
-    number = models.IntegerField()
-
-    class Meta:
-        unique_together = ("creator", "item", "number")
-
-    role = models.ForeignKey(CreatorRole, on_delete=PROTECT)
