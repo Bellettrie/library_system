@@ -17,6 +17,15 @@ from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateFo
 from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState
 
 
+def word_to_regex(word: str):
+    if re.match('^[\\w-]+?$', word.replace("*", "").replace("+", "").replace("?", "")) is None:
+        return ""
+    word = word.replace("*", ".*")
+    word = word.replace("?", ".?")
+    word = word.replace("+", ".+")
+    return "(?<!\\S)" + word + "(?!\\S)"
+
+
 def sort_works(work: Work):
     return work.old_id
 
@@ -55,12 +64,10 @@ class BookResult:
 def get_works_for_publication(words):
     result_set = None
     for word in words:
-        if re.match('^[\\w-]+?$', word.replace("*", "").replace("+", "").replace("?", "")) is None:
+        word = word_to_regex(word)
+        if len(word) == 0:
             return []
-        word = word.replace("*", ".*")
-        word = word.replace("?", ".?")
-        word = word.replace("+", ".+")
-        authors = Creator.objects.filter(Q(name__iregex="(?<!\\S)" + word + "(?!\\S)") | Q(given_names__iregex="(?<!\\S)" + word + "(?!\\S)"))
+        authors = Creator.objects.filter(Q(name__iregex=word) | Q(given_names__iregex=word))
 
         series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors)
                                            | Q(title__icontains=word)
@@ -76,10 +83,10 @@ def get_works_for_publication(words):
             prev_len = series_len
             series = set(series | set(Series.objects.filter(part_of_series__in=series)))
             series_len = len(series)
-        work_q = Q(Q(title__iregex="(?<!\\S)" + word + "(?!\\S)")
-                   | Q(sub_title__iregex="(?<!\\S)" + word + "(?!\\S)")
-                   | Q(original_title__iregex="(?<!\\S)" + word + "(?!\\S)")
-                   | Q(original_subtitle__iregex="(?<!\\S)" + word + "(?!\\S)")
+        work_q = Q(Q(title__iregex=word)
+                   | Q(sub_title__iregex=word)
+                   | Q(original_title__iregex=word)
+                   | Q(original_subtitle__iregex=word)
                    | Q(workinseries__part_of_series__in=series))
 
         subworks = set(SubWork.objects.filter(
@@ -110,8 +117,10 @@ def get_works_for_publication(words):
 def get_works_by_book_code(word):
     results = []
     pub_dict = dict()
-
-    items = Item.objects.filter(Q(book_code__contains=word) | Q(book_code_sortable__contains=standardize_code(word)))
+    word = word_to_regex(word)
+    if len(word) == 0:
+        return []
+    items = Item.objects.filter(Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word))
     for item in items:
         dz = pub_dict.get(item.publication, [])
         dz.append(ItemRow(item, []))
