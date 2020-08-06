@@ -141,11 +141,11 @@ class Publication(Work, BookCode):
             return None
 
     def has_no_items(self):
-        return len(self.get_items) == 0
+        return len(self.get_items()) == 0
 
 
 class Item(NamedThing, BookCode):
-    old_id = models.IntegerField()
+    old_id = models.IntegerField(null=True)
     location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
     isbn10 = models.CharField(max_length=64, null=True, blank=True)

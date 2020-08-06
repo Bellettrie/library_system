@@ -171,6 +171,21 @@ def create_item_state(request, item_id):
     return render(request, 'item_reason_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
 
 
+@permission_required('works.add_item')
+def item_new(request, publication_id=None):
+    publication = get_object_or_404(Publication, pk=publication_id)
+    if request.method == 'POST':
+        form = ItemCreateForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.publication = publication
+            instance.save()
+            return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
+    else:
+        form = ItemCreateForm()
+    return render(request, 'item_edit.html', {'form': form, 'publication':publication})
+
+
 @permission_required('works.change_item')
 def item_edit(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
@@ -178,36 +193,62 @@ def item_edit(request, item_id):
         form = ItemCreateForm(request.POST, instance=item)
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.item = Item.objects.get(pk=item_id)
+
             instance.save()
-            return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
+            return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
-    return render(request, 'item_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
+    return render(request, 'item_edit.html', {'form': form, 'publication': item.publication})
 
 
 @permission_required('works.change_publication')
-def publication_edit(request, publication_id):
+def publication_edit(request, publication_id=None):
     from works.forms import CreatorToWorkFormSet
     from works.forms import SeriesToWorkFomSet
-
-    publication = get_object_or_404(Publication, pk=publication_id)
-
-    creators = CreatorToWorkFormSet(instance=publication)
-    series = SeriesToWorkFomSet(instance=publication)
+    form = None
+    creators = None
+    series = None
+    publication = None
     if request.method == 'POST':
-        form = PublicationCreateForm(request.POST, instance=publication)
+        if publication_id is not None:
+            publication = get_object_or_404(Publication, pk=publication_id)
+            form = PublicationCreateForm(request.POST, instance=publication)
+        else:
+            form = PublicationCreateForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.item = Publication.objects.get(pk=publication_id)
+            instance.is_translated = instance.original_language is not None
             instance.save()
-            formset = CreatorToWorkFormSet(request.POST, request.FILES, instance=publication)
-            if formset.is_valid():
-                formset.save()
-            series_formset = SeriesToWorkFomSet(request.POST, request.FILES, instance=publication)
-            if series_formset.is_valid():
-                series_formset.save()
-            return HttpResponseRedirect(reverse('work.view', args=(publication_id,)))
+            creators = CreatorToWorkFormSet(request.POST, request.FILES)
+
+            if creators.is_valid():
+                instances = creators.save(commit=False)
+                for c2w in instances:
+                    c2w.publication = instance
+                    c2w.save()
+
+            series = SeriesToWorkFomSet(request.POST, request.FILES)
+            if series.is_valid():
+                series.save()
+            return HttpResponseRedirect(reverse('work.view', args=(instance.pk,)))
     else:
-        form = PublicationCreateForm(instance=publication)
-    return render(request, 'publication_edit.html', {'series': series, 'publication': publication, 'form': form, 'creators': creators, 'member': Publication.objects.get(pk=publication)})
+        creators = CreatorToWorkFormSet(instance=None)
+        series = CreatorToWorkFormSet(instance=None)
+        publication = None
+        if publication_id is not None:
+            publication = get_object_or_404(Publication, pk=publication_id)
+
+            creators = CreatorToWorkFormSet(instance=publication)
+            series = SeriesToWorkFomSet(instance=publication)
+
+            form = PublicationCreateForm(instance=publication)
+        else:
+            creators = CreatorToWorkFormSet()
+            series = SeriesToWorkFomSet()
+            form = PublicationCreateForm()
+    return render(request, 'publication_edit.html', {'series': series, 'publication': publication, 'form': form, 'creators': creators})
+
+
+@permission_required('works.add_publication')
+def publication_new(request):
+    return publication_edit(request, publication_id=None)
