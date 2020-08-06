@@ -183,7 +183,7 @@ def item_new(request, publication_id=None):
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm()
-    return render(request, 'item_edit.html', {'form': form, 'publication':publication})
+    return render(request, 'item_edit.html', {'form': form, 'publication': publication})
 
 
 @permission_required('works.change_item')
