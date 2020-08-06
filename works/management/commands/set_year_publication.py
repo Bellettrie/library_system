@@ -22,9 +22,6 @@ class Command(BaseCommand):
         mycursor = migration_database.cursor(dictionary=True)
 
         mycursor.execute("SELECT * FROM band")
-
-        links = dict()
-        list = []
         for x in mycursor:
             try:
                 item = Item.objects.get(old_id=x.get("publicatienummer"))

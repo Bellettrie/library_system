@@ -11,7 +11,6 @@ def standardize_code(code: str):
     code_parts = code.split("-")
     if len(code_parts) > 2:
         try:
-            z = code_parts[2]
             code_parts[2] = str(float("0." + code_parts[2])).split(".")[1]
         except ValueError:
             pass
