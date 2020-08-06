@@ -32,8 +32,6 @@ class MemberData(models.Model):
     notes = models.TextField()
 
 
-
-
 class Member(MemberData):
     membership_type_old = models.CharField(max_length=32)
     old_customer_type = models.CharField(max_length=64, null=True, blank=True)
