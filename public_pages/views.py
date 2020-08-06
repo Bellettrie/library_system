@@ -19,7 +19,7 @@ def view_page(page_name, sub_page_name):
     def func(request):
         html = render_md("""
 ![Drag Racing](https://miro.medium.com/proxy/1*YgtCXuRGmPfPg2PogXVCfQ.png)
-[Search](lendings.list)
+[Search](members.view|1)
 # hoi
 ## Test2 
     1. a

@@ -49,6 +49,13 @@ def clean_link(href: str, site_domain: str) -> str:
         return href
 
     # Remove fragments or query params before trying to match the url name
+    z = href.split("|")
+    href = z[0]
+    args = []
+
+    for part in z:
+        if part != href:
+            args.append(part)
     href_parts = re.search(r'#|\?', href)
     if href_parts:
         start_ix = href_parts.start()
@@ -57,7 +64,7 @@ def clean_link(href: str, site_domain: str) -> str:
         url_name, url_extra = href, ''
 
     try:
-        url = reverse(url_name)
+        url = reverse(url_name, args=args)
     except NoReverseMatch:
         pass
     else:
