@@ -70,10 +70,10 @@ def get_works_for_publication(words):
         authors = Creator.objects.filter(Q(name__iregex=word) | Q(given_names__iregex=word))
 
         series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors)
-                                           | Q(title__icontains=word)
-                                           | Q(sub_title__icontains=word)
-                                           | Q(original_title__icontains=word)
-                                           | Q(original_subtitle__icontains=word)
+                                           | Q(title__iregex=word)
+                                           | Q(sub_title__iregex=word)
+                                           | Q(original_title__iregex=word)
+                                           | Q(original_subtitle__iregex=word)
                                            ))
 
         prev_len = 0
