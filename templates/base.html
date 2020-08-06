@@ -34,24 +34,52 @@
 <body>
 
 <div id="wrapper">
+    <style>
+        .vertical {
+            margin-left: 10px;
+            border-left: 3px solid black;
+            padding-left:10px;
+            margin-top: 25px;
+            height: 30px;
+            padding-top:20px;
+            border-color:grey;
+        }
+    </style>
     <div id="header">
-        <img src="{% static 'images/wurm.png' %}" style="height:100%"> Bellettrie
+        <div class="logo-part" style="height:100%"><img src="{% static 'images/wurm.png' %}" style="height:100%"/> Bellettrie
+        </div>
+        <a href="{% url 'homepage' %}" class="vertical hiddenMobile">Home</a>
+        <a href="{% url 'works.list' %}" class="vertical hiddenMobile">Catalog</a>
+        <a href="{% url 'homepage' %}" class="vertical hiddenMobile">Konnichiwa</a>
+        {% if user.is_anonymous %}
+            <a href="{% url 'login' %}" class="vertical hiddenMobile">Login</a>
+        {% else %}
+            <a href="{% url 'logout' %}" class="vertical hiddenMobile">Logout</a>
+
+        {% endif %}
+             <a class="vertical"> </a>
+
     </div>
     <!-- Sidebar Holder -->
-    <button id="toggle-sidebar"><</button>
-    {% if not user.is_anonymous and user.member %}
-        <div id="sidebar-header" class="collapsed loggedin">
-            <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a></div>
+    {% if not user.is_anonymous %}
+        <button id="toggle-sidebar"><</button>
+        {% if not user.is_anonymous and user.member %}
+            <div id="sidebar-header" class="collapsed loggedin">
+                <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a></div>
+        {% else %}
+
+        {% endif %}
+
+        <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %}">
+            {% include 'nav.html' %}
+        </nav>
     {% else %}
-        <div id="sidebar-header" class="collapsed">
+        <button id="toggle-sidebar"><</button>
+        <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %} grayedOut">
+            {% include 'nav.html' %}
+        </nav>
 
-        </div>
     {% endif %}
-
-    <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %}">
-        {% include 'nav.html' %}
-    </nav>
-
     <!-- Page Content Holder -->
     <div id="content">
         <h2>{% block title %}Title{% endblock %}</h2>
