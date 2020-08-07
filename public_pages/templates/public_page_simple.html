@@ -3,4 +3,8 @@
 {% block title %}{{ page_title }}{% endblock %}
 {% block content %}
     {{ page_content |safe }}
+{% if can_edit %}
+    <a href="{% url 'edit_named_page' page.group.name page.name %}">edit</a>
+    {% endif %}
+
 {% endblock %}

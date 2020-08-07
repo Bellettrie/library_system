@@ -30,7 +30,7 @@ OLD_DB = "bellettrie"
 OLD_USN = 'root'
 OLD_PWD = 'root'
 
-BASE_URL = 'http://127.0.0.1:8000/'
+BASE_URL = 'http://127.0.0.1:4000/'
 EMAIL_PORT = 1025
 EMAIL_HOST ='127.0.0.1'
 FAKE_MAIL = True
