@@ -211,6 +211,7 @@ body {
         grid-row: 3;
         position: relative;
         left: 0;
+    overflow-y: scroll;
 
     }
 
