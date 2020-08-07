@@ -73,11 +73,12 @@
         }
     </style>
     <div id="header">
-        <div class="logo-part" style="height:100%"><img src="{% static 'images/wurm.png' %}" style="height:100%"/> Bellettrie
+
+        <div class="logo-part"><img src="{% static 'images/wurm.png' %}" style="height:100%"/> Bellettrie
         </div>
         <a href="{% url 'homepage' %}" class="vertical hiddenMobile">Home</a>
         <a href="{% url 'works.list' %}" class="vertical hiddenMobile">Catalog</a>
-        <a href="{% url 'homepage' %}" class="vertical hiddenMobile">Konnichiwa</a>
+        <a href="{% url 'konnichiwa.home' %}" class="vertical hiddenMobile">Konnichiwa</a>
         {% if user.is_anonymous %}
             <a href="{% url 'login' %}" class="vertical hiddenMobile">Login</a>
         {% else %}
@@ -89,13 +90,13 @@
     </div>
     <!-- Sidebar Holder -->
     {% if not user.is_anonymous %}
-        <button id="toggle-sidebar"><</button>
         {% if not user.is_anonymous and user.member %}
             <div id="sidebar-header" class="collapsed loggedin">
                 <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a></div>
         {% else %}
 
         {% endif %}
+            <button id="toggle-sidebar"><</button>
 
         <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %}">
             {% include 'nav.html' %}

@@ -1,4 +1,4 @@
-<ul class="sidebar-menu">
+<ul class="sidebar-menu" style="max-width:100%">
     {% if user.is_authenticated %}
         <li class="treeview"><a href="{% url 'works.list' %}">
             <i class="fa fa-book"></i><span>Books</span>
@@ -11,49 +11,48 @@
                 </a></li>
             {% endif %}
             {% include 'lending_nav.html' %}
-            <li class="active">
-        {% if perms.members.view_member %}
-            <li class="treeview"><a href="{% url 'members.list' %}">
-                <i class="fa fa-user"></i><span>Members</span>
-            </a></li>
+
+
+            {% if perms.config.view_holiday %}
+
+                <li class="active">
+
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+
+                        {% if perms.config.view_holiday %}
+                            <li class="treeview"><a href="{% url 'holiday.list' %}">
+                                <i class="fa fa-plane"></i><span>Holidays</span></a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+
+
+            {% endif %}
+            {% if perms.inventarisation.view_inventarisation or perms.works.add_publication %}
+
+                <li class="active">
+                    <a href="#catalogSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Catalog
+                        Management</a>
+                    <ul class="collapse list-unstyled" id="catalogSubmenu">
+                        {% if perms.inventarisation.view_inventarisation %}
+                            <li class="treeview"><a activeclassname="active" href="{% url 'inventarisation.list' %}"><i
+                                    class="fa fa-plane"></i><span>Inventarisations</span></a>
+                            </li>
+                        {% endif %}
+                        {% if perms.works.add_publication %}
+                            <li class="treeview"><a activeclassname="active" href="{% url 'works.publication.new' %}"><i
+                                    class="fa fa-book"></i><span>New Work</span></a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+
+            {% endif %}
         {% endif %}
-        {% include 'lending_nav.html' %}
+        <li class="hiddenDesktop"><i>Normal menu below</i></li>
 
-        {% if perms.config.view_holiday %}
-
-        <li class="active">
-
-                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
-                <ul class="collapse list-unstyled" id="homeSubmenu">
-
-                    {% if perms.config.view_holiday %}
-                        <li class="treeview"><a href="{% url 'holiday.list' %}">
-                            <i class="fa fa-plane"></i><span>Holidays</span></a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </li>
-
-            <li class="active">
-                <a href="#catalogSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Catalog
-                    Management</a>
-                <ul class="collapse list-unstyled" id="catalogSubmenu">
-        </li>
-        {% endif %}
-        {% if perms.inventarisation.view_inventarisation or perms.works.add_publication %}
-         <li class="active">
-            <a href="#catalogSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Catalog Management</a>
-            <ul class="collapse list-unstyled" id="catalogSubmenu">
-
-                    {% if perms.inventarisation.view_inventarisation %}
-                        <li class="treeview"><a activeclassname="active" href="{% url 'inventarisation.list' %}"><i
-                                class="fa fa-plane"></i><span>Inventarisations</span></a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </li>
-
-        {% endif %}
     {% endif %}
 
     <li class="treeview hiddenDesktop"><a href="{% url 'homepage' %}">
@@ -62,26 +61,12 @@
     <li class="treeview hiddenDesktop"><a href="{% url 'works.list' %}">
         <i class="fa fa-plane"></i><span>catalog</span>
     </a></li>
-    <li class="treeview hiddenDesktop"><a href="{% url 'homepage' %}">
+    <li class="treeview hiddenDesktop"><a href="{% url 'konnichiwa.home' %}">
         <i class="fa fa-plane"></i><span>Konnichiwa</span>
     </a></li>
 
-    {% if user.is_anonymous %}
+    {% if not user.is_anonymous %}
         <li class="treeview hiddenDesktop"><a href="{% url 'logout' %}">
-                {% if perms.inventarisation.view_inventarisation %}
-                    <li class="treeview"><a activeclassname="active" href="{% url 'inventarisation.list' %}"><i
-                            class="fa fa-plane"></i><span>Inventarisations</span></a>
-                    </li>
-                {% endif %}
-            {% if perms.works.add_publication %}
-                    <li class="treeview"><a activeclassname="active" href="{% url 'works.publication.new' %}"><i
-                            class="fa fa-book"></i><span>New Work</span></a>
-                    </li>
-                {% endif %}
-            </ul>
-        </li>
-        {% endif %}
-        <li class="treeview"><a href="{% url 'logout' %}">
             <i class="fa fa-plane"></i><span>Logout</span>
         </a></li>
     {% else %}
@@ -90,4 +75,5 @@
         </a></li>
 
     {% endif %}
+
 </ul>

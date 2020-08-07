@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'book_code_generation',
     'creators',
     'mail',
-    'book_code_generation',
     'public_pages'
 ]
 

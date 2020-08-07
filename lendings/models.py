@@ -27,7 +27,7 @@ class Lending(models.Model):
     handed_in_on = models.DateField(null=True, blank=True)
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
     start_date = models.DateField(auto_now_add=True)
-    last_mailed = models.DateTimeField(default=datetime.now() - timedelta(14))
+    last_mailed = models.DateTimeField(default="2020-01-01")
 
     # This flag will be used to differentiate between having mailed for being almost too late, and having mailed for being late.
     # Almost-too-late is not implemented yet.

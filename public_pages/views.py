@@ -1,11 +1,12 @@
 import markdown
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.template.loader import get_template
 
 from public_pages.django_markdown import DjangoUrlExtension, get_site_domain
+from public_pages.models import PublicPageGroup, PublicPage
 
 
 def render_md(markdown_text: str):
@@ -15,20 +16,17 @@ def render_md(markdown_text: str):
     return html
 
 
+def view_named_page(request, page_name, sub_page_name):
+    page_group = get_object_or_404(PublicPageGroup, name=page_name)
+    print(sub_page_name)
+    page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
+
+    html = render_md(page.text)
+    return HttpResponse(render(request, template_name='public_page_simple.html', context={'page_title': page.title, 'page_content': html}))
+
+
 def view_page(page_name, sub_page_name):
     def func(request):
-        html = render_md("""
-![Drag Racing](https://miro.medium.com/proxy/1*YgtCXuRGmPfPg2PogXVCfQ.png)
-[Search](members.view|1)
-# hoi
-## Test2 
-    1. a
-    # Search for books
-    ----SEARCH----
-    2. b
-    3. c
-    test
-            """)
-        return HttpResponse(render(request, template_name='public_page_simple.html', context={'page_title': 'title', 'page_content': html}))
-
+        return view_named_page(request, page_name, sub_page_name)
     return func
+
