@@ -25,14 +25,13 @@ def render_md(markdown_text: str):
 
 def view_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
+
     can_edit = False
-    if not request.user.is_anonymous and (request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm('public_pages.change_public_page'):
+    if not request.user.is_anonymous and (request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm('public_pages.change_publicpage'):
         can_edit = True
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
-
     html = render_md(page.text)
-    print(page.name)
-    print(page.group.name)
+
     return HttpResponse(render(request, template_name='public_page_simple.html', context={'BASE_URL': settings.BASE_URL, 'markdown': page.text, 'page_title': page.title, 'page_content': html, 'can_edit' : can_edit, 'page': page}))
 
 
