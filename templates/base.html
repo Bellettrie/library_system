@@ -60,7 +60,7 @@
 
 <body>
 
-<div id="wrapper">
+<div id="wrapper" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
     <style>
         .top-nav {
             padding-top: 20px;
@@ -81,7 +81,7 @@
             border-color: grey;
         }
     </style>
-    <div id="header">
+    <div id="header"  class="{% if user.is_anonymous %}isAnonymous{% endif %}">
 
         <div class="logo-part"><img src="{% static 'images/wurm.png' %}" style="height:100%"/> Bellettrie
         </div>
@@ -125,6 +125,9 @@
         {% block content %}
         {% endblock %}
     </div>
+    {% if user.is_anonymous %}
+        <div id="rightBar"></div>
+    {% endif %}
 </div>
 {##}
 {#<!-- jQuery CDN - Slim version (=without AJAX) -->#}
