@@ -69,3 +69,20 @@ def edit_named_page(request, page_name, sub_page_name):
     else:
         form = PageEditForm(instance=page)
     return render(request, 'page_edit_form.html', {'MY_URL': settings.BASE_URL, 'form': form, 'page': page})
+
+
+@login_required
+def new_named_page(request, page_name):
+    page_group = get_object_or_404(PublicPageGroup, name=page_name)
+
+    if request.method == 'POST':
+        form = PageEditForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect(reverse('named_page', args=(page_name, sub_page_name)))
+        else:
+            print("ERROR")
+    else:
+        form = PageEditForm(instance=page)
+    return render(request, 'page_edit_form.html', {'MY_URL': settings.BASE_URL, 'form': form, 'page': page})

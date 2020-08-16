@@ -20,10 +20,12 @@ class PageEditForm(ModelForm):
                   'title',
                   'group',
                   'text',
+                  'custom_header'
                   ]
         labels = {'name': 'Name',
                   'title': 'Title',
                   'text': 'Text',
                   'group': 'Group',
+                  'custom_header': 'Which custom header macro to use? Keep empty in most cases.'
                   },
         widgets = {'text': PageTextWidget}
