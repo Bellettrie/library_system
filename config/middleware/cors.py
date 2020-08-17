@@ -10,5 +10,5 @@ class CorsMiddleware(object):
         response["Access-Control-Allow-Origin"] = settings.STATIC_URL
         response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
         response["Access-Control-Max-Age"] = "1000"
-        response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type, My-Token"
+        response["Vary"] = "Origin"
         return response
