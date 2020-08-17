@@ -35,7 +35,3 @@ EMAIL_PORT = 1025
 EMAIL_HOST ='127.0.0.1'
 FAKE_MAIL = True
 FAKE_MAIL_ADDRESS = 'nander@nander.net'
-
-CORS_ORIGIN_WHITELIST = [
-    'https://nander.net:4000',
-]
