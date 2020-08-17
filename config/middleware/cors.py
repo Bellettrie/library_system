@@ -7,6 +7,6 @@ class CorsMiddleware(object):
 
     def __call__(self, request):
         response = self.get_response(request)
-        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Origin"] = settings.STATIC_URL
         response["Vary"] = "Origin"
         return response
