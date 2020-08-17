@@ -31,6 +31,10 @@ add_contenttype,0,0,0,0,0,0,0,0,0,0,0
 change_contenttype,0,0,0,0,0,0,0,0,0,0,0
 delete_contenttype,0,0,0,0,0,0,0,0,0,0,0
 view_contenttype,0,0,0,0,0,0,0,0,0,0,0
+add_corsmodel,0,0,0,0,0,0,0,0,0,0,0
+change_corsmodel,0,0,0,0,0,0,0,0,0,0,0
+delete_corsmodel,0,0,0,0,0,0,0,0,0,0,0
+view_corsmodel,0,0,0,0,0,0,0,0,0,0,0
 add_creator,0,1,1,0,0,0,1,0,0,0,0
 change_creator,0,1,1,0,0,0,1,0,0,0,0
 delete_creator,0,1,1,0,0,0,1,0,0,0,0

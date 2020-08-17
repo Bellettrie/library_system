@@ -23,8 +23,7 @@
             crossorigin="anonymous"></script>
 
     <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <!-- Font Awesome JS -->
@@ -42,9 +41,7 @@
             integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
             crossorigin="anonymous"></script>
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
-            integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
-            crossorigin="anonymous"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
 
     <!-- Latest compiled and minified CSS -->
@@ -55,7 +52,7 @@
 
     <!-- (Optional) Latest compiled and minified JavaScript translation files -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
- <link href="https://fonts.googleapis.com/css2?family=Pangolin&family=Rubik:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pangolin&family=Rubik:wght@500&display=swap" rel="stylesheet">
 <body>
 
 <div id="wrapper" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
@@ -67,9 +64,6 @@
             right: 50px;
             top: 0px;
             position: absolute;
-
-        {#grid-row:1;#}{#grid-column: 2;#}{#grid-column-end:3;#}
-
         }
 
         .top-nav-left {
@@ -79,27 +73,24 @@
             left: 50px;
             top: 0px;
             position: absolute;
-
-        {#grid-row:1;#}{#grid-column: 2;#}{#grid-column-end:3;#}
-
         }
 
         .vertical {
-            font-family:  'Rubik', sans-serif;;
+            font-family: 'Rubik', sans-serif;;
             margin-left: .1vw;
             border-left: .1vw solid black;
             padding-left: .1vw;
             margin-top: 25px;
             height: 30px;
-        {#border-color: grey;#} font-size: 1vw;
+            font-size: 1vw;
         }
+
         @font-face {
-    font-family: logoFont;
-      src: url("{% static 'Present_Roman.ttf' %}");
-    }
+            font-family: logoFont;
+            src: url("{% static 'Present_Roman.ttf' %}");
+        }
     </style>
     <div id="header" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
-
         <a href="{% url 'homepage' %}" class="logo-part" style=" text-align: center;width:100%; "><img
                 src="{% static 'images/wurm.png' %}"
                 style="height:75px;     font-family: 'Pangolin'; "/> Bellettrie
@@ -108,27 +99,20 @@
         <div class="top-nav-left hiddenMobile">
             <a href="{% url 'homepage' %}" class="vertical">Home</a>
             <a href="{% url 'works.list' %}" class="vertical">Catalog</a>
-            <a href="{% url 'homepage' %}" class="vertical">News</a>
-            <a href="{% url 'konnichiwa.home' %}" class="vertical">Kick-In</a>
-            <a href="{% url 'homepage' %}" class="vertical">Become a Member</a>
-            <a href="{% url 'homepage' %}" class="vertical">Board / Committees</a>
-
-
+            <a href="{% url 'named_page' 'kickin'  'home'%}" class="vertical">Kick-In</a>
+            <a href="{% url  'named_page' 'basic'  'member' %}" class="vertical">Become a Member</a>
+            <a href="{% url 'named_page' 'basic'  'committees' %}" class="vertical">Board / Committees</a>
         </div>
         <div class="top-nav hiddenMobile">
-
-            <a href="{% url 'homepage' %}" class="vertical">About</a>
-            <a href="{% url 'homepage' %}" class="vertical">Contact</a>
-
+            <a href="{% url  'named_page' 'basic'  'about' %}" class="vertical">About</a>
+            <a href="{% url  'named_page' 'basic'  'contact' %}" class="vertical">Contact</a>
             {% if user.is_anonymous %}
                 <a href="{% url 'login' %}" class="vertical">Login</a>
             {% else %}
                 <a href="{% url 'logout' %}" class="vertical">Logout</a>
-
             {% endif %}
             <a class="vertical"> </a>
         </div>
-
     </div>
     <!-- Sidebar Holder -->
     {% if not user.is_anonymous %}
@@ -151,11 +135,11 @@
 
     {% endif %}
     <!-- Page Content Holder -->
-    <div id="content">
+    <article id="content">
         <h2>{% block title %}Title{% endblock %}</h2>
         {% block content %}
         {% endblock %}
-    </div>
+    </article>
     {% if user.is_anonymous %}
         <div id="rightBar"></div>
     {% endif %}

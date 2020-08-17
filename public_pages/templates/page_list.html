@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Pages</h2>
+    <table>
+
+
+        {% for page in pages %}
+            <tr>
+                <td>{{ page.title }}</td>
+                <td>{{ page.group.name }}</td>
+                <td><a class="btn btn-active" href="{% url 'edit_named_page' page.group.name page.name %}">Edit</a></td>
+            <td><a class="btn btn-danger" href="{% url 'delete_named_page' page.pk %}">Delete</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <h2>Page Groups</h2>
+    <table>
+        {% for group in groups %}
+            <tr>
+                <td>{{ group.name }}</td>
+                <td><a class="btn btn-active" href="{% url 'new_named_page' group.name %}">Add new to group</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

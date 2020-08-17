@@ -4,11 +4,13 @@ from django.db import models
 from django.db.models import PROTECT
 
 from members.models import Committee
+
+
 #
 
 def youtube_header():
     return """<div class="video-container">
-<iframe class="video-frame" width="560" height="315" src="https://www.youtube-nocookie.com/embed/9TTleauNhkA?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe class="video-frame" width="560" height="315" src="https://www.youtube-nocookie.com/embed/9TTleauNhkA?controls=0&rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>"""
 
 
@@ -19,7 +21,9 @@ class PublicPageGroup(models.Model):
 
 class PublicPage(models.Model):
     def exec_header(self):
-        return youtube_header()
+        if self.custom_header == 'youtube':
+            return youtube_header()
+        return ''
 
     name = models.CharField(max_length=64)
     title = models.CharField(max_length=128)

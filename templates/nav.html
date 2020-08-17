@@ -19,7 +19,11 @@
 
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
-
+                        {% if perms.config.view_publicpage %}
+                            <li class="treeview"><a href="{% url 'list_pages' %}">
+                                <i class="fa fa-webpage"></i><span>List Web Pages</span></a>
+                            </li>
+                        {% endif %}
                         {% if perms.config.view_holiday %}
                             <li class="treeview"><a href="{% url 'holiday.list' %}">
                                 <i class="fa fa-plane"></i><span>Holidays</span></a>
@@ -56,15 +60,26 @@
     {% endif %}
 
     <li class="treeview hiddenDesktop"><a href="{% url 'homepage' %}">
-        <i class="fa fa-plane"></i><span>home</span>
+        <i class="fa fa-plane"></i><span>Home</span>
     </a></li>
     <li class="treeview hiddenDesktop"><a href="{% url 'works.list' %}">
-        <i class="fa fa-plane"></i><span>catalog</span>
+        <i class="fa fa-plane"></i><span>Catalog</span>
     </a></li>
-    <li class="treeview hiddenDesktop"><a href="{% url 'konnichiwa.home' %}">
-        <i class="fa fa-plane"></i><span>Konnichiwa</span>
+    <li class="treeview hiddenDesktop"><a href="{% url 'named_page' 'basic'  'kickin' %}">
+        <i class="fa fa-plane"></i><span>Kick-In</span>
     </a></li>
-
+    <li class="treeview hiddenDesktop"><a href="{% url 'named_page' 'basic'  'member' %}">
+        <i class="fa fa-plane"></i><span>Become a Member</span>
+    </a></li>
+    <li class="treeview hiddenDesktop"><a href="{% url 'named_page' 'basic'  'committees' %}">
+        <i class="fa fa-plane"></i><span>Board/Committees</span>
+    </a></li>
+    <li class="treeview hiddenDesktop"><a href="{% url 'named_page' 'basic'  'about' %}">
+        <i class="fa fa-plane"></i><span>About</span>
+    </a></li>
+    <li class="treeview hiddenDesktop"><a href="{% url 'named_page' 'basic'  'contact' %}">
+        <i class="fa fa-plane"></i><span>Contact</span>
+    </a></li>
     {% if not user.is_anonymous %}
         <li class="treeview hiddenDesktop"><a href="{% url 'logout' %}">
             <i class="fa fa-plane"></i><span>Logout</span>

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
@@ -64,6 +65,7 @@ def lending_failed(request, member_id, work_id, reason_id):
                                                         'member': member, 'organising_member': organising_member, 'reason': lending_failed_reasons[reason_id]})
 
 
+@transaction.atomic
 @permission_required('lendings.add_lending')
 def finalize(request, work_id, member_id):
     member = Member.objects.get(pk=member_id)
@@ -86,6 +88,7 @@ def finalize(request, work_id, member_id):
     return redirect('/members/' + str(member_id))
 
 
+@transaction.atomic
 def extend(request, work_id):
     item = Item.objects.get(pk=work_id)
     lending = item.current_lending()
@@ -118,6 +121,7 @@ def extend(request, work_id):
     return redirect('/members/' + str(lending.member.pk))
 
 
+@transaction.atomic
 @permission_required('lendings.return')
 def return_book(request, work_id):
     item = Item.objects.get(pk=work_id)

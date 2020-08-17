@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
@@ -47,6 +48,7 @@ class InventarisationCreate(PermissionRequiredMixin, CreateView):
     success_url = reverse_lazy('inventarisation.list')
 
 
+@transaction.atomic
 @permission_required('inventarisation.change_inventarisation')
 def inventarisation_form(request, inventarisation_id, page_id):
     inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
@@ -129,6 +131,7 @@ def get_inventarisation_finish(request, inventarisation_id):
     return render(request, "inventarisation_finish.html", {'inventarisation': inventarisation})
 
 
+@transaction.atomic
 @permission_required('inventarisation.change_inventarisation')
 def get_inventarisation_finished(request, inventarisation_id):
     inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
@@ -143,6 +146,7 @@ def get_inventarisation_early_end(request, inventarisation_id):
     return render(request, "inventarisation_early_end.html", {'inventarisation': inventarisation})
 
 
+@transaction.atomic
 @permission_required('inventarisation.add_inventarisation')
 def get_inventarisation_for_all(request):
     inventarisations = []
