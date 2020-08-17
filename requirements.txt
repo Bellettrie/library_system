@@ -6,3 +6,4 @@ django-tables2
 flake8
 django-mail-templated
 unidecode
+django-cors-headers
