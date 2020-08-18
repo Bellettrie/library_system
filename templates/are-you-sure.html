@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
-<script>
-function goBack() {
-  window.history.back();
-}
-</script>
+
 {% block content %}
-Are you sure you want to {{ what }}
-    <a class="btn btn-danger" href="?confirm=True">Yes</a><button class="btn btn-flat" onclick="goBack()">No</button>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+    Are you sure you want to {{ what }}
+    <a class="btn btn-danger" href="?confirm=True">Yes</a>
+    <button class="btn btn-primary" onclick="goBack()">No</button>
 {% endblock %}
