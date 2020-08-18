@@ -123,7 +123,7 @@ def delete_page(request, pk):
 
 def list_uploads(request):
     uploads = FileUpload.objects.all()
-    return render(request, 'uploads_list.html', {'uploads':uploads})
+    return render(request, 'uploads_list.html', {'uploads': uploads})
 
 
 @permission_required('public_pages.change_publicpage')

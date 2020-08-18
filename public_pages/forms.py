@@ -11,6 +11,8 @@ class UploadFileForm(forms.ModelForm):
     class Meta:
         model = FileUpload
         fields = ['name', 'file']
+
+
 class PageTextWidget(Widget):
     def render(self, name, value, attrs=None, renderer=None):
         template = loader.get_template('page_edit_widget.html')

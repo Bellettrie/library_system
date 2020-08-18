@@ -27,7 +27,7 @@ class InvalidMarkdown(Error):
     def __str__(self) -> str:
         if self.value is None:
             return self.error
-        return f'{self.error} "{self.value}"';
+        return f'{self.error} "{self.value}"'
 
 
 def clean_link(href: str) -> str:
@@ -53,7 +53,7 @@ def clean_link(href: str) -> str:
         static = True
         print("HERE")
         print(href[2:])
-        href = settings.STATIC_URL + 'uploads/' +href[2:]
+        href = settings.STATIC_URL + 'uploads/' + href[2:]
 
     z = href.split("|")
     href = z[0]
