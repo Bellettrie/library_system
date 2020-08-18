@@ -10,6 +10,9 @@
             </a></li>
         {% endif %}
         {% include 'lending_nav.html' %}
+
+        {% if perms.config.view_holiday %}
+
         <li class="active">
 
             <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
@@ -22,7 +25,8 @@
                     {% endif %}
                 </ul>
         </li>
-
+        {% endif %}
+        {% if perms.inventarisation.view_inventarisation or perms.works.add_publication %}
          <li class="active">
             <a href="#catalogSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Catalog Management</a>
             <ul class="collapse list-unstyled" id="catalogSubmenu">
@@ -32,8 +36,14 @@
                             class="fa fa-plane"></i><span>Inventarisations</span></a>
                     </li>
                 {% endif %}
+            {% if perms.works.add_publication %}
+                    <li class="treeview"><a activeclassname="active" href="{% url 'works.publication.new' %}"><i
+                            class="fa fa-book"></i><span>New Work</span></a>
+                    </li>
+                {% endif %}
             </ul>
         </li>
+        {% endif %}
         <li class="treeview"><a href="{% url 'logout' %}">
             <i class="fa fa-plane"></i><span>Logout</span>
         </a></li>

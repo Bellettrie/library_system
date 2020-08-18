@@ -13,8 +13,17 @@ from django.views.generic import DetailView, ListView, CreateView
 from book_code_generation.models import standardize_code
 from series.models import Series
 from utils.get_query_words import get_query_words
-from works.forms import ItemStateCreateForm, ItemCreateForm
+from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm
 from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState
+
+
+def word_to_regex(word: str):
+    if re.match('^[\\w-]+?$', word.replace("*", "").replace("+", "").replace("?", "")) is None:
+        return ""
+    word = word.replace("*", ".*")
+    word = word.replace("?", ".?")
+    word = word.replace("+", ".+")
+    return "(?<!\\S)" + word + "(?!\\S)"
 
 
 def sort_works(work: Work):
@@ -55,18 +64,16 @@ class BookResult:
 def get_works_for_publication(words):
     result_set = None
     for word in words:
-        if re.match('^[\\w-]+?$', word.replace("*", "").replace("+", "").replace("?", "")) is None:
+        word = word_to_regex(word)
+        if len(word) == 0:
             return []
-        word = word.replace("*", ".*")
-        word = word.replace("?", ".?")
-        word = word.replace("+", ".+")
-        authors = Creator.objects.filter(Q(name__iregex="(?<!\\S)" + word + "(?!\\S)") | Q(given_names__iregex="(?<!\\S)" + word + "(?!\\S)"))
+        authors = Creator.objects.filter(Q(name__iregex=word) | Q(given_names__iregex=word))
 
         series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors)
-                                           | Q(title__icontains=word)
-                                           | Q(sub_title__icontains=word)
-                                           | Q(original_title__icontains=word)
-                                           | Q(original_subtitle__icontains=word)
+                                           | Q(title__iregex=word)
+                                           | Q(sub_title__iregex=word)
+                                           | Q(original_title__iregex=word)
+                                           | Q(original_subtitle__iregex=word)
                                            ))
 
         prev_len = 0
@@ -76,10 +83,10 @@ def get_works_for_publication(words):
             prev_len = series_len
             series = set(series | set(Series.objects.filter(part_of_series__in=series)))
             series_len = len(series)
-        work_q = Q(Q(title__iregex="(?<!\\S)" + word + "(?!\\S)")
-                   | Q(sub_title__iregex="(?<!\\S)" + word + "(?!\\S)")
-                   | Q(original_title__iregex="(?<!\\S)" + word + "(?!\\S)")
-                   | Q(original_subtitle__iregex="(?<!\\S)" + word + "(?!\\S)")
+        work_q = Q(Q(title__iregex=word)
+                   | Q(sub_title__iregex=word)
+                   | Q(original_title__iregex=word)
+                   | Q(original_subtitle__iregex=word)
                    | Q(workinseries__part_of_series__in=series))
 
         subworks = set(SubWork.objects.filter(
@@ -110,8 +117,10 @@ def get_works_for_publication(words):
 def get_works_by_book_code(word):
     results = []
     pub_dict = dict()
-
-    items = Item.objects.filter(Q(book_code__contains=word) | Q(book_code_sortable__contains=standardize_code(word)))
+    word = word_to_regex(word)
+    if len(word) == 0:
+        return []
+    items = Item.objects.filter(Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word))
     for item in items:
         dz = pub_dict.get(item.publication, [])
         dz.append(ItemRow(item, []))
@@ -171,6 +180,21 @@ def create_item_state(request, item_id):
     return render(request, 'item_reason_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
 
 
+@permission_required('works.add_item')
+def item_new(request, publication_id=None):
+    publication = get_object_or_404(Publication, pk=publication_id)
+    if request.method == 'POST':
+        form = ItemCreateForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.publication = publication
+            instance.save()
+            return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
+    else:
+        form = ItemCreateForm()
+    return render(request, 'item_edit.html', {'form': form, 'publication': publication})
+
+
 @permission_required('works.change_item')
 def item_edit(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
@@ -178,9 +202,62 @@ def item_edit(request, item_id):
         form = ItemCreateForm(request.POST, instance=item)
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.item = Item.objects.get(pk=item_id)
+
             instance.save()
-            return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
+            return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
-    return render(request, 'item_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
+    return render(request, 'item_edit.html', {'form': form, 'publication': item.publication})
+
+
+@permission_required('works.change_publication')
+def publication_edit(request, publication_id=None):
+    from works.forms import CreatorToWorkFormSet
+    from works.forms import SeriesToWorkFomSet
+    form = None
+    creators = None
+    series = None
+    publication = None
+    if request.method == 'POST':
+        if publication_id is not None:
+            publication = get_object_or_404(Publication, pk=publication_id)
+            form = PublicationCreateForm(request.POST, instance=publication)
+        else:
+            form = PublicationCreateForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.is_translated = instance.original_language is not None
+            instance.save()
+            creators = CreatorToWorkFormSet(request.POST, request.FILES)
+
+            if creators.is_valid():
+                instances = creators.save(commit=False)
+                for c2w in instances:
+                    c2w.publication = instance
+                    c2w.save()
+
+            series = SeriesToWorkFomSet(request.POST, request.FILES)
+            if series.is_valid():
+                series.save()
+            return HttpResponseRedirect(reverse('work.view', args=(instance.pk,)))
+    else:
+        creators = CreatorToWorkFormSet(instance=None)
+        series = CreatorToWorkFormSet(instance=None)
+        publication = None
+        if publication_id is not None:
+            publication = get_object_or_404(Publication, pk=publication_id)
+
+            creators = CreatorToWorkFormSet(instance=publication)
+            series = SeriesToWorkFomSet(instance=publication)
+
+            form = PublicationCreateForm(instance=publication)
+        else:
+            creators = CreatorToWorkFormSet()
+            series = SeriesToWorkFomSet()
+            form = PublicationCreateForm()
+    return render(request, 'publication_edit.html', {'series': series, 'publication': publication, 'form': form, 'creators': creators})
+
+
+@permission_required('works.add_publication')
+def publication_new(request):
+    return publication_edit(request, publication_id=None)
