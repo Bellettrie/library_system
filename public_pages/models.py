@@ -5,6 +5,8 @@ from django.db.models import PROTECT
 
 from members.models import Committee
 
+from django.conf import settings
+
 
 #
 
@@ -18,6 +20,9 @@ class PublicPageGroup(models.Model):
     name = models.CharField(max_length=64)
     committees = models.ForeignKey(Committee, on_delete=PROTECT)
 
+    def __str__(self):
+        return self.name
+
 
 class PublicPage(models.Model):
     def exec_header(self):
@@ -30,3 +35,13 @@ class PublicPage(models.Model):
     text = models.TextField()
     group = models.ForeignKey(PublicPageGroup, on_delete=PROTECT)
     custom_header = models.CharField(max_length=64, null=True, blank=True)
+
+
+class FileUpload(models.Model):
+    file = models.FileField(upload_to="root/uploads/")
+    name = models.CharField(max_length=64)
+
+    def get_file_url(self):
+        spl = self.file.name.split("/")
+
+        return spl[2]

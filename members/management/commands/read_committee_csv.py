@@ -30,7 +30,10 @@ class Command(BaseCommand):
             perm = line[0]
             codes = line[1:]
             print(perm)
-            permission = Permission.objects.get(codename=perm)
+            try:
+                permission = Permission.objects.get(codename=perm)
+            except Permission.DoesNotExist:
+                continue
             counter = 0
             for code in codes:
                 if code == "0":

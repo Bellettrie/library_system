@@ -18,6 +18,7 @@ DATABASES = {
 }
 
 STATIC_URL = '/root/'
+ABSOLUTE_STATIC = 'https://nander.net:4000/root/'
 # --------------------------------------------------
 STATIC_ROOT = os.path.join(BASE_DIR, 'root')
 # -----------------------------------------------------

@@ -159,3 +159,4 @@ add_workinpublication,0,1,1,0,0,0,1,0,0,0,0
 change_workinpublication,0,1,1,0,0,0,1,0,0,0,0
 delete_workinpublication,0,1,1,0,0,0,1,0,0,0,0
 view_workinpublication,0,1,1,0,0,0,1,0,0,0,0
+falseview_workinpublication,0,1,1,0,0,0,1,0,0,0,0

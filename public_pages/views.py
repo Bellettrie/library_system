@@ -12,9 +12,9 @@ from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from public_pages.django_markdown import DjangoUrlExtension, get_site_domain
-from public_pages.forms import PageEditForm
-from public_pages.models import PublicPageGroup, PublicPage
+from public_pages.django_markdown import DjangoUrlExtension
+from public_pages.forms import PageEditForm, UploadFileForm
+from public_pages.models import PublicPageGroup, PublicPage, FileUpload
 
 
 def render_md(markdown_text: str):
@@ -116,3 +116,33 @@ def delete_page(request, pk):
     page.delete()
 
     return redirect('list_pages')
+
+
+def list_uploads(request):
+    uploads = FileUpload.objects.all()
+    return render(request, 'uploads_list.html', {'uploads':uploads})
+
+
+@permission_required('public_pages.change_publicpage')
+def new_upload(request):
+    special = ""
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            special = "Succesful upload!"
+            form = UploadFileForm()
+    else:
+        form = UploadFileForm()
+
+    return render(request, 'upload_form.html', {"form": form, "special": special})
+
+
+@permission_required('public_pages.change_publicpage')
+def delete_upload(request, pk):
+    page = FileUpload.objects.filter(pk=pk)
+    page.delete()
+
+    return redirect('list_uploads')

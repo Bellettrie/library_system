@@ -4,12 +4,14 @@
 from typing import Optional
 import re
 import markdown
-from markdown.inlinepatterns import LinkInlineProcessor, LINK_RE
+from markdown.inlinepatterns import LinkInlineProcessor, LINK_RE, ImageReferenceInlineProcessor, IMAGE_REFERENCE_RE, IMAGE_LINK_RE, ImageInlineProcessor
 from urllib.parse import urlparse
 
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.urls import reverse, resolve, Resolver404, NoReverseMatch
+
+from django.conf import settings
 
 
 class Error(Exception):
@@ -28,12 +30,7 @@ class InvalidMarkdown(Error):
         return f'{self.error} "{self.value}"';
 
 
-def get_site_domain() -> str:
-    # TODO: Get your site domain here
-    return 'example.com'
-
-
-def clean_link(href: str, site_domain: str) -> str:
+def clean_link(href: str) -> str:
     if href.startswith('mailto:'):
         email_match = re.match('^(mailto:)?([^?]*)', href)
         if not email_match:
@@ -49,6 +46,15 @@ def clean_link(href: str, site_domain: str) -> str:
         return href
 
     # Remove fragments or query params before trying to match the url name
+    static = False
+    print(href)
+
+    if href.startswith('``'):
+        static = True
+        print("HERE")
+        print(href[2:])
+        href = settings.STATIC_URL + 'uploads/' +href[2:]
+
     z = href.split("|")
     href = z[0]
     args = []
@@ -72,23 +78,7 @@ def clean_link(href: str, site_domain: str) -> str:
 
     parsed_url = urlparse(href)
 
-    if parsed_url.netloc == site_domain:
-        try:
-            resolver_match = resolve(parsed_url.path)
-        except Resolver404:
-            raise InvalidMarkdown(
-                "Should not use absolute links to the current site.\n"
-                "We couldn't find a match to this URL. Are you sure it exists?",
-                value=href,
-            )
-        else:
-            raise InvalidMarkdown(
-                'Should not use absolute links to the current site.\n'
-                'Try using the url name "{}".'.format(resolver_match.url_name),
-                value=href,
-            )
-
-    if parsed_url.scheme not in ('http', 'https'):
+    if not static and parsed_url.scheme not in ('http', 'https'):
         raise InvalidMarkdown('Must provide an absolute URL (be sure to include https:// or http://)', href)
 
     return href
@@ -97,11 +87,19 @@ def clean_link(href: str, site_domain: str) -> str:
 class DjangoLinkInlineProcessor(LinkInlineProcessor):
     def getLink(self, data, index):
         href, title, index, handled = super().getLink(data, index)
-        site_domain = get_site_domain()
-        href = clean_link(href, site_domain)
+        href = clean_link(href)
+        return href, title, index, handled
+
+
+class CustomImageLinkProcessor(ImageInlineProcessor):
+    def getLink(self, data, index):
+        href, title, index, handled = super().getLink(data, index)
+        print(href, title, index)
+        href = clean_link(href)
         return href, title, index, handled
 
 
 class DjangoUrlExtension(markdown.Extension):
     def extendMarkdown(self, md, *args, **kwrags):
         md.inlinePatterns.register(DjangoLinkInlineProcessor(LINK_RE, md), 'link', 160)
+        md.inlinePatterns.register(CustomImageLinkProcessor(IMAGE_LINK_RE, md), 'image_link', 140)
