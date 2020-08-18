@@ -20,6 +20,9 @@ class EditForm(ModelForm):
                   'end_date',
                   'user',
                   'committees',
+                  'member_background',
+                  'membership_type',
+                  'is_blacklisted'
                   ]
         labels = {'name': 'Name',
                   'nickname': 'Nickname',
@@ -34,4 +37,7 @@ class EditForm(ModelForm):
                   'end_date': 'End date',
                   'user': 'User',
                   'committees': 'Committees',
+                  'member_background': 'Member Background',
+                  'membership_type': 'Membership Type',
+                  'is_blacklisted': 'Is Blacklisted?'
                   }

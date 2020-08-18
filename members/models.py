@@ -20,12 +20,19 @@ class MemberBackground(models.Model):
     visual_name = models.CharField(max_length=64)
     old_str = models.CharField(max_length=64)
 
+    def __str__(self):
+        return self.visual_name
+
 
 class MembershipType(models.Model):
     name = models.CharField(max_length=64)
     visual_name = models.CharField(max_length=64)
-    fee = models.IntegerField(default=0)
     old_str = models.CharField(max_length=64)
+    needs_union_card = models.BooleanField(default=True)
+    has_end_date = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.visual_name
 
 
 class MemberData(models.Model):
@@ -101,6 +108,13 @@ class Member(MemberData):
 
     def save(self, *args, **kwargs):
         MemberLog.from_member(self)
+        if self.membership_type:
+            if not self.membership_type.has_end_date:
+                self.end_date = None
+            elif self.end_date is None:
+                print(self.name)
+                print(self.old_id)
+                raise ValueError("Member has to have an end date for this membership type")
         super().save(*args, **kwargs)
 
     def __str__(self):
