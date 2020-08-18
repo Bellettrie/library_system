@@ -103,13 +103,13 @@ def new_named_page(request, page_name):
     return render(request, 'page_edit_form.html', {'MY_URL': settings.BASE_URL, 'form': form})
 
 
-@permission_required('public_page.view_publicpage')
+@permission_required('public_pages.view_publicpage')
 def list_named_pages(request):
     pages = PublicPage.objects.all()
     return render(request, 'page_list.html', {'MY_URL': settings.BASE_URL, 'pages': pages, 'groups': PublicPageGroup.objects.all()})
 
 
-@permission_required('public_page.delete_publicpage')
+@permission_required('public_pages.delete_publicpage')
 @transaction.atomic
 def delete_page(request, pk):
     page = PublicPage.objects.filter(pk=pk)
