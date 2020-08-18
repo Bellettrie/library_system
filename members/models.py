@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.contrib.auth.models import User, Group
 from django.db import models
-from django.db.models import CASCADE
+from django.db.models import CASCADE, PROTECT
 
 from members.management.commands.namegen import generate_full_name
 
@@ -15,7 +15,23 @@ class Committee(models.Model):
         return self.name
 
 
-class Member(models.Model):
+class MemberBackground(models.Model):
+    name = models.CharField(max_length=64)
+    visual_name = models.CharField(max_length=64)
+    old_str = models.CharField(max_length=64)
+
+
+class MembershipType(models.Model):
+    name = models.CharField(max_length=64)
+    visual_name = models.CharField(max_length=64)
+    fee = models.IntegerField(default=0)
+    old_str = models.CharField(max_length=64)
+
+
+class MemberData(models.Model):
+    class Meta:
+        abstract = True
+
     name = models.CharField(max_length=255)
     nickname = models.CharField(max_length=255, null=True, blank=True)
     addressLineOne = models.CharField(max_length=255)
@@ -25,12 +41,19 @@ class Member(models.Model):
     email = models.CharField(max_length=255)
     phone = models.CharField(max_length=64)
     student_number = models.CharField(max_length=32)
-    membership_type_old = models.CharField(max_length=32)
+    end_date = models.DateField(null=True, blank=True)
+    is_blacklisted = models.BooleanField(default=False)
+    member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
+    membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
+
     notes = models.TextField()
+
+
+class Member(MemberData):
+    membership_type_old = models.CharField(max_length=32)
     old_customer_type = models.CharField(max_length=64, null=True, blank=True)
     old_id = models.IntegerField(null=True, blank=True)
     is_anonymous_user = models.BooleanField(default=False)
-    end_date = models.DateField(null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True, on_delete=CASCADE)
     committees = models.ManyToManyField(Committee, blank=True)
 
@@ -54,7 +77,8 @@ class Member(models.Model):
         from works.models import ItemType, Category
 
         lendings = Lending.objects.filter(member=self, item__location__category__item_type=item_type, handed_in=False)
-        return len(lendings) < 5
+        from config.models import LendingSettings
+        return len(lendings) < LendingSettings.get_max_count(item_type, self)
 
     def has_late_items(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
@@ -76,6 +100,7 @@ class Member(models.Model):
         return False
 
     def save(self, *args, **kwargs):
+        MemberLog.from_member(self)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -123,3 +148,23 @@ class Member(models.Model):
                 if not found:
                     self.user.groups.add(Group.objects.get(name=committee.code))
             self.user.save()
+
+
+class MemberLog(MemberData):
+    date_edited = models.DateTimeField(auto_now=True)
+
+    @staticmethod
+    def from_member(member: Member):
+        data = MemberLog()
+        data.name = member.name
+        data.nickname = member.nickname
+        data.addressLineOne = member.addressLineOne
+        data.addressLineTwo = member.addressLineTwo
+        data.addressLineThree = member.addressLineThree
+        data.addressLineFour = member.addressLineFour
+        data.email = member.email
+        data.phone = member.phone
+        data.student_number = member.student_number
+        data.end_date = member.end_date
+        data.notes = member.notes
+        data.save()
