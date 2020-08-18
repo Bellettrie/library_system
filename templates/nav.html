@@ -24,6 +24,11 @@
                                 <i class="fa fa-webpage"></i><span>List Web Pages</span></a>
                             </li>
                         {% endif %}
+                        {% if perms.config.change_publicpage %}
+                            <li class="treeview"><a href="{% url 'list_uploads' %}">
+                                <i class="fa fa-webpage"></i><span>Uploads</span></a>
+                            </li>
+                        {% endif %}
                         {% if perms.config.view_holiday %}
                             <li class="treeview"><a href="{% url 'holiday.list' %}">
                                 <i class="fa fa-plane"></i><span>Holidays</span></a>

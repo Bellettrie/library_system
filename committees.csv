@@ -79,6 +79,10 @@ add_article,0,1,1,0,0,0,0,0,0,0,0
 change_article,0,1,1,0,0,0,0,0,0,0,0
 delete_article,0,1,1,0,0,0,0,0,0,0,0
 view_article,0,1,1,0,0,0,0,0,0,0,0
+add_fileupload,0,0,0,0,0,0,0,0,0,0,0
+change_fileupload,0,0,0,0,0,0,0,0,0,0,0
+delete_fileupload,0,0,0,0,0,0,0,0,0,0,0
+view_fileupload,0,0,0,0,0,0,0,0,0,0,0
 add_publicpage,0,1,1,0,0,0,0,0,0,0,0
 change_publicpage,0,1,1,0,0,0,0,0,0,0,0
 delete_publicpage,0,1,1,0,0,0,0,0,0,0,0
@@ -159,4 +163,3 @@ add_workinpublication,0,1,1,0,0,0,1,0,0,0,0
 change_workinpublication,0,1,1,0,0,0,1,0,0,0,0
 delete_workinpublication,0,1,1,0,0,0,1,0,0,0,0
 view_workinpublication,0,1,1,0,0,0,1,0,0,0,0
-falseview_workinpublication,0,1,1,0,0,0,1,0,0,0,0

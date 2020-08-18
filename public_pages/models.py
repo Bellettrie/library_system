@@ -8,8 +8,6 @@ from members.models import Committee
 from django.conf import settings
 
 
-#
-
 def youtube_header():
     return """<div class="video-container">
 <iframe class="video-frame" width="560" height="315" src="https://www.youtube-nocookie.com/embed/9TTleauNhkA?controls=0&rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -43,5 +41,4 @@ class FileUpload(models.Model):
 
     def get_file_url(self):
         spl = self.file.name.split("/")
-
         return spl[2]
