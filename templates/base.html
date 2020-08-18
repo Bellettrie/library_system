@@ -61,7 +61,7 @@
             padding-top: 20px;
             height: 30px;
             margin-top: 35px;
-            right: 50px;
+            right: 30px;
             top: 0px;
             position: absolute;
         }
@@ -70,7 +70,7 @@
             padding-top: 20px;
             height: 30px;
             margin-top: 35px;
-            left: 50px;
+            left: 30px;
             top: 0px;
             position: absolute;
         }
@@ -102,8 +102,10 @@
             <a href="{% url 'named_page' 'kickin'  'home'%}" class="vertical">Kick-In</a>
             <a href="{% url  'named_page' 'basic'  'member' %}" class="vertical">Become a Member</a>
             <a href="{% url 'named_page' 'basic'  'committees' %}" class="vertical">Board / Committees</a>
+            <a href="{% url 'named_page' 'konnichiwa'  'home' %}" class="vertical">Konnichiwa</a>
         </div>
         <div class="top-nav hiddenMobile">
+        <a href="{% url 'named_page' 'basic'  'corona' %}" class="vertical">Corona</a>
             <a href="{% url  'named_page' 'basic'  'about' %}" class="vertical">About</a>
             <a href="{% url  'named_page' 'basic'  'contact' %}" class="vertical">Contact</a>
             {% if user.is_anonymous %}
