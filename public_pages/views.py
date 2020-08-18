@@ -113,6 +113,9 @@ def list_named_pages(request):
 @transaction.atomic
 def delete_page(request, pk):
     page = PublicPage.objects.filter(pk=pk)
+    if not request.GET.get('confirm'):
+        return render(request, 'are-you-sure.html', {'what': "delete page with name " + page.first().name})
+
     page.delete()
 
     return redirect('list_pages')
@@ -143,6 +146,8 @@ def new_upload(request):
 @permission_required('public_pages.change_publicpage')
 def delete_upload(request, pk):
     page = FileUpload.objects.filter(pk=pk)
+    if not request.GET.get('confirm'):
+        return render(request, 'are-you-sure.html', {'what': "delete attachment with name " + page.first().name})
     page.delete()
 
     return redirect('list_uploads')
