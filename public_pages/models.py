@@ -41,7 +41,7 @@ class FileUpload(models.Model):
 
     def get_file_url(self):
         spl = self.file.name.split("/")
-        return spl[2]
+        return spl[-1]
 
     def get_full_url(self):
         return settings.STATIC_URL + "files/" + self.get_file_url()
