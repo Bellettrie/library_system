@@ -13,18 +13,18 @@
             {% include 'lending_nav.html' %}
 
 
-            {% if perms.config.view_holiday %}
+            {% if perms.config.view_holiday or perms.public_pages.view_publicpage  or perms.public_pages.change_publicpage %}
 
                 <li class="active">
 
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
-                        {% if perms.config.view_publicpage %}
+                        {% if perms.public_pages.view_publicpage %}
                             <li class="treeview"><a href="{% url 'list_pages' %}">
                                 <i class="fa fa-webpage"></i><span>List Web Pages</span></a>
                             </li>
                         {% endif %}
-                        {% if perms.config.change_publicpage %}
+                        {% if perms.public_pages.change_publicpage %}
                             <li class="treeview"><a href="{% url 'list_uploads' %}">
                                 <i class="fa fa-webpage"></i><span>Uploads</span></a>
                             </li>
