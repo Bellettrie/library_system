@@ -13,12 +13,28 @@
             {% include 'lending_nav.html' %}
 
 
-            {% if perms.config.view_holiday or perms.public_pages.view_publicpage  or perms.public_pages.change_publicpage %}
+            {% if perms.config.view_holiday %}
 
                 <li class="active">
 
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
+                        {% if perms.config.view_holiday %}
+                            <li class="treeview"><a href="{% url 'holiday.list' %}">
+                                <i class="fa fa-plane"></i><span>Holidays</span></a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+
+
+            {% endif %}
+            {% if perms.public_pages.view_publicpage  or perms.public_pages.change_publicpage %}
+
+                <li class="active">
+
+                    <a href="#webmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Web Management</a>
+                    <ul class="collapse list-unstyled" id="webmenu">
                         {% if perms.public_pages.view_publicpage %}
                             <li class="treeview"><a href="{% url 'list_pages' %}">
                                 <i class="fa fa-webpage"></i><span>List Web Pages</span></a>
@@ -29,15 +45,8 @@
                                 <i class="fa fa-webpage"></i><span>Uploads</span></a>
                             </li>
                         {% endif %}
-                        {% if perms.config.view_holiday %}
-                            <li class="treeview"><a href="{% url 'holiday.list' %}">
-                                <i class="fa fa-plane"></i><span>Holidays</span></a>
-                            </li>
-                        {% endif %}
                     </ul>
                 </li>
-
-
             {% endif %}
             {% if perms.inventarisation.view_inventarisation or perms.works.add_publication %}
 
