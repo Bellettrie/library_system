@@ -46,8 +46,9 @@ INSTALLED_APPS = [
     'inventarisation',
     'ratings',
     'recode',
-    'mail',
     'book_code_generation',
+    'creators',
+    'mail',
 ]
 
 MIDDLEWARE = [

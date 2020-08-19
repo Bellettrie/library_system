@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
-
+{% block title %} {% if form.pk %}Edit item for {% else %}
+            New item for
+        {%endif %}{{ publication.title }}{% endblock %}
 {% block content %}
+
+
     <form action="#" method="post">
         {% csrf_token %}
         {{ form.book_code }} <br />

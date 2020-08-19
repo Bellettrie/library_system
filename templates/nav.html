@@ -26,7 +26,7 @@
                 </ul>
         </li>
         {% endif %}
-        {% if perms.inventarisation.view_inventarisation %}
+        {% if perms.inventarisation.view_inventarisation or perms.works.add_publication %}
          <li class="active">
             <a href="#catalogSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Catalog Management</a>
             <ul class="collapse list-unstyled" id="catalogSubmenu">
@@ -34,6 +34,11 @@
                 {% if perms.inventarisation.view_inventarisation %}
                     <li class="treeview"><a activeclassname="active" href="{% url 'inventarisation.list' %}"><i
                             class="fa fa-plane"></i><span>Inventarisations</span></a>
+                    </li>
+                {% endif %}
+            {% if perms.works.add_publication %}
+                    <li class="treeview"><a activeclassname="active" href="{% url 'works.publication.new' %}"><i
+                            class="fa fa-book"></i><span>New Work</span></a>
                     </li>
                 {% endif %}
             </ul>

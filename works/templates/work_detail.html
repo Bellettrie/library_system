@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}{{ object.title }}{% endblock %}
+{% block title %}{{ object.get_title }}{% endblock %}
 {% block content %}
 
     <table class="table table-striped" style="width: auto;">
         <tr>
             <th>Title</th>
-            <td>{{ object.title }}</td>
+            <td>{{ object.get_title }}</td>
         </tr>
         <tr>
             <th>Sub-title</th>
@@ -13,13 +13,14 @@
         </tr>
         <tr>
             <th>Authors</th>
-            <td>{% for author in object.get_authors %}{{ author.creator.name }}{% endfor %}</td>
+            <td>{% for author in object.get_authors %}{{ author.creator.full_name }} {% endfor %}</td>
         </tr>
         <tr>
             <th>Comment</th>
             <td>{{ object.comment }}</td>
         </tr>
     </table>
+    <a href="{% url 'works.publication.edit' object.pk %}">Edit</a>
 
 
 
@@ -55,4 +56,6 @@
             </tr>
         {% endfor    %}
     </table>
+
+    <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
 {% endblock %}
