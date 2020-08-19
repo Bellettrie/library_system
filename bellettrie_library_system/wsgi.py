@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bellettrie_library_system.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bellettrie_library_system.settings_production')
 
 application = get_wsgi_application()

@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
 from members.models import Committee
-from members.permissions import KASCO, BOARD, ADMIN, COMCO, BOOKBUYERS, KICKIN, LENDERS, BOOKS
+from members.permissions import KASCO, BOARD, ADMIN, COMCO, BOOKBUYERS, KICKIN, LENDERS, BOOKS, WEB, KONNICHIWA, RETRIEVAL
 
 
 class Command(BaseCommand):
@@ -13,10 +13,13 @@ class Command(BaseCommand):
         committees = [(KASCO, "Kascommittee", True),
                       (BOARD, "Board", True),
                       (ADMIN, "Administrators", True),
+                      (WEB, "Web Committee", True),
+                      (KONNICHIWA, "Konnichiwa", True),
                       (COMCO, "Computer Committee", True),
                       (BOOKS, "Books Committee", True),
                       (BOOKBUYERS, "Book Buyers", True),
                       (KICKIN, "Kickin Committee", True),
+                      (RETRIEVAL, "Retrieval Committee", True),
                       (LENDERS, "Lenders Committee", True),
                       ]
 

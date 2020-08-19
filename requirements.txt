@@ -1,7 +1,8 @@
+markdown
 django
-mysql
-mysql-connector
 namegenerator
 names
 django-tables2
 flake8
+django-mail-templated
+unidecode

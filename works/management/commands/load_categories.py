@@ -2,7 +2,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from bellettrie_library_system.settings import OLD_DB
+from bellettrie_library_system.settings import OLD_DB, OLD_PWD, OLD_USN
 from works.models import Item, Category, ItemType, Location
 
 
@@ -10,13 +10,8 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="root",
-            database=OLD_DB
-        )
-        mycursor = mydb.cursor(dictionary=True)
+        from bellettrie_library_system.settings_migration import migration_database
+        mycursor = migration_database.cursor(dictionary=True)
 
         mycursor.execute("SELECT * FROM locatie where zichtbaar = 1")
 
@@ -38,5 +33,9 @@ class Command(BaseCommand):
             for item in z:
                 if x.get("locatienummer") == 0:
                     print(x)
-                item.location = Location.objects.get(old_id=x.get("locatienummer"))
+                loc = x.get("locatienummer")
+                if x.get("locatienummer") == 3:
+                    print(x)
+                    loc = 4
+                item.location = Location.objects.get(old_id=loc)
                 item.save()

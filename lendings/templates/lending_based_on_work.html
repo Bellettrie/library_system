@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
+{% block title %}
+    Select a Member for Lending
+{% endblock %}
 {% block content %}
     Lending for work: {{ item.publication.title }}
     <form action="/lend/work/{{ item.pk }}" method="get">
-        <label for="Query">Query: </label>
+        <label for="Query">Name: </label>
         <input id="q" type="text" name="q">
-        <input type="submit" value="Search">
+        <input type="submit" value="Search" class="btn-primary btn" >
     </form>
     <table>
         {% for member in members %}
             <tr>
                 <td><a href="{% url LENDING_FINALIZE item.pk  member.id %}">{{ member.name }}</a></td>
-                <td>{{ member.old_id }}</td>
+                <td><a href="{% url LENDING_FINALIZE item.pk  member.id %}" class="btn btn-sm btn-primary">Finish lending</a></td>
             </tr>
         {% endfor %}
     </table>

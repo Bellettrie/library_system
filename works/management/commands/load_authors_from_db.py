@@ -2,7 +2,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from bellettrie_library_system.settings import OLD_DB
+from bellettrie_library_system.settings import OLD_DB, OLD_PWD, OLD_USN
 
 from works.models import Creator
 
@@ -18,13 +18,8 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="root",
-            database=OLD_DB
-        )
-        mycursor = mydb.cursor(dictionary=True)
+        from bellettrie_library_system.settings_migration import migration_database
+        mycursor = migration_database.cursor(dictionary=True)
 
         persons = dict()
 
@@ -37,7 +32,7 @@ class Command(BaseCommand):
         for p in persons.keys():
             old_id = persons.get(p).get("persoonnummer")
             comment = persons.get(p).get("commentaar")
-            creator = Creator.objects.create(name=get_name(persons.get(p)), old_id=old_id, comment=comment)
+            creator = Creator.objects.create(name=persons.get(p).get("naam"), given_names=persons.get(p).get("voornaam"), old_id=old_id, comment=comment)
             creators[old_id] = creator
 
         for p in persons.keys():

@@ -1,10 +1,61 @@
 {% extends "base.html" %}
-{% block title %}Details for book: {{  object.title}}{% endblock %}
+{% block title %}{{ object.get_title }}{% endblock %}
 {% block content %}
-    <ul>
-        {% with bork=object %}
-        Details page under construction
-            {{ bork.old_id }}
-        {% endwith %}
-    </ul>
+
+    <table class="table table-striped" style="width: auto;">
+        <tr>
+            <th>Title</th>
+            <td>{{ object.get_title }}</td>
+        </tr>
+        <tr>
+            <th>Sub-title</th>
+            <td>{{ object.sub_title }}</td>
+        </tr>
+        <tr>
+            <th>Authors</th>
+            <td>{% for author in object.get_authors %}{{ author.creator.full_name }} {% endfor %}</td>
+        </tr>
+        <tr>
+            <th>Comment</th>
+            <td>{{ object.comment }}</td>
+        </tr>
+    </table>
+    <a href="{% url 'works.publication.edit' object.pk %}">Edit</a>
+
+
+
+    <h4>Items for this publication</h4>
+    <table class="table table-striped" style="width: auto;">
+        <tr>
+            <th>Book code</th>
+            <th>ISBN</th>
+            <th>pages</th>
+            <th>year</th>
+            <th>Status</th>
+            {% if perms.auth.add_item_state %}
+                <th>Settings</th>
+            {% endif %}
+            {% if perms.works.change_item %}
+                <th>Edit</th>
+            {% endif %}
+        </tr>
+        {% for item in object.get_items %}
+
+            <tr>
+                <td>{{ item.display_code }}</td>
+                <td>{{ item.get_isbn10 }} {{ item.get_isbn13 }}</td>
+                <td>{{ item.get_pages }}</td>
+                <td>{{ item.year }}</td>
+                <td>{{ item.get_state.type }}</td>
+                {% if perms.auth.add_item_state %}
+                    <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change state</a></td>
+                {% endif %}
+                {% if perms.works.change_item %}
+                    <td><a href="{% url 'works.item.edit' item.pk %}" class="btn btn-primary btn-sm">Edit</a></td>
+                {% endif %}
+            </tr>
+        {% endfor    %}
+    </table>
+
+    <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
 {% endblock %}

@@ -2,7 +2,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from bellettrie_library_system.settings import OLD_DB
+from bellettrie_library_system.settings import OLD_DB, OLD_USN, OLD_PWD
 from members.models import Member
 
 
@@ -17,25 +17,22 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="root",
-            database=OLD_DB
-        )
-        mycursor = mydb.cursor(dictionary=True)
+        from bellettrie_library_system.settings_migration import migration_database
+        mycursor = migration_database.cursor(dictionary=True)
 
         mycursor.execute("SELECT * FROM klant")
 
         for x in mycursor:
             z = Member.objects.filter(old_id=x.get("klantnummer"))
             if len(z) == 0:
+                print(x.get("klantnummer"))
                 Member.objects.create(
                     name=x.get("voornaam") + " " + x.get("naam"),
                     nickname="",
                     addressLineOne=x.get("adres1"),
                     addressLineTwo=x.get("adres2"),
-                    addressLineThree=x.get("adres3") + "\n" + x.get("adres4"),
+                    addressLineThree=x.get("adres3"),
+                    addressLineFour=x.get("adres4"),
                     email=x.get("email"),
                     phone=x.get("telefoon"),
                     student_number=x.get("unionpluskaartnummer"),

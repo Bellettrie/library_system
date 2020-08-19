@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Uploads{% endblock %}
+{% block content %}
+    <table>
+
+
+        {% for upload in uploads %}
+            <tr>
+                <td>{{ upload.name }}</td>
+                <td>{{ upload.get_file_url }}</td>
+                <td><a class="btn btn-primary" href="{{ upload.get_full_url }}">View</a></td>
+
+                <td><a class="btn btn-danger" href="{% url 'delete_upload' upload.pk %}">Delete</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <a class="btn btn-primary" href="{% url "new_upload" %}">New</a>
+
+{% endblock %}

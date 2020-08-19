@@ -4,7 +4,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from bellettrie_library_system.settings import OLD_DB
+from bellettrie_library_system.settings import OLD_DB, OLD_USN, OLD_PWD
 from lendings.models import Lending
 from members.management.commands.namegen import generate_name, generate_full_name
 from members.models import Member
@@ -22,13 +22,8 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="root",
-            database=OLD_DB
-        )
-        mycursor = mydb.cursor(dictionary=True)
+        from bellettrie_library_system.settings_migration import migration_database
+        mycursor = migration_database.cursor(dictionary=True)
 
         mycursor.execute("SELECT * FROM uitlening")
         Lending.objects.all().delete()
@@ -42,8 +37,8 @@ class Command(BaseCommand):
                 lended_by = Member.objects.filter(old_id=x.get("uitgeleend_door")).first()
                 end_date = x.get("termijn")
                 final_time = x.get("verlengd2_op") or x.get("verlengd1_op") or x.get("uitgeleend_op")
-                if handed_in is not None:
-                    continue
+                # if handed_in is not None:
+                #     continue
                 times_extended = 0
                 if x.get("verlengd2_op"):
                     times_extended += 1

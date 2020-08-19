@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block content%}
+    {% if not is_changed %}
+    Lending cannot be extended; date would not change.
+        <br/>
+<a href="{% url 'members.view' member.id %}" class="btn btn-primary btn-sm">Return to member page</a>
+    {% else %}
 Extending work: {{ item.publication.title }} <br />
 Extending for member: {{  member.name }} <br />
 End date {{ date }} <br />
@@ -11,5 +16,6 @@ End date {{ date }} <br />
     {% csrf_token %}
     <input type="submit" value="Extend">
 </form>
+    {% endif %}
 {% endblock %}
 

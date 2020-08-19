@@ -1,7 +1,11 @@
 {% if not item.is_available %}
-    <i>Lent out</i>
+    {% if perms.lendings.add_lending %}
+        <a class="btn btn-primary btn-sm disabled" role="button">Lend</a>
+    {% else %}
+        Lent out
+    {% endif %}
     {% else %}{% if perms.lendings.add_lending %}
-        <a href="{% url "lendings.new.work" item.pk %}">Lend</a>
+        <a href="{% url "lendings.new.work" item.pk %}" class="btn btn-primary btn-sm" role="button">Lend</a>
     {% else %}
         Available
     {% endif %}

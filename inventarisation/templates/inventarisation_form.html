@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}
+    Inventarisation Form {{ page_id }} (of {{ counts }}) for {{ inventarisation.location }}{% endblock %}
+{% block content %}
+    <form action="#" method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th width="150px" style="font-size:10px">Author</th>
+                <th width="200px" style="font-size:10px">Title</th>
+                <th width="150px" style="font-size:10px">Book Code</th>
+                <th width="60px" style="font-size:10px">State</th>
+                <th style="font-size:10px">Selector</th>
+            </tr>
+            {% for item in group %}
+                <tr>
+                    <td style="font-size:10px">{{ item.publication.get_authors.0.creator.name|truncatechars:20 }}</td>
+                    <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
+                    <td style="font-size:10px">{{ item.display_code }}</td>
+                    <td style="font-size:10px">{{ item.get_prev_state.type }}{%  if not item.is_available %}U{% endif %}</td>
+
+                    <td style="font-size:10px">
+                        <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
+                               {% if defaults|get_value_from_dict:item == "AVAILABLE" %}checked{% else %}autofocus{% endif %}>
+                        <label for="yes">Yes</label>
+                        <input type="radio" id="no" name="seen{{ item.pk }}" value="no" {% if defaults|get_value_from_dict:item == "MISSING" %}checked{% endif %}>
+                        <label for="no">No</label>
+                        <input type="radio" id="maybe" name="seen{{ item.pk }}" value="maybe">
+                        <label for="maybe">Skip</label>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <input type="submit" name="next" value="Save and Next" class="btn btn-success"><input type="submit" value="Save" class="btn btn-primary">
+    </form>
+{% endblock %}

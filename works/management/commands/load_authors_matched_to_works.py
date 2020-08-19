@@ -2,7 +2,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from bellettrie_library_system.settings import OLD_DB
+from bellettrie_library_system.settings import OLD_DB, OLD_PWD, OLD_USN
 from series.models import Series, CreatorToSeries
 from works.models import Work, Creator, CreatorRole, CreatorToWork
 
@@ -18,13 +18,8 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="root",
-            database=OLD_DB
-        )
-        mycursor = mydb.cursor(dictionary=True)
+        from bellettrie_library_system.settings_migration import migration_database
+        mycursor = migration_database.cursor(dictionary=True)
 
         mycursor.execute("SELECT * FROM betrokkenheid")
 
@@ -38,15 +33,16 @@ class Command(BaseCommand):
         for x in list:
             if len(Creator.objects.filter(old_id=x.get("persoonnummer"))) > 0:
                 a = Creator.objects.get(old_id=x.get("persoonnummer"))
+                # print(a.name)
                 if len(Work.objects.filter(old_id=x.get("publicatienummer"))) > 0:
                     w = Work.objects.get(old_id=x.get("publicatienummer"))
                     role = links.get(x.get("rol"))
-                    CreatorToWork.objects.get_or_create(work=w, creator=a, role=role)
+                    CreatorToWork.objects.get_or_create(work=w, creator=a, role=role, number=x.get("lopend_nummer"))
                 else:
                     if len(Series.objects.filter(old_id=x.get("publicatienummer"))) > 0:
                         w = Series.objects.get(old_id=x.get("publicatienummer"))
 
                         role = links.get(x.get("rol"))
-                        CreatorToSeries.objects.get_or_create(series=w, creator=a, role=role)
+                        CreatorToSeries.objects.get_or_create(series=w, creator=a, role=role, number=x.get("lopend_nummer"))
                     else:
                         print("Z" + str(x.get("publicatienummer")))

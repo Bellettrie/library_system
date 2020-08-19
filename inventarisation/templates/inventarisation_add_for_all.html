@@ -1,0 +1,9 @@
+ {% extends 'base.html' %}
+{% block title %}
+   Added a lot of inventarisations
+{% endblock %}
+{% block content %}
+    {% for inventarisation in inventarisations %}
+        {{ inventarisation.location }}<br>
+    {% endfor %}
+{% endblock %}

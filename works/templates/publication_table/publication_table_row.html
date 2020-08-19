@@ -1,28 +1,55 @@
 {% if is_single_item_row %}
-<div style="width:100%" class="row table_row_{{ is_even_row }}">
-        <div class="col-8 col-md-3"><a href="/works/{{ publication.pk }}">
-            {% if publication.title %}{{ publication.title }} {{ publication.sub_title }}{% else %} <i>No Title</i> {% endif %}</a></div>
-        <div class="col-4 col-md-3">
-            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</div>
+    <tr>
+        <td>
+            <a href="/works/{{ publication.pk }}">
+                {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
+                    <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+            </a>
+        </td>
+        <td>
+            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.given_names }}
+                <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+        </td>
+        <td>
+            {% with item=item_rows.0.item %}
+                {{ item.display_code }}{% if not forloop.last %}<br/>{% endif %}
+            {% endwith %}
+        </td>
+        {% if member is not Null %}
+            <td>
+                {% with item=item_rows.0.extra_info %}
+                    {{ item }}{% if not forloop.last %}<br/>{% endif %}
+                {% endwith %}
+            </td>
+        {% endif %}
+        <td>
 
-{% with item=item_rows.0.item %}
-
-    {% if item_rows.0.extra_info%}
-        <div>{{ item_rows.0.extra_info }}</div>
-    {% endif %}
-        <div class="col-4 col-md-2"> {{ item.signature }}
-        {% for option in item_rows.0.options %}
-            {% include 'publication_table/buttons/button_switcher.html' %}
-        {% endfor %}
-        </div>
-{% endwith %}
-    </div>
-{% else %}<div style="width:100%" class="row table_row_{{ is_even_row }}">
-        <div class="col-8 col-md-3"><a href="/works/{{ publication.pk }}">
-            {% if publication.title %}{{ publication.title }} {{ publication.sub_title }}{% else %} <i>No Title</i> {% endif %}</a></div>
-        <div class="col-4 col-md-3">
-            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</div>
-        <div class="col-4 col-md-2">
-            Lending of multiple items with the same publication is not yet possible.
-    </div>
+        </td>
+        <td>
+            {% with item=item_rows.0.item %}
+                {% for option in item_rows.0.options %}
+                    {% include 'publication_table/buttons/button_switcher.html' %}
+                {% endfor %}
+                {% if not forloop.last %}<br/>{% endif %}
+            {% endwith %}
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td><a href="/works/{{ publication.pk }}">
+            {% if publication.title %} {{ publication.get_title }}  {% else %}
+                <i>No Title</i> {% endif %}
+        </a></td>
+        <td>
+            {% for author in publication.get_authors %}{{ author.role.name }}{{ author.creator.given_names }}
+                <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}</td>
+        <td></td>
+        <td>
+            {% if publication.has_no_items %}
+                Not in collection
+            {% else %}
+                Lending of multiple items with the same publication is not yet possible.
+            {% endif %}
+        </td>
+    </tr>
 {% endif %}

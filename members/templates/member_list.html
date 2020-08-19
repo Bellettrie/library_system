@@ -5,7 +5,9 @@
 {% block title %}Member Search{% endblock %}
 {% block content %}
     {% include 'member_search_field.html' %}
-    <table>
+        {% include 'pagination.html' %}
+
+    <table class="table table-striped" style="width: auto;">
         {% for member in object_list %}
             {% include 'member_list_item.html' %}
         {% empty %}
@@ -13,7 +15,6 @@
         {% endfor %}
 
     </table>
-    {% include 'pagination.html' %}
     <hr>
-    <a href="{% url 'members.new' %}">New member</a>
+    <a href="{% url 'members.new' %}" class="btn btn-outline-primary">New member</a>
 {% endblock %}

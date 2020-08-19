@@ -8,4 +8,22 @@
     <hr>
     {% show_table object_list perms %}
 
+    <h3>How to use Search</h3>
+    The search function tries to match the search query to words in the title of books, series, as well as the names of authors. It also matches on parts of books.<br />
+    It will display all books that match to <b>all</b> words in the query. <br />
+    There are two special cases to keep in mind:<br>
+    <b>Book codes:</b> The system will search for book codes, but only if it's fed only one word. So do not put spaces in the query if you want to find something. <br />
+    It will try to complete though, so, for instance, SF-T-37 will find all Tolkien books, and possibly some more.<br/>
+    <b>Regex-like operators: </b> The system supports some helpers to allow the finishing of incomplete words. These are: asterisk (*), plus (+), question mark (?).<br>
+    These characters state that the word should be longer, but that the user doesn't know what should be there. Underneath is a simple table of what's happening:<br />
+    <table class="table-bordered">
+    <tr><th>Operator</th><th>Matches on count</th></tr>
+    <tr><td>?</td><td>Exactly one character</td></tr>
+    <tr><td>*</td><td>Zero or more characters</td></tr>
+    <tr><td>+</td><td>One or more characters</td></tr>
+    </table><br />
+    Please take care not to write too long queries. However, if you don't know how to spell "Hitchhiker's Guide to the Galaxy", a simple "Hitch*" will suffice.<br />
+    Note that other regex commands are not supported.
+
+
 {% endblock %}

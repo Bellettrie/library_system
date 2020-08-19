@@ -17,7 +17,13 @@ class EditForm(ModelForm):
                   'student_number',
                   'notes',
                   'is_anonymous_user',
-                  'end_date', 'user', 'committees']
+                  'end_date',
+                  'user',
+                  'committees',
+                  'member_background',
+                  'membership_type',
+                  'is_blacklisted'
+                  ]
         labels = {'name': 'Name',
                   'nickname': 'Nickname',
                   'addressLineOne': 'Address',
@@ -28,4 +34,10 @@ class EditForm(ModelForm):
                   'student_number': 'Student #',
                   'notes': 'Notes',
                   'is_anonymous_user': 'Is anonymous user',
-                  'end_date': 'End date', 'user': 'User', 'committees': 'Committees'}
+                  'end_date': 'End date',
+                  'user': 'User',
+                  'committees': 'Committees',
+                  'member_background': 'Member Background',
+                  'membership_type': 'Membership Type',
+                  'is_blacklisted': 'Is Blacklisted?'
+                  }
