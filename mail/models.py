@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 
 # Create your models here.
 from django.db.models import PROTECT
@@ -14,6 +14,7 @@ class MailLog(models.Model):
     date = models.DateTimeField(auto_now=True)
 
 
+@transaction.atomic
 def mail_member(template_string: str, context: dict, member: Member, is_logged: bool, connection=None):
     context['BASE_URL'] = settings.BASE_URL
     if not member.is_anonymous_user:

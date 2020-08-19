@@ -23,68 +23,128 @@
             crossorigin="anonymous"></script>
 
     <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <!-- Font Awesome JS -->
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
-<!-- (Optional) Latest compiled and minified JavaScript translation files -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
     <script src="{% static "jquery.js" %} "></script>
-<!-- Popper.JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
-        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
-        crossorigin="anonymous"></script>
-<!-- Bootstrap JS -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
-        integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
-        crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+            integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+            crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
 
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
-<!-- (Optional) Latest compiled and minified JavaScript translation files -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
-
-</head>
-
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pangolin&family=Rubik:wght@500&display=swap" rel="stylesheet">
 <body>
 
-<div id="wrapper">
-    <div id="header">
-        <img src="{% static 'images/wurm.png' %}" style="height:100%"> Bellettrie
+<div id="wrapper" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
+    <style>
+        .top-nav {
+            padding-top: 20px;
+            height: 30px;
+            margin-top: 35px;
+            right: 30px;
+            top: 0px;
+            position: absolute;
+        }
+
+        .top-nav-left {
+            padding-top: 20px;
+            height: 30px;
+            margin-top: 35px;
+            left: 30px;
+            top: 0px;
+            position: absolute;
+        }
+
+        .vertical {
+            font-family: 'Rubik', sans-serif;;
+            margin-left: .1vw;
+            border-left: .1vw solid black;
+            padding-left: .1vw;
+            margin-top: 25px;
+            height: 30px;
+            font-size: 1vw;
+        }
+
+        @font-face {
+            font-family: logoFont;
+            src: url("{% static 'Present_Roman.ttf' %}");
+        }
+    </style>
+    <div id="header" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
+        <a href="{% url 'homepage' %}" class="logo-part" style=" text-align: center;width:100%; "><img
+                src="{% static 'images/wurm.png' %}"
+                style="height:75px;     font-family: 'Pangolin'; "/> Bellettrie
+        </a>
+        <hr>
+        <div class="top-nav-left hiddenMobile">
+            <a href="{% url 'homepage' %}" class="vertical">Home</a>
+            <a href="{% url 'works.list' %}" class="vertical">Catalog</a>
+            <a href="{% url 'named_page' 'kickin'  'home'%}" class="vertical">Kick-In</a>
+            <a href="{% url  'named_page' 'basic'  'member' %}" class="vertical">Become a Member</a>
+            <a href="{% url 'named_page' 'basic'  'committees' %}" class="vertical">Board / Committees</a>
+            <a href="{% url 'named_page' 'konnichiwa'  'home' %}" class="vertical">Konnichiwa</a>
+        </div>
+        <div class="top-nav hiddenMobile">
+        <a href="{% url 'named_page' 'basic'  'corona' %}" class="vertical">Corona</a>
+            <a href="{% url  'named_page' 'basic'  'about' %}" class="vertical">About</a>
+            <a href="{% url  'named_page' 'basic'  'contact' %}" class="vertical">Contact</a>
+            {% if user.is_anonymous %}
+                <a href="{% url 'login' %}" class="vertical">Login</a>
+            {% else %}
+                <a href="{% url 'logout' %}" class="vertical">Logout</a>
+            {% endif %}
+            <a class="vertical"> </a>
+        </div>
     </div>
     <!-- Sidebar Holder -->
-    <button id="toggle-sidebar"><</button>
-    {% if not user.is_anonymous and user.member %}
-        <div id="sidebar-header" class="collapsed loggedin">
-            <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a></div>
+    {% if not user.is_anonymous %}
+        {% if not user.is_anonymous and user.member %}
+            <div id="sidebar-header" class="collapsed loggedin">
+                <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a></div>
+        {% else %}
+
+        {% endif %}
+        <button id="toggle-sidebar"><</button>
+
+        <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %}">
+            {% include 'nav.html' %}
+        </nav>
     {% else %}
-        <div id="sidebar-header" class="collapsed">
+        <button id="toggle-sidebar"><</button>
+        <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %} grayedOut">
+            {% include 'nav.html' %}
+        </nav>
 
-        </div>
     {% endif %}
-
-    <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %}">
-        {% include 'nav.html' %}
-    </nav>
-
     <!-- Page Content Holder -->
-    <div id="content">
+    <article id="content">
         <h2>{% block title %}Title{% endblock %}</h2>
         {% block content %}
         {% endblock %}
-    </div>
+    </article>
+    {% if user.is_anonymous %}
+        <div id="rightBar"></div>
+    {% endif %}
 </div>
 {##}
 {#<!-- jQuery CDN - Slim version (=without AJAX) -->#}

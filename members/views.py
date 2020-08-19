@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -65,6 +66,7 @@ def show(request, member_id):
     return render(request, 'member_detail.html', {'member': Member.objects.get(pk=member_id)})
 
 
+@transaction.atomic
 @permission_required('members.change_member')
 def edit(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
@@ -80,6 +82,7 @@ def edit(request, member_id):
     return render(request, 'member_edit.html', {'form': form, 'member': member})
 
 
+@transaction.atomic
 @permission_required('members.add_member')
 def new(request):
     if request.method == 'POST':
@@ -94,6 +97,7 @@ def new(request):
     return render(request, 'member_edit.html', {'form': form})
 
 
+@transaction.atomic
 def signup(request, member_id):
     member = Member.objects.get(pk=member_id)
     if not request.user.has_perm('auth.add_user'):
@@ -121,6 +125,7 @@ def signup(request, member_id):
     return render(request, 'user_create.html', {'form': form, 'member': member})
 
 
+@transaction.atomic
 @permission_required('auth.change_user')
 def change_user(request, member_id):
     member = Member.objects.get(pk=member_id)
@@ -139,12 +144,14 @@ def change_user(request, member_id):
     return render(request, 'user_edit.html', {'form': form, 'member': member, 'user': member.user})
 
 
+@transaction.atomic
 @permission_required('auth.delete_user')
 def remove_user(request, member_id):
     member = Member.objects.get(pk=member_id)
     return render(request, 'user_delete.html', {'member': member, 'user': member.user})
 
 
+@transaction.atomic
 @permission_required('auth.delete_user')
 def delete_user(request, member_id):
     member = Member.objects.get(pk=member_id)
@@ -156,6 +163,7 @@ def delete_user(request, member_id):
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
 
 
+@transaction.atomic
 @permission_required('auth.add_user')
 def generate_invite_code(request, member_id):
     letters = string.ascii_letters + string.digits
@@ -174,6 +182,7 @@ def generate_invite_code(request, member_id):
     return render(request, 'member_detail.html', {'member': member, 'extra': "Invitation mail sent"})
 
 
+@transaction.atomic
 @permission_required('auth.add_user')
 def disable_invite_code(request, member_id):
     member = Member.objects.get(pk=member_id)

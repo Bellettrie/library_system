@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}{% if not page.custom_header %}{{ page_title }}{% endif %}{% endblock %}
+{% block content %}
+    {% if page.custom_header %}{{  page.exec_header| safe }}{% endif %}
+    {{ page_content |safe }}
+{% if can_edit %}
+    <a href="{% url 'edit_named_page' page.group.name page.name %}">edit</a>
+    {% endif %}
+
+{% endblock %}

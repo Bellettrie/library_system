@@ -2,6 +2,7 @@ import re
 from typing import List
 
 from django.contrib.auth.decorators import permission_required
+from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -166,6 +167,7 @@ class WorkDetail(DetailView):
     model = Publication
 
 
+@transaction.atomic
 @permission_required('auth.add_item_state')
 def create_item_state(request, item_id):
     if request.method == 'POST':
@@ -180,6 +182,7 @@ def create_item_state(request, item_id):
     return render(request, 'item_reason_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
 
 
+@transaction.atomic
 @permission_required('works.add_item')
 def item_new(request, publication_id=None):
     publication = get_object_or_404(Publication, pk=publication_id)
@@ -195,6 +198,7 @@ def item_new(request, publication_id=None):
     return render(request, 'item_edit.html', {'form': form, 'publication': publication})
 
 
+@transaction.atomic
 @permission_required('works.change_item')
 def item_edit(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
@@ -210,6 +214,7 @@ def item_edit(request, item_id):
     return render(request, 'item_edit.html', {'form': form, 'publication': item.publication})
 
 
+@transaction.atomic
 @permission_required('works.change_publication')
 def publication_edit(request, publication_id=None):
     from works.forms import CreatorToWorkFormSet
@@ -258,6 +263,7 @@ def publication_edit(request, publication_id=None):
     return render(request, 'publication_edit.html', {'series': series, 'publication': publication, 'form': form, 'creators': creators})
 
 
+@transaction.atomic
 @permission_required('works.add_publication')
 def publication_new(request):
     return publication_edit(request, publication_id=None)

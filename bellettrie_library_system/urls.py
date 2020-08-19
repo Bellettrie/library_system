@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from bellettrie_library_system.views import index
+from public_pages.views import view_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,5 +29,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('creators/', include('creators.urls')),
     path('series/', include('series.urls')),
-    path('', index),
+    path('pages/', include('public_pages.urls')),
+    path('', view_page('basic', 'home'), name='homepage'),
+    path('konnichiwa', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
 ]

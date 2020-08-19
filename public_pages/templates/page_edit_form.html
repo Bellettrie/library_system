@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form method="POST" action="#">
+        {% csrf_token %}
+        <table style="width:100%">
+                {{ form.as_table }}
+                </table>
+                <div id="compiledContenttext">Here be the content</div>
+
+        <button>Save</button>
+    </form>
+{% endblock %}

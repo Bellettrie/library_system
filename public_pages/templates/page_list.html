@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Page Management{% endblock %}
+{% block content %}
+    Here you can see which pages exist on the website. This has a list of all pages on the site. Warning, the delete buttons are agressive.
+    {% for group in groups %}
+        <h4>{{ group.name }}</h4>
+        <td><a class="btn btn-primary" href="{% url 'new_named_page' group.name %}">Add new to group</a></td>
+        <table>
+            {% for page in group.publicpage_set.all %}
+                <tr>
+                    <td>{{ page.title }}</td>
+                    <td>{{ page.group.name }}</td>
+                    <td><a class="btn btn-primary" href="{% url 'named_page' page.group.name page.name %}">View</a></td>
+                    <td><a class="btn btn-primary" href="{% url 'edit_named_page' page.group.name page.name %}">Edit</a></td>
+                    <td><a class="btn btn-danger" href="{% url 'delete_named_page' page.pk %}">Delete</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endfor %}
+    </table>
+{% endblock %}

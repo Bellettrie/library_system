@@ -1,0 +1,16 @@
+<textarea name= {{ name }} id="{{ name }}" style="width:80%; height:50%; min-height: 400px;">{{ value }}</textarea> <br/>
+
+<button id="compileButton{{ name }}" type="button" >Compile</button>
+
+<script>
+    $("#compileButton{{ name }}").click(function () {
+        $.post("/pages/render",
+            {
+                text: document.getElementById("{{ name }}").value,
+            }).done(
+            function (data, status) {
+                document.getElementById('compiledContent{{ name }}').innerHTML = data;
+            });
+    });
+
+</script>
