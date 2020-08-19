@@ -12,7 +12,7 @@
             <td>{{ object.sub_title }}</td>
         </tr>
         <tr>
-            <th>Author's</th>
+            <th>Authors</th>
             <td>{% for author in object.get_authors %}{{ author.creator.full_name }} {% endfor %}</td>
         </tr>
         <tr>
@@ -56,5 +56,6 @@
             </tr>
         {% endfor    %}
     </table>
+
     <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
 {% endblock %}
