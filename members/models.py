@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.contrib.auth.models import User, Group
 from django.db import models
-from django.db.models import CASCADE
+from django.db.models import CASCADE, PROTECT
 
 from members.management.commands.namegen import generate_full_name
 
@@ -13,6 +13,26 @@ class Committee(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class MemberBackground(models.Model):
+    name = models.CharField(max_length=64)
+    visual_name = models.CharField(max_length=64)
+    old_str = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.visual_name
+
+
+class MembershipType(models.Model):
+    name = models.CharField(max_length=64)
+    visual_name = models.CharField(max_length=64)
+    old_str = models.CharField(max_length=64)
+    needs_union_card = models.BooleanField(default=True)
+    has_end_date = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.visual_name
 
 
 class MemberData(models.Model):
@@ -29,6 +49,10 @@ class MemberData(models.Model):
     phone = models.CharField(max_length=64)
     student_number = models.CharField(max_length=32)
     end_date = models.DateField(null=True, blank=True)
+    is_blacklisted = models.BooleanField(default=False)
+    member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
+    membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
+
     notes = models.TextField()
 
 
@@ -84,6 +108,13 @@ class Member(MemberData):
 
     def save(self, *args, **kwargs):
         MemberLog.from_member(self)
+        if self.membership_type:
+            if not self.membership_type.has_end_date:
+                self.end_date = None
+            elif self.end_date is None:
+                print(self.name)
+                print(self.old_id)
+                raise ValueError("Member has to have an end date for this membership type")
         super().save(*args, **kwargs)
 
     def __str__(self):
