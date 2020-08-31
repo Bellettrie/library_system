@@ -92,8 +92,6 @@ class Command(BaseCommand):
                                   language=data.get('taal'),
                                   )
         else:
-            if data.get("signatuur") is None:
-                print(data)
             Series.objects.create(number=my_num,
                                   book_code=data.get("signatuurfragment"),
                                   display_number=data.get(

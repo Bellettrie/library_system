@@ -119,7 +119,7 @@ def signup(request, member_id):
             instance.member.invitation_code_valid = False
             instance.member.save()
             instance.save()
-            return HttpResponseRedirect(reverse('members.view', args=(instance.member.pk,)))
+            return HttpResponseRedirect(reverse('login'))
     else:
         form = UserCreationForm()
     return render(request, 'user_create.html', {'form': form, 'member': member})
