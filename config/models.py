@@ -97,7 +97,6 @@ class LendingSettings(models.Model):
 
     @staticmethod
     def handle_holiday_day(holiday_list, current_date):
-        print(current_date)
         if len(holiday_list) > 0:
             while holiday_list[0].ending_date < current_date:
                 holiday_list = holiday_list[1:]
