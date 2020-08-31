@@ -5,6 +5,11 @@ from members.models import Member
 
 
 class EditForm(ModelForm):
+    def __init__(self, can_edit=False, *args, **kwargs):
+        super(EditForm, self).__init__(*args, **kwargs)
+        if not can_edit:
+            self.fields['committees'].widget.attrs['readonly'] = True
+
     class Meta:
         model = Member
         fields = ['name',
