@@ -49,7 +49,7 @@ def clean_link(href: str) -> str:
     static = False
     print(href)
 
-    if href.startswith('``'):
+    if href.startswith('~~'):
         static = True
         print("HERE")
         print(href[2:])
