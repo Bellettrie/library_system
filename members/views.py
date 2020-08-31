@@ -124,6 +124,7 @@ def signup(request, member_id):
             instance.member = member
             instance.member.user = instance
             instance.member.invitation_code_valid = False
+            instance.member.update_groups()
             instance.member.save()
             instance.save()
             return HttpResponseRedirect(reverse('login'))
