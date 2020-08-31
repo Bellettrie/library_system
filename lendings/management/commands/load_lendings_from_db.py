@@ -38,7 +38,7 @@ class Command(BaseCommand):
                 lended = x.get("uitgeleend_op")
                 lended_by = Member.objects.filter(old_id=x.get("uitgeleend_door")).first()
                 end_date = x.get("termijn")
-                start_date =  datetime.date(x.get("uitgeleend_op") or datetime.now())
+                start_date = datetime.date(x.get("uitgeleend_op") or datetime.now())
                 final_time = x.get("verlengd2_op") or x.get("verlengd1_op") or x.get("uitgeleend_op")
                 # if handed_in is not None:
                 #     continue
@@ -64,7 +64,7 @@ class Command(BaseCommand):
                 if lending.is_late():
                     continue
                 new_end = lending.calc_end_date(lending.member, lending.item, lending.start_date)
-    
+
                 if lending.end_date < new_end:
                     lending.end_date = new_end
                     lending.save()

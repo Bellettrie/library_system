@@ -10,6 +10,7 @@ from mail.models import mail_member
 from members.models import Member
 from datetime import date
 
+
 class Lending(models.Model):
     class Meta:
         permissions = [('extend', 'Can extend lending'),
