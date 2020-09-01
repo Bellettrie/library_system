@@ -75,11 +75,11 @@ def edit(request, member_id):
 
         form = EditForm(can_change, request.POST, instance=member)
         if form.is_valid():
+            if not can_change and 'committees' in form.changed_data:
+                raise ValueError("Wrong")
             form.save()
             if can_change:
                 member.update_groups()
-            elif 'committees' in form.changed_data:
-                raise ValueError("Wrong")
             return HttpResponseRedirect(reverse('members.view', args=(member_id,)))
     else:
         form = EditForm(instance=member)
@@ -93,11 +93,11 @@ def new(request):
         can_change = request.user.has_perm('members.change_committee')
         form = EditForm(can_change, request.POST)
         if form.is_valid():
+            if not can_change and 'committees' in form.changed_data:
+                raise ValueError("Wrong")
             instance = form.save()
             if can_change:
                 instance.update_groups()
-            elif 'committees' in form.changed_data:
-                raise ValueError("Wrong")
             return HttpResponseRedirect(reverse('members', args=(instance.pk,)))
     else:
         form = EditForm()
