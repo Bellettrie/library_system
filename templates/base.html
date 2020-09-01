@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+{% load menu %}
 <head>
 
     <link rel="apple-touch-icon" sizes="57x57" href="{% static 'icons/apple-icon-57x57.png' %}">
@@ -47,7 +48,6 @@
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
-
     {#    <link href="https://fonts.googleapis.com/css2?family=Pangolin&family=Rubik:wght@500&display=swap" rel="stylesheet">#}
 <body>
 
@@ -92,23 +92,14 @@
                 style="height:75px;     font-family: 'Pangolin'; "/> Bellettrie
         </a>
         <hr>
-        <div class="top-nav-left hiddenMobile">
-            <a href="{% url 'homepage' %}" class="vertical">Home</a>
-            <a href="{% url 'works.list' %}" class="vertical">Catalog</a>
-            <a href="{% url 'named_page' 'kickin'  'home' %}" class="vertical">Kick-In</a>
-            <a href="{% url  'named_page' 'basic'  'member' %}" class="vertical">Become a Member</a>
-            <a href="{% url 'named_page' 'basic'  'committees' %}" class="vertical">Board / Committees</a>
-            <a href="{% url 'named_page' 'konnichiwa'  'home' %}" class="vertical">Konnichiwa</a>
+        <div class="top-nav-left  ">
+            {% render_menu 'desktop-top' 'top-left'%}
+
+
+
         </div>
         <div class="top-nav hiddenMobile">
-            <a href="{% url 'named_page' 'basic'  'corona' %}" class="vertical">Corona</a>
-            <a href="{% url  'named_page' 'basic'  'about' %}" class="vertical">About</a>
-            <a href="{% url  'named_page' 'basic'  'contact' %}" class="vertical">Contact</a>
-            {% if user.is_anonymous %}
-                <a href="{% url 'login' %}" class="vertical">Login</a>
-            {% else %}
-                <a href="{% url 'logout' %}" class="vertical">Logout</a>
-            {% endif %}
+            {% render_menu 'desktop-top' 'top-right'%}
             <a class="vertical"> </a>
         </div>
     </div>

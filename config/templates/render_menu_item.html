@@ -1,0 +1,37 @@
+{% load menu %}
+{% if mode == 'desktop-top' %}
+    <a href="{{ menu.url }}" class="vertical hiddenMobile">{{ menu.title }}</a>
+{% endif %}
+{% if mode == 'mobile-only' %}
+    <li class="treeview hiddenDesktop"><a href="{{ menu.url }}">
+        <i class="fa fa-plane"></i><span>{{ menu.title }}</span>
+    </a></li>
+{% endif %}
+
+{% if mode == 'sidebar-item' %}
+    {% if menu.only_subitems %}
+        {% if has_sub_items %}
+
+            <li class="active">
+                <a href="#{{ menu.get_title_shortened }}" data-toggle="collapse" aria-expanded="false"
+                   class="dropdown-toggle">{{ menu.title }}</a>
+                <ul class="collapse list-unstyled" id="{{ menu.get_title_shortened }}">
+                    {% for sub_item in sub_items %}
+                        {% render_menu_item sub_item 'sidebar-subitem' %}
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+
+    {% else %}
+
+        <li class="treeview"><a href="{{ menu.url }}">
+            <i class="fa fa-user"></i><span>{{ menu.title }}</span>
+        </a></li>
+    {% endif %}
+{% endif %}
+{% if mode == 'sidebar-subitem' %}
+    <li class="treeview"><a href="{{ menu.url }}">
+        <i class="fa fa-plane"></i><span>{{ menu.title }}</span></a>
+    </li>
+{% endif %}
