@@ -32,7 +32,7 @@ class Command(BaseCommand):
             try:
                 publication = Publication.objects.get(old_id=x.get("publicatienummer"))
 
-                Comment.objects.create(publication=publication, comment=x.get("tekst"), author=x.get("auteur"), date=x.get("datum"), accepted=x.get("goedgekeurd"))
+                Comment.objects.create(publication=publication, comment=x.get("tekst"), author=x.get("auteur")[0:16], date=x.get("datum"), accepted=x.get("goedgekeurd"))
             except Publication.DoesNotExist:
                 pass
             except Member.DoesNotExist:

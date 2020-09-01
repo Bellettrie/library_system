@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from mail.models import mail_member
 from members.models import Member
+from datetime import date
 
 
 class Lending(models.Model):
@@ -26,7 +27,7 @@ class Lending(models.Model):
     handed_in = models.BooleanField()
     handed_in_on = models.DateField(null=True, blank=True)
     handed_in_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="handed_in", null=True, blank=True)
-    start_date = models.DateField(auto_now_add=True)
+    start_date = models.DateField(default=date.today)
     last_mailed = models.DateTimeField(default="1900-01-01")
 
     # This flag will be used to differentiate between having mailed for being almost too late, and having mailed for being late.

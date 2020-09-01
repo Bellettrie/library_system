@@ -111,7 +111,7 @@ def extend(request, work_id):
                       {'member': lending.member,
                        'item': item,
                        'end_date': lending.end_date,
-                       'is_changed': lending.end_date > Lending.calc_end_date(lending.member, item),
+                       'is_changed': lending.end_date < Lending.calc_end_date(lending.member, item),
                        "date": Lending.calc_end_date(lending.member, item),
                        'late': lending.end_date < datetime.now().date(),
                        'days_late': late_days.days,

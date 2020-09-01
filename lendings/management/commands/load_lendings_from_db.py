@@ -1,4 +1,5 @@
 from random import random, randint
+from datetime import datetime, timedelta
 
 import mysql.connector
 
@@ -28,14 +29,16 @@ class Command(BaseCommand):
         mycursor.execute("SELECT * FROM uitlening")
         Lending.objects.all().delete()
         for x in mycursor:
+            handed_in = x.get("ingenomen_op")
             member = Member.objects.get(old_id=x.get("klantnummer"))
             if len(Item.objects.filter(old_id=x.get("publicatienummer"))) > 0:
                 item = Item.objects.get(old_id=x.get("publicatienummer"))
-                handed_in = x.get("ingenomen_op")
+
                 handed_in_by = Member.objects.filter(old_id=x.get("ingenomen_door")).first()
                 lended = x.get("uitgeleend_op")
                 lended_by = Member.objects.filter(old_id=x.get("uitgeleend_door")).first()
                 end_date = x.get("termijn")
+                start_date = datetime.date(x.get("uitgeleend_op") or datetime.now())
                 final_time = x.get("verlengd2_op") or x.get("verlengd1_op") or x.get("uitgeleend_op")
                 # if handed_in is not None:
                 #     continue
@@ -46,7 +49,7 @@ class Command(BaseCommand):
                     times_extended += 1
                 if lended is None:
                     continue
-                Lending.objects.create(
+                lending = Lending.objects.create(
                     member=member,
                     item=item,
                     lended_on=lended,
@@ -54,6 +57,14 @@ class Command(BaseCommand):
                     times_extended=times_extended,
                     last_extended=final_time,
                     end_date=end_date,
+                    start_date=start_date,
                     handed_in=handed_in is not None,
                     handed_in_on=handed_in,
                     handed_in_by=handed_in_by)
+                if lending.is_late():
+                    continue
+                new_end = lending.calc_end_date(lending.member, lending.item, lending.start_date)
+
+                if lending.end_date < new_end:
+                    lending.end_date = new_end
+                    lending.save()
