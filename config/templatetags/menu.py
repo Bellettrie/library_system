@@ -1,7 +1,6 @@
-import datetime
 from django import template
+from django.conf import settings
 
-from config.menu import my_menu
 
 register = template.Library()
 
@@ -18,7 +17,7 @@ def render_menu_item(context, menu_item, mode):
 def render_menu(context, mode, menu_name=None):
     request = context['request']
     lst = []
-    for item in my_menu:
+    for item in settings.GET_MENU():
         if item.permits(request):
             if menu_name is None or item.location == menu_name:
                 lst.append(item)
