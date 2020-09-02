@@ -7,6 +7,11 @@ from django.shortcuts import render
 from members.models import Member, Committee
 
 
+def fetch_date(date_str):
+    dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+    return datetime.date(dt.year,dt.month,dt.day)
+
+
 @permission_required('members.view_member')
 def show_mail_addresses(request):
     print(request.GET)
@@ -19,7 +24,7 @@ def show_mail_addresses(request):
         found_committees = request.GET.getlist('committees')
         if request.GET.get('m_after'):
             for member in members:
-                d = datetime.date.fromisoformat(request.GET.get('m_after'))
+                d = fetch_date(request.GET.get('m_after'))
                 if member.end_date is not None and member.end_date > d:
                     found_members.append(member)
         else:
@@ -28,7 +33,7 @@ def show_mail_addresses(request):
         if request.GET.get('m_before'):
             found_2 = []
             for member in found_members:
-                d = datetime.date.fromisoformat(request.GET['m_before'])
+                d = fetch_date(request.GET['m_before'])
                 if member.end_date is not None and member.end_date < d:
                     found_2.append(member)
             found_members = found_2
