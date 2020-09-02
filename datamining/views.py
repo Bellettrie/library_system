@@ -50,20 +50,13 @@ def find_members_by_request(request):
 
 
 @permission_required('members.view_member')
-def show_mail_addresses(request):
-    r_str = ""
-    committees = Committee.objects.all()
-
-    found_members = find_members_by_request(request)
-    for member in found_members:
-        if len(member.email) > 0:
-            r_str += ("; " + member.email)
-    return render(request, 'data-mining-list.html', {'mails': True, 'member_mail_addresses': r_str, 'committees': committees})
-
-
-@permission_required('members.view_member')
 def show_members(request):
     committees = Committee.objects.all()
     found_members = find_members_by_request(request)
+    r_str = ""
 
-    return render(request, 'data-mining-list.html', {'mails': False, 'members': found_members, 'committees': committees})
+    for member in found_members:
+
+        if len(member.email) > 0:
+            r_str += ("; " + member.email)
+    return render(request, 'data-mining-list.html', {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'members': found_members, 'committees': committees})

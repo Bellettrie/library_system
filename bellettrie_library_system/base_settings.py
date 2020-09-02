@@ -159,7 +159,7 @@ def GET_MENU():
     inventarisation = MenuItem('Inventarisations', reverse('inventarisation.list'), 'inventarisation.view_inventarisation', 'sidebar', [], anonymous=None)
     my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, inventarisation], only_subitems=True))
 
-    member_mailing = MenuItem('Email Addresses', reverse('datamining.members'), 'members.view_member', 'sidebar', [], anonymous=None)
+    member_mailing = MenuItem('Filter Members', reverse('datamining.members'), 'members.view_member', 'sidebar', [], anonymous=None)
     my_menu.append(MenuItem('Member Data', reverse('logout'), None, 'sidebar', [member_mailing], only_subitems=True))
 
     return my_menu
