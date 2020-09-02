@@ -9,7 +9,7 @@ from members.models import Member, Committee
 
 def fetch_date(date_str):
     dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-    return datetime.date(dt.year,dt.month,dt.day)
+    return datetime.date(dt.year, dt.month, dt.day)
 
 
 @permission_required('members.view_member')
