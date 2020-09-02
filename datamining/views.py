@@ -12,14 +12,9 @@ def fetch_date(date_str):
     return datetime.date(dt.year, dt.month, dt.day)
 
 
-@permission_required('members.view_member')
-def show_mail_addresses(request):
-    print(request.GET)
+def find_members_by_request(request):
     members = Member.objects.all()
-    committees = Committee.objects.all()
     found_members = []
-    r_str = ""
-
     if request.GET.get('exec'):
         found_committees = request.GET.getlist('committees')
         if request.GET.get('m_after'):
@@ -51,7 +46,24 @@ def show_mail_addresses(request):
                 if found:
                     found_2.append(member)
             found_members = found_2
-        for member in found_members:
-            if len(member.email) > 0:
-                r_str += ("; " + member.email)
-    return render(request, 'data-mining-list.html', {'member_mail_addresses': r_str, 'committees': committees})
+    return found_members
+
+
+@permission_required('members.view_member')
+def show_mail_addresses(request):
+    r_str = ""
+    committees = Committee.objects.all()
+
+    found_members = find_members_by_request(request)
+    for member in found_members:
+        if len(member.email) > 0:
+            r_str += ("; " + member.email)
+    return render(request, 'data-mining-list.html', {'mails': True, 'member_mail_addresses': r_str, 'committees': committees})
+
+
+@permission_required('members.view_member')
+def show_members(request):
+    committees = Committee.objects.all()
+    found_members = find_members_by_request(request)
+
+    return render(request, 'data-mining-list.html', {'mails': False, 'members': found_members, 'committees': committees})
