@@ -4,17 +4,19 @@ from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render
 
 # Create your views here.
-from members.models import Member
+from members.models import Member, Committee
 
 
 @permission_required('members.view_member')
 def show_mail_addresses(request):
     print(request.GET)
     members = Member.objects.all()
+    committees = Committee.objects.all()
     found_members = []
     r_str = ""
 
     if request.GET.get('exec'):
+        found_committees = request.GET.getlist('committees')
         if request.GET.get('m_after'):
             for member in members:
                 d = datetime.date.fromisoformat(request.GET.get('m_after'))
@@ -34,7 +36,17 @@ def show_mail_addresses(request):
             for member in members:
                 if member.end_date is None:
                     found_members.append(member)
+        if len(found_committees) > 0:
+            found_2 = []
+            for member in found_members:
+                found = False
+                for committee in member.committees.all():
+                    if str(committee.pk) in found_committees:
+                        found = True
+                if found:
+                    found_2.append(member)
+            found_members = found_2
         for member in found_members:
             if len(member.email) > 0:
                 r_str += ("; " + member.email)
-    return render(request, 'data-mining-list.html', {'member_mail_addresses': r_str})
+    return render(request, 'data-mining-list.html', {'member_mail_addresses': r_str, 'committees': committees})

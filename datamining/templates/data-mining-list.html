@@ -12,7 +12,12 @@
 
         <label for="m_include_honorary">Include honorary members: </label>
         <input id="m_include_honorary" type="checkbox" name="m_include_honorary">
-        <input type="submit" name="exec" value="Search" class="btn-primary btn" >
+        <select name="committees" id="committees" multiple="true">
+            {% for committee in committees %}
+                <option value="{{ committee.pk }}">{{ committee.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="exec" value="Search" class="btn-primary btn">
     </form>
     {{ member_mail_addresses }}
 
