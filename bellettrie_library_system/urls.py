@@ -30,6 +30,7 @@ urlpatterns = [
     path('creators/', include('creators.urls')),
     path('series/', include('series.urls')),
     path('pages/', include('public_pages.urls')),
+    path('datamining/', include('datamining.urls')),
     path('', view_page('basic', 'home'), name='homepage'),
     path('konnichiwa', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
 ]

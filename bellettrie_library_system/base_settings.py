@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'creators',
     'mail',
     'public_pages',
+    'datamining',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +130,7 @@ LOGIN_REDIRECT_URL = '/lend/me'
 
 def GET_MENU():
     from config.menu import MenuItem
+
     my_menu = [MenuItem('test', reverse('login'), None, 'top', [], anonymous=True)]
     my_menu.append(MenuItem('Home', reverse('homepage'), None, 'top-left', []))
     my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'top-left', []))
@@ -156,4 +158,8 @@ def GET_MENU():
     new_work = MenuItem('New Work', reverse('works.publication.new'), 'works.add_publication', 'sidebar', [], anonymous=None)
     inventarisation = MenuItem('Inventarisations', reverse('inventarisation.list'), 'inventarisation.view_inventarisation', 'sidebar', [], anonymous=None)
     my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, inventarisation], only_subitems=True))
+
+    member_mailing = MenuItem('Email Addresses', reverse('datamining.list'), 'members.view_member', 'sidebar', [], anonymous=None)
+    my_menu.append(MenuItem('Member Data', reverse('logout'), None, 'sidebar', [member_mailing], only_subitems=True))
+
     return my_menu
