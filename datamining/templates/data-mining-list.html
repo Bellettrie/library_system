@@ -13,10 +13,10 @@
 
         <label for="m_include_honorary">Include honorary members: </label>
         <input id="m_include_honorary" type="checkbox" name="m_include_honorary"
-               checked="{{ request.GET.m_include_honorary }}">
-    <label for="mails">Get mail address list: </label>
+               {% if request.GET.m_include_honorary %}checked{% endif %}>
+        <label for="mails">Get mail address list: </label>
         <input id="mails" type="checkbox" name="mails"
-           checked="{{ mails }}">
+               {% if mails %}checked{% endif %}>
         {% with list=request.GET|get_list:'committees' %}
             <select name="committees" id="committees" multiple="true">
                 {% for committee in committees %}
