@@ -47,13 +47,13 @@ class MemberData(models.Model):
     addressLineFour = models.CharField(max_length=255, blank=True)
     email = models.CharField(max_length=255)
     phone = models.CharField(max_length=64)
-    student_number = models.CharField(max_length=32)
+    student_number = models.CharField(max_length=32, blank=True)
     end_date = models.DateField(null=True, blank=True)
     is_blacklisted = models.BooleanField(default=False)
     member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
     membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
 
-    notes = models.TextField()
+    notes = models.TextField(blank=True)
 
 
 class Member(MemberData):

@@ -13,7 +13,7 @@
         </tr>
         <tr>
             <th>Authors</th>
-            <td>{% for author in object.get_authors %}{{ author.creator.full_name }} {% endfor %}</td>
+            <td>{% for author in object.get_authors %}{{ author.role.name }}{{ author.creator.given_names }} <i>{{ author.creator.name }}</i>{% if not forloop.last %}, {% endif %} {% endfor %}</td>
         </tr>
         <tr>
             <th>Comment</th>
@@ -46,7 +46,8 @@
                 <td>{{ item.get_isbn10 }} {{ item.get_isbn13 }}</td>
                 <td>{{ item.get_pages }}</td>
                 <td>{{ item.year }}</td>
-                <td>{{ item.get_state.type }}</td>
+                <td>{% if item.is_available %}{{ item.get_state.type }}
+                {% else %}LENT {%if item.get_state.type != 'AVAILABLE'%}[ {{item.get_state.type}} {% endif %}{% endif %}</td>
                 {% if perms.auth.add_item_state %}
                     <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change state</a></td>
                 {% endif %}

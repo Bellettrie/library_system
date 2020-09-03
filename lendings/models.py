@@ -75,6 +75,8 @@ class Lending(models.Model):
 
     @staticmethod
     def create_lending(item, member: Member, edited_member: Member, now=None):
+        if member.is_anonymous_user:
+            raise ValueError("Member is an anonymous user")
         from works.models import Item
         if now is None:
             now = datetime.date(datetime.now())

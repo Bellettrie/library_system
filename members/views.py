@@ -71,10 +71,14 @@ def show(request, member_id):
 def edit(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     if request.method == 'POST':
-        form = EditForm(request.POST, instance=member)
+        can_change = request.user.has_perm('members.change_committee')
+
+        form = EditForm(can_change, request.POST, instance=member)
         if form.is_valid():
+            if not can_change and 'committees' in form.changed_data:
+                raise ValueError("Wrong")
             form.save()
-            if request.user.has_perm('committee_update'):
+            if can_change:
                 member.update_groups()
             return HttpResponseRedirect(reverse('members.view', args=(member_id,)))
     else:
@@ -86,10 +90,13 @@ def edit(request, member_id):
 @permission_required('members.add_member')
 def new(request):
     if request.method == 'POST':
-        form = EditForm(request.POST)
+        can_change = request.user.has_perm('members.change_committee')
+        form = EditForm(can_change, request.POST)
         if form.is_valid():
+            if not can_change and 'committees' in form.changed_data:
+                raise ValueError("Wrong")
             instance = form.save()
-            if request.user.has_perm('committee_update'):
+            if can_change:
                 instance.update_groups()
             return HttpResponseRedirect(reverse('members', args=(instance.pk,)))
     else:
@@ -117,6 +124,7 @@ def signup(request, member_id):
             instance.member = member
             instance.member.user = instance
             instance.member.invitation_code_valid = False
+            instance.member.update_groups()
             instance.member.save()
             instance.save()
             return HttpResponseRedirect(reverse('login'))
