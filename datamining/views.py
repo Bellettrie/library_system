@@ -17,6 +17,7 @@ def find_members_by_request(request):
     found_members = []
     if request.GET.get('exec'):
         found_committees = request.GET.getlist('committees')
+        found_privacy_things = request.GET.getlist('privacy')
         if request.GET.get('m_after'):
             for member in members:
                 d = fetch_date(request.GET.get('m_after'))
@@ -43,6 +44,19 @@ def find_members_by_request(request):
                 for committee in member.committees.all():
                     if str(committee.pk) in found_committees:
                         found = True
+                if found:
+                    found_2.append(member)
+            found_members = found_2
+        if len(found_privacy_things) > 0:
+            found_2 = []
+            for member in found_members:
+                found = False
+                if member.privacy_activities and 'activities' in found_privacy_things:
+                    found = True
+                if member.privacy_publications and 'publications' in found_privacy_things:
+                    found = True
+                if member.privacy_reunions and 'reunions' in found_privacy_things:
+                    found = True
                 if found:
                     found_2.append(member)
             found_members = found_2

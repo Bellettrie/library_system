@@ -27,6 +27,15 @@
                 {% endfor %}
             </select>
         {% endwith %}
+        Privacy Settings
+        {% with list=request.GET|get_list:'privacy' %}
+            <select name="privacy" id="privacy" multiple="true">
+                <option {% if 'activities' in list %}selected{% endif %} value="activities">activities</option>
+                <option  {% if 'publications' in list %}selected{% endif %} value="publications">publications</option>
+                <option  {% if 'reunions' in list %}selected{% endif %}  value="reunions">reunions</option>
+            </select>
+        {% endwith %}
+
         <input type="submit" name="exec" value="Search" class="btn-primary btn">
     </form>
     {% if mails %}
@@ -41,7 +50,5 @@
 
         </table>
     {% endif %}
-
-
 {% endblock %}
 
