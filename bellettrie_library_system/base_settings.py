@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["localhost", "nander.net", "127.0.0.1"]
 
@@ -125,7 +125,7 @@ USE_TZ = True
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
 
 LOGOUT_REDIRECT_URL = '/accounts/login'
-LOGIN_REDIRECT_URL = '/lend/me'
+LOGIN_REDIRECT_URL = '/'
 
 
 def GET_MENU():

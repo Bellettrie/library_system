@@ -29,7 +29,7 @@ def view_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
 
     can_edit = False
-    if not request.user.is_anonymous and (request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm('public_pages.change_publicpage'):
+    if not request.user.is_anonymous and (request.user and  ( hasattr(request.user, 'member') and page_group.committees in request.user.member.committees.all())) or request.user.has_perm('public_pages.change_publicpage'):
         can_edit = True
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     html = render_md(page.text)
