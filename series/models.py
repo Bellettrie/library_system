@@ -16,6 +16,21 @@ class SeriesNode(models.Model):
     display_number = models.CharField(max_length=255)
     old_id = models.IntegerField(null=True)
 
+    def things_underneath(self):
+        return SeriesNode.objects.filter(part_of_series=self).order_by('number')
+
+    def is_series(self):
+        try:
+            return Series.objects.get(pk=self.pk)
+        except Series.DoesNotExist:
+            return None
+
+    def is_work(self):
+        try:
+            return WorkInSeries.objects.get(pk=self.pk)
+        except WorkInSeries.DoesNotExist:
+            return None
+
 
 class Series(SeriesNode, NamedTranslatableThing, BookCode):
     book_code = models.CharField(max_length=16)  # Where in the library is it?

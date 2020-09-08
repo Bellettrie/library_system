@@ -58,5 +58,12 @@
         {% endfor    %}
     </table>
 
+
+    <h4>Part of series</h4>    <table class="table table-striped" style="width: auto;">
+
+    {% for series in  object.workinseries_set.all%}
+  {% include 'part_of_series_name.html' %}
+    {% endfor %}
+</table>
     <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
 {% endblock %}

@@ -186,6 +186,7 @@ def create_item_state(request, item_id):
 @permission_required('works.add_item')
 def item_new(request, publication_id=None):
     publication = get_object_or_404(Publication, pk=publication_id)
+
     if request.method == 'POST':
         form = ItemCreateForm(request.POST)
         if form.is_valid():
