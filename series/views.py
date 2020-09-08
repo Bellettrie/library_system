@@ -28,4 +28,3 @@ def get_series_by_query(request, search_text):
 def view_series(request, pk):
     series = Series.objects.get(pk=pk)
     return render(request, 'series_view.html', {'series': series})
-

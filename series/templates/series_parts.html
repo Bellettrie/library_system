@@ -2,15 +2,35 @@
     {% if series.is_series %}
         {% with series=series.is_series %}
             {% if series %}
-                {% if series.display_number %}[{{ series.display_number }}]{% endif %}
-                <a href="{% url 'series.view' series.pk %}">{{ series.title }}</a><br/>
+                <tr>
+                    <td colspan="2">
+                        {% if series.display_number %}[{{ series.display_number }}]{% endif %} <a
+                            href="{% url 'series.view' series.pk %}">{{ series.title }} {{ series.sub_title }}</a><br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        \-
+                    </td>
+                    <td>
+                        <table>
+
+                            {% include 'series_parts.html' %}
+                        </table>
+                    </td>
+                </tr>
             {% endif %}
         {% endwith %}
-        {% include 'series_parts.html' %}
     {% else %}
         {% with work=series.is_work %}
             {% if work %}
-                [{{ work.display_number }}]<a href="{% url 'work.view' work.work.pk %}">{{ work.work.title }} </a> <br/>
+                <tr>
+                    <td>
+                        [{{ work.display_number }}]
+                    </td>
+                    <td><a href="{% url 'work.view' work.work.pk %}">{{ work.work.title }} {{ work.work.sub_title }} </a> <br/>
+                    </td>
+                </tr>
             {% endif %}
         {% endwith %}
     {% endif %}

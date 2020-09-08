@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-{% block title %}{{ object.get_title }}{% endblock %}
+{% block title %}{% include 'part_of_series_name.html'%}{% endblock %}
 {% block content %}
-    {% include 'part_of_series_name.html'%}
+
     <h4>Parts of the series</h4>
-    {% include 'series_parts.html' %} <br />
-    <h4>Info</h4>
     <table>
-    <tr><td>Title</td><td>{{ series.title }}</td></tr>
+    {% include 'series_parts.html' %}
     </table>
+
 
 {% endblock %}
