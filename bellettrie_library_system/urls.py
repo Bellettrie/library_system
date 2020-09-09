@@ -20,9 +20,12 @@ from bellettrie_library_system.views import index
 from public_pages.views import view_page
 from django.shortcuts import redirect
 
+
 def redirect_view(request):
     response = redirect('/')
     return response
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include('members.urls')),
