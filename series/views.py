@@ -3,18 +3,20 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect
 
 # Create your views here.
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 
 from creators.models import Creator
 from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
-from series.models import Series
+from series.models import Series, SeriesNode
 
 
 def get_series_by_query(request, search_text):
     series = Series.objects.all()
     for word in search_text.split(" "):
-        zz = Series.objects.filter(Q(title__icontains=word) | Q(sub_title__icontains=word) | Q(original_title__icontains=word) | Q(original_subtitle__icontains=word))
+        zz = Series.objects.filter(
+            Q(title__icontains=word) | Q(sub_title__icontains=word) | Q(original_title__icontains=word) | Q(
+                original_subtitle__icontains=word))
         i = len(zz)
         j = 0
         while j < i:
@@ -82,3 +84,17 @@ def edit_series(request, pk):
 @permission_required('series.add_series')
 def new_series(request):
     return edit_series(request, pk=None)
+
+
+@permission_required('series.delete_series')
+def delete_series(request, pk):
+    series = Series.objects.filter(pk=pk)
+    z = SeriesNode.objects.filter(part_of_series=series.first())
+    if len(z) > 0:
+        return render(request, 'are-you-sure.html',
+                      {'what': "To delete " + series.first().title + ", it has to have no sub-series."})
+    if not request.GET.get('confirm'):
+        return render(request, 'are-you-sure.html', {'what': "delete series with name " + series.first().title})
+    series.delete()
+
+    return redirect('homepage')
