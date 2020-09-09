@@ -93,7 +93,7 @@ def delete_series(request, pk):
     if len(z) > 0:
         return render(request, 'are-you-sure.html',
                       {'what': "To delete " + (
-                                  series.first().title or "<No name> ") + ", it has to have no sub-series."})
+                              series.first().title or "<No name> ") + ", it has to have no sub-series."})
     if not request.GET.get('confirm'):
         return render(request, 'are-you-sure.html',
                       {'what': "delete series with name " + (series.first().title or "<No name> ")})
