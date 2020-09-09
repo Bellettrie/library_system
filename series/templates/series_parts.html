@@ -3,18 +3,29 @@
         {% with series=series.is_series %}
             {% if series %}
                 <tr>
-                    <td colspan="2">
-                        {% if series.display_number %}[{{ series.display_number }}]{% endif %} <a
-                            href="{% url 'series.view' series.pk %}">{{ series.title }} {{ series.sub_title }}</a><br/>
+                    <td>
+                        [{{ series.display_number }}]
                     </td>
+                    {% with publication=series %}
+                        <td>
+                            <a href="/series/view/{{ publication.pk }}">
+                                {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
+                                    <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                            </a>
+                        </td>
+                        <td>
+                            {% for author in publication.get_own_authors %}{{ author.role.name }}
+                                {{ author.creator.given_names }}
+                                <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+                        </td>
+                    {% endwith %}
                 </tr>
                 <tr>
                     <td>
                         \-
                     </td>
-                    <td>
-                        <table>
-
+                    <td colspan="2">
+                        <table class="table table-striped">
                             {% include 'series_parts.html' %}
                         </table>
                     </td>
@@ -28,8 +39,19 @@
                     <td>
                         [{{ work.display_number }}]
                     </td>
-                    <td><a href="{% url 'work.view' work.work.pk %}">{{ work.work.title }} {{ work.work.sub_title }} </a> <br/>
-                    </td>
+                    {% with publication=work.work %}
+                        <td>
+                            <a href="/works/{{ publication.pk }}">
+                                {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
+                                    <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                            </a>
+                        </td>
+                        <td>
+                            {% for author in publication.get_own_authors %}{{ author.role.name }}
+                                {{ author.creator.given_names }}
+                                <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+                        </td>
+                    {% endwith %}
                 </tr>
             {% endif %}
         {% endwith %}

@@ -1,10 +1,43 @@
 {% extends "base.html" %}
-{% block title %}{% include 'part_of_series_name.html'%}{% endblock %}
+{% block title %}{% include 'part_of_series_name.html' %}{% endblock %}
 {% block content %}
-
+    <table class="table table-striped">
+    <tr>
+            <td>Number</td>
+            <td>
+                [{{ series.number }}]
+            </td>
+        </tr>
+        <tr>
+            <td>Display number</td>
+            <td>
+                [{{ series.display_number }}]
+            </td>
+        </tr>
+            {% with publication=series %}
+                <tr>
+                <td>Name</td>
+                <td>
+                    <a href="/series/view/{{ publication.pk }}">
+                        {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
+                            <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                    </a>
+                </td>
+                </tr>
+                <tr>
+                <td>Authors</td>
+                <td>
+                    {% for author in publication.get_own_authors %}{{ author.role.name }}{{ author.creator.given_names }}
+                        <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+                </td>
+                </tr>
+            {% endwith %}
+        </tr>
+    </table>
+    <a class="btn btn-primary" href="{% url 'series.edit' series.pk %}">Edit</a>
     <h4>Parts of the series</h4>
-    <table>
-    {% include 'series_parts.html' %}
+    <table class="table table-striped">
+        {% include 'series_parts.html' %}
     </table>
 
 
