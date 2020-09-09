@@ -155,9 +155,10 @@ def GET_MENU():
     web_management = MenuItem('List Web Pages', reverse('list_pages'), 'public_pages.view_publicpage', 'sidebar', [], anonymous=None)
     my_menu.append(MenuItem('Web Management', reverse('logout'), None, 'sidebar', [web_management, uploads], only_subitems=True))
 
+    new_series = MenuItem('New Series', reverse('series.new'), 'works.add_series', 'sidebar', [], anonymous=None)
     new_work = MenuItem('New Work', reverse('works.publication.new'), 'works.add_publication', 'sidebar', [], anonymous=None)
     inventarisation = MenuItem('Inventarisations', reverse('inventarisation.list'), 'inventarisation.view_inventarisation', 'sidebar', [], anonymous=None)
-    my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, inventarisation], only_subitems=True))
+    my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_series, new_work, inventarisation], only_subitems=True))
 
     member_mailing = MenuItem('Filter Members', reverse('datamining.members'), 'members.view_member', 'sidebar', [], anonymous=None)
     my_menu.append(MenuItem('Member Data', reverse('logout'), None, 'sidebar', [member_mailing], only_subitems=True))

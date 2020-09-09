@@ -39,13 +39,15 @@ def edit_series(request, pk):
         if pk is not None:
             series = get_object_or_404(Series, pk=pk)
             form = SeriesCreateForm(request.POST, instance=series)
+            creators = CreatorToSeriesFormSet(request.POST, request.FILES)
         else:
             form = SeriesCreateForm(request.POST)
+            creators = CreatorToSeriesFormSet(request.POST, request.FILES)
         if form.is_valid():
             instance = form.save(commit=False)
             found_set = set()
-            found_set.add(instance)
-
+            if instance.pk:
+                found_set.add(instance)
             # Check for loops!
             walker = instance.part_of_series
             while walker is not None:
@@ -55,7 +57,6 @@ def edit_series(request, pk):
                 walker = walker.part_of_series
             instance.is_translated = instance.original_language is not None
             instance.save()
-            creators = CreatorToSeriesFormSet(request.POST, request.FILES)
 
             if creators.is_valid():
                 instances = creators.save(commit=False)
@@ -74,3 +75,7 @@ def edit_series(request, pk):
             form = SeriesCreateForm()
 
     return render(request, 'series_edit.html', {'series': series, 'form': form, 'creators': creators})
+
+
+def new_series(request):
+    return edit_series(request, pk=None)
