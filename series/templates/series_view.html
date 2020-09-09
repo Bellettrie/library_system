@@ -34,7 +34,7 @@
             {% endwith %}
         </tr>
     </table>
-    <a class="btn btn-primary" href="{% url 'series.edit' series.pk %}">Edit</a>
+    {% if perms.series.change_series %}<a class="btn btn-primary" href="{% url 'series.edit' series.pk %}">Edit</a>{% endif %}
     <h4>Parts of the series</h4>
     <table class="table table-striped">
         {% include 'series_parts.html' %}
