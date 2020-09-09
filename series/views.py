@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect
 
@@ -32,6 +33,7 @@ def view_series(request, pk):
     return render(request, 'series_view.html', {'series': series})
 
 
+@permission_required('series.change_series')
 def edit_series(request, pk):
     series = None
     creators = None
@@ -77,5 +79,6 @@ def edit_series(request, pk):
     return render(request, 'series_edit.html', {'series': series, 'form': form, 'creators': creators})
 
 
+@permission_required('series.add_series')
 def new_series(request):
     return edit_series(request, pk=None)

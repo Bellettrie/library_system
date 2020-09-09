@@ -242,26 +242,26 @@ def publication_edit(request, publication_id=None):
                     c2w.publication = instance
                     c2w.save()
 
-            series = SeriesToWorkFomSet(request.POST, request.FILES)
+            series = SeriesToWorkFomSet(request.POST, request.FILES, instance=instance)
             if series.is_valid():
-                series.save()
+                instances = series.save(commit=False)
+                for i in instances:
+                    i.work = instance
+                    i.save()
             return HttpResponseRedirect(reverse('work.view', args=(instance.pk,)))
     else:
-        creators = CreatorToWorkFormSet(instance=None)
-        series = CreatorToWorkFormSet(instance=None)
         publication = None
         if publication_id is not None:
             publication = get_object_or_404(Publication, pk=publication_id)
-
             creators = CreatorToWorkFormSet(instance=publication)
             series = SeriesToWorkFomSet(instance=publication)
-
             form = PublicationCreateForm(instance=publication)
         else:
             creators = CreatorToWorkFormSet()
             series = SeriesToWorkFomSet()
             form = PublicationCreateForm()
-    return render(request, 'publication_edit.html', {'series': series, 'publication': publication, 'form': form, 'creators': creators})
+    return render(request, 'publication_edit.html',
+                  {'series': series, 'publication': publication, 'form': form, 'creators': creators})
 
 
 @transaction.atomic
