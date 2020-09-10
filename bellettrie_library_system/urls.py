@@ -18,6 +18,13 @@ from django.urls import path, include
 
 from bellettrie_library_system.views import index
 from public_pages.views import view_page
+from django.shortcuts import redirect
+
+
+def redirect_view(request):
+    response = redirect('/')
+    return response
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +37,8 @@ urlpatterns = [
     path('creators/', include('creators.urls')),
     path('series/', include('series.urls')),
     path('pages/', include('public_pages.urls')),
+    path('datamining/', include('datamining.urls')),
     path('', view_page('basic', 'home'), name='homepage'),
-    path('konnichiwa', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
+    path('informatie/', redirect_view, name='homepage.old_link'),
+    path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
 ]

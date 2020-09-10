@@ -13,8 +13,23 @@ class SeriesNode(models.Model):
 
     part_of_series = models.ForeignKey("Series", on_delete=PROTECT, related_name="part", null=True, blank=True)
     number = models.DecimalField(null=True, blank=True, decimal_places=1, max_digits=5)
-    display_number = models.CharField(max_length=255)
-    old_id = models.IntegerField(null=True)
+    display_number = models.CharField(max_length=255, blank=True)
+    old_id = models.IntegerField(null=True, blank=True)
+
+    def things_underneath(self):
+        return SeriesNode.objects.filter(part_of_series=self).order_by('number')
+
+    def is_series(self):
+        try:
+            return Series.objects.get(pk=self.pk)
+        except Series.DoesNotExist:
+            return None
+
+    def is_work(self):
+        try:
+            return WorkInSeries.objects.get(pk=self.pk)
+        except WorkInSeries.DoesNotExist:
+            return None
 
 
 class Series(SeriesNode, NamedTranslatableThing, BookCode):
@@ -29,6 +44,12 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
         else:
             authors = self.part_of_series.get_authors() + authors
             return authors
+
+    def get_own_authors(self):
+        authors = []
+        for author in CreatorToSeries.objects.filter(series=self):
+            authors.append(author)
+        return authors
 
     def get_canonical_title(self):
         str = ""
@@ -53,7 +74,7 @@ class WorkInSeries(SeriesNode):
 class CreatorToSeries(models.Model):
     creator = models.ForeignKey("creators.Creator", on_delete=PROTECT)
     series = models.ForeignKey(Series, on_delete=PROTECT)
-    number = models.IntegerField()
+    number = models.IntegerField(blank=True)
 
     class Meta:
         unique_together = ("creator", "series", "number")

@@ -4,7 +4,7 @@
 {% endif %}
 {% if mode == 'mobile-only' %}
     <li class="treeview hiddenDesktop"><a href="{{ menu.url }}">
-        <i class="fa fa-plane"></i><span>{{ menu.title }}</span>
+        <i class="{{ menu.icon }}"></i><span>{{ menu.title }}</span>
     </a></li>
 {% endif %}
 
@@ -14,7 +14,7 @@
 
             <li class="active">
                 <a href="#{{ menu.get_title_shortened }}" data-toggle="collapse" aria-expanded="false"
-                   class="dropdown-toggle">{{ menu.title }}</a>
+                   class="dropdown-toggle"><i class="{{ menu.icon }}"></i>{{ menu.title }}</a>
                 <ul class="collapse list-unstyled" id="{{ menu.get_title_shortened }}">
                     {% for sub_item in sub_items %}
                         {% render_menu_item sub_item 'sidebar-subitem' %}
@@ -26,12 +26,12 @@
     {% else %}
 
         <li class="treeview"><a href="{{ menu.url }}">
-            <i class="fa fa-user"></i><span>{{ menu.title }}</span>
+            <i class="{{ menu.icon }}"></i><span>{{ menu.title }}</span>
         </a></li>
     {% endif %}
 {% endif %}
 {% if mode == 'sidebar-subitem' %}
     <li class="treeview"><a href="{{ menu.url }}">
-        <i class="fa fa-plane"></i><span>{{ menu.title }}</span></a>
+        <i class="{{ menu.icon }}"></i><span>{{ menu.title }}</span></a>
     </li>
 {% endif %}

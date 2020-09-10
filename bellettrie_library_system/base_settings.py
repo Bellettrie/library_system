@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from django.urls import reverse
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -24,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["localhost", "nander.net", "127.0.0.1"]
 
@@ -52,6 +51,7 @@ INSTALLED_APPS = [
     'creators',
     'mail',
     'public_pages',
+    'datamining',
 ]
 
 MIDDLEWARE = [
@@ -124,36 +124,37 @@ USE_TZ = True
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
 
 LOGOUT_REDIRECT_URL = '/accounts/login'
-LOGIN_REDIRECT_URL = '/lend/me'
+LOGIN_REDIRECT_URL = '/'
 
 
 def GET_MENU():
     from config.menu import MenuItem
-    my_menu = [MenuItem('test', reverse('login'), None, 'top', [], anonymous=True)]
-    my_menu.append(MenuItem('Home', reverse('homepage'), None, 'top-left', []))
-    my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'top-left', []))
-    my_menu.append(MenuItem('Become a member', reverse('named_page', args=('basic', 'member',)), None, 'top-left', []))
-    my_menu.append(MenuItem('Board / Committees', reverse('named_page', args=('basic', 'committees',)), None, 'top-left', []))
-    my_menu.append(MenuItem('Konnichiwa', reverse('named_page', args=('konnichiwa', 'home',)), None, 'top-left', []))
 
-    my_menu.append(MenuItem('Corona', reverse('named_page', args=('basic', 'corona',)), None, 'top-right', []))
-    my_menu.append(MenuItem('About', reverse('named_page', args=('basic', 'about',)), None, 'top-right', []))
-    my_menu.append(MenuItem('Contact', reverse('named_page', args=('basic', 'contact',)), None, 'top-right', []))
+    my_menu = []
+    my_menu.append(MenuItem('Home', reverse('homepage'), None, 'top-left', [], icon='fa fa-home'))
+    my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'top-left', [], icon='fa fa-book'))
+    my_menu.append(MenuItem('Become a member', reverse('named_page', args=('basic', 'member',)), None, 'top-left', [], icon='fa fa-user'))
+    my_menu.append(MenuItem('Board / Committees', reverse('named_page', args=('basic', 'committees',)), None, 'top-left', [], icon='fa fa-users'))
+    my_menu.append(MenuItem('Konnichiwa', reverse('named_page', args=('konnichiwa', 'home',)), None, 'top-left', [], icon=''))
 
-    my_menu.append(MenuItem('Login', reverse('login'), None, 'top-right', [], anonymous=True))
-    my_menu.append(MenuItem('Logout', reverse('logout'), None, 'top-right', [], anonymous=False))
+    my_menu.append(MenuItem('Corona', reverse('named_page', args=('basic', 'corona',)), None, 'top-right', [], icon='fa fa-exclamation-circle'))
+    my_menu.append(MenuItem('About', reverse('named_page', args=('basic', 'about',)), None, 'top-right', [], icon='fa fa-user'))
+    my_menu.append(MenuItem('Contact', reverse('named_page', args=('basic', 'contact',)), None, 'top-right', [], icon='fa fa-info'))
 
-    my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'sidebar', [], anonymous=False))
-    my_menu.append(MenuItem('Members', reverse('members.list'), 'members.view_member', 'sidebar', [], anonymous=None))
-    my_menu.append(MenuItem('Lendings', reverse('lendings.list'), 'lendings.view_lending', 'sidebar', [], anonymous=None))
-    holiday_item = MenuItem('Holidays', reverse('holiday.list'), 'config.view_holiday', 'sidebar', [], anonymous=None)
-    my_menu.append(MenuItem('Settings', reverse('logout'), None, 'sidebar', [holiday_item], only_subitems=True))
+    my_menu.append(MenuItem('Login', reverse('login'), None, 'top-right', [], anonymous=True, icon='fa fa-sign-in-alt'))
+    my_menu.append(MenuItem('Logout', reverse('logout'), None, 'top-right', [], anonymous=False, icon='fa fa-sign-out-alt'))
 
-    uploads = MenuItem('Uploads', reverse('list_uploads'), 'public_pages.change_publicpage', 'sidebar', [], anonymous=None)
-    web_management = MenuItem('List Web Pages', reverse('list_pages'), 'public_pages.view_publicpage', 'sidebar', [], anonymous=None)
-    my_menu.append(MenuItem('Web Management', reverse('logout'), None, 'sidebar', [web_management, uploads], only_subitems=True))
+    my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'sidebar', [], anonymous=False, icon='fa fa-book'))
+    my_menu.append(MenuItem('Members', reverse('members.list'), 'members.view_member', 'sidebar', [], anonymous=None, icon='fa fa-user'))
+    my_menu.append(MenuItem('Lendings', reverse('lendings.list'), 'lendings.view_lending', 'sidebar', [], anonymous=None, icon='fa fa-bookmark'))
+    holiday_item = MenuItem('Holidays', reverse('holiday.list'), 'config.view_holiday', 'sidebar', [], anonymous=None, icon='fa fa-plane')
+    my_menu.append(MenuItem('Settings', reverse('logout'), None, 'sidebar', [holiday_item], only_subitems=True, icon='fa fa-cogs'))
 
-    new_work = MenuItem('New Work', reverse('works.publication.new'), 'works.add_publication', 'sidebar', [], anonymous=None)
-    inventarisation = MenuItem('Inventarisations', reverse('inventarisation.list'), 'inventarisation.view_inventarisation', 'sidebar', [], anonymous=None)
-    my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, inventarisation], only_subitems=True))
+    uploads = MenuItem('Uploads', reverse('list_uploads'), 'public_pages.change_publicpage', 'sidebar', [], anonymous=None, icon='fa fa-upload')
+    web_management = MenuItem('List Web Pages', reverse('list_pages'), 'public_pages.view_publicpage', 'sidebar', [], anonymous=None, icon='fa fa-newspaper')
+    my_menu.append(MenuItem('Web Management', reverse('logout'), None, 'sidebar', [web_management, uploads], only_subitems=True, icon='fa fa-globe'))
+
+    new_work = MenuItem('New Work', reverse('works.publication.new'), 'works.add_publication', 'sidebar', [], anonymous=None, icon='fa fa-book')
+    inventarisation = MenuItem('Inventarisations', reverse('inventarisation.list'), 'inventarisation.view_inventarisation', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
+    my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, inventarisation], only_subitems=True, icon='fa fa-book'))
     return my_menu

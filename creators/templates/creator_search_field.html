@@ -10,7 +10,7 @@
 $('#{{name}}').select2({
   ajax: {
     url: function (params) {
-      return '{{ BASE_URL }}creators/search/' + params.term;
+      return '/creators/search/' + params.term;
     },
     minimumInputLength: 3,
   }

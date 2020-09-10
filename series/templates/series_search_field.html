@@ -1,7 +1,7 @@
 {% load static %}
 <link href="{% static 'select/select2.min.css' %}" rel="stylesheet"/>
 <script src="{% static 'select/select2.min.js' %}"></script>
-<select class="js-example-basic-single form-control" style="width:100%" id="{{ name }}" name="{{ name }}">
+<select class="js-example-basic-single form-control allowClear" style="width:100%" id="{{ name }}" name="{{ name }}">
     {% if default %}
         <option value="{{ default.pk }}" selected="selected">{{ default.get_canonical_title }}</option>
     {% endif %}
@@ -13,6 +13,8 @@
                 return '{{ BASE_URL }}series/search/' + params.term;
             },
             minimumInputLength: 3,
-        }
+        },
+        allowClear: true,
+        placeholder: '',
     });
 </script>
