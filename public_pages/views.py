@@ -31,7 +31,9 @@ def render_md(markdown_text: str):
         is_open = (my_data[2][:-1] == "True")
         max_capacity = int(my_data[1])
         current_count = int(my_data[0][2:])
-        zz = open_template.render(context={'open': is_open, 'max_capacity': max_capacity, 'current_count': current_count, 'full': current_count >= max_capacity})
+        zz = open_template.render(
+            context={'open': is_open, 'max_capacity': max_capacity, 'current_count': current_count,
+                     'full': current_count >= max_capacity})
         html = html.replace("----OPEN----", zz)
     return html
 
@@ -40,9 +42,9 @@ def view_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
 
     can_edit = False
+
     if not request.user.is_anonymous and (request.user and (hasattr(request.user, 'member') and page_group.committees in request.user.member.committees.all())) or request.user.has_perm(
             'public_pages.change_publicpage'):
-
         can_edit = True
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     html = render_md(page.text)
@@ -78,7 +80,7 @@ def edit_named_page(request, page_name, sub_page_name):
     can_edit = False
     if not request.user.is_anonymous and (
             request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm(
-        'public_pages.change_publicpage'):
+                'public_pages.change_publicpage'):
         can_edit = True
     if not can_edit:
         return HttpResponse("cannot edit")
@@ -103,7 +105,7 @@ def new_named_page(request, page_name):
     can_edit = False
     if not request.user.is_anonymous and (
             request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm(
-        'public_pages.change_publicpage'):
+                'public_pages.change_publicpage'):
         can_edit = True
     if not can_edit:
         return HttpResponse("cannot edit")
