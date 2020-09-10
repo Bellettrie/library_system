@@ -131,7 +131,8 @@ class SeriesList(ListView):
 
     def get_queryset(self):  # new
         words = get_query_words(self.request)
-        if words is None: return []
+        if words is None:
+            return []
         result = None
         for word in words:
             word = word_to_regex(word)
