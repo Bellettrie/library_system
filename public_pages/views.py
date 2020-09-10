@@ -20,7 +20,19 @@ from public_pages.models import PublicPageGroup, PublicPage, FileUpload
 def render_md(markdown_text: str):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables'])
     search_template = get_template('work_search_field_simple.html')
+    open_template = get_template('is_open_template.html')
     html = md.convert(markdown_text).replace("----SEARCH----", search_template.render(context={}))
+    if "----OPEN----" in html:
+        import urllib.request
+        URL = 'https://dragoncounter.bellettrie.utwente.nl/crowds/api/'
+        f = urllib.request.urlopen(URL, timeout=5)
+        data = f.read()
+        my_data = str(data).split(",")
+        is_open = (my_data[2][:-1] == "True")
+        max_capacity = int(my_data[1])
+        current_count = int(my_data[0][2:])
+        zz = open_template.render(context={'open': is_open, 'max_capacity': max_capacity, 'current_count': current_count, 'full': current_count >= max_capacity})
+        html = html.replace("----OPEN----", zz)
     return html
 
 
@@ -29,13 +41,16 @@ def view_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
 
     can_edit = False
-    if not request.user.is_anonymous and (request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm('public_pages.change_publicpage'):
+    if not request.user.is_anonymous and (
+            request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm(
+        'public_pages.change_publicpage'):
         can_edit = True
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     html = render_md(page.text)
 
     return HttpResponse(render(request, template_name='public_page_simple.html',
-                               context={'BASE_URL': settings.BASE_URL, 'markdown': page.text, 'page_title': page.title, 'page_content': html, 'can_edit': can_edit, 'page': page}))
+                               context={'BASE_URL': settings.BASE_URL, 'markdown': page.text, 'page_title': page.title,
+                                        'page_content': html, 'can_edit': can_edit, 'page': page}))
 
 
 def view_page(page_name, sub_page_name):
@@ -62,7 +77,9 @@ def edit_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     can_edit = False
-    if not request.user.is_anonymous and (request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm('public_pages.change_publicpage'):
+    if not request.user.is_anonymous and (
+            request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm(
+        'public_pages.change_publicpage'):
         can_edit = True
     if not can_edit:
         return HttpResponse("cannot edit")
@@ -85,7 +102,9 @@ def edit_named_page(request, page_name, sub_page_name):
 def new_named_page(request, page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
     can_edit = False
-    if not request.user.is_anonymous and (request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm('public_pages.change_publicpage'):
+    if not request.user.is_anonymous and (
+            request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm(
+        'public_pages.change_publicpage'):
         can_edit = True
     if not can_edit:
         return HttpResponse("cannot edit")
@@ -106,7 +125,8 @@ def new_named_page(request, page_name):
 @permission_required('public_pages.view_publicpage')
 def list_named_pages(request):
     pages = PublicPage.objects.all()
-    return render(request, 'page_list.html', {'MY_URL': settings.BASE_URL, 'pages': pages, 'groups': PublicPageGroup.objects.all()})
+    return render(request, 'page_list.html',
+                  {'MY_URL': settings.BASE_URL, 'pages': pages, 'groups': PublicPageGroup.objects.all()})
 
 
 @permission_required('public_pages.delete_publicpage')

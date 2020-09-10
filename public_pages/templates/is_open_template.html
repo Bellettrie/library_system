@@ -1,0 +1,12 @@
+<h4>Room Status</h4>
+{% if open %}
+    The Drakenkelder is open!<br/>
+    {% if full %}
+        The room is full :(
+    {% else %}
+        The room has {{ current_count }} people in the room, out of a maximum {{ max_capacity }}.
+    {% endif %}
+{% else %}
+    The Drakenkelder is closed!
+{% endif %}
+
