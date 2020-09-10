@@ -1,12 +1,20 @@
+{% load static %}
 <h4>Room Status</h4>
-{% if open %}
-    The Drakenkelder is open!<br/>
-    {% if full %}
-        The room is full :(
-    {% else %}
-        The room has {{ current_count }} people in the room, out of a maximum {{ max_capacity }}.
-    {% endif %}
-{% else %}
-    The Drakenkelder is closed!
-{% endif %}
+<div style="width:400px; background-color:lightgrey;  ">
+<div style-="margin: auto;">
 
+        {% if open %}
+            The Drakenkelder is open!<br/>
+            {% if full %}
+                <img style="width:100px;" src="{% static 'images/light/yellow.png' %}"><br/>
+                The room is full :(
+            {% else %}
+                <img style="width:100px;" src="{% static 'images/light/green.png' %}"><br/>
+                The room has {{ current_count }} people in the room, out of a maximum {{ max_capacity }}.
+            {% endif %}
+        {% else %}
+            <img style="width:100px;" src="{% static 'images/light/red.png' %}"><br/>
+            The Drakenkelder is closed!
+        {% endif %}
+</div>
+</div>
