@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load get_list %}
+{% block title %}Filter Members{% endblock %}
+{% block content %}
+    Please use standard iso date formats (ie. 2020-01-01):
+    <form action="#" method="get">
+        <label for="m_after">Membership Ended After: </label>
+
+        <input id="m_after" type="text" name="m_after" value="{{ request.GET.m_after }}">
+
+        <label for="m_before">Membership Ended Before: </label>
+        <input id="m_before" type="text" name="m_before" value="{{ request.GET.m_before }}">
+
+        <label for="m_include_honorary">Include honorary members: </label>
+        <input id="m_include_honorary" type="checkbox" name="m_include_honorary"
+               {% if request.GET.m_include_honorary %}checked{% endif %}>
+        <label for="mails">Get mail address list: </label>
+        <input id="mails" type="checkbox" name="mails"
+               {% if mails %}checked{% endif %}>
+        {% with list=request.GET|get_list:'committees' %}
+            <select name="committees" id="committees" multiple="true">
+                {% for committee in committees %}
+
+                    <option {% if committee.pk|to_string in list %}selected{% endif %}
+                            value="{{ committee.pk }}">{{ committee.name }}</option>
+
+                {% endfor %}
+            </select>
+        {% endwith %}
+        Privacy Settings
+        {% with list=request.GET|get_list:'privacy' %}
+            <select name="privacy" id="privacy" multiple="true">
+                <option {% if 'activities' in list %}selected{% endif %} value="activities">activities</option>
+                <option  {% if 'publications' in list %}selected{% endif %} value="publications">publications</option>
+                <option  {% if 'reunions' in list %}selected{% endif %}  value="reunions">reunions</option>
+            </select>
+        {% endwith %}
+
+        <input type="submit" name="exec" value="Search" class="btn-primary btn">
+    </form>
+    {% if mails %}
+        {{ member_mail_addresses }}
+    {% else %}
+        <table class="table table-striped" style="width: auto;">
+            {% for member in members %}
+                {% include 'member_list_item.html' %}
+            {% empty %}
+                <i> No results</i>
+            {% endfor %}
+
+        </table>
+    {% endif %}
+{% endblock %}
+

@@ -19,7 +19,7 @@ class NamedThing(models.Model):
     class Meta:
         abstract = True
 
-    language = models.CharField(max_length=64)
+    language = models.CharField(max_length=64, blank=True)
     article = models.CharField(max_length=64, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     sub_title = models.CharField(max_length=255, null=True, blank=True)
@@ -105,6 +105,25 @@ class Work(NamedTranslatableThing):
             authors.append(link)
         for serie in WorkInSeries.objects.filter(work=self, is_primary=True):
             authors = serie.get_authors() + authors
+        author_set = list()
+        for author in authors:
+            add = True
+            for author_2 in author_set:
+                if author.creator.name == author_2.creator.name and author.role.name == author_2.role.name:
+                    add = False
+            if add:
+                author_set.append(author)
+        author_set.sort(key=lambda a: a.number)
+        return author_set
+
+    def get_own_authors(self):
+        from series.models import WorkInSeries
+
+        links = CreatorToWork.objects.filter(work=self)
+        authors = []
+        for link in links:
+            authors.append(link)
+
         author_set = list()
         for author in authors:
             add = True

@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["localhost", "nander.net", "127.0.0.1"]
 
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'creators',
     'mail',
     'public_pages',
+    'datamining',
 ]
 
 MIDDLEWARE = [
@@ -123,11 +124,12 @@ USE_TZ = True
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
 
 LOGOUT_REDIRECT_URL = '/accounts/login'
-LOGIN_REDIRECT_URL = '/lend/me'
+LOGIN_REDIRECT_URL = '/'
 
 
 def GET_MENU():
     from config.menu import MenuItem
+
     my_menu = []
     my_menu.append(MenuItem('Home', reverse('homepage'), None, 'top-left', [], icon='fa fa-home'))
     my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'top-left', [], icon='fa fa-book'))
