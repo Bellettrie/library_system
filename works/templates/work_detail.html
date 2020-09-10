@@ -13,7 +13,8 @@
         </tr>
         <tr>
             <th>Authors</th>
-            <td>{% for author in object.get_authors %}{{ author.role.name }}{{ author.creator.given_names }} <i>{{ author.creator.name }}</i>{% if not forloop.last %}, {% endif %} {% endfor %}</td>
+            <td>{% for author in object.get_authors %}{{ author.role.name }}{{ author.creator.given_names }}
+                <i>{{ author.creator.name }}</i>{% if not forloop.last %}, {% endif %} {% endfor %}</td>
         </tr>
         <tr>
             <th>Comment</th>
@@ -47,15 +48,24 @@
                 <td>{{ item.get_pages }}</td>
                 <td>{{ item.year }}</td>
                 <td>{% if item.is_available %}{{ item.get_state.type }}
-                {% else %}LENT {%if item.get_state.type != 'AVAILABLE'%}[ {{item.get_state.type}} {% endif %}{% endif %}</td>
+
+                {% else %}
+                    {% if perms.members.view_member %}
+                        {% with member=item.current_lending.member %}
+                            <a href="{% url 'members.view' member.pk %}">LENT</a> {% endwith %}
+                        {% else %}
+                        LENT
+                    {% endif %}
+                    {% if item.get_state.type != 'AVAILABLE' %}[ {{ item.get_state.type }} {% endif %}{% endif %}</td>
                 {% if perms.auth.add_item_state %}
-                    <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change state</a></td>
+                    <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change state</a>
+                    </td>
                 {% endif %}
                 {% if perms.works.change_item %}
                     <td><a href="{% url 'works.item.edit' item.pk %}" class="btn btn-primary btn-sm">Edit</a></td>
                 {% endif %}
             </tr>
-        {% endfor    %}
+        {% endfor %}
     </table>
 
 
