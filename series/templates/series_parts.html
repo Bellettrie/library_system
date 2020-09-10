@@ -1,58 +1,48 @@
+
 {% for  series in series.things_underneath %}
+    <tr >{% for x in ""|ljust:counter.get_count %}
+    <td>-</td>{% endfor %}
     {% if series.is_series %}
         {% with series=series.is_series %}
             {% if series %}
-                <tr>
+                <td colspan="{{ counter.five_minus }}">{% if series.display_number %}[{{ series.display_number }}]{% else %}*{% endif %}</td>
+                {% with publication=series %}
+                    <td><a href="/series/view/{{ publication.pk }}">
+                        {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
+                            <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                    </a></td>
                     <td>
-                        [{{ series.display_number }}]
+                        {% for author in publication.get_own_authors %}{{ author.role.name }}
+                            {{ author.creator.given_names }}
+                            <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}
+                        {% endfor %}
                     </td>
-                    {% with publication=series %}
-                        <td>
-                            <a href="/series/view/{{ publication.pk }}">
-                                {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
-                                    <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
-                            </a>
-                        </td>
-                        <td>
-                            {% for author in publication.get_own_authors %}{{ author.role.name }}
-                                {{ author.creator.given_names }}
-                                <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
-                        </td>
-                    {% endwith %}
+                {% endwith %}
                 </tr>
-                <tr>
-                    <td>
-                        \-
-                    </td>
-                    <td colspan="2">
-                        <table class="table table-striped">
-                            {% include 'series_parts.html' %}
-                        </table>
-                    </td>
-                </tr>
+                {% with counter=counter.increment %}
+                    {% include 'series_parts.html' %}
+                {% endwith %}
             {% endif %}
         {% endwith %}
     {% else %}
         {% with work=series.is_work %}
             {% if work %}
-                <tr>
+                <td colspan="{{ counter.five_minus }}">
+                {% if work.display_number %}[{{ work.display_number }}]{% else %}*{% endif %}
+                </td>
+                {% with publication=work.work %}
                     <td>
-                        [{{ work.display_number }}]
+                    <a href="/works/{{ publication.pk }}">
+                        {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
+                            <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                    </a>
                     </td>
-                    {% with publication=work.work %}
-                        <td>
-                            <a href="/works/{{ publication.pk }}">
-                                {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
-                                    <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
-                            </a>
-                        </td>
-                        <td>
-                            {% for author in publication.get_own_authors %}{{ author.role.name }}
-                                {{ author.creator.given_names }}
-                                <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
-                        </td>
-                    {% endwith %}
-                </tr>
+                    <td>
+                    {% for author in publication.get_own_authors %}{{ author.role.name }}
+                        {{ author.creator.given_names }}
+                        <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+                    </td>
+                {% endwith %}
             {% endif %}
         {% endwith %}
     {% endif %}

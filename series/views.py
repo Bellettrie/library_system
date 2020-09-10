@@ -5,10 +5,13 @@ from django.http import JsonResponse, HttpResponseRedirect
 # Create your views here.
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.views.generic import ListView
 
 from creators.models import Creator
 from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
 from series.models import Series, SeriesNode
+from utils.get_query_words import get_query_words
+from works.views import word_to_regex
 
 
 def get_series_by_query(request, search_text):
@@ -30,9 +33,25 @@ def get_series_by_query(request, search_text):
     return JsonResponse({'results': list}, safe=False)
 
 
+class Counter:
+    def get_count(self):
+        print(self.count)
+        return self.count
+
+    def five_minus(self):
+        return 5 - self.count
+
+    def __init__(self, count):
+        self.count = count
+
+    def increment(self):
+        return Counter(self.count + 1)
+
+
 def view_series(request, pk):
     series = Series.objects.get(pk=pk)
-    return render(request, 'series_view.html', {'series': series})
+    counter = Counter(0)
+    return render(request, 'series_view.html', {'series': series, 'list': {'things_underneath': [series]}, 'counter': counter})
 
 
 @permission_required('series.change_series')
@@ -97,3 +116,38 @@ def delete_series(request, pk):
     series.delete()
 
     return redirect('homepage')
+
+
+class SeriesList(ListView):
+    model = Series
+    template_name = 'series_list.html'
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        return context
+
+    def get_queryset(self):  # new
+        words = get_query_words(self.request)
+        if words is None: return []
+        result = None
+        for word in words:
+            word = word_to_regex(word)
+            if len(word) == 0:
+                return []
+            authors = Creator.objects.filter(Q(name__iregex=word) | Q(given_names__iregex=word))
+
+            series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors)
+                                               | Q(title__iregex=word)
+                                               | Q(sub_title__iregex=word)
+                                               | Q(original_title__iregex=word)
+                                               | Q(original_subtitle__iregex=word)
+                                               ))
+            if result is None:
+                result = series
+            else:
+                result = series & result
+        print(result)
+        return list(result)
