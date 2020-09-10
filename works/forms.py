@@ -54,4 +54,4 @@ class PublicationCreateForm(ModelForm):
 
 
 CreatorToWorkFormSet = inlineformset_factory(Work, CreatorToWork, can_delete=True, fields=['creator', 'number', 'role'], widgets={'creator': CreatorWidget})
-SeriesToWorkFomSet = inlineformset_factory(Work, WorkInSeries, can_delete=True, fields=['part_of_series', 'number', 'is_primary'], widgets={'part_of_series': SeriesWidget})
+SeriesToWorkFomSet = inlineformset_factory(Work, WorkInSeries, can_delete=True, fields=['part_of_series', 'number', 'display_number', 'is_primary'], widgets={'part_of_series': SeriesWidget})

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{% if series.pk %}Edit {% include 'part_of_series_name.html' %}{% else %}New Series{% endif %}{% endblock %}
+{% block content %}
+    <form method="post" action="#">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <h4>Creators</h4>
+    <table>
+    {{ creators.as_table }}
+    </table>
+    <button type="submit">Save</button>
+    </form>
+{% endblock %}

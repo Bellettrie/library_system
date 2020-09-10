@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load books_table %}
+{% block title %}Series Search{% endblock %}
+{% block content %}
+    <form action="/series/list" method="get">
+        <label for="Query">Query: </label>
+        <input id="q" type="text" name="q" value="{{ request.GET.q }}">
+        <input type="submit" value="Search">
+    </form>
+
+    {% include 'pagination.html' %}
+    <hr>
+    <table>
+        {% for series in object_list %}
+            <tr>
+                <td colspan="{{ counter.five_minus }}">{% if series.display_number %}[{{ series.display_number }}]{% else %}
+                    *{% endif %}</td>
+                {% with publication=series %}
+                    <td><a href="/series/view/{{ publication.pk }}">
+                        {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
+                            <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                    </a></td>
+                    <td>
+                        {% for author in publication.get_own_authors %}{{ author.role.name }}
+                            {{ author.creator.given_names }}
+                            <i>{{ author.creator.name }}</i>{% if not forloop.last %}<br/>{% endif %}
+                        {% endfor %}
+                    </td>
+                {% endwith %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
