@@ -12,7 +12,9 @@
         </td>
         <td>
             {% with item=item_rows.0.item %}
-                {{ item.display_code }}{% if not forloop.last %}<br/>{% endif %}
+                {% with recode=item.get_recode %}
+                    {{ item.display_code }}{% if not forloop.last %}<br/>{% endif %}
+                {% endwith %}
             {% endwith %}
         </td>
         {% if member is not Null %}

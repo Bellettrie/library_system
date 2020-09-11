@@ -11,6 +11,7 @@ from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
 
+
 def simple_search(search_string: str):
     return Work.objects.filter(title__contains=search_string)
 
@@ -181,6 +182,13 @@ class Item(NamedThing, BookCode):
     last_seen = models.DateField(null=True, blank=True)
     book_code_extension = models.CharField(max_length=16, blank=True)  # Where in the library is it?
 
+    def get_recode(self):
+        from recode.models import Recode
+        recode = Recode.objects.filter(item=self)
+        if len(recode) == 1:
+            return recode[0]
+        else:
+            return None
     def display_code(self):
         return self.book_code + self.book_code_extension
 

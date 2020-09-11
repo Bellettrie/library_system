@@ -43,7 +43,9 @@
         {% for item in object.get_items %}
 
             <tr>
-                <td>{{ item.display_code }}</td>
+            {% with recode=item.get_recode %}
+                <td>{{ item.display_code }}{% if recode %} [Needs recode to {{ recode.book_code }}]{% endif %}</td>
+            {% endwith %}
                 <td>{{ item.get_isbn10 }} {{ item.get_isbn13 }}</td>
                 <td>{{ item.get_pages }}</td>
                 <td>{{ item.year }}</td>
