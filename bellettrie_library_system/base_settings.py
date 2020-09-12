@@ -157,4 +157,5 @@ def GET_MENU():
     new_work = MenuItem('New Work', reverse('works.publication.new'), 'works.add_publication', 'sidebar', [], anonymous=None, icon='fa fa-book')
     inventarisation = MenuItem('Inventarisations', reverse('inventarisation.list'), 'inventarisation.view_inventarisation', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
     my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, inventarisation], only_subitems=True, icon='fa fa-book'))
+    my_menu.append(MenuItem('Datamining', reverse('datamining.members'), 'datamining.members', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list'))
     return my_menu
