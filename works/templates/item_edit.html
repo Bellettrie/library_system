@@ -20,8 +20,9 @@
         <hr>
         Generate book code: ...
         {% with publication_id=publication.pk %}
-        {% with location_id='id_location' %}
-            {% include 'book_code_lookup.html' %}
+
+                {% with location_id='id_location' %}
+                    {% include 'book_code_lookup.html' %}
             {% endwith %}
         {% endwith %}
         <hr>

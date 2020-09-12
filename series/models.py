@@ -3,8 +3,8 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
-from book_code_generation.models import BookCode
-from works.models import NamedTranslatableThing
+from book_code_generation.models import BookCode, FakeItem
+from works.models import NamedTranslatableThing, Location, GENERATORS
 
 
 class SeriesNode(models.Model):
@@ -34,6 +34,7 @@ class SeriesNode(models.Model):
 
 class Series(SeriesNode, NamedTranslatableThing, BookCode):
     book_code = models.CharField(max_length=16)  # Where in the library is it?
+    location = models.ForeignKey(Location, on_delete=PROTECT, null=True, blank=True)
 
     def get_authors(self):
         authors = []
@@ -56,6 +57,28 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
         if self.part_of_series:
             str = self.part_of_series.get_canonical_title() + " > "
         return str + self.title
+
+    def generate_code_full(self, location):
+        first_letters = self.title[0:2].lower()
+
+        if self.part_of_series and self.part_of_series.book_code:
+            pos = self.part_of_series.book_code
+            if self.number is None:
+                return pos + first_letters
+
+            if self.number == float(int(self.number)):
+                return pos + str(int(self.number))
+            else:
+                return pos + str(self.number)
+
+        generator = GENERATORS[location.sig_gen]
+        return generator(FakeItem(self, location)) + first_letters
+
+    def generate_code_prefix(self, location):
+        if self.part_of_series and self.part_of_series.book_code:
+            return self.part_of_series.book_code
+        generator = GENERATORS[location.sig_gen]
+        return generator(FakeItem(self, location))
 
 
 class WorkInSeries(SeriesNode):

@@ -26,7 +26,7 @@ NAMED_TRANSLATED_LIST = ['title', 'sub_title', 'article', 'original_title', 'ori
 class SeriesCreateForm(ModelForm):
     class Meta:
         model = Series
-        fields = ['book_code', 'title', 'sub_title', 'article', 'original_title', 'original_subtitle', 'original_article', 'language', 'original_language', 'part_of_series', 'number',
+        fields = ['book_code', 'location','title', 'sub_title', 'article', 'original_title', 'original_subtitle', 'original_article', 'language', 'original_language', 'part_of_series', 'number',
                   'display_number']
         widgets = {'part_of_series': SeriesWidget}
 
