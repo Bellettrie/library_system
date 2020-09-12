@@ -41,4 +41,5 @@ urlpatterns = [
     path('', view_page('basic', 'home'), name='homepage'),
     path('informatie/', redirect_view, name='homepage.old_link'),
     path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
+    path('recode/', include('recode.urls')),
 ]

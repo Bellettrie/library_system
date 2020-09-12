@@ -43,37 +43,47 @@
         {% for item in object.get_items %}
 
             <tr>
-                <td>{{ item.display_code }}</td>
-                <td>{{ item.get_isbn10 }} {{ item.get_isbn13 }}</td>
-                <td>{{ item.get_pages }}</td>
-                <td>{{ item.year }}</td>
-                <td>{% if item.is_available %}{{ item.get_state.type }}
+                {% with recode=item.get_recode %}
+                    <td>{{ item.display_code }}{% if recode %} [Needs recode to {{ recode.book_code }}]{% endif %}</td>
+                    <td>{{ item.get_isbn10 }} {{ item.get_isbn13 }}</td>
+                    <td>{{ item.get_pages }}</td>
+                    <td>{{ item.year }}</td>
+                    <td>{% if item.is_available %}{{ item.get_state.type }}
 
-                {% else %}
-                    {% if perms.members.view_member %}
-                        {% with member=item.current_lending.member %}
-                            <a href="{% url 'members.view' member.pk %}">LENT</a> {% endwith %}
+                    {% else %}
+                        {% if perms.members.view_member %}
+                            {% with member=item.current_lending.member %}
+                                <a href="{% url 'members.view' member.pk %}">LENT</a> {% endwith %}
                         {% else %}
-                        LENT
+                            LENT
+                        {% endif %}
+                        {% if item.get_state.type != 'AVAILABLE' %}[ {{ item.get_state.type }} {% endif %}{% endif %}</td>
+                    {% if perms.auth.add_item_state %}
+                        <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change
+                            state</a>
+                        </td>
                     {% endif %}
-                    {% if item.get_state.type != 'AVAILABLE' %}[ {{ item.get_state.type }} {% endif %}{% endif %}</td>
-                {% if perms.auth.add_item_state %}
-                    <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change state</a>
+                    <td>
+                        {% if perms.works.change_item %}
+                            <a href="{% url 'works.item.edit' item.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                        {% endif %}
+                        {% if perms.recode.change_recode and recode%}
+                            <a href="{% url 'recode.end' recode.pk %}?next={{ request.path }}" class="btn btn-primary btn-sm">Finish Recode</a>
+                        {% endif %}
                     </td>
-                {% endif %}
-                {% if perms.works.change_item %}
-                    <td><a href="{% url 'works.item.edit' item.pk %}" class="btn btn-primary btn-sm">Edit</a></td>
-                {% endif %}
+                {% endwith %}
+
             </tr>
         {% endfor %}
     </table>
 
 
-    <h4>Part of series</h4>    <table class="table table-striped" style="width: auto;">
+    <h4>Part of series</h4>
+    <table class="table table-striped" style="width: auto;">
 
-    {% for series in  object.workinseries_set.all%}
-  {% include 'part_of_series_name.html' %}
-    {% endfor %}
-</table>
+        {% for series in  object.workinseries_set.all %}
+            {% include 'part_of_series_name.html' %}
+        {% endfor %}
+    </table>
     <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
 {% endblock %}

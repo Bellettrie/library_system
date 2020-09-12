@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load books_table %}
+{% block title %}Recode List{% endblock %}
+{% block content %}
+
+    {% include 'pagination.html' %}
+    <hr>
+    <table>
+    <tr><th>Old Code</th><th>New Code</th><th>ISBN</th><th>Title</th><th>Status</th><th>Edit</th></tr>
+        {% for recode in object_list %}
+
+            {% with item=recode.item %}
+                <tr>
+                    <td>{{ item.display_code }}</td>
+                    <td>{% if recode %}{{ recode.book_code }} : {{ recode.book_code_extension }}{% endif %}</td>
+                    <td>{{ item.get_isbn10 }};{{ item.get_isbn13 }}</td>
+
+                    <td><a href="{%  url 'work.view' item.publication.pk  %}">{{ item.get_title }}</a></td>
+                    <td>{% if item.is_available %}{{ item.get_state.type }}
+                    {% else %}
+                        {% if perms.members.view_member %}
+                            {% with member=item.current_lending.member %}
+                                <a href="{% url 'members.view' member.pk %}">LENT</a> {% endwith %}
+                        {% else %}
+                            LENT
+                        {% endif %}
+                        {% if item.get_state.type != 'AVAILABLE' %}[ {{ item.get_state.type }} {% endif %}{% endif %}</td>
+                    {% if perms.recode.change_recode %}
+                        <td><a href="{% url 'recode.end' recode.pk %}" class="btn btn-primary btn-sm">Finish
+                            Recode</a>
+                        </td>
+                    {% endif %}
+
+                </tr>
+            {% endwith %}
+        {% endfor %}
+    </table>
+{% endblock %}
