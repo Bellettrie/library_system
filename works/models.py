@@ -271,7 +271,6 @@ class Item(NamedThing, BookCode):
     def generate_code_prefix(self):
         return self.publication.generate_code_prefix(self.location)
 
-
     def get_isbn10(self):
         if self.isbn10 is not None:
             return self.isbn10
