@@ -1,0 +1,17 @@
+<script>function loadDoc() {
+    var y = document.getElementById('{{ location_id }}').value
+    var x = {{ publication_id }}
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log("HI")
+            document.getElementById("data_store").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("GET", "/book_code/generate/"+x+"/"+y, true);
+
+    xhttp.send();
+}
+</script>
+<button type="button" onclick="loadDoc()">Request data</button>
+<div id="data_store"></div>

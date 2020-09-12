@@ -30,7 +30,9 @@ class ItemCreateForm(ModelForm):
                   'comment',
                   'publication_year',
                   'bought_date',
-                  'last_seen']
+                  'last_seen',
+                  'location'
+                  ]
 
 
 NAMED_TRANSLATED_LIST = ['title', 'sub_title', 'article', 'original_title', 'original_subtitle', 'original_article', 'language', 'original_language']
@@ -46,7 +48,7 @@ class PublicationCreateForm(ModelForm):
             'internal_comment',
             'date_added'
         ]
-        fields = ['book_code']
+        fields = []
         for i in NAMED_TRANSLATED_LIST:
             fields.append(i)
         for field in z_fields:

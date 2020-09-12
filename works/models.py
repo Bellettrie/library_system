@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
-from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CutterCodeRange, BookCode
+from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CutterCodeRange, BookCode, FakeItem
 from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
 from lendings.models import Lending
@@ -136,7 +136,7 @@ class Work(NamedTranslatableThing):
         return author_set
 
 
-class Publication(Work, BookCode):
+class Publication(Work):
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
 
@@ -165,10 +165,35 @@ class Publication(Work, BookCode):
     def has_no_items(self):
         return len(self.get_items()) == 0
 
+    def generate_code_full(self, location):
+        first_letters = self.title[0:2].lower()
+
+        from series.models import Series, WorkInSeries
+        series_list = WorkInSeries.objects.filter(work=self, is_primary=True)
+        if len(series_list) > 0:
+            if series_list[0].number is None:
+                return series_list[0].part_of_series.book_code + first_letters
+
+            if series_list[0].number == float(int(series_list[0].number)):
+                return series_list[0].part_of_series.book_code + str(int(series_list[0].number))
+            else:
+                return series_list[0].part_of_series.book_code + str(series_list[0].number)
+
+        generator = GENERATORS[location.sig_gen]
+        return generator(FakeItem(self, location)) + first_letters
+
+    def generate_code_prefix(self, location):
+        from series.models import Series, WorkInSeries
+        series_list = WorkInSeries.objects.filter(work=self, is_primary=True)
+        if len(series_list) > 0 and len(series_list[0].part_of_series.book_code.split("-")) > 1:
+            return series_list[0].part_of_series.book_code
+        generator = GENERATORS[location.sig_gen]
+        return generator(FakeItem(self, location))
+
 
 class Item(NamedThing, BookCode):
     old_id = models.IntegerField(null=True)
-    location = models.ForeignKey(Location, null=True, on_delete=PROTECT)
+    location = models.ForeignKey(Location, on_delete=PROTECT)
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
     isbn13 = models.CharField(max_length=64, null=True, blank=True)
@@ -241,29 +266,11 @@ class Item(NamedThing, BookCode):
                 ItemState.objects.create(item=self, type="AVAILABLE", reason="Automatically switched because of reason: " + reason)
 
     def generate_code_full(self):
-        first_letters = self.publication.title[0:2].lower()
-
-        from series.models import Series, WorkInSeries
-        series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
-        if len(series_list) > 0:
-            if series_list[0].number is None:
-                return series_list[0].part_of_series.book_code + first_letters
-
-            if series_list[0].number == float(int(series_list[0].number)):
-                return series_list[0].part_of_series.book_code + str(int(series_list[0].number))
-            else:
-                return series_list[0].part_of_series.book_code + str(series_list[0].number)
-
-        generator = GENERATORS[self.location.sig_gen]
-        return generator(self) + first_letters
+        return self.publication.generate_code_full(self.location)
 
     def generate_code_prefix(self):
-        from series.models import Series, WorkInSeries
-        series_list = WorkInSeries.objects.filter(work=self.publication, is_primary=True)
-        if len(series_list) > 0 and len(series_list[0].part_of_series.book_code.split("-")) > 1:
-            return series_list[0].part_of_series.book_code
-        generator = GENERATORS[self.location.sig_gen]
-        return generator(self)
+        return self.publication.generate_code_prefix(self.location)
+
 
     def get_isbn10(self):
         if self.isbn10 is not None:

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.http import JsonResponse
 
@@ -5,6 +6,7 @@ from django.http import JsonResponse
 from creators.models import Creator
 
 
+@permission_required('creators.view_creator')
 def get_authors_by_query(request, search_text):
     creators = Creator.objects.all()
     for word in search_text.split(" "):

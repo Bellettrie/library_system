@@ -243,11 +243,9 @@ def publication_edit(request, publication_id=None):
     creators = None
     series = None
     publication = None
-    old_code = ""
     if request.method == 'POST':
         if publication_id is not None:
             publication = get_object_or_404(Publication, pk=publication_id)
-            old_code = publication.book_code
             form = PublicationCreateForm(request.POST, instance=publication)
         else:
             form = PublicationCreateForm(request.POST)
@@ -256,15 +254,6 @@ def publication_edit(request, publication_id=None):
             instance.is_translated = instance.original_language is not None
             instance.save()
             creators = CreatorToWorkFormSet(request.POST, request.FILES)
-
-            if publication is not None and old_code != instance.book_code:
-                print("II")
-                items = Item.objects.filter(publication=publication)
-                for item in items:
-                    recodes = Recode.objects.filter(item=item)
-                    for rr in recodes:
-                        rr.delete()
-                    Recode.objects.create(item=item, book_code=instance.book_code, book_code_extension=item.book_code_extension)
 
             if creators.is_valid():
                 instances = creators.save(commit=False)

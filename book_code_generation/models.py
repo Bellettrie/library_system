@@ -99,3 +99,9 @@ def generate_code_from_title(item):
         return title + "-"
     else:
         return item.location.category.code + "-" + title + "-"
+
+
+class FakeItem:
+    def __init__(self, publication, location):
+        self.publication = publication
+        self.location = location

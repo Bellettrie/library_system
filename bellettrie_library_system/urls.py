@@ -42,4 +42,5 @@ urlpatterns = [
     path('informatie/', redirect_view, name='homepage.old_link'),
     path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
     path('recode/', include('recode.urls')),
+    path('book_code/', include('book_code_generation.urls')),
 ]
