@@ -161,4 +161,5 @@ def GET_MENU():
 
     members_list = MenuItem('Member Filter', reverse('datamining.members'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
     my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar', [members_list], only_subitems=True, icon='fa fa-book'))
+
     return my_menu
