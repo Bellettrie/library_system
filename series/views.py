@@ -35,7 +35,6 @@ def get_series_by_query(request, search_text):
 
 class Counter:
     def get_count(self):
-        print(self.count)
         return self.count
 
     def five_minus(self):
@@ -150,5 +149,4 @@ class SeriesList(ListView):
                 result = series
             else:
                 result = series & result
-        print(result)
         return list(result)
