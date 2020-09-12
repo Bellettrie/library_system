@@ -231,7 +231,8 @@ def item_edit(request, item_id):
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
-    return render(request, 'item_edit.html', {'form': form, 'publication': item.publication, 'edit': True, 'recode': recode, 'recode_book_code':recode_book_code, 'recode_book_code_extension':recode_book_code_extension})
+    return render(request, 'item_edit.html',
+                  {'form': form, 'publication': item.publication, 'edit': True, 'recode': recode, 'recode_book_code': recode_book_code, 'recode_book_code_extension': recode_book_code_extension})
 
 
 @transaction.atomic

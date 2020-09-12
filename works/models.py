@@ -188,6 +188,7 @@ class Item(NamedThing, BookCode):
             return recode[0]
         else:
             return None
+
     def display_code(self):
         return self.book_code + self.book_code_extension
 

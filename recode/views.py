@@ -1,3 +1,6 @@
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.db import transaction
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -7,13 +10,16 @@ from django.views.generic import ListView
 from recode.models import Recode
 
 
-class RecodeList(ListView):
+class RecodeList(PermissionRequiredMixin, ListView):
+    permission_required = 'recode.view_recode'
     model = Recode
     template_name = 'recodings_list.html'
     paginate_by = 50
 
+
+@transaction.atomic
+@permission_required('recode.change_recode')
 def end_recode(request, pk):
-    print(pk)
     recode = Recode.objects.get(pk=pk)
     item = recode.item
     item.book_code = recode.book_code
@@ -22,10 +28,8 @@ def end_recode(request, pk):
     recode.delete()
 
     alt = reverse('recode.list')
-
     a = request.GET.get('next')
     if a:
         return redirect(a)
     else:
         return redirect(alt)
-
