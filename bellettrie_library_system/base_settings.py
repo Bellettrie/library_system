@@ -156,5 +156,9 @@ def GET_MENU():
 
     new_work = MenuItem('New Work', reverse('works.publication.new'), 'works.add_publication', 'sidebar', [], anonymous=None, icon='fa fa-book')
     inventarisation = MenuItem('Inventarisations', reverse('inventarisation.list'), 'inventarisation.view_inventarisation', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
-    my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, inventarisation], only_subitems=True, icon='fa fa-book'))
+    recode_list = MenuItem('Recode list', reverse('recode.list'), 'recode.view_recode', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
+    my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, inventarisation, recode_list], only_subitems=True, icon='fa fa-book'))
+
+    members_list = MenuItem('Member Filter', reverse('datamining.members'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
+    my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar', [members_list], only_subitems=True, icon='fa fa-book'))
     return my_menu

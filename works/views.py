@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView, CreateView
 
 from book_code_generation.models import standardize_code
+from recode.models import Recode
 from series.models import Series
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm
@@ -203,16 +204,34 @@ def item_new(request, publication_id=None):
 @permission_required('works.change_item')
 def item_edit(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
+    recode_book_code = ''
+    recode_book_code_extension = ''
+    recode = False
+    recodes = Recode.objects.filter(item=item)
+    if len(recodes) == 1:
+        recode_obj = recodes[0]
+        recode_book_code = recode_obj.book_code
+        recode_book_code_extension = recode_obj.book_code_extension
+        recode = True
     if request.method == 'POST':
         form = ItemCreateForm(request.POST, instance=item)
+        recode = request.POST.get('recode_check')
+        recode_book_code = request.POST.get('recode_book_code')
+        recode_book_code_extension = request.POST.get('recode_book_code_extension')
         if form.is_valid():
             instance = form.save(commit=False)
 
             instance.save()
+            recodes = Recode.objects.filter(item=item)
+            for rr in recodes:
+                rr.delete()
+            if recode:
+                Recode.objects.create(item=instance, book_code=recode_book_code, book_code_extension=recode_book_code_extension)
+
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
-    return render(request, 'item_edit.html', {'form': form, 'publication': item.publication})
+    return render(request, 'item_edit.html', {'form': form, 'publication': item.publication, 'edit': True, 'recode': recode, 'recode_book_code':recode_book_code, 'recode_book_code_extension':recode_book_code_extension})
 
 
 @transaction.atomic
@@ -220,13 +239,14 @@ def item_edit(request, item_id):
 def publication_edit(request, publication_id=None):
     from works.forms import CreatorToWorkFormSet
     from works.forms import SeriesToWorkFomSet
-    form = None
     creators = None
     series = None
     publication = None
+    old_code = ""
     if request.method == 'POST':
         if publication_id is not None:
             publication = get_object_or_404(Publication, pk=publication_id)
+            old_code = publication.book_code
             form = PublicationCreateForm(request.POST, instance=publication)
         else:
             form = PublicationCreateForm(request.POST)
@@ -235,6 +255,15 @@ def publication_edit(request, publication_id=None):
             instance.is_translated = instance.original_language is not None
             instance.save()
             creators = CreatorToWorkFormSet(request.POST, request.FILES)
+
+            if publication is not None and old_code != instance.book_code:
+                print("II")
+                items = Item.objects.filter(publication=publication)
+                for item in items:
+                    recodes = Recode.objects.filter(item=item)
+                    for rr in recodes:
+                        rr.delete()
+                    Recode.objects.create(item=item, book_code=instance.book_code, book_code_extension=item.book_code_extension)
 
             if creators.is_valid():
                 instances = creators.save(commit=False)

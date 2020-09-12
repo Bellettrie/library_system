@@ -11,7 +11,6 @@ from inventarisation.models import Inventarisation
 from lendings.models import Lending
 
 
-
 def simple_search(search_string: str):
     return Work.objects.filter(title__contains=search_string)
 
