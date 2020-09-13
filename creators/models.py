@@ -1,9 +1,8 @@
 from django.db import models
 
 # Create your models here.
-from django.db.models import PROTECT
+from django.db.models import PROTECT, CASCADE
 
-from book_code_generation.models import CutterCodeRange
 
 
 class Creator(models.Model):
@@ -22,12 +21,6 @@ class Creator(models.Model):
     def get_name(self):
         return self.given_names + " " + self.name
 
-    identifying_code = models.CharField(null=True, max_length=16)
-
-    def fill_identifying_code(self):
-        self.identifying_code = CutterCodeRange.get_cutter_number(self.name).generated_affix
-        self.save()
-
     def get_canonical_name(self):
         return self.given_names + " " + self.name + "   (" + str(self.pk) + ")"
 
@@ -37,3 +30,10 @@ class CreatorRole(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CreatorLocationNumber(models.Model):
+    creator = models.ForeignKey(Creator, on_delete=CASCADE)
+    location = models.ForeignKey('works.location', on_delete=CASCADE)
+    number = models.IntegerField()
+    letter = models.CharField(max_length=16)

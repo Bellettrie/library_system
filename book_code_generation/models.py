@@ -6,6 +6,21 @@ from django.db import models
 import re
 import unicodedata
 
+from creators.models import CreatorLocationNumber
+
+
+def get_number_for_code(code: str):
+    code_parts = code.split("-")
+    if len(code_parts) > 2:
+        try:
+            return int(str(float("0." + code_parts[2])).split(".")[1])
+        except ValueError:
+            try:
+                return int(str(float("0." + code_parts[1])).split(".")[1])
+            except ValueError:
+                print("ERROR")
+                pass
+
 
 def standardize_code(code: str):
     code_parts = code.split("-")
@@ -70,7 +85,13 @@ def generate_code_from_author(item):
     auth = pub.get_authors()
     if len(auth) > 0:
         author = auth[0].creator
-        code = author.identifying_code or CutterCodeRange.get_cutter_number(author.name).generated_affix
+
+        code = CutterCodeRange.get_cutter_number(author.name).generated_affix
+        cl = CreatorLocationNumber.objects.filter(creator=author, location=item.location)
+
+        if len(cl) == 1:
+            code = author.name[0]+"-"+str(cl[0].number)
+
         return item.location.category.code + "-" + code + "-"
     else:
         pass
@@ -83,8 +104,15 @@ def generate_code_from_author_translated(item):
         prefix = "V"
     auth = item.publication.get_authors()
     if len(auth) > 0:
-        author = auth[0].creator.name
-        return prefix + "-" + CutterCodeRange.get_cutter_number(author).generated_affix + "-"
+        author = auth[0].creator
+
+        code = CutterCodeRange.get_cutter_number(author.name).generated_affix
+        cl = CreatorLocationNumber.objects.filter(creator=author, location=item.location)
+
+        if len(cl) == 1:
+            code = author.name[0] + "-" + str(cl[0].number)
+
+        return prefix + "-" + code + "-"
     else:
         pass
 
