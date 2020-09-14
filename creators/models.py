@@ -10,7 +10,7 @@ class Creator(models.Model):
     name = models.CharField(max_length=255)
     is_alias_of = models.ForeignKey("Creator", on_delete=PROTECT, null=True, blank=True)
     comment = models.CharField(max_length=255)
-    old_id = models.IntegerField()
+    old_id = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         if self.is_alias_of != self:

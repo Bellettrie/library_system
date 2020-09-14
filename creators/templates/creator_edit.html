@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+
+{% block title %}{% if creator.pk %}{{ creator.given_names}} {{ creator.name }}{% else %}New Author{% endif %}{% endblock %}
+{% block content %}
+    <form method="post" action="#">
+    {% csrf_token %}
+        <table>
+{{ form.as_table }}
+        </table>
+        <h4>Set Codes for Locations</h4>
+        <table>
+
+        {{ locations.as_table }}</table>
+    <input type="submit" value="save">
+    </form>
+{{creator.name}}
+{% endblock %}

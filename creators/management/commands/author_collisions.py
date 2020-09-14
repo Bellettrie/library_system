@@ -26,7 +26,7 @@ class Command(BaseCommand):
                     itemz = author_to_item.get(crea, [])
                     itemz.append(item)
                     author_to_item[crea] = itemz
-        for location in Location.objects.filter():
+        for location in Location.objects.filter(sig_gen='author'):
             cls = CreatorLocationNumber.objects.filter(location=location)
             number_dict = dict()
             for cl in cls:

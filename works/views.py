@@ -253,20 +253,30 @@ def publication_edit(request, publication_id=None):
             instance = form.save(commit=False)
             instance.is_translated = instance.original_language is not None
             instance.save()
-            creators = CreatorToWorkFormSet(request.POST, request.FILES)
+            creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
+
 
             if creators.is_valid():
                 instances = creators.save(commit=False)
+                for inst in creators.deleted_objects:
+                    inst.delete()
                 for c2w in instances:
-                    c2w.publication = instance
+                    c2w.work = instance
                     c2w.save()
+            else:
+                print(creators.errors)
 
             series = SeriesToWorkFomSet(request.POST, request.FILES, instance=instance)
+
             if series.is_valid():
                 instances = series.save(commit=False)
+                for inst in series.deleted_objects:
+                    inst.delete()
                 for i in instances:
                     i.work = instance
                     i.save()
+            else:
+                print(series.errors)
             return HttpResponseRedirect(reverse('work.view', args=(instance.pk,)))
     else:
         publication = None

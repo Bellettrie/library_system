@@ -80,6 +80,14 @@ class CutterCodeRange(models.Model):
         return result
 
 
+def generate_author_number(name, location):
+    if name is None or len(name) == 0:
+        return None
+
+    letters = CreatorLocationNumber.objects.filter(locatin=location, letter=name[0]).order_by('number')
+
+
+
 def generate_code_from_author(item):
     pub = item.publication
     auth = pub.get_authors()
@@ -90,8 +98,13 @@ def generate_code_from_author(item):
         cl = CreatorLocationNumber.objects.filter(creator=author, location=item.location)
 
         if len(cl) == 1:
-            code = author.name[0]+"-"+str(cl[0].number)
-
+            code = author.name[0] + "-" + str(cl[0].number)
+        else:
+            if author.is_alias_of is not None and author.is_alias_of != author:
+                my_author = author.is_alias_of
+                cl = CreatorLocationNumber.objects.filter(creator=my_author, location=item.location)
+                if len(cl) == 1:
+                    code = my_author.name[0] + "-" + str(cl[0].number)
         return item.location.category.code + "-" + code + "-"
     else:
         pass

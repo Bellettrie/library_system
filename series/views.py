@@ -82,6 +82,8 @@ def edit_series(request, pk):
 
             if creators.is_valid():
                 instances = creators.save(commit=False)
+                for inst in creators.deleted_objects:
+                    inst.delete()
                 for c2w in instances:
                     c2w.series = instance
                     c2w.save()
