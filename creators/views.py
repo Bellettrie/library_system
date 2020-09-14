@@ -11,7 +11,7 @@ from django.views.generic import ListView
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator
 from utils.get_query_words import get_query_words
-from works.models import CreatorToWork
+from works.models import CreatorToWork, Publication
 
 
 @permission_required('creators.view_creator')
@@ -62,8 +62,10 @@ def edit(request, creator_id=None):
 @permission_required('creators.view_creator')
 def show(request, creator_id):
     creator = Creator.objects.get(pk=creator_id)
-    return render(request, 'creator_view.html', {'creator': creator})
 
+    works = Publication.objects.filter(creatortowork__creator=creator)
+
+    return render(request, 'creator_view.html', {'creator': creator, 'works': works})
 
 
 @permission_required('creators.delete_creator')
@@ -75,6 +77,8 @@ def delete(request, creator_id):
     creator.delete()
 
     return redirect('creator.list')
+
+
 class CreatorList(PermissionRequiredMixin, ListView):
     permission_required = 'creators.view_creator'
     model = Creator
