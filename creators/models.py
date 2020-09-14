@@ -6,7 +6,7 @@ from django.db.models import PROTECT, CASCADE
 
 
 class Creator(models.Model):
-    given_names = models.CharField(max_length=255)
+    given_names = models.CharField(max_length=255, blank=True)
     name = models.CharField(max_length=255)
     is_alias_of = models.ForeignKey("Creator", on_delete=PROTECT, null=True, blank=True)
     comment = models.CharField(max_length=255)

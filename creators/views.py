@@ -42,7 +42,7 @@ def edit(request, creator_id=None):
         if form.is_valid() and locations.is_valid():
             instance = form.save()
             instances = locations.save(commit=False)
-            for inst in instances.deleted_forms:
+            for inst in locations.deleted_objects:
                 inst.delete()
             for c2w in instances:
                 c2w.creator = instance
