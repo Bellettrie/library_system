@@ -31,7 +31,7 @@ class ItemCreateForm(ModelForm):
                   'publication_year',
                   'bought_date',
                   'last_seen',
-                  'location'
+                  'location',
                   'bought_date',
                   ]
         widgets = {

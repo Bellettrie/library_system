@@ -5,7 +5,8 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
-from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CutterCodeRange, BookCode, FakeItem
+from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, \
+    generate_code_from_title, CutterCodeRange, BookCode, FakeItem, generate_code_abc
 from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
 from lendings.models import Lending
@@ -65,6 +66,7 @@ class Category(models.Model):
 GENERATORS = {
     'author': generate_code_from_author,
     'author_translated': generate_code_from_author_translated,
+    'abc':generate_code_abc,
     'title': generate_code_from_title,
 }
 
