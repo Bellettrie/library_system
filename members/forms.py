@@ -50,3 +50,6 @@ class EditForm(ModelForm):
                   'privacy_publications': 'Photos in Publications?',
                   'privacy_reunions': 'Mails for Reunions?'
                   }
+        widgets = {
+            'end_date': forms.DateInput(attrs={'class': 'datepicker'})
+        }

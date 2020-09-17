@@ -7,45 +7,10 @@
 
     <form action="#" method="post">
         {% csrf_token %}
-        {{ form.book_code }} <br/>
-        <label for="book_code">Book code: </label>
-        <hr>
+        <table>
+        {{ form.as_table }}
+        </table>
 
-        {{ form.book_code_extension }} <br/>
-        <label for="book_code_extension">Book Code extension: </label>
-        <hr>
-
-        {{ form.isbn10 }} <br/>
-        <label for="isbn10">ISBN 10: </label>
-        <hr>
-
-        {{ form.isbn13 }} <br/>
-        <label for="isbn13">ISBN 13: </label>
-        <hr>
-
-        {{ form.pages }} <br/>
-        <label for="pages">Pages: </label>
-        <hr>
-
-        {{ form.hidden }} <br/>
-        <label for="hidden">Hidden: </label>
-        <hr>
-
-        {{ form.comment }} <br/>
-        <label for="comment">Comment: </label>
-        <hr>
-
-        {{ form.publication_year }} <br/>
-        <label for="publication_year">Publication year: </label>
-        <hr>
-
-        {{ form.bought_date }} <br/>
-        <label for="bought_date">Bought date: </label>
-        <hr>
-
-        {{ form.last_seen }} <br/>
-        <label for="last_seen">Last seen: </label>
-        <hr>
         {% if edit %}
             <h4>Recode</h4>
 

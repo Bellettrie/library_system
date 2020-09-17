@@ -3,14 +3,9 @@
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        <label for="your_name">Holiday Name: </label>
-        {{ form.name }}
-
-        <label for="your_name">Start Date: </label>
-        {{ form.starting_date }}
-
-        <label for="your_name">End Date: </label>
-        {{ form.ending_date }}
+        <table>
+            {{ form.as_table }}
+        </table>
 
         <input type="submit" value="OK">
     </form>
