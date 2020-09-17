@@ -29,16 +29,23 @@ class Creator(models.Model):
     def get_all_items(self):
         result = []
         from works.models import Item, Publication
-        for work in Publication.objects.filter(creatortowork__creator=self):
+        creators = set(Creator.objects.filter(is_alias_of=self))
+        creators.add(self)
+        if self.is_alias_of:
+            creators.add(self.is_alias_of)
+        for work in Publication.objects.filter(creatortowork__creator__in=creators):
             for item in Item.objects.filter(publication=work):
                 result.append(item)
         return result
 
     def get_all_series(self):
-        result = []
+
         from series.models import Series
-        for work in Series.objects.filter(creatortoseries__creator=self):
-            result.append(work)
+        result = set(Series.objects.filter(creatortoseries__creator=self))
+        result_len = 0
+        while result_len < len(result):
+            result_len = len(result)
+            result = result | set(Series.objects.filter(part_of_series__in=result))
         return result
 
 
@@ -60,9 +67,11 @@ def try_to_update_object(my_object, pattern, new_prefix):
     match = pattern.match(my_object.book_code)
     if match:
         my_object.book_code = new_prefix + my_object.book_code[match.end():]
-        print(my_object.book_code)
         my_object.save()
-def update_item(item, creatortonumber, pattern, old_prefix, new_prefix):
+    else:
+        print(my_object.book_code+"::K<")
+
+def update_item(item, pattern, old_prefix, new_prefix):
     from recode.models import Recode
 
     recodes = Recode.objects.filter(item=item)
@@ -74,35 +83,41 @@ def update_item(item, creatortonumber, pattern, old_prefix, new_prefix):
         if match:
             new_code = new_prefix + item.book_code[match.end():]
             Recode.objects.create(item=item, book_code=new_code, book_code_extension=item.book_code_extension)
+        else:
+            print(item.book_code+"::")
 
+def relabel_creator(creator, location, old_number, old_letter, new_number, new_letter):
+    creators = Creator.objects.filter(is_alias_of=creator)
 
-def force_relabel(creatorlocationnumber: CreatorLocationNumber, old_number: int, old_letter: str):
+    for creatorn in creators:
+        if creatorn != creator:
+            relabel_creator(creatorn, location, old_number, old_letter, new_number, new_letter)
     from series.models import WorkInSeries
     from works.models import Publication, Item
-    items = creatorlocationnumber.creator.get_all_items()
-    location_code = creatorlocationnumber.location.category.code
+    items = creator.get_all_items()
+    location_code = location.category.code
     for item in items:
-        if item.location != creatorlocationnumber.location :
-            print("DEAD")
+        if item.location != location:
+            print("DEAD"+item.publication.title+str(item.location))
 
         if item.publication.get_authors()[
-            0].creator != creatorlocationnumber.creator:
+            0].creator != creator:
             items.remove(item)
-            print("undead")
+            print("undead" + item.publication.title)
     import re
 
     old_prefix = location_code + "-" + old_letter + "-" + str(old_number)
-    new_prefix = location_code + "-" + creatorlocationnumber.letter + "-" + str(creatorlocationnumber.number) + "-"
+    new_prefix = location_code + "-" + new_letter + "-" + str(new_number) + "-"
     pattern = re.compile("^" + location_code + "-" + old_letter + "-" + str(old_number) + "0*-")
 
     for item in items:
-        update_item(item, creatorlocationnumber, pattern, old_prefix, new_prefix)
+        update_item(item, pattern, old_prefix, new_prefix)
 
-    all_series = creatorlocationnumber.creator.get_all_series()
+    all_series = creator.get_all_series()
 
     series_handle_list = []
     for series in all_series:
-        if series.location == creatorlocationnumber.location:
+        if series.location == location:
             if pattern.match(series.book_code_sortable):
                 try_to_update_object(series, pattern, new_prefix)
                 series_handle_list.append(series)
@@ -116,7 +131,12 @@ def force_relabel(creatorlocationnumber: CreatorLocationNumber, old_number: int,
             for work_in_series in WorkInSeries.objects.filter(part_of_series=series, is_primary=True):
                 items = Item.objects.filter(publication__workinseries=work_in_series)
                 for item in items:
-                    update_item(item, creatorlocationnumber, pattern, old_prefix, new_prefix)
+                    update_item(item, pattern, old_prefix, new_prefix)
             if series.part_of_series:
                 new_series_list.append(series.part_of_series)
         series_handle_list = new_series_list
+
+def force_relabel(creatorlocationnumber: CreatorLocationNumber, old_number: int, old_letter: str):
+    relabel_creator(creatorlocationnumber.creator, creatorlocationnumber.location, old_number, old_letter, creatorlocationnumber.number, creatorlocationnumber.letter)
+
+
