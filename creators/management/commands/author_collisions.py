@@ -47,6 +47,10 @@ class Command(BaseCommand):
                             lowest_author = item
                         error_books += current_count
                         strs += ";" + item.name
+                    for item in lst:
+                        if item is not lowest_author:
+                            item.mark_for_change = True
+                            item.save()
                     strs += "--" + str(lowest_author)
                     print(strs)
                     error_books -= lowest_count

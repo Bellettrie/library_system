@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.views.generic import ListView
 
 from creators.forms import EditForm, CreatorLocationNumberFormset
-from creators.models import Creator
+from creators.models import Creator, CreatorLocationNumber, force_relabel
 from utils.get_query_words import get_query_words
 from works.models import CreatorToWork, Publication
 
@@ -32,6 +32,10 @@ def edit(request, creator_id=None):
     if creator_id is not None:
         creator = get_object_or_404(Creator, pk=creator_id)
     locations = None
+    location_datas = CreatorLocationNumber.objects.filter(creator=creator)
+    location_dict = {}
+    for i in location_datas:
+        location_dict[i.location] = (i.number, i.letter)
     if request.method == 'POST':
         if creator_id is not None:
             form = EditForm(request.POST, instance=creator)
@@ -45,6 +49,16 @@ def edit(request, creator_id=None):
             for inst in locations.deleted_objects:
                 inst.delete()
             for c2w in instances:
+                if c2w.location in location_dict.keys():
+                    ld = location_dict[c2w.location]
+                    if ld[0] != c2w.number or ld[1] != c2w.letter:
+                        if request.POST.get("allow_change"):
+                            print("Recoding for location " + c2w.location.category.name)
+                            force_relabel(c2w, ld[0], ld[1])
+                        else:
+                            print("Error")
+                            raise ValueError("Wrong!")
+
                 c2w.creator = instance
                 c2w.save()
 
