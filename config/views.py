@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 from django_tables2 import LazyPaginator
 
+from django import forms
 from config.models import Holiday
 
 
@@ -18,17 +19,27 @@ class HolidayList(PermissionRequiredMixin, ListView):
         return Holiday.objects.all().order_by('-ending_date')
 
 
+class HolidayForm(forms.ModelForm):
+    class Meta:
+        model = Holiday
+        fields = ['name', 'starting_date', 'ending_date']
+        widgets = {
+            'starting_date': forms.DateInput(attrs={'class': 'datepicker'}),
+            'ending_date': forms.DateInput(attrs={'class': 'datepicker'})
+        }
+
+
 class HolidayCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'config.add_holiday'
     model = Holiday
-    fields = ['name', 'starting_date', 'ending_date']
+    form_class = HolidayForm
     template_name = 'holiday_form.html'
 
 
 class HolidayUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'config.change_holiday'
     model = Holiday
-    fields = ['name', 'starting_date', 'ending_date']
+    form_class = HolidayForm
     template_name = 'holiday_form.html'
 
 

@@ -44,9 +44,11 @@
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <!-- Font Awesome JS -->
     <!-- Latest compiled and minified CSS -->
-    <script src="{% static "jquery.js" %} "></script>
+    <script src="{% static 'jquery.js' %} "></script>
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <link  href="{% static 'datepicker/datepicker.min.css' %}" rel="stylesheet">
+    <script src="{% static 'datepicker/datepicker.min.js' %} "></script>
 
     {#    <link href="https://fonts.googleapis.com/css2?family=Pangolin&family=Rubik:wght@500&display=swap" rel="stylesheet">#}
 <body>
@@ -148,6 +150,13 @@
         sidebarH.classList.toggle('collapsed');
         toggleSidebar.innerText = sidebar.classList.contains('collapsed') ? '>' : '<';
     };
+</script>
+<script>
+  $(function() {
+    $(".datepicker").datepicker({
+      format:'yyyy-mm-dd'
+    });
+  });
 </script>
 
 </html>
