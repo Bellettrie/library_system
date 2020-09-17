@@ -32,7 +32,11 @@ class ItemCreateForm(ModelForm):
                   'bought_date',
                   'last_seen',
                   'location'
+                  'bought_date',
                   ]
+        widgets = {
+            'bought_date': forms.DateInput(attrs={'class': 'datepicker'})
+        }
 
 
 NAMED_TRANSLATED_LIST = ['title', 'sub_title', 'article', 'original_title', 'original_subtitle', 'original_article', 'language', 'original_language']
@@ -48,6 +52,9 @@ class PublicationCreateForm(ModelForm):
             'internal_comment',
             'date_added'
         ]
+        widgets = {
+            'date_added': forms.DateInput(attrs={'class': 'datepicker'})
+        }
         fields = []
         for i in NAMED_TRANSLATED_LIST:
             fields.append(i)
