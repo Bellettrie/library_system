@@ -18,7 +18,8 @@ def get_number_for_code(code: str):
             try:
                 return int(str(float("0." + code_parts[1])).split(".")[1])
             except ValueError:
-                print("ERROR")
+                if "ABC" not in code_parts:
+                    print("ERROR" + code)
                 pass
 
 
