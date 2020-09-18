@@ -15,15 +15,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         to_delete = []
         for cln in CreatorLocationNumber.objects.all():
-            alias = cln.creator.is_alias_of
-            if alias != cln.creator:
-                cll = None
-                try:
-                    cll = CreatorLocationNumber.objects.get(creator=alias, location=cln.location)
-                except CreatorLocationNumber.DoesNotExist:
-                    continue
-                if cll.number == cln.number and cll.letter == cln.letter:
-                    to_delete.append(cln)
-        for del_item in to_delete:
-            del_item.delete()
+            if cln in to_delete:
+                continue
+            for z in CreatorLocationNumber.objects.filter(creator=cln.creator, location=cln.location):
+                if z != cln:
+                    if z.letter != cln.letter or z.number != cln.number:
+                        print(z.letter, z.number, cln.letter, cln.number, cln.creator, cln.location)
+                    to_delete.append(z)
+        for item in to_delete:
+            item.delete()
 

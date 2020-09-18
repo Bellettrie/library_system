@@ -16,9 +16,9 @@ class Creator(models.Model):
 
     def __str__(self):
         if self.is_alias_of != self:
-            return self.name + "<>" + self.is_alias_of.__str__() + "::" + str(self.old_id)
+            return self.name + "<>" + self.is_alias_of.__str__() + "::" + str(self.old_id)+"--"+ str(self.pk)
         else:
-            return self.name + "::" + str(self.old_id)
+            return self.name + "::" + str(self.old_id) +"--"+ str(self.pk)
 
     def get_name(self):
         return self.given_names + " " + self.name

@@ -11,7 +11,7 @@ from django.views.generic import ListView
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
 from utils.get_query_words import get_query_words
-from works.models import CreatorToWork, Publication
+from works.models import CreatorToWork, Publication, Location
 
 
 @permission_required('creators.view_creator')
@@ -118,3 +118,23 @@ class CreatorList(PermissionRequiredMixin, ListView):
                 result_set = result_set & members
 
         return list(set(result_set))
+
+
+@permission_required('creators.change_creator')
+def collisions(request):
+    location = request.GET.get('location')
+    locations = Location.objects.all()
+    data = []
+    if location:
+        location = int(location)
+        my_location = Location.objects.get(pk=location)
+        data_set = dict()
+        for cln in CreatorLocationNumber.objects.filter(location=my_location):
+            entry = data_set.get((cln.letter, cln.number), [])
+            entry.append(cln.creator)
+            data_set[(cln.letter, cln.number)] = entry
+        for entry in data_set.keys():
+            if len(data_set[entry]) > 1:
+                data.append((entry, list(set(data_set[entry]))))
+
+    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location , 'data':data})

@@ -81,12 +81,14 @@ class CutterCodeRange(models.Model):
         return result
 
 
-def generate_author_number(name, location):
+def generate_author_number(name, location, exclude_list=[]):
     if name is None or len(name) == 0:
         return None
-
-    letters = CreatorLocationNumber.objects.filter(locatin=location, letter=name[0]).order_by('number')
-
+    number = CutterCodeRange.get_cutter_number(name)
+    letters = list(CreatorLocationNumber.objects.filter(locatin=location, letter=name[0]).order_by('number'))
+    for letter in letters:
+        if letter.creator in exclude_list:
+            letters.delete(letter)
 
 
 def generate_code_from_author(item):
