@@ -61,7 +61,7 @@ def get_key(obj: CodePin):
     return obj.number
 
 
-MAGIC_NUMBERS = [1,2,3,4,5,6,7,8,9]
+MAGIC_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
 def get_numbers_between(start, end):
@@ -71,6 +71,7 @@ def get_numbers_between(start, end):
     numbers = []
 
     while (int(start_float) == int(end_float) or len(numbers) == 0) and runs <= 3:
+
         runs += 1
         start_float *= 10
         end_float *= 10
@@ -78,15 +79,16 @@ def get_numbers_between(start, end):
         runner = start_int
         while runner < end_float:
             for number in MAGIC_NUMBERS:
-                target = runner*10+number
-                print(int(start_float*10) , target, end_float*10)
-                if int(start_float*1000)/100 < target < int(end_float*1000)/100:
+                target = runner * 10 + number
+                if int(start_float * 1000) / 100 < target < int(end_float * 1000) / 100:
                     numbers.append(target)
             runner += 1
-    print(numbers)
-    return numbers
+        if len(numbers) > 0:
+            return numbers
+    return [start]
 
-def get_new_number_for_location(location, name: str):
+
+def get_new_number_for_location(location, name: str, exclude_list=[]):
     from works.models import Location
 
     codes = CutterCodeRange.objects.all()
@@ -94,8 +96,17 @@ def get_new_number_for_location(location, name: str):
     for code in codes:
         if code.from_affix.startswith(name[0]):
             lst.append(CodePin(code.from_affix.upper(), int(code.number)))
+
+    letters = list(CreatorLocationNumber.objects.filter(location=location, letter=name[0]))
+    letters.sort(key=get_key)
+    for letter in letters:
+        if letter.creator in exclude_list:
+            letters.remove(letter)
+        pass
+    for item in letters:
+        lst.append(CodePin(item.creator.name.upper() + " " + item.creator.given_names.upper(), item.number))
     lst.sort(key=get_key)
-    lst.append(CodePin("ZZZZZZZZZZZZ", 999))
+    lst.append(CodePin(name[0] + "ZZZZZZZZZZZZ", 99999))
 
     start = lst[0]
     end = start
@@ -106,7 +117,8 @@ def get_new_number_for_location(location, name: str):
             break
         start = codepin
 
-    get_numbers_between(start.number, end.number)
+    return get_numbers_between(start.number, end.number), start, end
+
 
 def strip_accents(text):
     """
@@ -156,64 +168,25 @@ def get_number_for_str(string: str):
         number += num
     return number
 
+
 def generate_author_number(name, location, exclude_list=[]):
     if name is None or len(name) == 0:
         return None
-    lower_bound = CutterCodeRange.get_cutter_number(name)
-    upper_bound = CutterCodeRange.objects.get(from_affix=lower_bound.to_affix)
-    number = int(lower_bound.number)
-    letters = list(CreatorLocationNumber.objects.filter(location=location, letter=name[0]))
-    letters.sort(key=get_key)
-    for letter in letters:
-        print(letter.creator.name + letter.creator.given_names)
-        if letter.creator in exclude_list:
-            letters.remove(letter)
-        pass
-    old = lower_bound
-    for letter in letters:
-        print(letter.creator.name)
-        lower_bound = old
-        old = letter
-        if (letter.creator.name + " " + letter.creator.given_names).upper() > upper_bound.from_affix.upper():
-            print("T1")
-            break
-        if (letter.creator.name + " " + letter.creator.given_names).upper() > name.upper():
-            print("T2")
-            upper_bound = letter
-            break
+    numbers, lower_bound, upper_bound = get_new_number_for_location(location, name, exclude_list)
 
-    lower_bound_float = float(str('0.' + str(lower_bound.number)))
-    lbn = lower_bound.number
-    upper_bound_float = float(str('0.' + str(upper_bound.number)))
-    ubn = upper_bound.number
-    range = upper_bound_float - lower_bound_float
-
-    if hasattr(lower_bound, 'from_affix'):
-        lower_bound_name = lower_bound.from_affix
-    else:
-        lower_bound_name = lower_bound.creator.name + " " + lower_bound.creator.given_names
-    lower_num = (get_number_for_str(lower_bound_name.upper()))
-    if hasattr(upper_bound, 'from_affix'):
-        upper_bound_name = upper_bound.from_affix
-    else:
-        upper_bound_name = upper_bound.creator.name + " " + upper_bound.creator.given_names
-    upper_num = (get_number_for_str(upper_bound_name.upper()))
+    lower_num = get_number_for_str(lower_bound.name)
+    upper_num = get_number_for_str(upper_bound.name)
     mid_num = get_number_for_str(name.upper())
 
     diff = (mid_num - lower_num) / (upper_num - lower_num)
-    print(lower_bound_name, name, upper_bound_name)
 
-    my_len = 3
-    num = str(lower_bound_float + diff * range)[2:5]
+    from math import floor
+    num = floor(diff * len(numbers))
+    if len(numbers) > 1:
+        num = max(1, num)
 
-    while num == str(lbn)[:my_len] or num == str(ubn)[:my_len]:
-        my_len += 1
-        if my_len == 9:
-            break
-        num = str(lower_bound_float + diff * range)[2:2 + my_len]
-        while len(num) < my_len:
-            num += "1"
-    return int(num)
+    return numbers[max(0, min(len(numbers) - 1, num))]
+
 
 def generate_code_from_author(item):
     pub = item.publication
