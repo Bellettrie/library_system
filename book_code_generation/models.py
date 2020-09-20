@@ -48,6 +48,66 @@ class BookCode(models.Model):
         super().save(*args, **kwargs)
 
 
+class CodePin:
+    def __init__(self, name: str, number: int):
+        self.name = name
+        self.number = number
+
+    def __str__(self):
+        return self.name + "::" + str(self.number)
+
+
+def get_key(obj: CodePin):
+    return obj.number
+
+
+MAGIC_NUMBERS = [1,2,3,4,5,6,7,8,9]
+
+
+def get_numbers_between(start, end):
+    start_float = float("0." + str(start))
+    end_float = float("0." + str(end))
+    runs = 0
+    numbers = []
+
+    while (int(start_float) == int(end_float) or len(numbers) == 0) and runs <= 3:
+        runs += 1
+        start_float *= 10
+        end_float *= 10
+        start_int = int(start_float)
+        runner = start_int
+        while runner < end_float:
+            for number in MAGIC_NUMBERS:
+                target = runner*10+number
+                print(int(start_float*10) , target, end_float*10)
+                if int(start_float*1000)/100 < target < int(end_float*1000)/100:
+                    numbers.append(target)
+            runner += 1
+    print(numbers)
+    return numbers
+
+def get_new_number_for_location(location, name: str):
+    from works.models import Location
+
+    codes = CutterCodeRange.objects.all()
+    lst = []
+    for code in codes:
+        if code.from_affix.startswith(name[0]):
+            lst.append(CodePin(code.from_affix.upper(), int(code.number)))
+    lst.sort(key=get_key)
+    lst.append(CodePin("ZZZZZZZZZZZZ", 999))
+
+    start = lst[0]
+    end = start
+
+    for codepin in lst:
+        if codepin.name > name.upper():
+            end = codepin
+            break
+        start = codepin
+
+    get_numbers_between(start.number, end.number)
+
 def strip_accents(text):
     """
     Strip accents from input String.
@@ -154,7 +214,6 @@ def generate_author_number(name, location, exclude_list=[]):
         while len(num) < my_len:
             num += "1"
     return int(num)
-
 
 def generate_code_from_author(item):
     pub = item.publication
