@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+{% load creator_books %}
+{% block title %}{{ creator.given_names}} {{ creator.name }}{% endblock %}
+{% block content %}
+    <form method="get" action="#">
+    <select id="location" name="location">
+    {% for loc in locations %}
+        <option value="{{ loc.pk }}" {% if loc.pk == location %}selected="selected"{% endif %}>{{ loc.category.name }} -{{ loc.name }} {{ loc.pk }}</option>
+    {% endfor %}
+    </select>
+    <input type="submit" value="Search">
+    </form>
+
+    <table class="table table-striped" style="width: auto;">
+    {%for line in data %}
+        <tr><td>{{ line.0 }}</td>
+        <td>{% for creator in line.1 %}
+            <a href="{% url 'creator.view' creator.0.pk%}">{{ creator.0.get_name }} | {{ creator.1 }} |  {{ creator.2 }}|  {{ creator.3 }}</a><br/>
+            {% endfor %}
+            </td></tr>
+    {% endfor %}
+    </table>
+{% endblock %}

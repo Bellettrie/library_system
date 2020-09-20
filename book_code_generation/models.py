@@ -18,7 +18,8 @@ def get_number_for_code(code: str):
             try:
                 return int(str(float("0." + code_parts[1])).split(".")[1])
             except ValueError:
-                print("ERROR")
+                if "ABC" not in code_parts:
+                    print("ERROR" + code)
                 pass
 
 
@@ -140,12 +141,77 @@ class CutterCodeRange(models.Model):
         return result
 
 
-def generate_author_number(name, location):
+def get_key(creatorlocationnumber: CreatorLocationNumber):
+    return str(creatorlocationnumber.number)
+
+
+def get_number_for_str(string: str):
+    number = 0
+    for letter in string[::-1]:
+        number = number / 10
+        num = ord(letter) - 64
+        if num > 26 or num < 1:
+            num = 0
+        num /= 2.6
+        number += num
+    return number
+
+
+def generate_author_number(name, location, exclude_list=[]):
     if name is None or len(name) == 0:
         return None
+    lower_bound = CutterCodeRange.get_cutter_number(name)
+    upper_bound = CutterCodeRange.objects.get(from_affix=lower_bound.to_affix)
+    number = int(lower_bound.number)
+    letters = list(CreatorLocationNumber.objects.filter(location=location, letter=name[0]))
+    letters.sort(key=get_key)
+    for letter in letters:
+        print(letter.creator.name + letter.creator.given_names)
+        if letter.creator in exclude_list:
+            letters.remove(letter)
+        pass
+    old = lower_bound
+    for letter in letters:
+        print(letter.creator.name)
+        lower_bound = old
+        old = letter
+        if (letter.creator.name+ " " + letter.creator.given_names).upper() > upper_bound.from_affix.upper():
+            break
+        if (letter.creator.name + " " + letter.creator.given_names).upper() > name.upper():
+            upper_bound = letter
+            break
 
-    letters = CreatorLocationNumber.objects.filter(locatin=location, letter=name[0]).order_by('number')
+    lower_bound_float = float(str('0.' + str(lower_bound.number)))
+    lbn = lower_bound.number
+    upper_bound_float = float(str('0.' + str(upper_bound.number)))
+    ubn = upper_bound.number
+    range = upper_bound_float - lower_bound_float
 
+    if hasattr(lower_bound, 'from_affix'):
+        lower_bound_name = lower_bound.from_affix
+    else:
+        lower_bound_name = lower_bound.creator.name + " " + lower_bound.creator.given_names
+    lower_num = (get_number_for_str(lower_bound_name.upper()))
+    if hasattr(upper_bound, 'to_affix'):
+        upper_bound_name = upper_bound.to_affix
+    else:
+        upper_bound_name = upper_bound.creator.name + " " + upper_bound.creator.given_names
+    upper_num = (get_number_for_str(upper_bound_name.upper()))
+    mid_num = get_number_for_str(name.upper())
+
+    diff = (mid_num - lower_num) / (upper_num - lower_num)
+    print(lower_bound_name, name, upper_bound_name)
+
+
+    my_len = 3
+    num = str(lower_bound_float + diff * range)[2:5]
+
+    while num == str(lbn)[:my_len] or num == str(ubn)[:my_len]:
+        my_len += 1
+        if my_len == 9:
+            break
+        num = str(lower_bound_float + diff * range)[2:2 + my_len]
+    return int(num)
 
 def generate_code_from_author(item):
     pub = item.publication

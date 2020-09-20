@@ -61,7 +61,7 @@ def edit_series(request, pk):
         if pk is not None:
             series = get_object_or_404(Series, pk=pk)
             form = SeriesCreateForm(request.POST, instance=series)
-            creators = CreatorToSeriesFormSet(request.POST, request.FILES)
+            creators = CreatorToSeriesFormSet(request.POST, request.FILES, instance=series)
         else:
             form = SeriesCreateForm(request.POST)
             creators = CreatorToSeriesFormSet(request.POST, request.FILES)
@@ -87,7 +87,6 @@ def edit_series(request, pk):
                 for c2w in instances:
                     c2w.series = instance
                     c2w.save()
-
             return HttpResponseRedirect(reverse('series.view', args=(instance.pk,)))
     else:
         if pk is not None:

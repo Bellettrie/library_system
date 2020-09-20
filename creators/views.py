@@ -11,7 +11,7 @@ from django.views.generic import ListView
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
 from utils.get_query_words import get_query_words
-from works.models import CreatorToWork, Publication
+from works.models import CreatorToWork, Publication, Location, Item
 
 
 @permission_required('creators.view_creator')
@@ -118,3 +118,38 @@ class CreatorList(PermissionRequiredMixin, ListView):
                 result_set = result_set & members
 
         return list(set(result_set))
+
+
+@permission_required('creators.change_creator')
+def collisions(request):
+    location = request.GET.get('location')
+    locations = Location.objects.all()
+    data = []
+    if location:
+        location = int(location)
+        my_location = Location.objects.get(pk=location)
+        items = Item.objects.filter(location=location)
+        author_item_dict = dict()
+        for item in items:
+            authors = item.publication.get_authors()
+            if len(authors) == 0:
+                continue
+            author = authors[0]
+            lst = author_item_dict.get(author.creator, [])
+            lst.append(item)
+            author_item_dict[author.creator] = lst
+        print(author_item_dict.keys())
+        data_set = dict()
+        for cln in CreatorLocationNumber.objects.filter(location=my_location):
+            entry = data_set.get((cln.letter, cln.number), [])
+            entry.append(cln.creator)
+            data_set[(cln.letter, cln.number)] = entry
+        for entry in data_set.keys():
+            if len(data_set[entry]) > 1:
+                my_data = list(set(data_set[entry]))
+                d3=[]
+                for creator in my_data:
+                    d3.append((creator, creator.get_location_item_counts(my_location, author_item_dict)))
+                data.append((entry, d3))
+
+    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location , 'data':data})

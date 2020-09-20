@@ -1,4 +1,4 @@
-from django.forms import Widget, ModelForm, inlineformset_factory
+from django.forms import Widget, ModelForm, inlineformset_factory, TextInput
 from django.template import loader
 
 from creators.models import Creator, CreatorLocationNumber
@@ -32,5 +32,10 @@ class EditForm(ModelForm):
             'is_alias_of': CreatorWidget,
         }
 
+class TurboWidget(TextInput):
+    def render(self, name, value, attrs=None, renderer=None):
+        template = loader.get_template('creator_book_code_lookup.html')
 
-CreatorLocationNumberFormset = inlineformset_factory(Creator, CreatorLocationNumber, can_delete=True, fields=['location', 'number', 'letter'])
+        return super().render(name=name, value=value, attrs=attrs) + template.render({'name': name, 'value': value, 'BASE_URL': settings.BASE_URL})
+
+CreatorLocationNumberFormset = inlineformset_factory(Creator, CreatorLocationNumber, can_delete=True, fields=['location', 'number', 'letter'], widgets={'letter':TurboWidget})

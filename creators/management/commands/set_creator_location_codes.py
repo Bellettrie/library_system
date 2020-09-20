@@ -23,14 +23,17 @@ class Command(BaseCommand):
                 item_to_author[item] = authors[0].creator
             else:
                 item_to_author[item] = None
-        print("DONE2")
+
         for creator in Creator.objects.all():
+
             location_dict = dict()
             letter = ""
             if len(creator.name) > 0:
                 letter = creator.name[0]
             for item in items:
-                if item_to_author[item] == creator:
+                if item_to_author.get(item) is None:
+                    continue
+                if item_to_author.get(item) == creator:
                     lz = location_dict.get(item.location, [])
                     lz.append(item)
                     location_dict[item.location] = lz
