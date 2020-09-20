@@ -96,7 +96,6 @@ def get_number_for_str(string: str):
         number += num
     return number
 
-
 def generate_author_number(name, location, exclude_list=[]):
     if name is None or len(name) == 0:
         return None
@@ -115,9 +114,11 @@ def generate_author_number(name, location, exclude_list=[]):
         print(letter.creator.name)
         lower_bound = old
         old = letter
-        if (letter.creator.name+ " " + letter.creator.given_names).upper() > upper_bound.from_affix.upper():
+        if (letter.creator.name + " " + letter.creator.given_names).upper() > upper_bound.from_affix.upper():
+            print("T1")
             break
         if (letter.creator.name + " " + letter.creator.given_names).upper() > name.upper():
+            print("T2")
             upper_bound = letter
             break
 
@@ -132,8 +133,8 @@ def generate_author_number(name, location, exclude_list=[]):
     else:
         lower_bound_name = lower_bound.creator.name + " " + lower_bound.creator.given_names
     lower_num = (get_number_for_str(lower_bound_name.upper()))
-    if hasattr(upper_bound, 'to_affix'):
-        upper_bound_name = upper_bound.to_affix
+    if hasattr(upper_bound, 'from_affix'):
+        upper_bound_name = upper_bound.from_affix
     else:
         upper_bound_name = upper_bound.creator.name + " " + upper_bound.creator.given_names
     upper_num = (get_number_for_str(upper_bound_name.upper()))
@@ -141,7 +142,6 @@ def generate_author_number(name, location, exclude_list=[]):
 
     diff = (mid_num - lower_num) / (upper_num - lower_num)
     print(lower_bound_name, name, upper_bound_name)
-
 
     my_len = 3
     num = str(lower_bound_float + diff * range)[2:5]
@@ -151,6 +151,8 @@ def generate_author_number(name, location, exclude_list=[]):
         if my_len == 9:
             break
         num = str(lower_bound_float + diff * range)[2:2 + my_len]
+        while len(num) < my_len:
+            num += "1"
     return int(num)
 
 
