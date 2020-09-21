@@ -17,10 +17,12 @@ class RecodeList(PermissionRequiredMixin, ListView):
     paginate_by = 50
     def get_queryset(self):  # new
         loc = self.request.GET.get('location')
+        codes = []
         if loc:
-            return Recode.objects.filter(item__location=loc)
+            codes = Recode.objects.filter(item__location=loc)
         else:
-            return Recode.objects.all()
+            codes = Recode.objects.all()
+        return codes.order_by('item__book_code')
 
 
 @transaction.atomic

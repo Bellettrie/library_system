@@ -128,6 +128,7 @@ def collisions(request):
     data = []
     totals = [0, 0, 0, 0]
     commit = request.GET.get('commit')
+    marked_authors = set()
 
     if location:
         location = int(location)
@@ -168,7 +169,8 @@ def collisions(request):
                     d3.append((creator, counts))
                 totals[3] += ccount
                 data.append((entry, d3))
-
+                if not_excluded:
+                    marked_authors.add(not_excluded)
                 if commit:
                     excludes = []
                     for creator in my_data:
@@ -185,4 +187,4 @@ def collisions(request):
                             force_relabel(cln, old_number, cln.letter)
     if commit:
         totals[0] = "Newly coded "+str(totals[0])
-    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals})
+    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals, 'marked':marked_authors})
