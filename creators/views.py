@@ -158,7 +158,6 @@ def collisions(request):
                     counts = creator.get_location_item_counts(my_location, author_item_dict)
                     if counts[0] >= ccount:
                         not_excluded = creator
-                        print(not_excluded.name, not_excluded.given_names, "Z")
                         totals[0] += ccount
                         ccount = counts[0]
                     else:
@@ -175,7 +174,6 @@ def collisions(request):
                     for creator in my_data:
                         if creator != not_excluded:
                             excludes.append(creator)
-                    print(excludes)
                     for creator in my_data:
                         if creator != not_excluded:
                             number = generate_author_number(creator.name.upper() + " " + creator.given_names.upper(), my_location, excludes)
