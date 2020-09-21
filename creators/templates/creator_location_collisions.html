@@ -4,14 +4,8 @@
 {% load creator_books %}
 {% block title %}{{ creator.given_names}} {{ creator.name }}{% endblock %}
 {% block content %}
-    <form method="get" action="#">
-    <select id="location" name="location">
-    {% for loc in locations %}
-        <option value="{{ loc.pk }}" {% if loc.pk == location %}selected="selected"{% endif %}>{{ loc.category.name }} -{{ loc.name }} {{ loc.pk }}</option>
-    {% endfor %}
-    </select>
-    <input type="submit" value="Search">
-    </form>
+{% load locations %}
+    {% get_locations location %}
 
     <table class="table table-striped" style="width: auto;">
     {%for line in data %}

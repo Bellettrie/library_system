@@ -4,6 +4,9 @@
 {% block content %}
 
     {% include 'pagination.html' %}
+    {% load locations %}
+    {{ request.GET.location }}
+    {% get_locations request.GET.location %}
     <hr>
     <table>
     <tr><th>Old Code</th><th>New Code</th><th>ISBN</th><th>Title</th><th>Status</th><th>Edit</th></tr>

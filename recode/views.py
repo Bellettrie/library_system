@@ -15,6 +15,12 @@ class RecodeList(PermissionRequiredMixin, ListView):
     model = Recode
     template_name = 'recodings_list.html'
     paginate_by = 50
+    def get_queryset(self):  # new
+        loc = self.request.GET.get('location')
+        if loc:
+            return Recode.objects.filter(item__location=loc)
+        else:
+            return Recode.objects.all()
 
 
 @transaction.atomic
