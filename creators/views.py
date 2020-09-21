@@ -125,6 +125,8 @@ def collisions(request):
     location = request.GET.get('location')
     locations = Location.objects.all()
     data = []
+    totals = [0, 0, 0, 0]
+
     if location:
         location = int(location)
         my_location = Location.objects.get(pk=location)
@@ -144,7 +146,6 @@ def collisions(request):
             entry = data_set.get((cln.letter, cln.number), [])
             entry.append(cln.creator)
             data_set[(cln.letter, cln.number)] = entry
-        totals  = [0,0,0,0]
         for entry in data_set.keys():
             ccount = 0
 
