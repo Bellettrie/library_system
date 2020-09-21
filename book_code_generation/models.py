@@ -71,7 +71,6 @@ def get_numbers_between(start, end):
     numbers = []
 
     while (int(start_float) == int(end_float) or len(numbers) == 0) and runs <= 3:
-
         runs += 1
         start_float *= 10
         end_float *= 10
@@ -80,7 +79,7 @@ def get_numbers_between(start, end):
         while runner < end_float:
             for number in MAGIC_NUMBERS:
                 target = runner * 10 + number
-                if int(start_float * 1000) / 100 < target < int(end_float * 1000) / 100:
+                if round(start_float * 1000) / 100 < target < round(end_float * 1000) / 100:
                     numbers.append(target)
             runner += 1
         if len(numbers) > 0:
@@ -98,13 +97,24 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
             lst.append(CodePin(code.from_affix.upper(), int(code.number)))
 
     letters = list(CreatorLocationNumber.objects.filter(location=location, letter=name[0]))
-    letters.sort(key=get_key)
+    keys_done = set()
+    print(letters)
+    my_letters = set()
     for letter in letters:
         if letter.creator in exclude_list:
-            letters.remove(letter)
-        pass
-    for item in letters:
-        lst.append(CodePin(item.creator.name.upper() + " " + item.creator.given_names.upper(), item.number))
+            pass
+        else:
+            my_letters.add(letter)
+            for code in lst:
+
+                if letter.number == code.number:
+
+                    if not letter.number in keys_done:
+                        keys_done.add(letter.number)
+                        code.name = letter.creator.name.upper() + " " + letter.creator.given_names.upper()
+    for item in my_letters:
+        if item.number not in letters:
+            lst.append(CodePin(item.creator.name.upper() + " " + item.creator.given_names.upper(), item.number))
     lst.sort(key=get_key)
     lst.append(CodePin(name[0] + "ZZZZZZZZZZZZ", 99999))
 
@@ -116,7 +126,7 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
             end = codepin
             break
         start = codepin
-
+    print(start.number, end.number)
     return get_numbers_between(start.number, end.number), start, end
 
 

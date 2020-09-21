@@ -144,12 +144,23 @@ def collisions(request):
             entry = data_set.get((cln.letter, cln.number), [])
             entry.append(cln.creator)
             data_set[(cln.letter, cln.number)] = entry
+        totals  = [0,0,0,0]
         for entry in data_set.keys():
+            ccount = 0
+
             if len(data_set[entry]) > 1:
                 my_data = list(set(data_set[entry]))
                 d3=[]
                 for creator in my_data:
-                    d3.append((creator, creator.get_location_item_counts(my_location, author_item_dict)))
+                    counts = creator.get_location_item_counts(my_location, author_item_dict)
+                    if counts[0] > ccount:
+                        totals[0] += ccount
+                        ccount = counts[0]
+                    totals[1] += counts[1]
+                    totals[2] += counts[2]
+
+                    d3.append((creator, counts))
+                totals[3] += ccount
                 data.append((entry, d3))
 
-    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location , 'data':data})
+    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location , 'data':data, 'totals': totals})

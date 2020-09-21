@@ -22,4 +22,11 @@
             </td></tr>
     {% endfor %}
     </table>
+
+    Total collisions: <br>
+    <table>
+    <tr><td>New relabeling needed</td><td>{{ totals.0 }}</td></tr>
+    <tr><td>Old relabeling can change</td><td>{{ totals.1 }}</td></tr>
+    <tr><td>Unknown labeling</td><td>{{ totals.2 }}</td></tr>
+    <tr><td>Can stay the same</td><td>{{ totals.3 }}</td></tr>
 {% endblock %}
