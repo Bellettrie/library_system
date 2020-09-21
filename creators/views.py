@@ -189,7 +189,7 @@ def collisions(request):
                             old_number = cln.number
                             cln.number = number
                             cln.save()
-
+                            excludes.remove(creator)
                             force_relabel(cln, old_number, cln.letter)
     if commit:
         totals[0] = "Newly coded "+str(totals[0])
