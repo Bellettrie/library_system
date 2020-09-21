@@ -49,9 +49,10 @@ class BookCode(models.Model):
 
 
 class CodePin:
-    def __init__(self, name: str, number: int):
+    def __init__(self, name: str, number: int, end='ZZZZZZZZZ'):
         self.name = name
         self.number = number
+        self.end = end
 
     def __str__(self):
         return self.name + "::" + str(self.number)
@@ -94,26 +95,27 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
     lst = []
     for code in codes:
         if code.from_affix.startswith(name[0]):
-            lst.append(CodePin(code.from_affix.upper(), int(code.number)))
+            lst.append(CodePin(code.from_affix.upper(), int(code.number), code.to_affix.upper()))
 
     letters = list(CreatorLocationNumber.objects.filter(location=location, letter=name[0]))
     keys_done = set()
     my_letters = set()
     for letter in letters:
-        if letter.creator in exclude_list:
-            pass
-        else:
+        l_name = letter.creator.name.upper() + " " + letter.creator.given_names.upper()
+        to_hit = True
+        for code in lst:
+            if letter.number == code.number:
+                if not letter.number in keys_done and code.name < l_name < code.end:
+                    keys_done.add(letter.number)
+                    to_hit = False
+                    code.name = l_name
+        if to_hit:
             my_letters.add(letter)
-            for code in lst:
-
-                if letter.number == code.number:
-
-                    if not letter.number in keys_done:
-                        keys_done.add(letter.number)
-                        code.name = letter.creator.name.upper() + " " + letter.creator.given_names.upper()
     for item in my_letters:
+        l_name = item.creator.name.upper() + " " + item.creator.given_names.upper()
+
         if item.number not in letters:
-            lst.append(CodePin(item.creator.name.upper() + " " + item.creator.given_names.upper(), item.number))
+            lst.append(CodePin(l_name, item.number))
     lst.sort(key=get_key)
     lst.append(CodePin(name[0] + "ZZZZZZZZZZZZ", 99999))
 
@@ -125,6 +127,8 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
             end = codepin
             break
         start = codepin
+    print(start.name, start.number, end.name, end.number)
+
     return get_numbers_between(start.number, end.number), start, end
 
 

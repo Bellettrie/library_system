@@ -126,9 +126,9 @@ def sort_key(obj):
         name = obj.name.upper() + " " + obj.given_names.upper()
         name2 =obj2.name.upper() + " " + obj2.given_names.upper()
         if  name2 > name:
-            return get_number_for_str(name2)
-        else:
             return -get_number_for_str(name2)
+        else:
+            return get_number_for_str(name2)
     return aa
 
 
