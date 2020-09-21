@@ -150,6 +150,7 @@ def collisions(request):
             data_set[(cln.letter, cln.number)] = entry
         for entry in data_set.keys():
             ccount = 0
+            row_totals = [0, 0, 0, 0]
 
             if len(data_set[entry]) > 1:
                 not_excluded = None
@@ -159,16 +160,21 @@ def collisions(request):
                     counts = creator.get_location_item_counts(my_location, author_item_dict)
                     if counts[0] >= ccount:
                         not_excluded = creator
-                        totals[0] += ccount
+                        row_totals[0] += ccount
                         ccount = counts[0]
                     else:
-                        totals[0] += counts[0]
-                    totals[1] += counts[1]
-                    totals[2] += counts[2]
+                        row_totals[0] += counts[0]
+                    row_totals[1] += counts[1]
+                    row_totals[2] += counts[2]
 
                     d3.append((creator, counts))
-                totals[3] += ccount
-                data.append((entry, d3))
+                row_totals[3] += ccount
+                totals[0] += row_totals[0]
+                totals[1] += row_totals[1]
+                totals[2] += row_totals[2]
+                totals[3] += row_totals[3]
+
+                data.append((entry, d3, row_totals))
                 if not_excluded:
                     marked_authors.add(not_excluded)
                 if commit:
