@@ -157,6 +157,8 @@ def collisions(request):
                     if counts[0] > ccount:
                         totals[0] += ccount
                         ccount = counts[0]
+                    else:
+                        totals[0] += counts[0]
                     totals[1] += counts[1]
                     totals[2] += counts[2]
 
