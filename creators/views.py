@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
+from book_code_generation.models import generate_author_number
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
 from utils.get_query_words import get_query_words
@@ -126,6 +127,7 @@ def collisions(request):
     locations = Location.objects.all()
     data = []
     totals = [0, 0, 0, 0]
+    commit = request.GET.get('commit')
 
     if location:
         location = int(location)
@@ -140,7 +142,6 @@ def collisions(request):
             lst = author_item_dict.get(author.creator, [])
             lst.append(item)
             author_item_dict[author.creator] = lst
-        print(author_item_dict.keys())
         data_set = dict()
         for cln in CreatorLocationNumber.objects.filter(location=my_location):
             entry = data_set.get((cln.letter, cln.number), [])
@@ -150,11 +151,14 @@ def collisions(request):
             ccount = 0
 
             if len(data_set[entry]) > 1:
+                not_excluded = None
                 my_data = list(set(data_set[entry]))
-                d3=[]
+                d3 = []
                 for creator in my_data:
                     counts = creator.get_location_item_counts(my_location, author_item_dict)
-                    if counts[0] > ccount:
+                    if counts[0] >= ccount:
+                        not_excluded = creator
+                        print(not_excluded.name, not_excluded.given_names, "Z")
                         totals[0] += ccount
                         ccount = counts[0]
                     else:
@@ -166,4 +170,21 @@ def collisions(request):
                 totals[3] += ccount
                 data.append((entry, d3))
 
-    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location , 'data':data, 'totals': totals})
+                if commit:
+                    excludes = []
+                    for creator in my_data:
+                        if creator != not_excluded:
+                            excludes.append(creator)
+                    print(excludes)
+                    for creator in my_data:
+                        if creator != not_excluded:
+                            number = generate_author_number(creator.name.upper() + " " + creator.given_names.upper(), my_location, excludes)
+                            cln = CreatorLocationNumber.objects.get(creator=creator, location=my_location)
+                            old_number = cln.number
+                            cln.number = number
+                            cln.save()
+
+                            force_relabel(cln, old_number, cln.letter)
+    if commit:
+        totals[0] = "Newly coded "+str(totals[0])
+    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals})

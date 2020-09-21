@@ -30,5 +30,6 @@
     <tr><td>Unknown labeling</td><td>{{ totals.2 }}</td></tr>
     <tr><td>Can stay the same</td><td>{{ totals.3 }}</td></tr>
     </table>
+    <a href="{% url 'creator.collides' %}?location={{ location }}&commit=1">commit</a>
     {% endif %}
 {% endblock %}

@@ -98,7 +98,6 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
 
     letters = list(CreatorLocationNumber.objects.filter(location=location, letter=name[0]))
     keys_done = set()
-    print(letters)
     my_letters = set()
     for letter in letters:
         if letter.creator in exclude_list:
@@ -126,7 +125,6 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
             end = codepin
             break
         start = codepin
-    print(start.number, end.number)
     return get_numbers_between(start.number, end.number), start, end
 
 

@@ -62,7 +62,6 @@ class Creator(models.Model):
         except CreatorLocationNumber.DoesNotExist:
             pass
         for item in author_item_dict.get(self, []):
-            print(item)
             if len(Recode.objects.filter(item=item)) > 0:
                 old_recode += 1
             else:
@@ -70,7 +69,6 @@ class Creator(models.Model):
                     new_recode += 1
                 else:
                     non_automa += 1
-        print(self)
         return (new_recode, old_recode, non_automa)
 
 
@@ -96,8 +94,7 @@ def try_to_update_object(my_object, pattern, new_prefix):
     if match:
         my_object.book_code = new_prefix + my_object.book_code[match.end():]
         my_object.save()
-    else:
-        print(my_object.book_code + "::K<")
+
 
 
 def update_item(item, pattern, old_prefix, new_prefix):
@@ -112,8 +109,7 @@ def update_item(item, pattern, old_prefix, new_prefix):
         if match:
             new_code = new_prefix + item.book_code[match.end():]
             Recode.objects.create(item=item, book_code=new_code, book_code_extension=item.book_code_extension)
-        else:
-            print(item.book_code + "::")
+
 
 
 def relabel_creator(creator, location, old_number, old_letter, new_number, new_letter):
@@ -128,12 +124,10 @@ def relabel_creator(creator, location, old_number, old_letter, new_number, new_l
     location_code = location.category.code
     for item in items:
         if item.location != location:
-            print("DEAD" + item.publication.title + str(item.location))
-
-        if item.publication.get_authors()[
-            0].creator != creator:
             items.remove(item)
-            print("undead" + item.publication.title)
+        if item.publication.get_authors()[0].creator != creator:
+            if item in items:
+                items.remove(item)
     import re
 
     old_prefix = location_code + "-" + old_letter + "-" + str(old_number)
