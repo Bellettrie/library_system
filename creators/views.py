@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
-from book_code_generation.models import generate_author_number
+from book_code_generation.models import generate_author_number, get_number_for_str
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
 from utils.get_query_words import get_query_words
@@ -121,6 +121,17 @@ class CreatorList(PermissionRequiredMixin, ListView):
         return list(set(result_set))
 
 
+def sort_key(obj):
+    def aa(obj2):
+        name = obj.name.upper() + " " + obj.given_names.upper()
+        name2 =obj2.name.upper() + " " + obj2.given_names.upper()
+        if  name2 > name:
+            return get_number_for_str(name2)
+        else:
+            return -get_number_for_str(name2)
+    return aa
+
+
 @permission_required('creators.change_creator')
 def collisions(request):
     location = request.GET.get('location')
@@ -182,9 +193,10 @@ def collisions(request):
                     for creator in my_data:
                         if creator != not_excluded:
                             excludes.append(creator)
+                    my_data.sort(key=sort_key(not_excluded))
                     for creator in my_data:
                         if creator != not_excluded:
-                            number = generate_author_number(creator.name.upper() + " " + creator.given_names.upper(), my_location, excludes)
+                            number = generate_author_number(creator.name.upper() + " " + creator.given_names.upper(), my_location, excludes, True)
                             cln = CreatorLocationNumber.objects.get(creator=creator, location=my_location)
                             old_number = cln.number
                             cln.number = number
@@ -192,5 +204,5 @@ def collisions(request):
                             excludes.remove(creator)
                             force_relabel(cln, old_number, cln.letter)
     if commit:
-        totals[0] = "Newly coded "+str(totals[0])
-    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals, 'marked':marked_authors})
+        totals[0] = "Newly coded " + str(totals[0])
+    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals, 'marked': marked_authors})

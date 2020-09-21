@@ -177,7 +177,7 @@ def get_number_for_str(string: str):
     return number
 
 
-def generate_author_number(name, location, exclude_list=[]):
+def generate_author_number(name, location, exclude_list=[], include_one=False):
     if name is None or len(name) == 0:
         return None
     numbers, lower_bound, upper_bound = get_new_number_for_location(location, name, exclude_list)
@@ -185,12 +185,14 @@ def generate_author_number(name, location, exclude_list=[]):
     lower_num = get_number_for_str(lower_bound.name)
     upper_num = get_number_for_str(upper_bound.name)
     mid_num = get_number_for_str(name.upper())
-
-    diff = (mid_num - lower_num) / (upper_num - lower_num)
+    if (upper_num - lower_num) == 0:
+        diff = 0
+    else:
+        diff = (mid_num - lower_num) / (upper_num - lower_num)
 
     from math import floor
     num = floor(diff * len(numbers))
-    if len(numbers) > 1:
+    if not include_one and len(numbers) > 1:
         num = max(1, num)
 
     return numbers[max(0, min(len(numbers) - 1, num))]
