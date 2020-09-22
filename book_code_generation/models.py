@@ -5,6 +5,9 @@ from django.db import models
 
 import re
 import unicodedata
+
+from django.db.models import CASCADE
+
 from creators.models import CreatorLocationNumber
 
 
@@ -17,7 +20,7 @@ def turbo_str(strs):
 
 
 def number_shrink_wrap(num):
-    return int(str(float('0.' + str(num)))[2:])
+    return str(float('0.' + str(num)))[2:]
 
 
 def get_letter_for_code(code: str):
@@ -136,7 +139,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
         l_name = turbo_str(letter.creator.name + " " + letter.creator.given_names)
         to_hit = True
         for code in lst:
-            if letter.number == code.number:
+            if number_shrink_wrap(letter.number) == code.number:
                 if letter.number not in keys_done and code.name < l_name < code.end:
                     keys_done.add(letter.number)
                     to_hit = False
@@ -148,7 +151,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
         l_name = turbo_str(item.creator.name + " " + item.creator.given_names)
 
         if item.number not in letters:
-            lst.append(CodePin(l_name, item.number, author=item.creator))
+            lst.append(CodePin(l_name, number_shrink_wrap(item.number), author=item.creator))
     lst.sort(key=get_key)
     lst.append(CodePin(starting_letter + "ZZZZZZZZZZZZ", 99999))
     return lst
@@ -189,12 +192,15 @@ class CutterCodeRange(models.Model):
     to_affix = models.CharField(max_length=16)
     number = models.CharField(max_length=16)
     generated_affix = models.CharField(max_length=20)
-
+    location=models.ForeignKey("works.Location", default=None, null=True, blank=True, on_delete=CASCADE)
     @staticmethod
-    def get_cutter_number(name: str):
+    def get_cutter_number(name: str, location = None):
         cutters = CutterCodeRange.objects.all().order_by("from_affix")
+
         result = None
         for cutter in cutters:
+            if cutter.location is not None and cutter.location == location:
+                continue
             if result is None:
                 result = cutter
             if strip_accents(name.upper()) < cutter.from_affix:
