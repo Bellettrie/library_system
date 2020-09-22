@@ -39,11 +39,26 @@ def get_book_code_series(request, series_id, location_id):
 @permission_required('works.change_work')
 def get_creator_number(request, creator_id, location_id):
     location = get_object_or_404(Location, pk=location_id)
-    creator = Creator.objects.get(id=creator_id)
 
-    code = generate_author_number(turbo_str(creator.name + " " + creator.given_names), location, exclude_list=[creator])
+    name = request.GET.get('name')
+    min_code = None
+    max_code = None
+    code = None
+    char = None
+    print("A")
+    try:
+        creator = Creator.objects.get(id=creator_id)
+        if not name:
+            name = turbo_str(creator.name + " " + creator.given_names)
 
-    return HttpResponse(code)
+        char, min_code, code, max_code = generate_author_number(turbo_str(name), location, exclude_list=[creator])
+    except Creator.DoesNotExist:
+        if not name:
+            return HttpResponse("NONE")
+        print(name)
+        char, min_code, code, max_code = generate_author_number(turbo_str(name), location, exclude_list=[])
+
+    return HttpResponse(char + " :: " +str(min_code)+" < <b>" + str(code) + "</b> < " + str(max_code))
 
 
 @permission_required('works.change_work')

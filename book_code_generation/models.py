@@ -129,6 +129,8 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
     codes = CutterCodeRange.objects.all()
     lst = []
     for code in codes:
+        if code.location is not None and  code.location!= location:
+            continue
         if code.from_affix.startswith(starting_letter):
             lst.append(CodePin(turbo_str(code.from_affix), number_shrink_wrap(code.number), turbo_str(code.to_affix)))
 
@@ -192,9 +194,10 @@ class CutterCodeRange(models.Model):
     to_affix = models.CharField(max_length=16)
     number = models.CharField(max_length=16)
     generated_affix = models.CharField(max_length=20)
-    location=models.ForeignKey("works.Location", default=None, null=True, blank=True, on_delete=CASCADE)
+    location = models.ForeignKey("works.Location", default=None, null=True, blank=True, on_delete=CASCADE)
+
     @staticmethod
-    def get_cutter_number(name: str, location = None):
+    def get_cutter_number(name: str, location=None):
         cutters = CutterCodeRange.objects.all().order_by("from_affix")
 
         result = None
@@ -239,8 +242,7 @@ def generate_author_number(name, location, exclude_list=[], include_one=False):
     if not include_one and len(numbers) > 1:
         num = max(1, num)
 
-    return numbers[max(0, min(len(numbers) - 1, num))]
-
+    return name[0], numbers[0], numbers[max(0, min(len(numbers) - 1, num))], numbers[len(numbers) - 1]
 
 def generate_code_from_author(item):
     pub = item.publication
@@ -263,7 +265,6 @@ def generate_code_from_author(item):
     else:
         pass
 
-
 def generate_code_from_author_translated(item):
     pub = item.publication
     prefix = "N"
@@ -283,10 +284,8 @@ def generate_code_from_author_translated(item):
     else:
         pass
 
-
 def generate_code_abc(item):
     return item.location.category.code + "-ABC-"
-
 
 def generate_code_from_title(item):
     title = item.publication.title[0:4]
@@ -294,7 +293,6 @@ def generate_code_from_title(item):
         return title + "-"
     else:
         return item.location.category.code + "-" + title + "-"
-
 
 class FakeItem:
     def __init__(self, publication, location):

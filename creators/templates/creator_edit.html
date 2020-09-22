@@ -5,7 +5,10 @@
 {% block title %}{% if creator.pk %}{{ creator.given_names}} {{ creator.name }}{% else %}New Author{% endif %}{% endblock %}
 {% block content %}
     <script>
-    var pk = {{ creator.pk }}
+        {% if creator.pk %}var pk = {{ creator.pk }}
+            {% else %}
+            var pk = -1;
+            {% endif %}
     </script>
     <form method="post" action="#">
     {% csrf_token %}

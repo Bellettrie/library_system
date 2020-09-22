@@ -3,37 +3,31 @@
     function getSelectedOption(sel) {
         var opt;
         for ( var i = 0, len = sel.options.length; i < len; i++ ) {
-            console.log(sel.options[i])
             opt = sel.options[i];
             if ( opt.selected === true ) {
                 break;
             }
         }
-        console.log(opt)
         return opt;
     }
-    console.log(('id_{{ name|before_last_dash}}-location'))
+    var name = document.getElementById('id_name').value + " "+ document.getElementById('id_given_names').value
+
     var sel = document.getElementById('id_{{ name|before_last_dash}}-location');
     var opt = getSelectedOption(sel);
     var loc_sel = opt.value;
-    console.log(loc_sel)
-    var number = document.getElementById('id_{{ name|before_last_dash}}-number')
-    console.log(number)
-    var letter = document.getElementById('id_{{ name|before_last_dash}}-letter')
-    console.log(letter)
+
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            console.log("HI")
             document.getElementById("data_store{{ name|num_get}}").innerHTML = this.responseText;
         }
     };
 
-        xhttp.open("GET", "/book_code/generate_creator/" + pk + "/" + loc_sel , true);
+    xhttp.open("GET", "/book_code/generate_creator/" + pk + "/" + loc_sel+"?name="+name, true);
     xhttp.send();
 }
 </script>
-{{ creator }}
-<button type="button" onclick="loadDoc{{ name|num_get}}()">Request data</button>
+<br>
+<button type="button" onclick="loadDoc{{ name|num_get}}()">Find number</button>
 <div id="data_store{{ name|num_get}}"></div>
