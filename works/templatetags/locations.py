@@ -10,9 +10,9 @@ register = template.Library()
 
 
 @register.inclusion_tag('location_search.html')
-def get_locations(loc_id):
+def get_locations(loc_id, commits=True):
     locations = Location.objects.all()
     if loc_id:
-        return {"locations": locations, 'loc_id': int(loc_id)}
+        return {"locations": locations, 'loc_id': int(loc_id), 'commits':commits}
     else:
-        return {"locations": locations, 'loc_id': None}
+        return {"locations": locations, 'loc_id': None, 'commits':commits}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+{% load creator_books %}
+{% block title %}{{ creator.given_names }} {{ creator.name }}{% endblock %}
+{% block content %}
+    {% load locations %}
+
+    <form method="get" action="#">
+        {% get_locations location False %}
+        <select name="atoz" id="atoz">
+            {% for letter in letters %}
+                <option value="{{ letter }}" {% if letter == atoz %}selected="selected"{% endif %}>{{ letter }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Search">
+    </form>
+    <table>
+        {% for entry in entries %}
+            <tr>
+                <td>{{ entry.number }}</td>
+                <td>{% if entry in misses %}<b>Miss</b>{% endif %}{% if entry.author %}<a href="{% url 'creator.view' entry.author.pk %}">{{ entry.name }}</a>{% else %}{{ entry.name }}{% endif %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

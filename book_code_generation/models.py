@@ -5,8 +5,37 @@ from django.db import models
 
 import re
 import unicodedata
-
 from creators.models import CreatorLocationNumber
+
+
+def turbo_str(strs):
+    import unicodedata
+
+    """ Normalise (normalize) unicode data in Python to remove umlauts, accents etc. """
+
+    data = strs
+    normal = unicodedata.normalize('NFKD', data).encode('ASCII', 'ignore')
+    return normal.decode('ASCII')
+
+
+def number_shrink_wrap(num):
+    return int(str(float('0.'+str(num)))[2:])
+
+
+def get_letter_for_code(code: str):
+    code_parts = code.split("-")
+    if len(code_parts) > 2:
+        try:
+            num =int(str(float("0." + code_parts[2])).split(".")[1])
+            return code_parts[1]
+        except ValueError:
+            try:
+                num =  int(str(float("0." + code_parts[1])).split(".")[1])
+                return None
+            except ValueError:
+                if "ABC" not in code_parts:
+                    print("ERROR" + code)
+                pass
 
 
 def get_number_for_code(code: str):
@@ -49,10 +78,11 @@ class BookCode(models.Model):
 
 
 class CodePin:
-    def __init__(self, name: str, number: int, end='ZZZZZZZZZ'):
+    def __init__(self, name: str, number: int, end='ZZZZZZZZZ', author=None):
         self.name = name
         self.number = number
         self.end = end
+        self.author = author
 
     def __str__(self):
         return self.name + "::" + str(self.number)
@@ -88,20 +118,20 @@ def get_numbers_between(start, end):
     return [start]
 
 
-def get_new_number_for_location(location, name: str, exclude_list=[]):
+def get_authors_numbers(location, starting_letter, exclude_list=[]):
     from works.models import Location
 
     codes = CutterCodeRange.objects.all()
     lst = []
     for code in codes:
-        if code.from_affix.startswith(name[0]):
-            lst.append(CodePin(code.from_affix.upper(), int(code.number), code.to_affix.upper()))
+        if code.from_affix.startswith(starting_letter):
+            lst.append(CodePin(turbo_str(code.from_affix.upper()), number_shrink_wrap(code.number), turbo_str(code.to_affix.upper())))
 
-    letters = list(CreatorLocationNumber.objects.filter(location=location, letter=name[0]))
+    letters = list(CreatorLocationNumber.objects.filter(location=location, letter=starting_letter))
     keys_done = set()
     my_letters = set()
     for letter in letters:
-        l_name = letter.creator.name.upper() + " " + letter.creator.given_names.upper()
+        l_name = turbo_str(letter.creator.name.upper() + " " + letter.creator.given_names.upper())
         to_hit = True
         for code in lst:
             if letter.number == code.number:
@@ -109,15 +139,21 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
                     keys_done.add(letter.number)
                     to_hit = False
                     code.name = l_name
+                    code.author = letter.creator
         if to_hit:
             my_letters.add(letter)
     for item in my_letters:
-        l_name = item.creator.name.upper() + " " + item.creator.given_names.upper()
+        l_name = turbo_str(item.creator.name.upper() + " " + item.creator.given_names.upper())
 
         if item.number not in letters:
-            lst.append(CodePin(l_name, item.number))
+            lst.append(CodePin(l_name, item.number, author=item.creator))
     lst.sort(key=get_key)
-    lst.append(CodePin(name[0] + "ZZZZZZZZZZZZ", 99999))
+    lst.append(CodePin(starting_letter + "ZZZZZZZZZZZZ", 99999))
+    return lst
+
+
+def get_new_number_for_location(location, name: str, exclude_list=[]):
+    lst = get_authors_numbers(location, name[0], exclude_list)
 
     start = lst[0]
     end = start

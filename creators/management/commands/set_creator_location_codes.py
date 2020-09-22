@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group
 
 from django.core.management.base import BaseCommand
 
-from book_code_generation.models import get_number_for_code
+from book_code_generation.models import get_number_for_code, get_letter_for_code
 from creators.models import Creator, CreatorLocationNumber
 from members.models import Committee
 from members.permissions import KASCO, BOARD, ADMIN, COMCO, BOOKBUYERS, KICKIN, LENDERS, BOOKS, WEB, KONNICHIWA, RETRIEVAL
@@ -25,7 +25,9 @@ class Command(BaseCommand):
                 item_to_author[item] = None
 
         for creator in Creator.objects.all():
-
+            first_letter = None
+            if len(creator.name) > 0:
+                first_letter = creator.name[0]
             location_dict = dict()
             letter = ""
             if len(creator.name) > 0:
@@ -44,6 +46,8 @@ class Command(BaseCommand):
                 final_code = 0
 
                 for item in location_dict[key]:
+                    if first_letter and not get_letter_for_code(item.book_code) == first_letter:
+                        continue
                     book_nr = get_number_for_code(item.book_code)
                     count = code_dict.get(book_nr, 0)
                     count += 1
