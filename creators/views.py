@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
-from book_code_generation.models import generate_author_number, get_number_for_str
+from book_code_generation.models import generate_author_number, get_number_for_str, turbo_str
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
 from utils.get_query_words import get_query_words
@@ -122,8 +122,8 @@ class CreatorList(PermissionRequiredMixin, ListView):
 
 def sort_key(obj):
     def aa(obj2):
-        name = obj.name.upper() + " " + obj.given_names.upper()
-        name2 = obj2.name.upper() + " " + obj2.given_names.upper()
+        name = turbo_str(obj.name+ " " + obj.given_names)
+        name2 = turbo_str(obj2.name + " " + obj2.given_names)
         if name2 > name:
             return -get_number_for_str(name2)
         else:
@@ -196,7 +196,7 @@ def collisions(request):
                     my_data.sort(key=sort_key(not_excluded))
                     for creator in my_data:
                         if creator != not_excluded:
-                            number = generate_author_number(creator.name.upper() + " " + creator.given_names.upper(), my_location, excludes, True)
+                            number = generate_author_number(turbo_str(creator.name + " " + creator.given_names), my_location, excludes, True)
                             cln = CreatorLocationNumber.objects.get(creator=creator, location=my_location)
                             old_number = cln.number
                             cln.number = number

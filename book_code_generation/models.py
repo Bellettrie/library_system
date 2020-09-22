@@ -164,7 +164,7 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
     end = start
 
     for codepin in lst:
-        if codepin.name > name.upper():
+        if codepin.name > turbo_str(name):
             end = codepin
             break
         start = codepin
@@ -203,7 +203,7 @@ class CutterCodeRange(models.Model):
                 continue
             if result is None:
                 result = cutter
-            if strip_accents(name.upper()) < cutter.from_affix:
+            if turbo_str(name) < cutter.from_affix:
                 return result
             result = cutter
         return result
@@ -228,7 +228,7 @@ def generate_author_number(name, location, exclude_list=[], include_one=False):
 
     lower_num = get_number_for_str(lower_bound.name)
     upper_num = get_number_for_str(upper_bound.name)
-    mid_num = get_number_for_str(name.upper())
+    mid_num = get_number_for_str(turbo_str(name))
     if (upper_num - lower_num) == 0:
         diff = 0
     else:
