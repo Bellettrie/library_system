@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 if z != cln:
                     if z.letter != cln.letter or z.number != cln.number:
                         print(z.letter, z.number, cln.letter, cln.number, cln.creator, cln.location)
-                    exp = CutterCodeRange.get_cutter_number(cln.creator.name.upper() +" "+cln.creator.given_names.upper())
+                    exp = CutterCodeRange.get_cutter_number(cln.creator.name.upper() + " " + cln.creator.given_names.upper())
                     if exp.number != cln.number or cln.letter != exp.from_affix[0]:
                         to_delete.append(cln)
                         break
@@ -30,4 +30,3 @@ class Command(BaseCommand):
                         to_delete.append(z)
         for item in to_delete:
             item.delete()
-

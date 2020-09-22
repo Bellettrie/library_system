@@ -255,7 +255,6 @@ def publication_edit(request, publication_id=None):
             instance.save()
             creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
 
-
             if creators.is_valid():
                 instances = creators.save(commit=False)
                 for inst in creators.deleted_objects:

@@ -8,8 +8,11 @@ from members.models import Committee
 from members.permissions import KASCO, BOARD, ADMIN, COMCO, BOOKBUYERS, KICKIN, LENDERS, BOOKS, WEB, KONNICHIWA, RETRIEVAL
 from works.models import Item, Location
 
+
 def number_shrinking(num):
     return int(str(float("0." + num)).split(".")[1])
+
+
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 

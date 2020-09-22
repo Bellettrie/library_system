@@ -17,7 +17,6 @@ class Command(BaseCommand):
         unlabeled = set()
         for creatornumber in CreatorLocationNumber.objects.all():
             creator_locations.add((creatornumber.creator, creatornumber.location))
-        count = 0
         for item in Item.objects.all():
             if item.location.sig_gen == "author":
                 authors = item.publication.get_authors()
@@ -26,7 +25,7 @@ class Command(BaseCommand):
                     break_through = False
                     while auth is not None:
                         if (auth, item.location) in creator_locations:
-                            break_through=True
+                            break_through = True
                             break
                         if auth.is_alias_of == auth:
                             break

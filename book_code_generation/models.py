@@ -9,33 +9,35 @@ from creators.models import CreatorLocationNumber
 
 
 def turbo_str(strs):
-    import unicodedata
-
     """ Normalise (normalize) unicode data in Python to remove umlauts, accents etc. """
-
+    strs = strs.upper().replace("IJ", "Y")
     data = strs
     normal = unicodedata.normalize('NFKD', data).encode('ASCII', 'ignore')
     return normal.decode('ASCII')
 
 
 def number_shrink_wrap(num):
-    return int(str(float('0.'+str(num)))[2:])
+    return int(str(float('0.' + str(num)))[2:])
 
 
 def get_letter_for_code(code: str):
     code_parts = code.split("-")
+    num = 0
     if len(code_parts) > 2:
+
         try:
-            num =int(str(float("0." + code_parts[2])).split(".")[1])
+            num = int(str(float("0." + code_parts[2])).split(".")[1])
             return code_parts[1]
         except ValueError:
             try:
-                num =  int(str(float("0." + code_parts[1])).split(".")[1])
+                num = int(str(float("0." + code_parts[1])).split(".")[1])
                 return None
             except ValueError:
                 if "ABC" not in code_parts:
                     print("ERROR" + code)
                 pass
+    if num:
+        return None
 
 
 def get_number_for_code(code: str):
@@ -88,7 +90,7 @@ class CodePin:
         return self.name + "::" + str(self.number)
 
 
-def get_key(obj: CodePin):
+def get_key(obj):
     return obj.number
 
 
@@ -125,17 +127,17 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
     lst = []
     for code in codes:
         if code.from_affix.startswith(starting_letter):
-            lst.append(CodePin(turbo_str(code.from_affix.upper()), number_shrink_wrap(code.number), turbo_str(code.to_affix.upper())))
+            lst.append(CodePin(turbo_str(code.from_affix), number_shrink_wrap(code.number), turbo_str(code.to_affix)))
 
     letters = list(CreatorLocationNumber.objects.filter(location=location, letter=starting_letter))
     keys_done = set()
     my_letters = set()
     for letter in letters:
-        l_name = turbo_str(letter.creator.name.upper() + " " + letter.creator.given_names.upper())
+        l_name = turbo_str(letter.creator.name + " " + letter.creator.given_names)
         to_hit = True
         for code in lst:
             if letter.number == code.number:
-                if not letter.number in keys_done and code.name < l_name < code.end:
+                if letter.number not in keys_done and code.name < l_name < code.end:
                     keys_done.add(letter.number)
                     to_hit = False
                     code.name = l_name
@@ -143,7 +145,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
         if to_hit:
             my_letters.add(letter)
     for item in my_letters:
-        l_name = turbo_str(item.creator.name.upper() + " " + item.creator.given_names.upper())
+        l_name = turbo_str(item.creator.name + " " + item.creator.given_names)
 
         if item.number not in letters:
             lst.append(CodePin(l_name, item.number, author=item.creator))
@@ -199,10 +201,6 @@ class CutterCodeRange(models.Model):
                 return result
             result = cutter
         return result
-
-
-def get_key(creatorlocationnumber: CreatorLocationNumber):
-    return str(creatorlocationnumber.number)
 
 
 def get_number_for_str(string: str):

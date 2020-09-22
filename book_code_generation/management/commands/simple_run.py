@@ -13,9 +13,8 @@ from works.models import Item, Creator, Location, Publication
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Simple test of calculating numbers'
 
     def handle(self, *args, **options):
-        get_new_number_for_location(None, 'Adams')
-
-        get_numbers_between(201, 212)
+        print(get_new_number_for_location(None, 'Adams'))
+        print(get_numbers_between(201, 212))

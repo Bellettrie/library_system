@@ -66,7 +66,7 @@ class Category(models.Model):
 GENERATORS = {
     'author': generate_code_from_author,
     'author_translated': generate_code_from_author_translated,
-    'abc':generate_code_abc,
+    'abc': generate_code_abc,
     'title': generate_code_from_title,
 }
 

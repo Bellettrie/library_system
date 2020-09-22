@@ -33,7 +33,7 @@ class Command(BaseCommand):
             series_dict[work_in_series.part_of_series] = data
             act_set.add(work_in_series.part_of_series)
         for series in series_dict.keys():
-            if not series in series_killed:
+            if series not in series_killed:
                 series.location = series_dict[series]
                 series.save()
 

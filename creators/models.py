@@ -96,7 +96,6 @@ def try_to_update_object(my_object, pattern, new_prefix):
         my_object.save()
 
 
-
 def update_item(item, pattern, old_prefix, new_prefix):
     from recode.models import Recode
 
@@ -109,7 +108,6 @@ def update_item(item, pattern, old_prefix, new_prefix):
         if match:
             new_code = new_prefix + item.book_code[match.end():]
             Recode.objects.create(item=item, book_code=new_code, book_code_extension=item.book_code_extension)
-
 
 
 def relabel_creator(creator, location, old_number, old_letter, new_number, new_letter):

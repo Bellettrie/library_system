@@ -13,6 +13,6 @@ register = template.Library()
 def get_locations(loc_id, commits=True):
     locations = Location.objects.all()
     if loc_id:
-        return {"locations": locations, 'loc_id': int(loc_id), 'commits':commits}
+        return {"locations": locations, 'loc_id': int(loc_id), 'commits': commits}
     else:
-        return {"locations": locations, 'loc_id': None, 'commits':commits}
+        return {"locations": locations, 'loc_id': None, 'commits': commits}

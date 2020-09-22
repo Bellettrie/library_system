@@ -102,7 +102,6 @@ class CreatorList(PermissionRequiredMixin, ListView):
 
     def get_queryset(self):  # new
         words = get_query_words(self.request)
-        get_previous = self.request.GET.get('previous', False)
 
         if words is None:
             return []
@@ -124,11 +123,12 @@ class CreatorList(PermissionRequiredMixin, ListView):
 def sort_key(obj):
     def aa(obj2):
         name = obj.name.upper() + " " + obj.given_names.upper()
-        name2 =obj2.name.upper() + " " + obj2.given_names.upper()
-        if  name2 > name:
+        name2 = obj2.name.upper() + " " + obj2.given_names.upper()
+        if name2 > name:
             return -get_number_for_str(name2)
         else:
             return get_number_for_str(name2)
+
     return aa
 
 
