@@ -11,7 +11,7 @@
     {%for line in data %}
         <tr><td>{{ line.0 }}</td>
         <td>{% for creator in line.1 %}
-            <a href="{% url 'creator.view' creator.0.pk%}">{% if creator.0 in marked %}<b>KEPT</b>{% endif %}{{ creator.0.get_name }}</a> {{ creator.1 }}<br/>
+            {% if creator.0 in marked %}<b>KEPT</b>{% endif %}{{ creator.0.get_name }}{{ creator.1 }}<br/>
             {% endfor %}
             </td><td>{{ line.2  }}</td></tr>
     {% endfor %}

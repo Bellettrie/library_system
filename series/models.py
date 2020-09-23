@@ -80,6 +80,9 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
         generator = GENERATORS[location.sig_gen]
         return generator(FakeItem(self, location))
 
+    def get_all_items(self):
+        pass
+
 
 class WorkInSeries(SeriesNode):
     work = models.ForeignKey("works.Work", on_delete=PROTECT)

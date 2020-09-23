@@ -129,8 +129,6 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
     codes = CutterCodeRange.objects.all()
     lst = []
     for code in codes:
-        if code.location is not None and  code.location!= location:
-            continue
         if code.from_affix.startswith(starting_letter):
             lst.append(CodePin(turbo_str(code.from_affix), number_shrink_wrap(code.number), turbo_str(code.to_affix)))
 
@@ -138,7 +136,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
     keys_done = set()
     my_letters = set()
     for letter in letters:
-        l_name = turbo_str(letter.creator.name + " " + letter.creator.given_names)
+        l_name = turbo_str(letter.get_name())
         to_hit = True
         for code in lst:
             if number_shrink_wrap(letter.number) == code.number:
@@ -150,7 +148,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
         if to_hit:
             my_letters.add(letter)
     for item in my_letters:
-        l_name = turbo_str(item.creator.name + " " + item.creator.given_names)
+        l_name = turbo_str(item.get_name())
 
         if item.number not in letters:
             lst.append(CodePin(l_name, number_shrink_wrap(item.number), author=item.creator))
@@ -194,7 +192,6 @@ class CutterCodeRange(models.Model):
     to_affix = models.CharField(max_length=16)
     number = models.CharField(max_length=16)
     generated_affix = models.CharField(max_length=20)
-    location = models.ForeignKey("works.Location", default=None, null=True, blank=True, on_delete=CASCADE)
 
     @staticmethod
     def get_cutter_number(name: str, location=None):
@@ -202,8 +199,6 @@ class CutterCodeRange(models.Model):
 
         result = None
         for cutter in cutters:
-            if cutter.location is not None and cutter.location == location:
-                continue
             if result is None:
                 result = cutter
             if turbo_str(name) < cutter.from_affix:

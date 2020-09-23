@@ -81,9 +81,11 @@ class CreatorRole(models.Model):
 
 class CreatorLocationNumber(models.Model):
     creator = models.ForeignKey(Creator, on_delete=CASCADE)
-    location = models.ForeignKey('works.Location', on_delete=CASCADE)
+    location = models.ForeignKey('works.Location', on_delete=CASCADE, null=True, blank=True)
+    series = models.ForeignKey('series.Series', on_delete=CASCADE, null=True, blank=True)
     number = models.IntegerField()
     letter = models.CharField(max_length=16)
+
 
     def __str__(self):
         return self.letter + "-" + str(self.number) + ":" + str(self.location.pk) + ":" + str(self.creator.pk)

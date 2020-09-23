@@ -122,7 +122,7 @@ class CreatorList(PermissionRequiredMixin, ListView):
 
 def sort_key(obj):
     def aa(obj2):
-        name = turbo_str(obj.name+ " " + obj.given_names)
+        name = turbo_str(obj.name + " " + obj.given_names)
         name2 = turbo_str(obj2.name + " " + obj2.given_names)
         if name2 > name:
             return -get_number_for_str(name2)
@@ -144,65 +144,21 @@ def collisions(request):
     if location:
         location = int(location)
         my_location = Location.objects.get(pk=location)
-        items = Item.objects.filter(location=location)
-        author_item_dict = dict()
-        for item in items:
-            authors = item.publication.get_authors()
-            if len(authors) == 0:
-                continue
-            author = authors[0]
-            lst = author_item_dict.get(author.creator, [])
-            lst.append(item)
-            author_item_dict[author.creator] = lst
-        data_set = dict()
+
+        creator_location_numbers = dict()
+
         for cln in CreatorLocationNumber.objects.filter(location=my_location):
-            entry = data_set.get((cln.letter, cln.number), [])
-            entry.append(cln.creator)
-            data_set[(cln.letter, cln.number)] = entry
-        for entry in data_set.keys():
-            ccount = 0
-            row_totals = [0, 0, 0, 0]
+            cln_list = creator_location_numbers.get((cln.letter, cln.number), [])
+            cln_list.append(cln)
+            creator_location_numbers[(cln.letter, cln.number)] = cln_list
+            if cln.creator:
+                plist = Item.objects.filter(publication__listed_author__endswith=str(cln.creator.pk), location=my_location)
+            if cln.series:
+                publications = cln.series
+        for cln in creator_location_numbers.keys():
+            if len(creator_location_numbers[cln]) > 1:
+                data.append((cln, creator_location_numbers[cln]))
 
-            if len(data_set[entry]) > 1:
-                not_excluded = None
-                my_data = list(set(data_set[entry]))
-                d3 = []
-                for creator in my_data:
-                    counts = creator.get_location_item_counts(my_location, author_item_dict)
-                    if counts[0] >= ccount:
-                        not_excluded = creator
-                        row_totals[0] += ccount
-                        ccount = counts[0]
-                    else:
-                        row_totals[0] += counts[0]
-                    row_totals[1] += counts[1]
-                    row_totals[2] += counts[2]
-
-                    d3.append((creator, counts))
-                row_totals[3] += ccount
-                totals[0] += row_totals[0]
-                totals[1] += row_totals[1]
-                totals[2] += row_totals[2]
-                totals[3] += row_totals[3]
-
-                data.append((entry, d3, row_totals))
-                if not_excluded:
-                    marked_authors.add(not_excluded)
-                if commit:
-                    excludes = []
-                    for creator in my_data:
-                        if creator != not_excluded:
-                            excludes.append(creator)
-                    my_data.sort(key=sort_key(not_excluded))
-                    for creator in my_data:
-                        if creator != not_excluded:
-                            number = generate_author_number(turbo_str(creator.name + " " + creator.given_names), my_location, excludes, True)
-                            cln = CreatorLocationNumber.objects.get(creator=creator, location=my_location)
-                            old_number = cln.number
-                            cln.number = number
-                            cln.save()
-                            excludes.remove(creator)
-                            force_relabel(cln, old_number, cln.letter)
     if commit:
         totals[0] = "Newly coded " + str(totals[0])
     return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals, 'marked': marked_authors})
