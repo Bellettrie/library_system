@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from config.models import LendingSettings
@@ -30,7 +30,7 @@ def work_based(request, work_id):
     if q is not None:
         members = Member.objects.filter(name__icontains=q)
     return render(request, 'lending_based_on_work.html',
-                  {'members': members, 'item': Item.objects.get(pk=work_id), "LENDING_FINALIZE": LENDING_FINALIZE})
+                  {'members': members, 'item': get_object_or_404(Item, pk=work_id), "LENDING_FINALIZE": LENDING_FINALIZE})
 
 
 @permission_required('lendings.add_lending')
@@ -45,7 +45,7 @@ def member_based(request, member_id):
             row.set_item_options(["finalize"])
 
     return render(request, 'lending_based_on_member.html',
-                  {'items': items, 'member': Member.objects.get(pk=member_id), "LENDING_FINALIZE": LENDING_FINALIZE})
+                  {'items': items, 'member': get_object_or_404(Member, pk=member_id), "LENDING_FINALIZE": LENDING_FINALIZE})
 
 
 lending_failed_reasons = {
@@ -58,8 +58,8 @@ lending_failed_reasons = {
 
 @login_required()
 def lending_failed(request, member_id, work_id, reason_id):
-    item = Item.objects.get(pk=work_id)
-    member = Member.objects.get(pk=member_id)
+    item = get_object_or_404(Item, pk=work_id)
+    member = get_object_or_404(Member, pk=member_id)
     organising_member = request.user.member
     return render(request, 'lending_cannot_lend.html', {'item': item,
                                                         'member': member, 'organising_member': organising_member, 'reason': lending_failed_reasons[reason_id]})
@@ -68,8 +68,8 @@ def lending_failed(request, member_id, work_id, reason_id):
 @transaction.atomic
 @permission_required('lendings.add_lending')
 def finalize(request, work_id, member_id):
-    member = Member.objects.get(pk=member_id)
-    item = Item.objects.get(pk=work_id)
+    member = get_object_or_404(Member, pk=member_id)
+    item = get_object_or_404(Item, pk=work_id)
     if item.is_available():
         if request.method == 'POST':
             if not member.can_lend_item_type(item.location.category.item_type):
@@ -90,7 +90,7 @@ def finalize(request, work_id, member_id):
 
 @transaction.atomic
 def extend(request, work_id):
-    item = Item.objects.get(pk=work_id)
+    item = get_object_or_404(Item, pk=work_id)
     lending = item.current_lending()
     if not request.user.has_perm('lendings.extend'):
         if not hasattr(request.user, 'member'):
@@ -124,7 +124,7 @@ def extend(request, work_id):
 @transaction.atomic
 @permission_required('lendings.return')
 def return_book(request, work_id):
-    item = Item.objects.get(pk=work_id)
+    item = get_object_or_404(Item, pk=work_id)
     lending = item.current_lending()
     late_days = datetime.now().date() - lending.end_date
     if request.method == 'POST':

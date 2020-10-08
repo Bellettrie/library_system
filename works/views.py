@@ -175,12 +175,12 @@ def create_item_state(request, item_id):
         form = ItemStateCreateForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.item = Item.objects.get(pk=item_id)
+            instance.item = get_object_or_404(Item, pk=item_id)
             instance.save()
             return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
     else:
         form = ItemStateCreateForm()
-    return render(request, 'item_reason_edit.html', {'form': form, 'member': Item.objects.get(pk=item_id)})
+    return render(request, 'item_reason_edit.html', {'form': form, 'member': get_object_or_404(Item, pk=item_id)})
 
 
 @transaction.atomic
