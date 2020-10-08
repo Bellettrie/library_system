@@ -88,6 +88,7 @@
         {% endif %}
     </table>
 
+    <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Lend for</a>
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
 {% load books %}
     {% get_user_books member perms %}
