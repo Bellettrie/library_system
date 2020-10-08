@@ -39,6 +39,7 @@
             {% if perms.works.change_item %}
                 <th>Edit</th>
             {% endif %}
+            <th>Lend</th>
         </tr>
         {% for item in object.get_items %}
 
@@ -69,6 +70,13 @@
                         {% endif %}
                         {% if perms.recode.change_recode and recode%}
                             <a href="{% url 'recode.end' recode.pk %}?next={{ request.path }}" class="btn btn-primary btn-sm">Finish Recode</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if perms.lendings.add_lending %}
+                            <a href="{% url 'lendings.new.work' item.pk %}" class="btn btn-primary btn-sm" role="button">Lend</a>
+                        {% else %}
+                            Available
                         {% endif %}
                     </td>
                 {% endwith %}
