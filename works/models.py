@@ -4,6 +4,7 @@ from django.db import models
 
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
+from django.shortcuts import get_object_or_404
 
 from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CutterCodeRange, BookCode
 from creators.models import Creator, CreatorRole
@@ -196,7 +197,7 @@ class Item(NamedThing, BookCode):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0
 
     def current_lending(self):
-        return Lending.objects.get(item=self, handed_in=False)
+        return get_object_or_404(Lending, item=self, handed_in=False)
 
     def get_title(self):
         return self.title or self.publication.title

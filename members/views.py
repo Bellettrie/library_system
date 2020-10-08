@@ -63,7 +63,7 @@ def show(request, member_id):
         member = request.user.member
         if not (member and member.pk == member_id):
             raise PermissionDenied
-    return render(request, 'member_detail.html', {'member': Member.objects.get(pk=member_id)})
+    return render(request, 'member_detail.html', {'member': get_object_or_404(Member, pk=member_id)})
 
 
 @transaction.atomic
@@ -106,7 +106,7 @@ def new(request):
 
 @transaction.atomic
 def signup(request, member_id):
-    member = Member.objects.get(pk=member_id)
+    member = get_object_or_404(Member, pk=member_id)
     if not request.user.has_perm('auth.add_user'):
         members = Member.objects.filter(pk=member_id, invitation_code=request.GET.get('key', ''))
 
@@ -136,7 +136,7 @@ def signup(request, member_id):
 @transaction.atomic
 @permission_required('auth.change_user')
 def change_user(request, member_id):
-    member = Member.objects.get(pk=member_id)
+    member = get_object_or_404(Member, pk=member_id)
     if request.method == 'POST':
         form = PasswordChangeForm(user=member.user, data=request.POST)
         if form.is_valid():
@@ -155,14 +155,14 @@ def change_user(request, member_id):
 @transaction.atomic
 @permission_required('auth.delete_user')
 def remove_user(request, member_id):
-    member = Member.objects.get(pk=member_id)
+    member = get_object_or_404(Member, pk=member_id)
     return render(request, 'user_delete.html', {'member': member, 'user': member.user})
 
 
 @transaction.atomic
 @permission_required('auth.delete_user')
 def delete_user(request, member_id):
-    member = Member.objects.get(pk=member_id)
+    member = get_object_or_404(Member, pk=member_id)
     user = member.user
     member.user = None
     member.save()
@@ -176,7 +176,7 @@ def delete_user(request, member_id):
 def generate_invite_code(request, member_id):
     letters = string.ascii_letters + string.digits
     result_str = ''.join(random.choice(letters) for i in range(16))
-    member = Member.objects.get(pk=member_id)
+    member = get_object_or_404(Member, pk=member_id)
     if member.user:
         member.invitation_code_valid = False
         member.save()
@@ -193,7 +193,7 @@ def generate_invite_code(request, member_id):
 @transaction.atomic
 @permission_required('auth.add_user')
 def disable_invite_code(request, member_id):
-    member = Member.objects.get(pk=member_id)
+    member = get_object_or_404(Member, pk=member_id)
     member.invitation_code_valid = False
     member.save()
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
@@ -35,7 +35,7 @@ def get_groups(inventarisation):
 
 @permission_required('inventarisation.view_inventarisation')
 def print_list(request, inventarisation_id):
-    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     groups = get_groups(inventarisation)
     return render(request, "inventarisation_print_list.html", {'groups': groups})
 
@@ -51,7 +51,7 @@ class InventarisationCreate(PermissionRequiredMixin, CreateView):
 @transaction.atomic
 @permission_required('inventarisation.change_inventarisation')
 def inventarisation_form(request, inventarisation_id, page_id):
-    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     groups = get_groups(inventarisation)
     page_id = max(0, min(len(groups) - 1, int(page_id)))
 
@@ -114,7 +114,7 @@ def get_cur_block(inventarisation, page_id):
 
 @permission_required('inventarisation.view_inventarisation')
 def get_inventarisation_next(request, inventarisation_id, page_id):
-    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     page_id = get_cur_block(inventarisation, page_id)
     if page_id > -2:
         return HttpResponseRedirect(reverse('inventarisation.by_number', args=(inventarisation_id, page_id)))
@@ -127,14 +127,14 @@ def get_inventarisation_next(request, inventarisation_id, page_id):
 
 @permission_required('inventarisation.view_inventarisation')
 def get_inventarisation_finish(request, inventarisation_id):
-    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     return render(request, "inventarisation_finish.html", {'inventarisation': inventarisation})
 
 
 @transaction.atomic
 @permission_required('inventarisation.change_inventarisation')
 def get_inventarisation_finished(request, inventarisation_id):
-    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     inventarisation.is_active = False
     inventarisation.save()
     return render(request, "inventarisation_finished.html", {'inventarisation': inventarisation})
@@ -142,7 +142,7 @@ def get_inventarisation_finished(request, inventarisation_id):
 
 @permission_required('inventarisation.view_inventarisation')
 def get_inventarisation_early_end(request, inventarisation_id):
-    inventarisation = Inventarisation.objects.get(pk=inventarisation_id)
+    inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     return render(request, "inventarisation_early_end.html", {'inventarisation': inventarisation})
 
 
