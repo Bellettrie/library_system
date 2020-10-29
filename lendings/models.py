@@ -56,7 +56,7 @@ class Lending(models.Model):
     def is_almost_late(self, now=None):
         if now is None:
             now = datetime.date(datetime.now())
-        return self.end_date - timedelta(minutes=4) < now
+        return self.end_date - timedelta(days=4) < now
 
     def calculate_fine(self):
         from config.models import LendingSettings
@@ -110,19 +110,22 @@ class Lending(models.Model):
         lendings = Lending.objects.filter(handed_in=False)
         late_dict = dict()
         almost_late_dict = dict()
+        should_mail = set()
         for lending in lendings:
-            if not lending.mailed_for_late or lending.last_mailed + timedelta(minutes=7) < timezone.now():
-                if lending.is_late():
-                    my_list = late_dict.get(lending.member, [])
-                    my_list.append(lending)
-                    late_dict[lending.member] = my_list
-                elif lending.is_almost_late() and lending.last_mailed + timedelta(minutes=7) < timezone.now():
-                    print("HERE")
-                    my_list = almost_late_dict.get(lending.member, [])
-                    my_list.append(lending)
-                    almost_late_dict[lending.member] = my_list
+            if lending.is_late():
+                if  not lending.mailed_for_late or lending.last_mailed + timedelta(days=7) < timezone.now():
+                    should_mail.add(lending.member)
+                my_list = late_dict.get(lending.member, [])
+                my_list.append(lending)
+                late_dict[lending.member] = my_list
+            elif lending.is_almost_late():
+                if lending.last_mailed + timedelta(days=1) < timezone.now():
+                    should_mail.add(lending.member)
+                my_list = almost_late_dict.get(lending.member, [])
+                my_list.append(lending)
+                almost_late_dict[lending.member] = my_list
 
-        for member in list(set(late_dict.keys()) | set(almost_late_dict.keys())):
+        for member in should_mail:
 
             if not fake:
                 late_list = late_dict.get(member, [])
@@ -140,7 +143,7 @@ class Lending(models.Model):
                     lending.last_mailed = timezone.now()
 
                     lending.save()
-        return almost_late_dict
+        return almost_late_dict, late_dict
 
 
 class Reservation(models.Model):
