@@ -135,7 +135,7 @@ class Lending(models.Model):
 
                     lending.mailed_for_late = True
                     lending.save()
-        return late_dict
+        return almost_late_dict
 
 
 class Reservation(models.Model):
