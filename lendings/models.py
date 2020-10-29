@@ -143,7 +143,7 @@ class Lending(models.Model):
                     lending.last_mailed = timezone.now()
 
                     lending.save()
-        return almost_late_dict, late_dict
+        return almost_late_dict, late_dict,should_mail
 
 
 class Reservation(models.Model):
