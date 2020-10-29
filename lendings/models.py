@@ -139,7 +139,7 @@ class Lending(models.Model):
 
                     lending.mailed_for_late = True
                     lending.save()
-                for lending in late_list:
+                for lending in almost_late_list:
                     lending.last_mailed = timezone.now()
 
                     lending.save()
