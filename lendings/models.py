@@ -119,7 +119,7 @@ class Lending(models.Model):
                 my_list.append(lending)
                 late_dict[lending.member] = my_list
             elif lending.is_almost_late():
-                if lending.last_mailed + timedelta(days=1) < timezone.now():
+                if lending.last_mailed + timedelta(days=2) < timezone.now():
                     should_mail.add(lending.member)
                 my_list = almost_late_dict.get(lending.member, [])
                 my_list.append(lending)
