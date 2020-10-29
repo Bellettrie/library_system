@@ -100,7 +100,7 @@ class Lending(models.Model):
         return LendingSettings.get_end_date(item, member, now)
 
     @staticmethod
-    def late_mails():
+    def late_mails(fake=False):
         lendings = Lending.objects.filter(handed_in=False)
         late_dict = dict()
         for lending in lendings:
@@ -111,12 +111,14 @@ class Lending(models.Model):
 
         for member in late_dict.keys():
             print(member.name)
-            mail_member('mails/late_mail.tpl', {'member': member, 'lendings': late_dict[member]}, member, True)
-            for lending in late_dict[member]:
-                lending.last_mailed = timezone.now()
+            if not fake:
+                mail_member('mails/late_mail.tpl', {'member': member, 'lendings': late_dict[member]}, member, True)
+                for lending in late_dict[member]:
+                    lending.last_mailed = timezone.now()
 
-                lending.mailed_for_late = True
-                lending.save()
+                    lending.mailed_for_late = True
+                    lending.save()
+        return late_dict
 
 
 class Reservation(models.Model):
