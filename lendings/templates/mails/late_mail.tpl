@@ -1,7 +1,7 @@
 {% extends "mail_templated/base.tpl" %}
 
 {% block subject %}
-Bellettrie - Some of your books are late
+Bellettrie - Some of your books are {%if not has_late %} nearly {%endif %} late
 {% endblock %}
 
 {% block body %}
