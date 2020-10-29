@@ -113,7 +113,7 @@ class Lending(models.Model):
         should_mail = set()
         for lending in lendings:
             if lending.is_late():
-                if  not lending.mailed_for_late or lending.last_mailed + timedelta(days=7) < timezone.now():
+                if not lending.mailed_for_late or lending.last_mailed + timedelta(days=7) < timezone.now():
                     should_mail.add(lending.member)
                 my_list = late_dict.get(lending.member, [])
                 my_list.append(lending)
@@ -143,7 +143,7 @@ class Lending(models.Model):
                     lending.last_mailed = timezone.now()
 
                     lending.save()
-        return almost_late_dict, late_dict,should_mail
+        return almost_late_dict, late_dict, should_mail
 
 
 class Reservation(models.Model):
