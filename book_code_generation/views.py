@@ -1,11 +1,14 @@
 from django.contrib.auth.decorators import permission_required
+from django.db import transaction
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 
 # Create your views here.
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
-from book_code_generation.models import generate_author_number, get_authors_numbers, turbo_str
+from book_code_generation.forms import EditForm
+from book_code_generation.models import generate_author_number, get_authors_numbers, turbo_str, CutterCodeRange
 from creators.models import Creator
 from series.models import Series
 from works.models import Publication, Location
@@ -58,7 +61,7 @@ def get_creator_number(request, creator_id, location_id):
         print(name)
         char, min_code, code, max_code = generate_author_number(turbo_str(name), location, exclude_list=[])
 
-    return HttpResponse(char + " :: " +str(min_code)+" < <b>" + str(code) + "</b> < " + str(max_code))
+    return HttpResponse(char + " :: " + str(min_code) + " < <b>" + str(code) + "</b> < " + str(max_code))
 
 
 @permission_required('works.change_work')
@@ -78,4 +81,39 @@ def show_letter_list(request):
                 out_of_order.add(number)
             prev = number
 
-    return render(request, 'code_list.html', {'locations': locations, 'location': location, 'letters': letters, 'atoz': atoz, 'entries': numbers, 'misses': out_of_order})
+    return render(request, 'code_list.html',
+                  {'locations': locations, 'location': location, 'letters': letters, 'atoz': atoz, 'entries': numbers,
+                   'misses': out_of_order})
+
+
+def view_cutter_numbers(request):
+    return render(request, 'list_cutter_numbers.html',
+                  {'cutters': CutterCodeRange.objects.all().order_by('from_affix')})
+
+@transaction.atomic
+@permission_required('members.change_member')
+def edit(request, cutter_id):
+    cutter_code = get_object_or_404(CutterCodeRange, pk=cutter_id)
+    if request.method == 'POST':
+
+        form = EditForm(request.POST, instance=cutter_code)
+        if form.is_valid():
+            instance = form.save()
+            print(instance)
+            return HttpResponseRedirect(reverse('book_code.code_list'))
+    else:
+        form = EditForm(instance=cutter_code)
+    return render(request, 'member_edit.html', {'form': form, 'member': cutter_code})
+
+
+@transaction.atomic
+@permission_required('members.add_member')
+def new(request):
+    if request.method == 'POST':
+        form = EditForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('book_code.code_list'))
+    else:
+        form = EditForm()
+    return render(request, 'member_edit.html', {'form': form})

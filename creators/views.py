@@ -32,7 +32,7 @@ def edit(request, creator_id=None):
     creator = None
     if creator_id is not None:
         creator = get_object_or_404(Creator, pk=creator_id)
-    locations = None
+
     location_datas = CreatorLocationNumber.objects.filter(creator=creator)
     location_dict = {}
     for i in location_datas:
@@ -153,8 +153,7 @@ def collisions(request):
             creator_location_numbers[(cln.letter, cln.number)] = cln_list
             if cln.creator:
                 plist = Item.objects.filter(publication__listed_author__endswith=str(cln.creator.pk), location=my_location)
-            if cln.series:
-                publications = cln.series
+
         for cln in creator_location_numbers.keys():
             if len(creator_location_numbers[cln]) > 1:
                 data.append((cln, creator_location_numbers[cln]))

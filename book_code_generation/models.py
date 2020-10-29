@@ -11,6 +11,7 @@ from django.db.models import CASCADE
 from creators.models import CreatorLocationNumber
 
 
+
 def turbo_str(strs):
     """ Normalise (normalize) unicode data in Python to remove umlauts, accents etc. """
     strs = strs.upper().replace("IJ", "Y")
@@ -129,7 +130,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
     codes = CutterCodeRange.objects.all()
     lst = []
     for code in codes:
-        if code.from_affix.startswith(starting_letter):
+        if code.from_affix.startswith(starting_letter) and (code.location is None or code.location == location):
             lst.append(CodePin(turbo_str(code.from_affix), number_shrink_wrap(code.number), turbo_str(code.to_affix)))
 
     letters = list(CreatorLocationNumber.objects.filter(location=location, letter=starting_letter))
@@ -137,6 +138,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
     my_letters = set()
     for letter in letters:
         l_name = turbo_str(letter.get_name())
+
         to_hit = True
         for code in lst:
             if number_shrink_wrap(letter.number) == code.number:
@@ -192,13 +194,15 @@ class CutterCodeRange(models.Model):
     to_affix = models.CharField(max_length=16)
     number = models.CharField(max_length=16)
     generated_affix = models.CharField(max_length=20)
-
+    location = models.ForeignKey("works.Location", on_delete=CASCADE, null=True, blank=True)
     @staticmethod
     def get_cutter_number(name: str, location=None):
         cutters = CutterCodeRange.objects.all().order_by("from_affix")
 
         result = None
         for cutter in cutters:
+            if (cutter.location != location or location is None) and cutter.location is not None:
+                continue
             if result is None:
                 result = cutter
             if turbo_str(name) < cutter.from_affix:
@@ -245,7 +249,7 @@ def generate_code_from_author(item):
     if len(auth) > 0:
         author = auth[0].creator
 
-        code = CutterCodeRange.get_cutter_number(author.name).generated_affix
+        code = CutterCodeRange.get_cutter_number(author.name, item.location).generated_affix
         cl = CreatorLocationNumber.objects.filter(creator=author, location=item.location)
 
         if len(cl) == 1:
@@ -269,7 +273,7 @@ def generate_code_from_author_translated(item):
     if len(auth) > 0:
         author = auth[0].creator
 
-        code = CutterCodeRange.get_cutter_number(author.name).generated_affix
+        code = CutterCodeRange.get_cutter_number(author.name, item.location).generated_affix
         cl = CreatorLocationNumber.objects.filter(creator=author, location=item.location)
 
         if len(cl) == 1:
