@@ -45,12 +45,18 @@ class Lending(models.Model):
 
     def is_at_extend_limit(self):
         from config.models import LendingSettings
-        return self.times_extended < LendingSettings.get_extend_count(self.item.location.category.item_type, self.member)
+        return self.times_extended < LendingSettings.get_extend_count(self.item.location.category.item_type,
+                                                                      self.member)
 
     def is_late(self, now=None):
         if now is None:
             now = datetime.date(datetime.now())
         return now > self.end_date
+
+    def is_almost_late(self, now=None):
+        if now is None:
+            now = datetime.date(datetime.now())
+        return self.end_date + timedelta(minutes=4) < now
 
     def calculate_fine(self):
         from config.models import LendingSettings
@@ -103,16 +109,27 @@ class Lending(models.Model):
     def late_mails(fake=False):
         lendings = Lending.objects.filter(handed_in=False)
         late_dict = dict()
+        almost_late_dict = dict()
         for lending in lendings:
-            if lending.is_late() and (not lending.mailed_for_late or lending.last_mailed + timedelta(minutes=7) < timezone.now()):
-                my_list = late_dict.get(lending.member, [])
-                my_list.append(lending)
-                late_dict[lending.member] = my_list
+            if not lending.mailed_for_late or lending.last_mailed + timedelta(minutes=7) < timezone.now():
+                if lending.is_late():
+                    my_list = late_dict.get(lending.member, [])
+                    my_list.append(lending)
+                    late_dict[lending.member] = my_list
+                elif lending.is_almost_late():
+                    my_list = almost_late_dict.get(lending.member, [])
+                    my_list.append(lending)
+                    almost_late_dict[lending.member] = my_list
 
-        for member in late_dict.keys():
-            print(member.name)
+        for member in list(set(late_dict.keys()) | set(almost_late_dict.keys())):
+
             if not fake:
-                mail_member('mails/late_mail.tpl', {'member': member, 'lendings': late_dict[member]}, member, True)
+                late_list = late_dict.get(member, [])
+                almost_late_list = almost_late_dict.get(member, [])
+                mail_member('mails/late_mail.tpl',
+                            {'member': member, 'has_late': len(late_list) > 0,
+                             'has_nearly_late': len(almost_late_list) > 0, 'lendings': late_list,
+                             'almost_late': almost_late_list}, member, True)
                 for lending in late_dict[member]:
                     lending.last_mailed = timezone.now()
 
