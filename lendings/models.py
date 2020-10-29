@@ -116,7 +116,8 @@ class Lending(models.Model):
                     my_list = late_dict.get(lending.member, [])
                     my_list.append(lending)
                     late_dict[lending.member] = my_list
-                elif lending.is_almost_late():
+                elif lending.is_almost_late() and lending.last_mailed + timedelta(minutes=7) < timezone.now():
+                    print("HERE")
                     my_list = almost_late_dict.get(lending.member, [])
                     my_list.append(lending)
                     almost_late_dict[lending.member] = my_list
@@ -130,10 +131,14 @@ class Lending(models.Model):
                             {'member': member, 'has_late': len(late_list) > 0,
                              'has_nearly_late': len(almost_late_list) > 0, 'lendings': late_list,
                              'almost_late': almost_late_list}, member, True)
-                for lending in late_dict[member]:
+                for lending in late_list:
                     lending.last_mailed = timezone.now()
 
                     lending.mailed_for_late = True
+                    lending.save()
+                for lending in late_list:
+                    lending.last_mailed = timezone.now()
+
                     lending.save()
         return almost_late_dict
 
