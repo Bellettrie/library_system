@@ -56,7 +56,7 @@ class Lending(models.Model):
     def is_almost_late(self, now=None):
         if now is None:
             now = datetime.date(datetime.now())
-        return self.end_date + timedelta(minutes=4) < now
+        return self.end_date - timedelta(minutes=4) < now
 
     def calculate_fine(self):
         from config.models import LendingSettings
