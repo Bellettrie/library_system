@@ -10,19 +10,43 @@ from django.db.models import CASCADE
 
 from creators.models import CreatorLocationNumber, LocationNumber
 
+import re
+import unicodedata
 
-def turbo_str(strs):
-    """ Normalise (normalize) unicode data in Python to remove umlauts, accents etc. """
-    strs = strs.upper().replace("IJ", "Y")
+_ligature_re = re.compile(r'LATIN (?:(CAPITAL)|SMALL) LIGATURE ([A-Z]{2,})')
+
+
+def split_ligatures(s):
+    """
+    Split the ligatures in `s` into their component letters.
+    """
+
+    def untie(l):
+        m = _ligature_re.match(unicodedata.name(l))
+        if not m:
+            return l
+        elif m.group(1):
+            return m.group(2)
+        else:
+            return m.group(2)
+
+    return ''.join(untie(l) for l in s)
+
+
+def normalize_str(strs):
+    """Normalizes string in such a way that when sorted it's in the order we want. It destroys accents and merges IJ. Only works for western-like names"""
+    strs = split_ligatures(strs).upper().replace("IJ", "Y").replace("ø".upper(), "O")
     data = strs
     normal = unicodedata.normalize('NFKD', data).encode('ASCII', 'ignore')
     return normal.decode('ASCII')
 
 
+# Minimize number to a string: 370 --> 37.
 def number_shrink_wrap(num):
     return str(float('0.' + str(num)))[2:]
 
 
+# Get Z from code in SF-Z-34-lb1.
 def get_letter_for_code(code: str):
     code_parts = code.split("-")
     num = 0
@@ -43,6 +67,7 @@ def get_letter_for_code(code: str):
         return None
 
 
+# Get 37 from SF-T-37-lr1
 def get_number_for_code(code: str):
     code_parts = code.split("-")
     if len(code_parts) > 2:
@@ -57,6 +82,8 @@ def get_number_for_code(code: str):
                 pass
 
 
+# Turn code with strange numbers into standardized numbers:
+# SF-T-370-lr1 ==> SF-T-37-lr1
 def standardize_code(code: str):
     code_parts = code.split("-")
     if len(code_parts) > 2:
@@ -92,13 +119,17 @@ class CodePin:
         return self.name + "::" + str(self.number)
 
 
+# Sorting key
 def get_key(obj):
     return obj.number
 
 
+# Which numbers to consider as postfixes for a book-code?
 MAGIC_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
+# What numbers are between two numbers:
+# Ie. 37, 38 -> [371, 372, 373, 374, 375,376, 377, 378]
 def get_numbers_between(start, end):
     start_float = float("0." + str(start))
     end_float = float("0." + str(end))
@@ -122,6 +153,7 @@ def get_numbers_between(start, end):
     return [start]
 
 
+# get the CodePins for a starting letter and a location, based on the fact that some authors should be ignored.
 def get_authors_numbers(location, starting_letter, exclude_list=[]):
     from works.models import Location
 
@@ -129,7 +161,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
     lst = []
     for code in codes:
         if code.from_affix.startswith(starting_letter):
-            lst.append(CodePin(turbo_str(code.from_affix), number_shrink_wrap(code.number), turbo_str(code.to_affix)))
+            lst.append(CodePin(normalize_str(code.from_affix), number_shrink_wrap(code.number), normalize_str(code.to_affix)))
 
     letters = list(LocationNumber.objects.filter(location=location, letter=starting_letter))
     keys_done = set()
@@ -141,7 +173,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
                 letters.remove(l)
 
     for letter in letters:
-        l_name = turbo_str(letter.name)
+        l_name = normalize_str(letter.name)
         to_hit = True
         for code in lst:
             if number_shrink_wrap(letter.number) == code.number:
@@ -152,7 +184,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
         if to_hit:
             my_letters.add(letter)
     for item in my_letters:
-        l_name = turbo_str(item.name)
+        l_name = normalize_str(item.name)
 
         if item.number not in letters:
             lst.append(CodePin(l_name, number_shrink_wrap(item.number)))
@@ -161,6 +193,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
     return lst
 
 
+# Get a new number for a certain name and location, with a list of ignored authors.
 def get_new_number_for_location(location, name: str, exclude_list=[]):
     lst = get_authors_numbers(location, name[0], exclude_list)
 
@@ -168,27 +201,13 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
     end = start
 
     for codepin in lst:
-        if codepin.name > turbo_str(name):
+        if codepin.name > normalize_str(name):
             end = codepin
             break
         start = codepin
     print(start.name, start.number, end.name, end.number)
 
     return get_numbers_between(start.number, end.number), start, end
-
-
-def strip_accents(text):
-    """
-    Strip accents from input String.
-
-    :param text: The input string.
-    :type text: String.
-
-    :returns: The processed String.
-    :rtype: String.
-    """
-
-    return unidecode.unidecode(text)
 
 
 class CutterCodeRange(models.Model):
@@ -205,12 +224,15 @@ class CutterCodeRange(models.Model):
         for cutter in cutters:
             if result is None:
                 result = cutter
-            if turbo_str(name) < cutter.from_affix:
+            if normalize_str(name) < cutter.from_affix:
                 return result
             result = cutter
         return result
 
 
+# Turn string into a number. Used to figure out what percentage of the possible strings are between something.
+# Example, if we have: A = 1,  C = 2, E = 3, then we know that C is halfway between A and E.
+# This function allows this for arbitrary words.
 def get_number_for_str(string: str):
     number = 0
     for letter in string[::-1]:
@@ -223,6 +245,8 @@ def get_number_for_str(string: str):
     return number
 
 
+# Return a number for a name, location, exclude_list
+# Returns first letter of name, minimum number, recommended number, maximum number
 def generate_author_number(name, location, exclude_list=[], include_one=False):
     if name is None or len(name) == 0:
         return None
@@ -230,7 +254,7 @@ def generate_author_number(name, location, exclude_list=[], include_one=False):
 
     lower_num = get_number_for_str(lower_bound.name)
     upper_num = get_number_for_str(upper_bound.name)
-    mid_num = get_number_for_str(turbo_str(name))
+    mid_num = get_number_for_str(normalize_str(name))
     if (upper_num - lower_num) == 0:
         diff = 0
     else:
@@ -241,16 +265,17 @@ def generate_author_number(name, location, exclude_list=[], include_one=False):
     if not include_one and len(numbers) > 1:
         num = max(1, num)
 
-    return name[0], numbers[0], numbers[max(0, min(len(numbers) - 1, num))], numbers[len(numbers) - 1]
+    return name[0], numbers[0], numbers[max(0, min(len(numbers) - 1, int(num)))], numbers[len(numbers) - 1]
 
 
+# Generate a book_code for an item (or series).
 def generate_code_from_author(item):
     pub = item.publication
     auth = pub.get_authors()
     if len(auth) > 0:
         author = auth[0].creator
 
-        code = CutterCodeRange.get_cutter_number(author.name).generated_affix
+        code = "?" + CutterCodeRange.get_cutter_number(author.name).generated_affix + "?"
         cl = CreatorLocationNumber.objects.filter(creator=author, location=item.location)
 
         if len(cl) == 1:
@@ -261,11 +286,14 @@ def generate_code_from_author(item):
                 cl = CreatorLocationNumber.objects.filter(creator=my_author, location=item.location)
                 if len(cl) == 1:
                     code = my_author.name[0] + "-" + str(cl[0].number)
-        return item.location.category.code + "-" + code + "-"
+        return item.location.category.code + "-" + code + "-", False
     else:
-        pass
+        prim_ser = item.publication
+        if hasattr(prim_ser, 'location_code') and prim_ser.location_code is not None:
+            return item.location.category.code + "-" + prim_ser.location_code.letter + "-" + str(prim_ser.location_code.number) + "-", True
 
 
+# Generate a code for a translated item.
 def generate_code_from_author_translated(item):
     pub = item.publication
     prefix = "N"
@@ -281,23 +309,37 @@ def generate_code_from_author_translated(item):
         if len(cl) == 1:
             code = author.name[0] + "-" + str(cl[0].number)
 
-        return prefix + "-" + code + "-"
+        return prefix + "-" + code + "-", False
     else:
-        pass
+        prim_ser = item.publication
+        if hasattr(prim_ser, 'location_code') and prim_ser.location_code is not None:
+            return prefix + "-" + prim_ser.location_code.letter + "-" + str(prim_ser.location_code.number) + "-", True
 
 
+# Get code prefix for ABC-books.
 def generate_code_abc(item):
-    return item.location.category.code + "-ABC-"
+    return item.location.category.code + "-ABC-", False
 
 
+# Get code prefix for ABC-books.
+def generate_code_abc_translated(item):
+    pub = item.publication
+    prefix = "N"
+    if pub.is_translated:
+        prefix = "V"
+    return prefix + "-ABC-", False
+
+
+# Generate code based on title.
 def generate_code_from_title(item):
-    title = item.publication.title[0:4]
+    title = item.publication.title[0:4].upper()
     if item.location.category.code == "":
-        return title + "-"
+        return title, True
     else:
-        return item.location.category.code + "-" + title + "-"
+        return item.location.category.code + "-" + title + "-", True
 
 
+# Used to mock an item to run through the code, in case the item does not exist yet. Only contains the required fields for the item.
 class FakeItem:
     def __init__(self, publication, location):
         self.publication = publication

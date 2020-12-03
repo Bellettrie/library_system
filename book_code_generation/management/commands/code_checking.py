@@ -4,7 +4,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from book_code_generation.models import CutterCodeRange, generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CodePin, turbo_str, number_shrink_wrap
+from book_code_generation.models import CutterCodeRange, generate_code_from_author, generate_code_from_author_translated, generate_code_from_title, CodePin, normalize_str, number_shrink_wrap
 from creators.models import CreatorLocationNumber
 
 
@@ -24,11 +24,11 @@ class Command(BaseCommand):
                 lst = []
                 for code in codes:
                     if code.from_affix.startswith(l):
-                        lst.append(CodePin(turbo_str(code.from_affix), number_shrink_wrap(code.number)))
+                        lst.append(CodePin(normalize_str(code.from_affix), number_shrink_wrap(code.number)))
 
                 letters = list(CreatorLocationNumber.objects.filter(location=location, letter=l))
                 for item in letters:
-                    lst.append(CodePin(turbo_str(item.creator.name + " " + item.creator.given_names), item.number))
+                    lst.append(CodePin(normalize_str(item.creator.name + " " + item.creator.given_names), item.number))
                 lst.sort(key=get_key)
                 prev = None
                 num = 0

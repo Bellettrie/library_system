@@ -74,7 +74,11 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
                 return pos + str(self.number)
 
         generator = GENERATORS[location.sig_gen]
-        return generator(FakeItem(self, location)) + first_letters
+        val, should_not_add = generator(FakeItem(self, location))
+        if should_not_add:
+            return val
+        else:
+            return val + first_letters
 
     def generate_code_prefix(self, location):
         if self.part_of_series and self.part_of_series.book_code:

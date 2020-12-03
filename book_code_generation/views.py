@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from book_code_generation.forms import EditForm
-from book_code_generation.models import generate_author_number, get_authors_numbers, turbo_str, CutterCodeRange
+from book_code_generation.models import generate_author_number, get_authors_numbers, normalize_str, CutterCodeRange
 from creators.models import Creator
 from series.models import Series
 from works.models import Publication, Location
@@ -48,18 +48,16 @@ def get_creator_number(request, creator_id, location_id):
     max_code = None
     code = None
     char = None
-    print("A")
     try:
         creator = Creator.objects.get(id=creator_id)
         if not name:
-            name = turbo_str(creator.name + " " + creator.given_names)
+            name = normalize_str(creator.name + " " + creator.given_names)
 
-        char, min_code, code, max_code = generate_author_number(turbo_str(name), location, exclude_list=[creator])
+        char, min_code, code, max_code = generate_author_number(normalize_str(name), location, exclude_list=[creator])
     except Creator.DoesNotExist:
         if not name:
             return HttpResponse("NONE")
-        print(name)
-        char, min_code, code, max_code = generate_author_number(turbo_str(name), location, exclude_list=[])
+        char, min_code, code, max_code = generate_author_number(normalize_str(name), location, exclude_list=[])
 
     return HttpResponse(char + " :: " + str(min_code) + " < <b>" + str(code) + "</b> < " + str(max_code))
 
