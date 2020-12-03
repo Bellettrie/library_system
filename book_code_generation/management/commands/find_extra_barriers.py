@@ -21,14 +21,14 @@ class Command(BaseCommand):
         print(normalize_str("Grøndahl, Jens Christian   (5289)"))
         from works.models import Location
         for location in Location.objects.all():
-            for l in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+            for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
                 codes = CutterCodeRange.objects.all()
                 lst = []
                 for code in codes:
-                    if code.from_affix.startswith(l):
+                    if code.from_affix.startswith(letter):
                         lst.append(CodePin(normalize_str(code.from_affix), number_shrink_wrap(code.number)))
 
-                letters = list(LocationNumber.objects.filter(location=location, letter=l))
+                letters = list(LocationNumber.objects.filter(location=location, letter=letter))
                 for item in letters:
                     lst.append(CodePin(normalize_str(item.name), item.number))
                 lst.sort(key=get_key)
