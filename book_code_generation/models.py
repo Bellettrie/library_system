@@ -8,7 +8,7 @@ import unicodedata
 
 from django.db.models import CASCADE
 
-from creators.models import CreatorLocationNumber
+from creators.models import CreatorLocationNumber, LocationNumber
 
 
 def turbo_str(strs):
@@ -87,7 +87,6 @@ class CodePin:
         self.name = name
         self.number = number
         self.end = end
-        self.author = author
 
     def __str__(self):
         return self.name + "::" + str(self.number)
@@ -132,11 +131,17 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
         if code.from_affix.startswith(starting_letter):
             lst.append(CodePin(turbo_str(code.from_affix), number_shrink_wrap(code.number), turbo_str(code.to_affix)))
 
-    letters = list(CreatorLocationNumber.objects.filter(location=location, letter=starting_letter))
+    letters = list(LocationNumber.objects.filter(location=location, letter=starting_letter))
     keys_done = set()
     my_letters = set()
+
+    for c in CreatorLocationNumber.objects.filter(creator__in=exclude_list):
+        for l in letters:
+            if l.pk == c.pk:
+                letters.remove(l)
+
     for letter in letters:
-        l_name = turbo_str(letter.get_name())
+        l_name = turbo_str(letter.name)
         to_hit = True
         for code in lst:
             if number_shrink_wrap(letter.number) == code.number:
@@ -144,14 +149,13 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
                     keys_done.add(letter.number)
                     to_hit = False
                     code.name = l_name
-                    code.author = letter.creator
         if to_hit:
             my_letters.add(letter)
     for item in my_letters:
-        l_name = turbo_str(item.get_name())
+        l_name = turbo_str(item.name)
 
         if item.number not in letters:
-            lst.append(CodePin(l_name, number_shrink_wrap(item.number), author=item.creator))
+            lst.append(CodePin(l_name, number_shrink_wrap(item.number)))
     lst.sort(key=get_key)
     lst.append(CodePin(starting_letter + "ZZZZZZZZZZZZ", 99999))
     return lst

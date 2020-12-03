@@ -6,6 +6,14 @@ from django.db import models
 from django.db.models import PROTECT, CASCADE
 
 
+class LocationNumber(models.Model):
+    location = models.ForeignKey('works.Location', on_delete=CASCADE, null=True, blank=True)
+    number = models.IntegerField()
+    letter = models.CharField(max_length=16)
+    name = models.CharField(max_length=64, null=True, blank=True)
+    auto_name = models.BooleanField(default=True)
+
+
 class Creator(models.Model):
     given_names = models.CharField(max_length=255, blank=True)
     name = models.CharField(max_length=255)
@@ -24,7 +32,7 @@ class Creator(models.Model):
         return self.given_names + " " + self.name
 
     def get_canonical_name(self):
-        return self.given_names + " " + self.name + "   (" + str(self.pk) + ")"
+        return self.name + ", " + self.given_names + "   (" + str(self.pk) + ")"
 
     def get_all_items(self):
         result = []
@@ -79,16 +87,21 @@ class CreatorRole(models.Model):
         return self.name
 
 
-class CreatorLocationNumber(models.Model):
+class CreatorLocationNumber(LocationNumber):
+    # pass
     creator = models.ForeignKey(Creator, on_delete=CASCADE)
-    location = models.ForeignKey('works.Location', on_delete=CASCADE, null=True, blank=True)
-    series = models.ForeignKey('series.Series', on_delete=CASCADE, null=True, blank=True)
-    number = models.IntegerField()
-    letter = models.CharField(max_length=16)
 
+    def save(self, *args, **kwargs):
+        self.name = self.creator.get_canonical_name()
+        self.auto_name = True
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.letter + "-" + str(self.number) + ":" + str(self.location.pk) + ":" + str(self.creator.pk)
+
+    def get_name(self):
+        if self.name:
+            return self.name
 
 
 def try_to_update_object(my_object, pattern, new_prefix):
@@ -142,9 +155,12 @@ def relabel_creator(creator, location, old_number, old_letter, new_number, new_l
     series_handle_list = []
     for series in all_series:
         if series.location == location:
+            print("HERE")
             if pattern.match(series.book_code_sortable):
                 try_to_update_object(series, pattern, new_prefix)
                 series_handle_list.append(series)
+        else:
+            print(series.location, location)
 
     to_handle = True
     while to_handle:

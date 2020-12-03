@@ -40,4 +40,4 @@ class TurboWidget(TextInput):
         return super().render(name=name, value=value, attrs=attrs) + template.render({'name': name, 'value': value, 'BASE_URL': settings.BASE_URL})
 
 
-CreatorLocationNumberFormset = inlineformset_factory(Creator, CreatorLocationNumber, can_delete=True, fields=['location', 'letter', 'number'], widgets={'number': TurboWidget})
+CreatorLocationNumberFormset = inlineformset_factory(Creator, CreatorLocationNumber, can_delete=True, fields=['location', 'letter', 'number', 'name'], widgets={'number': TurboWidget})

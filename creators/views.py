@@ -151,10 +151,10 @@ def collisions(request):
             cln_list = creator_location_numbers.get((cln.letter, cln.number), [])
             cln_list.append(cln)
             creator_location_numbers[(cln.letter, cln.number)] = cln_list
-            if cln.creator:
-                plist = Item.objects.filter(publication__listed_author__endswith=str(cln.creator.pk), location=my_location)
-            if cln.series:
-                publications = cln.series
+            # if cln.creator:
+            #     plist = Item.objects.filter(publication__listed_author__endswith=str(cln.creator.pk), location=my_location)
+            # if cln.series:
+            #     publications = cln.series
         for cln in creator_location_numbers.keys():
             if len(creator_location_numbers[cln]) > 1:
                 data.append((cln, creator_location_numbers[cln]))
