@@ -15,16 +15,16 @@ def split_ligatures(s):
     Split the ligatures in `s` into their component letters.
     """
 
-    def untie(l):
+    def untie(letter):
         m = _ligature_re.match(unicodedata.name(l))
         if not m:
-            return l
+            return letter
         elif m.group(1):
             return m.group(2)
         else:
             return m.group(2)
 
-    return ''.join(untie(l) for l in s)
+    return ''.join(untie(c) for c in s)
 
 
 def normalize_str(strs):
