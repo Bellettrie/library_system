@@ -10,7 +10,7 @@ from works.models import Item
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Set the location codes for all creators, if all their books use the same number for a location.'
 
     def handle(self, *args, **options):
         CreatorLocationNumber.objects.all().delete()

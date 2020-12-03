@@ -90,6 +90,7 @@ def view_cutter_numbers(request):
     return render(request, 'list_cutter_numbers.html',
                   {'cutters': CutterCodeRange.objects.all().order_by('from_affix')})
 
+
 @transaction.atomic
 @permission_required('members.change_member')
 def edit(request, cutter_id):

@@ -243,6 +243,7 @@ def generate_author_number(name, location, exclude_list=[], include_one=False):
 
     return name[0], numbers[0], numbers[max(0, min(len(numbers) - 1, num))], numbers[len(numbers) - 1]
 
+
 def generate_code_from_author(item):
     pub = item.publication
     auth = pub.get_authors()
@@ -264,6 +265,7 @@ def generate_code_from_author(item):
     else:
         pass
 
+
 def generate_code_from_author_translated(item):
     pub = item.publication
     prefix = "N"
@@ -283,8 +285,10 @@ def generate_code_from_author_translated(item):
     else:
         pass
 
+
 def generate_code_abc(item):
     return item.location.category.code + "-ABC-"
+
 
 def generate_code_from_title(item):
     title = item.publication.title[0:4]
@@ -292,6 +296,7 @@ def generate_code_from_title(item):
         return title + "-"
     else:
         return item.location.category.code + "-" + title + "-"
+
 
 class FakeItem:
     def __init__(self, publication, location):

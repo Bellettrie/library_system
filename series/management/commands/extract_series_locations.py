@@ -18,7 +18,7 @@ def get_publication_location(publication: Publication):
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Set the locations of series, if all books are in the same location'
 
     def handle(self, *args, **options):
         series_dict = {}

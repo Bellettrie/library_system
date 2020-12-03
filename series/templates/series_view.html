@@ -50,6 +50,15 @@
             {% include 'series_parts.html' %}
         </table>
     {% endwith %}
+    <h4>Numbering</h4>
+    {% if  series.location_code %}
+        <table>
+        <tr><td>
+            {{ series.location_code.name }}</td></tr>
+        <tr><td>{{ series.location_code.number}}</td></tr>
+        <tr><td>{{  series.location_code.letter }}</td></tr>
+        </table>
+    {% endif %}
 
 
 {% endblock %}
