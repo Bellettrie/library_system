@@ -8,7 +8,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
-from book_code_generation.models import generate_author_number, get_number_for_str, normalize_str
+from book_code_generation.models import normalize_str
+from book_code_generation.location_number_creation import get_number_for_str, generate_author_number
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
 from utils.get_query_words import get_query_words

@@ -5,8 +5,9 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
-from book_code_generation.models import generate_code_from_author, generate_code_from_author_translated, \
-    generate_code_from_title, CutterCodeRange, BookCode, FakeItem, generate_code_abc
+from book_code_generation.models import BookCode, FakeItem
+from book_code_generation.location_number_creation import CutterCodeRange
+from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, generate_code_abc, generate_code_from_title
 from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
 from lendings.models import Lending

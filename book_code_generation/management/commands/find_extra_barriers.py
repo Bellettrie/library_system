@@ -4,7 +4,8 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from book_code_generation.models import CutterCodeRange, CodePin, normalize_str, number_shrink_wrap
+from book_code_generation.models import CodePin, normalize_str, number_shrink_wrap
+from book_code_generation.location_number_creation import CutterCodeRange
 from creators.models import CreatorLocationNumber, LocationNumber
 
 
@@ -36,7 +37,7 @@ class Command(BaseCommand):
                 for item in lst:
                     if str(num) > str(item.number):
                         if prev:
-                            print(item.name,  item.number, num, prev, location)
+                            print(item.name, item.number, num, prev, location)
                         else:
                             print(item.name, item.number, num, location)
                     num = item.number

@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from book_code_generation.forms import EditForm
-from book_code_generation.models import generate_author_number, get_authors_numbers, normalize_str, CutterCodeRange
+from book_code_generation.models import normalize_str
+from book_code_generation.location_number_creation import get_authors_numbers, CutterCodeRange, generate_author_number
 from creators.models import Creator
 from series.models import Series
 from works.models import Publication, Location
