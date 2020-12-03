@@ -3,7 +3,8 @@ from django.db import models
 from book_code_generation.models import CodePin, normalize_str, number_shrink_wrap
 from creators.models import LocationNumber, CreatorLocationNumber
 
-
+# find the letter and number for an item / author / series, based on name and location.
+# This file contains quite some helper-functions. The main function is at the bottom.
 # Sorting key
 def get_key(obj):
     return obj.number
