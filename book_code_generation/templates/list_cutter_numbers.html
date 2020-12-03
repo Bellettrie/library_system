@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+{% load creator_books %}
+{% block title %}List of Cutter Numbers{% endblock %}
+{% block content %}
+    <table>
+        <tr><th>From</th><th>To</th><th>Number</th><th>Edit</th></tr>
+    {% for cutter in cutters %}
+        <tr><td>{{ cutter.from_affix }}</td><td> {{ cutter.to_affix }}</td><td> {{ cutter.number }}</td><td>{{ cutter.location }}</td><td><a href="{% url 'book_code.cutter_edit' cutter.pk %}">EDIT</a> / Delete</td></tr>
+    {% endfor %}
+    </table>
+{% endblock %}
