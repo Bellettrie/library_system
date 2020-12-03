@@ -16,7 +16,7 @@ def split_ligatures(s):
     """
 
     def untie(letter):
-        m = _ligature_re.match(unicodedata.name(l))
+        m = _ligature_re.match(unicodedata.name(letter))
         if not m:
             return letter
         elif m.group(1):

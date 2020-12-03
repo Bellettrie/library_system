@@ -55,9 +55,9 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
     my_letters = set()
 
     for c in CreatorLocationNumber.objects.filter(creator__in=exclude_list):
-        for l in letters:
-            if l.pk == c.pk:
-                letters.remove(l)
+        for my_letter in letters:
+            if my_letter.pk == c.pk:
+                letters.remove(my_letter)
 
     for letter in letters:
         l_name = normalize_str(letter.name)
