@@ -7,7 +7,7 @@ from django.db.models import PROTECT, CASCADE
 
 from book_code_generation.models import BookCode, FakeItem
 from book_code_generation.location_number_creation import CutterCodeRange
-from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, generate_code_abc, generate_code_from_title
+from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, generate_code_abc, generate_code_from_title, generate_code_abc_translated
 from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
 from lendings.models import Lending
@@ -68,6 +68,7 @@ GENERATORS = {
     'author': generate_code_from_author,
     'author_translated': generate_code_from_author_translated,
     'abc': generate_code_abc,
+    'abc_translated': generate_code_abc_translated,
     'title': generate_code_from_title,
 }
 
@@ -183,7 +184,11 @@ class Publication(Work):
                 return series_list[0].part_of_series.book_code + str(series_list[0].number)
 
         generator = GENERATORS[location.sig_gen]
-        return generator(FakeItem(self, location)) + first_letters
+        val, should_not_add = generator(FakeItem(self, location))
+        if should_not_add:
+            return val
+        else:
+            return val + first_letters
 
     def generate_code_prefix(self, location):
         from series.models import Series, WorkInSeries

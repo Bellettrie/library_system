@@ -232,7 +232,7 @@ def item_edit(request, item_id):
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'item_edit.html',
-                  {'form': form, 'publication': item.publication, 'edit': True, 'recode': recode, 'recode_book_code': recode_book_code, 'recode_book_code_extension': recode_book_code_extension})
+                  {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode, 'recode_book_code': recode_book_code, 'recode_book_code_extension': recode_book_code_extension})
 
 
 @transaction.atomic

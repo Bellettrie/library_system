@@ -17,6 +17,8 @@
 
         {{ form.book_code_extension }} <br/>
         <label for="book_code_extension">Book Code extension: </label>
+
+        {% if not edit %}
         <hr>
         Generate book code: ...
         {% with publication_id=publication.pk %}
@@ -25,6 +27,7 @@
                     {% include 'book_code_lookup.html' %}
             {% endwith %}
         {% endwith %}
+    {% endif %}
         <hr>
 
 
@@ -75,6 +78,16 @@
             <br/>
             <label for="recode_book_code_extension">Book Code extension: </label>
             <hr>
+            {% if edit %}
+        <hr>
+        Generate book code: ...
+        {% with publication_id=publication.pk %}
+
+                {% with location_id='id_location' %}
+                    {% include 'book_code_lookup.html' %}
+            {% endwith %}
+        {% endwith %}
+    {% endif %}
         {% endif %}
         <input type="submit" value="OK">
     </form>

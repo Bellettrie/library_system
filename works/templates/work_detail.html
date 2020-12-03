@@ -13,8 +13,7 @@
         </tr>
         <tr>
             <th>Authors</th>
-            <td>{% for author in object.get_authors %}{{ author.role.name }}{{ author.creator.given_names }}
-                <i>{{ author.creator.name }}</i>{% if not forloop.last %}, {% endif %} {% endfor %}</td>
+            <td>{% for author in object.get_authors %}{% include 'creator_single_line_description.html' %}{% if not forloop.last %}, {% endif %} {% endfor %}</td>
         </tr>
         <tr>
             <th>Comment</th>
