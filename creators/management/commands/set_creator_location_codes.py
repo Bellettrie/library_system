@@ -15,7 +15,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         CreatorLocationNumber.objects.all().delete()
         items = Item.objects.all()
-        print("DONE1")
         item_to_author = dict()
         for item in items:
             authors = item.publication.get_authors()
