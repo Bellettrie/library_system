@@ -22,7 +22,6 @@ class Command(BaseCommand):
                 item_to_author[item] = authors[0].creator
             else:
                 item_to_author[item] = None
-        print("DONE2")
         for creator in Creator.objects.all():
             first_letter = None
             if len(creator.name) > 0:
