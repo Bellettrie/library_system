@@ -29,7 +29,11 @@ class ItemCreateForm(ModelForm):
                   'hidden',
                   'comment',
                   'publication_year',
-                  'bought_date']
+                  'bought_date',
+                  'last_seen',
+                  'location',
+                  'bought_date',
+                  ]
         widgets = {
             'bought_date': forms.DateInput(attrs={'class': 'datepicker'})
         }
@@ -51,7 +55,7 @@ class PublicationCreateForm(ModelForm):
         widgets = {
             'date_added': forms.DateInput(attrs={'class': 'datepicker'})
         }
-        fields = ['book_code']
+        fields = []
         for i in NAMED_TRANSLATED_LIST:
             fields.append(i)
         for field in z_fields:

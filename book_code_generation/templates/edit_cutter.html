@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+{% load creator_books %}
+{% block title %}{{ creator.given_names }} {{ creator.name }}{% endblock %}
+{% block content %}
+    <form method = "post" action="#">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+
+    </table>
+    <input type="submit">
+    </form>
+{% endblock %}

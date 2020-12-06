@@ -1,0 +1,4 @@
+{{ author.role.name }}<a href="{% url 'creator.view' author.creator.pk %}">
+    {{ author.creator.given_names }}
+    <i>{{ author.creator.name }}</i>
+</a>

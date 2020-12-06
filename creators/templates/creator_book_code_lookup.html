@@ -1,0 +1,33 @@
+{% load creator_books %}
+<script>function loadDoc{{ name|num_get}}() {
+    function getSelectedOption(sel) {
+        var opt;
+        for ( var i = 0, len = sel.options.length; i < len; i++ ) {
+            opt = sel.options[i];
+            if ( opt.selected === true ) {
+                break;
+            }
+        }
+        return opt;
+    }
+    var name = document.getElementById('id_name').value + " "+ document.getElementById('id_given_names').value
+
+    var sel = document.getElementById('id_{{ name|before_last_dash}}-location');
+    var opt = getSelectedOption(sel);
+    var loc_sel = opt.value;
+
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("data_store{{ name|num_get}}").innerHTML = this.responseText;
+        }
+    };
+
+    xhttp.open("GET", "/book_code/generate_creator/" + pk + "/" + loc_sel+"?name="+name, true);
+    xhttp.send();
+}
+</script>
+<br>
+<button type="button" onclick="loadDoc{{ name|num_get}}()">Find number</button>
+<div id="data_store{{ name|num_get}}"></div>

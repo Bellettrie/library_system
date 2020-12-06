@@ -1,12 +1,83 @@
-import unidecode as unidecode
 from django.db import models
 
 # Create your models here.
 
+from creators.models import CreatorLocationNumber, LocationNumber
+
 import re
 import unicodedata
 
+_ligature_re = re.compile(r'LATIN (?:(CAPITAL)|SMALL) LIGATURE ([A-Z]{2,})')
 
+
+def split_ligatures(s):
+    """
+    Split the ligatures in `s` into their component letters.
+    """
+
+    def untie(letter):
+        m = _ligature_re.match(unicodedata.name(letter))
+        if not m:
+            return letter
+        elif m.group(1):
+            return m.group(2)
+        else:
+            return m.group(2)
+
+    return ''.join(untie(c) for c in s)
+
+
+def normalize_str(strs):
+    """Normalizes string in such a way that when sorted it's in the order we want. It destroys accents and merges IJ. Only works for western-like names"""
+    strs = split_ligatures(strs).upper().replace("IJ", "Y").replace("ø".upper(), "O")
+    data = strs
+    normal = unicodedata.normalize('NFKD', data).encode('ASCII', 'ignore')
+    return normal.decode('ASCII')
+
+
+# Minimize number to a string: 370 --> 37.
+def number_shrink_wrap(num):
+    return str(float('0.' + str(num)))[2:]
+
+
+# Get Z from code in SF-Z-34-lb1.
+def get_letter_for_code(code: str):
+    code_parts = code.split("-")
+    num = 0
+    if len(code_parts) > 2:
+
+        try:
+            num = int(str(float("0." + code_parts[2])).split(".")[1])
+            return code_parts[1]
+        except ValueError:
+            try:
+                num = int(str(float("0." + code_parts[1])).split(".")[1])
+                return None
+            except ValueError:
+                if "ABC" not in code_parts:
+                    print("ERROR" + code)
+                pass
+    if num:
+        return None
+
+
+# Get 37 from SF-T-37-lr1
+def get_number_for_code(code: str):
+    code_parts = code.split("-")
+    if len(code_parts) > 2:
+        try:
+            return int(str(float("0." + code_parts[2])).split(".")[1])
+        except ValueError:
+            try:
+                return int(str(float("0." + code_parts[1])).split(".")[1])
+            except ValueError:
+                if "ABC" not in code_parts:
+                    print("ERROR" + code)
+                pass
+
+
+# Turn code with strange numbers into standardized numbers:
+# SF-T-370-lr1 ==> SF-T-37-lr1
 def standardize_code(code: str):
     code_parts = code.split("-")
     if len(code_parts) > 2:
@@ -32,70 +103,18 @@ class BookCode(models.Model):
         super().save(*args, **kwargs)
 
 
-def strip_accents(text):
-    """
-    Strip accents from input String.
+class CodePin:
+    def __init__(self, name: str, number: int, end='ZZZZZZZZZ', author=None):
+        self.name = name
+        self.number = number
+        self.end = end
 
-    :param text: The input string.
-    :type text: String.
-
-    :returns: The processed String.
-    :rtype: String.
-    """
-
-    return unidecode.unidecode(text)
+    def __str__(self):
+        return self.name + "::" + str(self.number)
 
 
-class CutterCodeRange(models.Model):
-    from_affix = models.CharField(max_length=16)
-    to_affix = models.CharField(max_length=16)
-    number = models.CharField(max_length=16)
-    generated_affix = models.CharField(max_length=20)
-
-    @staticmethod
-    def get_cutter_number(name: str):
-        cutters = CutterCodeRange.objects.all().order_by("from_affix")
-        result = None
-        for cutter in cutters:
-            if result is None:
-                result = cutter
-            if strip_accents(name.upper()) < cutter.from_affix:
-                return result
-            result = cutter
-        return result
-
-
-def generate_code_from_author(item):
-    pub = item.publication
-    auth = pub.get_authors()
-    if len(auth) > 0:
-        author = auth[0].creator
-        code = author.identifying_code or CutterCodeRange.get_cutter_number(author.name).generated_affix
-        return item.location.category.code + "-" + code + "-"
-    else:
-        pass
-
-
-def generate_code_from_author_translated(item):
-    pub = item.publication
-    prefix = "N"
-    if pub.is_translated:
-        prefix = "V"
-    auth = item.publication.get_authors()
-    if len(auth) > 0:
-        author = auth[0].creator.name
-        return prefix + "-" + CutterCodeRange.get_cutter_number(author).generated_affix + "-"
-    else:
-        pass
-
-
-def generate_code_abc(item):
-    return item.location.category.code + "-ABC-"
-
-
-def generate_code_from_title(item):
-    title = item.publication.title[0:4]
-    if item.location.category.code == "":
-        return title + "-"
-    else:
-        return item.location.category.code + "-" + title + "-"
+# Used to mock an item to run through the code, in case the item does not exist yet. Only contains the required fields for the item.
+class FakeItem:
+    def __init__(self, publication, location):
+        self.publication = publication
+        self.location = location

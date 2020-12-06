@@ -2,14 +2,24 @@
 {% block title %}{% if series.pk %}Edit {% include 'part_of_series_name.html' %}{% else %}New Series{% endif %}{% endblock %}
 {% block content %}
     <form method="post" action="#">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-    </table>
-    <h4>Creators</h4>
-    <table>
-    {{ creators.as_table }}
-    </table>
-    <button type="submit">Save</button>
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <h4> Show code</h4>
+        {% with publication_id=series.pk %}
+            {% with title_id='id_title' %}
+                {% with for_series=True %}
+                    {% with location_id='id_location' %}
+                        {% include 'book_code_lookup.html' %}
+                    {% endwith %}
+                {% endwith %}
+            {% endwith %}
+        {% endwith %}
+        <h4>Creators</h4>
+        <table>
+            {{ creators.as_table }}
+        </table>
+        <button type="submit">Save</button>
     </form>
 {% endblock %}

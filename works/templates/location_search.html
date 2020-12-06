@@ -1,0 +1,18 @@
+{% if commits %}
+    <form method="get" action="#">
+        <select id="location" name="location">
+            {% for loc in locations %}
+                <option value="{{ loc.pk }}" {% if loc_id == loc.pk %}selected="selected"{% endif %}>{{ loc.category.name }}
+                    -{{ loc.name }} {{ loc.pk }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Search">
+    </form>
+{% else %}
+    <select id="location" name="location">
+        {% for loc in locations %}
+            <option value="{{ loc.pk }}" {% if loc_id == loc.pk %}selected="selected"{% endif %}>{{ loc.category.name }}
+                -{{ loc.name }} {{ loc.pk }}</option>
+        {% endfor %}
+    </select>
+{% endif %}

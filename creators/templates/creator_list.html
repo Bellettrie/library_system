@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+
+{% block title %}Creator Search{% endblock %}
+{% block content %}
+    {% include 'creator_list_search_field.html' %}
+        {% include 'pagination.html' %}
+
+    <table class="table table-striped" style="width: auto;">
+        {% for member in object_list %}
+            {% include 'creator_list_item.html' %}
+        {% empty %}
+            <i> No results</i>
+        {% endfor %}
+
+    </table>
+    <hr>
+    <a href="{% url 'creator.new' %}" class="btn btn-outline-primary">New creator</a>
+{% endblock %}

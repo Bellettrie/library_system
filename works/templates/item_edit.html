@@ -7,9 +7,61 @@
 
     <form action="#" method="post">
         {% csrf_token %}
-        <table>
-        {{ form.as_table }}
-        </table>
+        {{ form.location }} <br/>
+        <label for="last_seen">Location: </label>
+        <hr>
+
+        {{ form.book_code }} <br/>
+        <label for="book_code">Book code: </label>
+        <hr>
+
+        {{ form.book_code_extension }} <br/>
+        <label for="book_code_extension">Book Code extension: </label>
+
+        {% if not edit %}
+        <hr>
+        Generate book code: ...
+        {% with publication_id=publication.pk %}
+
+                {% with location_id='id_location' %}
+                    {% include 'book_code_lookup.html' %}
+            {% endwith %}
+        {% endwith %}
+    {% endif %}
+        <hr>
+
+
+        {{ form.isbn10 }} <br/>
+        <label for="isbn10">ISBN 10: </label>
+        <hr>
+
+        {{ form.isbn13 }} <br/>
+        <label for="isbn13">ISBN 13: </label>
+        <hr>
+
+        {{ form.pages }} <br/>
+        <label for="pages">Pages: </label>
+        <hr>
+
+        {{ form.hidden }} <br/>
+        <label for="hidden">Hidden: </label>
+        <hr>
+
+        {{ form.comment }} <br/>
+        <label for="comment">Comment: </label>
+        <hr>
+
+        {{ form.publication_year }} <br/>
+        <label for="publication_year">Publication year: </label>
+        <hr>
+
+        {{ form.bought_date }} <br/>
+        <label for="bought_date">Bought date: </label>
+        <hr>
+
+        {{ form.last_seen }} <br/>
+        <label for="last_seen">Last seen: </label>
+        <hr>
 
         {% if edit %}
             <h4>Recode</h4>
@@ -18,13 +70,24 @@
             <label for="recode_check">Recode?: </label>
             <hr>
 
-            <input id="recode_book_code" name="recode_book_code" value = {{ recode_book_code }}><br/>
+            <input id="recode_book_code" name="recode_book_code" value= {{ recode_book_code }}><br/>
             <label for="recode_book_code">Book code: </label>
             <hr>
 
-            <input id="recode_book_code_extension" name="recode_book_code_extension" value = {{ recode_book_code_extension }}><br/>
+            <input id="recode_book_code_extension" name="recode_book_code_extension" value= {{ recode_book_code_extension }}>
+            <br/>
             <label for="recode_book_code_extension">Book Code extension: </label>
             <hr>
+            {% if edit %}
+        <hr>
+        Generate book code: ...
+        {% with publication_id=publication.pk %}
+
+                {% with location_id='id_location' %}
+                    {% include 'book_code_lookup.html' %}
+            {% endwith %}
+        {% endwith %}
+    {% endif %}
         {% endif %}
         <input type="submit" value="OK">
     </form>

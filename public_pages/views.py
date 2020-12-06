@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.forms import Widget
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
@@ -54,11 +54,10 @@ def view_named_page(request, page_name, sub_page_name):
                                         'page_content': html, 'can_edit': can_edit, 'page': page}))
 
 
-def view_page(page_name, sub_page_name):
-    def func(request):
+def view_page(page_name: str, sub_page_name: str):
+    def view_function(request: HttpRequest):
         return view_named_page(request, page_name, sub_page_name)
-
-    return func
+    return view_function
 
 
 @login_required

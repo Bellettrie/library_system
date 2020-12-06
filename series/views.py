@@ -35,7 +35,6 @@ def get_series_by_query(request, search_text):
 
 class Counter:
     def get_count(self):
-        print(self.count)
         return self.count
 
     def five_minus(self):
@@ -62,7 +61,7 @@ def edit_series(request, pk):
         if pk is not None:
             series = get_object_or_404(Series, pk=pk)
             form = SeriesCreateForm(request.POST, instance=series)
-            creators = CreatorToSeriesFormSet(request.POST, request.FILES)
+            creators = CreatorToSeriesFormSet(request.POST, request.FILES, instance=series)
         else:
             form = SeriesCreateForm(request.POST)
             creators = CreatorToSeriesFormSet(request.POST, request.FILES)
@@ -83,10 +82,11 @@ def edit_series(request, pk):
 
             if creators.is_valid():
                 instances = creators.save(commit=False)
+                for inst in creators.deleted_objects:
+                    inst.delete()
                 for c2w in instances:
                     c2w.series = instance
                     c2w.save()
-
             return HttpResponseRedirect(reverse('series.view', args=(instance.pk,)))
     else:
         if pk is not None:
@@ -150,5 +150,4 @@ class SeriesList(ListView):
                 result = series
             else:
                 result = series & result
-        print(result)
         return list(result)
