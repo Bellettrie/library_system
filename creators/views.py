@@ -55,11 +55,10 @@ def edit(request, creator_id=None):
                     ld = location_dict[c2w.location]
                     if ld[0] != c2w.number or ld[1] != c2w.letter:
                         if request.POST.get("allow_change"):
-                            print("Recoding for location " + c2w.location.category.name)
                             force_relabel(c2w, ld[0], ld[1])
                         else:
-                            print("Error")
-                            raise ValueError("Wrong!")
+                            form.add_error(None, "To change the location number of one of the locations, items have to be relabeled. Set the checkbox to allow this.")
+                            return render(request, 'creator_edit.html', {'form': form, 'creator': creator, 'locations': locations})
 
                 c2w.creator = instance
                 c2w.save()
@@ -152,10 +151,6 @@ def collisions(request):
             cln_list = creator_location_numbers.get((cln.letter, cln.number), [])
             cln_list.append(cln)
             creator_location_numbers[(cln.letter, cln.number)] = cln_list
-            # if cln.creator:
-            #     plist = Item.objects.filter(publication__listed_author__endswith=str(cln.creator.pk), location=my_location)
-            # if cln.series:
-            #     publications = cln.series
         for cln in creator_location_numbers.keys():
             if len(creator_location_numbers[cln]) > 1:
                 data.append((cln, creator_location_numbers[cln]))

@@ -18,7 +18,6 @@ class Command(BaseCommand):
     help = 'Displays out-of-order authors'
 
     def handle(self, *args, **options):
-        print(normalize_str("Grøndahl, Jens Christian   (5289)"))
         from works.models import Location
         for location in Location.objects.all():
             for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':

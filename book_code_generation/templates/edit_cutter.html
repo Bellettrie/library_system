@@ -4,7 +4,12 @@
 {% load creator_books %}
 {% block title %}{{ creator.given_names }} {{ creator.name }}{% endblock %}
 {% block content %}
+    <form method = "post" action="#">
+    {% csrf_token %}
     <table>
-        {{ form }}
+        {{ form.as_table }}
+
     </table>
+    <input type="submit">
+    </form>
 {% endblock %}

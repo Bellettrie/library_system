@@ -91,7 +91,7 @@ def view_cutter_numbers(request):
 
 
 @transaction.atomic
-@permission_required('members.change_member')
+@permission_required('works.change_work')
 def edit(request, cutter_id):
     cutter_code = get_object_or_404(CutterCodeRange, pk=cutter_id)
     if request.method == 'POST':
@@ -103,11 +103,11 @@ def edit(request, cutter_id):
             return HttpResponseRedirect(reverse('book_code.code_list'))
     else:
         form = EditForm(instance=cutter_code)
-    return render(request, 'member_edit.html', {'form': form, 'member': cutter_code})
+    return render(request, 'edit_cutter.html', {'form': form, 'member': cutter_code})
 
 
 @transaction.atomic
-@permission_required('members.add_member')
+@permission_required('works.change_work')
 def new(request):
     if request.method == 'POST':
         form = EditForm(request.POST)
@@ -116,4 +116,4 @@ def new(request):
             return HttpResponseRedirect(reverse('book_code.code_list'))
     else:
         form = EditForm()
-    return render(request, 'member_edit.html', {'form': form})
+    return render(request, 'edit_cutter.html', {'form': form})

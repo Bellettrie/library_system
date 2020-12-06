@@ -2,28 +2,43 @@
 <!-- Brand and toggle get grouped for better mobile display -->
 <!-- bs-example-navbar-collapse-1 -->
 {% load creator_books %}
-{% block title %}{{ creator.given_names}} {{ creator.name }}{% endblock %}
+{% block title %}{{ creator.given_names }} {{ creator.name }}{% endblock %}
 {% block content %}
-{% load locations %}
+    {% load locations %}
     {% get_locations location %}
 
     <table class="table table-striped" style="width: auto;">
-    {%for line in data %}
-        <tr><td>{{ line.0 }}</td>
-        <td>{% for creator in line.1 %}
-            {% if creator.0 in marked %}<b>KEPT</b>{% endif %}{{ creator.0.get_name }}{{ creator.1 }}<br/>
-            {% endfor %}
-            </td><td>{{ line.2  }}</td></tr>
-    {% endfor %}
+        {% for line in data %}
+            <tr>
+                <td>{{ line.0 }}</td>
+                <td>{% for creator in line.1 %}
+                    {% if creator.0 in marked %}<b>KEPT</b>{% endif %}{{ creator.0.get_name }}{{ creator.1 }}<br/>
+                {% endfor %}
+                </td>
+                <td>{{ line.2 }}</td>
+            </tr>
+        {% endfor %}
     </table>
-{% if totals %}
-    Total collisions: <br>
-    <table>
-    <tr><td>New relabeling needed</td><td>{{ totals.0 }}</td></tr>
-    <tr><td>Old relabeling can change</td><td>{{ totals.1 }}</td></tr>
-    <tr><td>Unknown labeling</td><td>{{ totals.2 }}</td></tr>
-    <tr><td>Can stay the same</td><td>{{ totals.3 }}</td></tr>
-    </table>
-    <a href="{% url 'creator.collides' %}?location={{ location }}&commit=1">commit</a>
+    {% if totals %}
+        Total collisions: <br>
+        <table>
+            <tr>
+                <td>New relabeling needed</td>
+                <td>{{ totals.0 }}</td>
+            </tr>
+            <tr>
+                <td>Old relabeling can change</td>
+                <td>{{ totals.1 }}</td>
+            </tr>
+            <tr>
+                <td>Unknown labeling</td>
+                <td>{{ totals.2 }}</td>
+            </tr>
+            <tr>
+                <td>Can stay the same</td>
+                <td>{{ totals.3 }}</td>
+            </tr>
+        </table>
+        <a href="{% url 'creator.collides' %}?location={{ location }}&commit=1">commit</a>
     {% endif %}
 {% endblock %}

@@ -232,7 +232,8 @@ def item_edit(request, item_id):
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'item_edit.html',
-                  {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode, 'recode_book_code': recode_book_code, 'recode_book_code_extension': recode_book_code_extension})
+                  {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode, 'recode_book_code': recode_book_code,
+                   'recode_book_code_extension': recode_book_code_extension})
 
 
 @transaction.atomic
@@ -263,7 +264,8 @@ def publication_edit(request, publication_id=None):
                     c2w.work = instance
                     c2w.save()
             else:
-                print(creators.errors)
+                for error in creators.errors:
+                    form.add_error(None, str(error))
 
             series = SeriesToWorkFomSet(request.POST, request.FILES, instance=instance)
 
@@ -275,7 +277,8 @@ def publication_edit(request, publication_id=None):
                     i.work = instance
                     i.save()
             else:
-                print(series.errors)
+                for error in series.errors:
+                    form.add_error(None, str(error))
             return HttpResponseRedirect(reverse('work.view', args=(instance.pk,)))
     else:
         publication = None
