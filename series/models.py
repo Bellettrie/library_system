@@ -95,7 +95,10 @@ class WorkInSeries(SeriesNode):
     is_primary = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
-        if self.is_primary and len(WorkInSeries.objects.filter(work=self.work, is_primary=True)) > 0:
+        required_length = 0
+        if len(WorkInSeries.objects.filter(id=self.pk)) > 0:
+            required_length = 1
+        if self.is_primary and len(WorkInSeries.objects.filter(work=self.work, is_primary=True)) > required_length:
             raise RuntimeError("Cannot Save")
         super().save(*args, **kwargs)
 
