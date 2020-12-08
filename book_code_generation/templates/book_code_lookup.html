@@ -3,8 +3,7 @@
     {% if title_id %}
         var title = document.getElementById('{{ title_id }}').value
     {% endif %}
-    var x =
-    {{ publication_id }}
+    var x = {% if publication_id %}{{ publication_id }}{% else %}-1{% endif %}
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
