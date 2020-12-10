@@ -30,7 +30,11 @@ def get_book_code(request, publication_id, location_id):
 
 @permission_required('works.change_work')
 def get_book_code_series(request, series_id, location_id):
-    publication = get_object_or_404(Series, pk=series_id)
+    publication = None
+    if int(series_id) >= 0:
+        publication = get_object_or_404(Series, pk=series_id)
+    else:
+        return HttpResponse("First save the series, then edit the series.")
     location = get_object_or_404(Location, pk=location_id)
     title = request.GET.get('title')
     if title:

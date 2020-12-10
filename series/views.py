@@ -16,10 +16,11 @@ from works.views import word_to_regex
 
 def get_series_by_query(request, search_text):
     series = Series.objects.all()
+
     for word in search_text.split(" "):
         zz = Series.objects.filter(
             Q(title__icontains=word) | Q(sub_title__icontains=word) | Q(original_title__icontains=word) | Q(
-                original_subtitle__icontains=word))
+                original_subtitle__icontains=word) | Q(article__icontains=word) | Q(original_article__icontains=word))
         i = len(zz)
         j = 0
         while j < i:
