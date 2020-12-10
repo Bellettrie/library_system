@@ -16,9 +16,6 @@ from works.views import word_to_regex
 
 def get_series_by_query(request, search_text):
     series = Series.objects.all()
-    return JsonResponse({'results': [
-        {'id': 56, 'text': search_text}
-    ]})
 
     for word in search_text.split(" "):
         zz = Series.objects.filter(
