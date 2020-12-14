@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% block title %}Lended!{% endblock %}
+{% block title %}Reserved!{% endblock %}
 {%block content %}
-<a href="{% url 'members.view' member.id %}">{{member.name}}</a> may keep {{ item.publication.title }} until: {{ date }}
+<a href="{% url 'members.view' member.id %}">{{member.name}}</a> Has reserved {{ item.publication.title }}.
 <br/>
 <td><a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary btn-sm">Lend an other book</a></td>
 {% endblock %}

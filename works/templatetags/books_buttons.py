@@ -1,5 +1,7 @@
 from django import template
 
+from lendings.models import Reservation
+
 register = template.Library()
 
 
@@ -24,5 +26,17 @@ def return_button(item, perms, member):
 
 
 @register.inclusion_tag('publication_table/buttons/reserve_button.html')
-def reserve_button(item, perms, member):
-    return {"item": item, "perms": perms, "member": member}
+def reserve_button(item, perms, user):
+    return {"item": item, "perms": perms, "user": user}
+
+
+@register.inclusion_tag('publication_table/buttons/finalize_reservation_button.html')
+def finalize_reservation_button(item, perms, member):
+    reservation = Reservation.objects.get(item=item, member=member)
+    return {"item": item, "perms": perms, "member": member, 'reservation': reservation}
+
+
+@register.inclusion_tag('publication_table/buttons/cancel_button.html')
+def res_cancel_button(item, perms, member):
+    reservation = Reservation.objects.get(item=item, member=member)
+    return {"item": item, "perms": perms, "member": member, 'reservation': reservation}

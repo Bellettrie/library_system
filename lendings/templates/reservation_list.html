@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+
+{% block title %}All current reservations{% endblock %}
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Member</th>
+                <th>Reservation made</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+                <tr>
+                    <td><a href="{% url 'work.view' reservation.item.publication.id %}">{{ reservation.item.get_title }}</a></td>
+                    <td><a href="{% url 'members.view' reservation.member.id %}">{{ reservation.member.name }}</a></td>
+                    <td>{{ reservation.reserved_on }}</td>
+                <td><a href="{%  url 'lendings.reserve_lend' reservation.id %}" class="btn btn-primary">Lend</a>
+                <a href="{%  url 'lendings.reserve_delete' reservation.id %}" class="btn btn-primary">Delete</a>
+                </td>
+                </tr>
+            {% empty %}
+                No reservations
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

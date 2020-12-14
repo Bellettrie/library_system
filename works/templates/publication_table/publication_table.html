@@ -5,7 +5,7 @@
             <th>Title</th>
             <th>Author</th>
             <th>Book Code</th>
-            {% if member is not Null %}
+            {% if member is not Null and not reserve %}
                 <th>Return Date</th>
             {% endif %}
             <th></th>
@@ -13,7 +13,7 @@
     </thead>
     <tbody>
         {% for elem in contents %}
-            {% show_row elem data perms member %}
+            {% show_row elem data perms user member %}
         {% empty %}
             <tr><td colspan=3  style="align-content: center;" ><i>No results</i></td></tr>
         {% endfor %}

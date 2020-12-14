@@ -147,6 +147,7 @@ def GET_MENU():
     my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'sidebar', [], anonymous=False, icon='fa fa-book'))
     my_menu.append(MenuItem('Members', reverse('members.list'), 'members.view_member', 'sidebar', [], anonymous=None, icon='fa fa-user'))
     my_menu.append(MenuItem('Lendings', reverse('lendings.list'), 'lendings.view_lending', 'sidebar', [], anonymous=None, icon='fa fa-bookmark'))
+    my_menu.append(MenuItem('Reservations', reverse('lendings.reserve.list'), 'lendings.reserve.list', 'sidebar', [], anonymous=None, icon='fa fa-bookmark'))
     holiday_item = MenuItem('Holidays', reverse('holiday.list'), 'config.view_holiday', 'sidebar', [], anonymous=None, icon='fa fa-plane')
     my_menu.append(MenuItem('Settings', reverse('logout'), None, 'sidebar', [holiday_item], only_subitems=True, icon='fa fa-cogs'))
 

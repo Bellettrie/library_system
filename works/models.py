@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 
 # Create your models here.
-from django.db.models import PROTECT, CASCADE
+from django.db.models import PROTECT, CASCADE, Q
 from django.shortcuts import get_object_or_404
 
 from book_code_generation.models import BookCode, FakeItem
@@ -11,7 +11,7 @@ from book_code_generation.location_number_creation import CutterCodeRange
 from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, generate_code_abc, generate_code_from_title, generate_code_abc_translated
 from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
-from lendings.models import Lending
+from lendings.models import Lending, Reservation
 
 
 def simple_search(search_string: str):
@@ -228,6 +228,18 @@ class Item(NamedThing, BookCode):
 
     def is_available(self):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0
+
+    def is_reserved(self):
+        print("HERE")
+        query = Q(item=self, reservation_end_date__gt=datetime.now()) | Q(item=self, reservation_end_date__isnull=True)
+
+        reservations = Reservation.objects.filter(query)
+        return reservations.count() > 0
+
+    def is_reserved_for(self, member):
+        query = Q(item=self, member=member, reservation_end_date__gt=datetime.now()) | Q(item=self, member=member, reservation_end_date__isnull=True)
+        reservations = Reservation.objects.filter(query)
+        return reservations.count() > 0
 
     def current_lending(self):
         return get_object_or_404(Lending, item=self, handed_in=False)

@@ -16,7 +16,7 @@
                 {% endwith %}
             {% endwith %}
         </td>
-        {% if member is not Null %}
+        {% if member is not Null and item_rows.0.extra_info %}
             <td>
                 {% with item=item_rows.0.extra_info %}
                     {{ item }}{% if not forloop.last %}<br/>{% endif %}
@@ -48,7 +48,7 @@
             {% if publication.has_no_items %}
                 Not in collection
             {% else %}
-                Lending of multiple items with the same publication is not yet possible.
+                Multiple items; actions via detail page.
             {% endif %}
         </td>
     </tr>
