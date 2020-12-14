@@ -75,6 +75,11 @@ class Member(MemberData):
     class Meta:
         permissions = [('committee_update', 'Can update committee')]
 
+    def has_reservations(self):
+        from lendings.models import Reservation
+
+        return len(Reservation.objects.filter(member=self)) > 0
+
     def is_currently_member(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
         return self.end_date is None or current_date < self.end_date

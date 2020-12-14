@@ -5,7 +5,7 @@
             <th>Title</th>
             <th>Author</th>
             <th>Book Code</th>
-            {% if member is not Null %}
+            {% if member is not Null and not reserve %}
                 <th>Return Date</th>
             {% endif %}
             <th></th>
