@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
-{% block content %}Lending failed!<hr>
+{% block title %}Lending failed!{% endblock %}
+
+{% block content %}
     {% if member %}
         {% if item %}
             Member {{ member.name }} cannot lend {{ item.publication.name }} right now.

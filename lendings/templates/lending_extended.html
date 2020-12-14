@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{%block content %}Lending extended
+{% block title %}Lending extended{% endblock %}
+{%block content %}
 <a href="{% url 'members.view' member.id %}">{{member.name}}</a> may keep {{ item.publication.title }} until: {{ date }}
 <br/>
 <td><a href="{% url 'members.view' member.id %}" class="btn btn-primary btn-sm">Return to member page</a></td>
