@@ -230,6 +230,7 @@ class Item(NamedThing, BookCode):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0
 
     def is_reserved(self):
+        print("HERE")
         query = Q(item=self, reservation_end_date__gt=datetime.now()) | Q(item=self, reservation_end_date__isnull=True)
 
         reservations = Reservation.objects.filter(query)
@@ -308,6 +309,8 @@ class Item(NamedThing, BookCode):
             return self.pages
         else:
             return ''
+
+
 
 
 not_switch_to_available = ["BROKEN", "SOLD"]

@@ -18,7 +18,9 @@
                     <td><a href="{% url 'work.view' reservation.item.publication.id %}">{{ reservation.item.get_title }}</a></td>
                     <td><a href="{% url 'members.view' reservation.member.id %}">{{ reservation.member.name }}</a></td>
                     <td>{{ reservation.reserved_on }}</td>
-                <td><a href="{%  url 'lendings.reserve_lend' reservation.id %}" class="btn btn-primary">Lend</a></td>
+                <td><a href="{%  url 'lendings.reserve_lend' reservation.id %}" class="btn btn-primary">Lend</a>
+                <a href="{%  url 'lendings.reserve_delete' reservation.id %}" class="btn btn-primary">Delete</a>
+                </td>
                 </tr>
             {% empty %}
                 No reservations

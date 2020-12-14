@@ -23,5 +23,5 @@ def get_user_reserved_books(member: Member, perms):
     result = []
     for lending in member.reservation_set.all():
         it = ItemRow(lending.item)
-        result.append(BookResult(lending.item.publication, [it], item_options=["lendFromRes"]))
+        result.append(BookResult(lending.item.publication, [it], item_options=["lendFromRes", 'cancelRes']))
     return {"member": member, "perms": perms, "contents": result, 'reserve': True}

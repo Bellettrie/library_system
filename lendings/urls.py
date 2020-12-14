@@ -2,7 +2,7 @@ from django.urls import path
 
 from lendings.path_names import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, LENDING_FINALIZE, \
     LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK, LENDING_EXTEND, LENDING_FAILED, \
-    RESERVE_LIST, RESERVE_ITEM, RESERVE_MEMBER, RESERVE_FINALIZE, RESERVE_FAILED, RESERVE_LEND
+    RESERVE_LIST, RESERVE_ITEM, RESERVE_MEMBER, RESERVE_FINALIZE, RESERVE_FAILED, RESERVE_LEND, RESERVE_DELETE
 
 from . import views
 from .views import index
@@ -22,5 +22,6 @@ urlpatterns = [
     path('reserve_finalize/<int:work_id>/<int:member_id>', views.reserve_finalize, name=RESERVE_FINALIZE),
     path('failed_reservation/<int:work_id>/<int:member_id>/<int:reason_id>', views.reserve_failed, name=RESERVE_FAILED),
     path('finalize_reservation_based/<slug:id>', views.finalize_reservation_based, name=RESERVE_LEND),
+    path('delete_reservation/<slug:id>', views.delete_reservation, name=RESERVE_DELETE),
 
 ]

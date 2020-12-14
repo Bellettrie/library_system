@@ -34,3 +34,9 @@ def reserve_button(item, perms, user):
 def finalize_reservation_button(item, perms, member):
     reservation = Reservation.objects.get(item=item, member=member)
     return {"item": item, "perms": perms, "member": member, 'reservation': reservation}
+
+
+@register.inclusion_tag('publication_table/buttons/cancel_button.html')
+def res_cancel_button(item, perms, member):
+    reservation = Reservation.objects.get(item=item, member=member)
+    return {"item": item, "perms": perms, "member": member, 'reservation': reservation}

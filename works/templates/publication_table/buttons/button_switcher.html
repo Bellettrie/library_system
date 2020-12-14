@@ -23,3 +23,7 @@
 {% if option == "lendFromRes" %}
     {% finalize_reservation_button item perms member%}
 {% endif %}
+
+{% if option == "cancelRes" %}
+    {% res_cancel_button item perms member%}
+{% endif %}
