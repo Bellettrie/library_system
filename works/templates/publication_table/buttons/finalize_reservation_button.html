@@ -1,0 +1,3 @@
+{% if perms.lendings.add_lending %}
+    <a href="{% url "lendings.reserve_lend" reservation.pk %}" class="btn btn-primary btn-sm" role="button">Finalize</a>
+{% endif %}

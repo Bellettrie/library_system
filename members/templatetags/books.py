@@ -16,3 +16,12 @@ def get_user_books(member: Member, perms, handed_in=False):
         else:
             result.append(BookResult(lending.item.publication, [it], item_options=["extend", "return"]))
     return {"member": member, "perms": perms, "contents": result}
+
+
+@register.inclusion_tag('publication_table/publication_table.html')
+def get_user_reserved_books(member: Member, perms):
+    result = []
+    for lending in member.reservation_set.all():
+        it = ItemRow(lending.item)
+        result.append(BookResult(lending.item.publication, [it], item_options=["lendFromRes"]))
+    return {"member": member, "perms": perms, "contents": result}

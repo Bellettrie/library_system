@@ -92,4 +92,6 @@
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
 {% load books %}
     {% get_user_books member perms %}
+
+    {% get_user_reserved_books member perms %}
 {% endblock %}
