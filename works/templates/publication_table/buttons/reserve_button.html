@@ -1,13 +1,13 @@
-{% if not item.is_available %}
-    {% if perms.lendings.add_reservation %}
-        <a href="{% url 'lendings.reserve.item' item.pk %}" class="btn btn-primary btn-sm" role="button">Reserve</a>
-    {% else %}
-        Lent out
-    {% endif %}
+{% if perms.lendings.add_reservation %}
+    <a href="{% url 'lendings.reserve.item' item.pk %}" class="btn btn-primary btn-sm" role="button">Reserve</a>
 {% else %}
-    {% if perms.lendings.add_reservation %}
-        <a class="btn btn-primary btn-sm disabled" role="button">Reserve</a>
+    {% if user.member != Null %}
+        <a href="{% url 'lendings.reserve.finalize' item.pk user.member.id %}" class="btn btn-sm btn-primary" role="button">Finish reservation</a>
     {% else %}
-        Available
+        {% if not item.is_available %}
+            Lent Out
+        {% else %}
+            Available
+        {% endif %}
     {% endif %}
 {% endif %}

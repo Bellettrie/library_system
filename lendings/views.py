@@ -178,8 +178,13 @@ def reserve_member(request, member_id):
 
 
 @transaction.atomic
-@permission_required('lendings.add_reservation')
 def reserve_finalize(request, work_id, member_id):
+    if not request.user.has_perm('lendings.add_reservation'):
+        if not hasattr(request.user, 'member'):
+            raise PermissionDenied
+        member = request.user.member
+        if not (member and member.id == member_id):
+            raise PermissionDenied
     member = get_object_or_404(Member, pk=member_id)
     item = get_object_or_404(Item, pk=work_id)
     if not item.is_available():

@@ -13,7 +13,7 @@
     </thead>
     <tbody>
         {% for elem in contents %}
-            {% show_row elem data perms member %}
+            {% show_row elem data perms user member %}
         {% empty %}
             <tr><td colspan=3  style="align-content: center;" ><i>No results</i></td></tr>
         {% endfor %}
