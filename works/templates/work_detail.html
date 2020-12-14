@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load books_buttons %}
 {% block title %}{{ object.get_title }}{% endblock %}
 {% block content %}
 
@@ -39,6 +40,7 @@
                 <th>Edit</th>
             {% endif %}
             <th>Lend</th>
+            <th>Reserve</th>
         </tr>
         {% for item in object.get_items %}
 
@@ -72,11 +74,10 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if perms.lendings.add_lending %}
-                            <a href="{% url 'lendings.new.work' item.pk %}" class="btn btn-primary btn-sm" role="button">Lend</a>
-                        {% else %}
-                            Available
-                        {% endif %}
+                        {% lend_button item perms %}
+                    </td>
+                    <td>
+                        {% reserve_button item perms member%}
                     </td>
                 {% endwith %}
 
