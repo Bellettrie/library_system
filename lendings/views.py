@@ -142,6 +142,7 @@ def return_book(request, work_id):
 def me(request):
     return render(request, 'lending_detail.html', {"member": request.user.member})
 
+
 @permission_required('lendings.add_reservation')
 def reserve_list(request):
     reservations = Reservation.objects.order_by('reserved_on')
@@ -198,7 +199,7 @@ def reserve_finalize(request, work_id, member_id):
             return redirect('/lend/failed_reservation/{}/{}/4'.format(work_id, member_id))
         Reservation.create_reservation(item, member, request.user.member)
         return render(request, 'reserve_finalized.html',
-                    {'member': member, 'item': item})
+                      {'member': member, 'item': item})
 
     return render(request, 'reserve_finalize.html',
                   {'member': member, 'item': item, "date": Lending.calc_end_date(member, item)})
@@ -210,8 +211,8 @@ def reserve_failed(request, member_id, work_id, reason_id):
     member = get_object_or_404(Member, pk=member_id)
     organising_member = request.user.member
     return render(request, 'reservation_cannot_reserve.html', {'item': item,
-                                                        'member': member, 'organising_member': organising_member,
-                                                        'reason': lending_failed_reasons[reason_id]})
+                                                               'member': member, 'organising_member': organising_member,
+                                                               'reason': lending_failed_reasons[reason_id]})
 
 
 @transaction.atomic

@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 
 # Create your models here.
-from django.db.models import PROTECT, CASCADE
+from django.db.models import PROTECT, CASCADE, Q
 from django.shortcuts import get_object_or_404
 
 from book_code_generation.models import BookCode, FakeItem
@@ -230,13 +230,14 @@ class Item(NamedThing, BookCode):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0
 
     def is_reserved(self):
-        reservations = Reservation.objects.filter(item=self, reservation_end_date__gt=datetime.now()) | \
-                       Reservation.objects.filter(item=self, reservation_end_date__isnull=True)
+        query = Q(item=self, reservation_end_date__gt=datetime.now()) | Q(item=self, reservation_end_date__isnull=True)
+
+        reservations = Reservation.objects.filter(query)
         return reservations.count() > 0
 
     def is_reserved_for(self, member):
-        reservations = Reservation.objects.filter(item=self, member=member, reservation_end_date__gt=datetime.now()) | \
-                       Reservation.objects.filter(item=self, member=member, reservation_end_date__isnull=True)
+        query = Q(item=self, member=member, reservation_end_date__gt=datetime.now()) | Q(item=self, member=member, reservation_end_date__isnull=True)
+        reservations = Reservation.objects.filter(query)
         return reservations.count() > 0
 
     def current_lending(self):
