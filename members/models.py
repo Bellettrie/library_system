@@ -84,7 +84,7 @@ class Member(MemberData):
         from works.models import ItemType, Category
 
         lendings = Lending.objects.filter(member=self, item__location__category__item_type=item_type, handed_in=False)
-        reservations = Reservation.objects.filter(member=self, reservation_end_date__gt=datetime.now())
+        reservations = Reservation.objects.filter(member=self, reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(member=self, reservation_end_date__isnull=True)
         from config.models import LendingSettings
         return (len(lendings) + len(reservations)) < LendingSettings.get_max_count(item_type, self)
 

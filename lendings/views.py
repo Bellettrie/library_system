@@ -80,6 +80,8 @@ def finalize(request, work_id, member_id):
                 return redirect('/lend/failed_lending/{}/{}/1'.format(work_id, member_id))
             if member.has_late_items():
                 return redirect('/lend/failed_lending/{}/{}/3'.format(work_id, member_id))
+            if item.is_reserved() and not item.is_reserved_by(member):
+                return redirect('/lend/failed_lending/{}/{}/4'.format(work_id, member_id))
             lending = Lending.create_lending(item, member, request.user.member)
             return render(request, 'lending_finalized.html',
                           {'member': member, 'item': item, "date": lending.end_date})
@@ -188,6 +190,8 @@ def reserve_finalize(request, work_id, member_id):
                 return redirect('/lend/failed_reservation/{}/{}/1'.format(work_id, member_id))
             if member.has_late_items():
                 return redirect('/lend/failed_reservation/{}/{}/3'.format(work_id, member_id))
+            if item.is_reserved():
+                return redirect('/lend/failed_reservation/{}/{}/4'.format(work_id, member_id))
             Reservation.create_reservation(item, member, request.user.member)
             return render(request, 'reserve_finalized.html',
                         {'member': member, 'item': item, "date": item.current_lending().end_date})
