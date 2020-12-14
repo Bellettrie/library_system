@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load books_table %}
+{% block content %}
+    Reserve for member: {{ member.name }}
+    <form action="/lend/reserve_member/{{ member.pk }}" method="get">
+        <label for="Query">Query: </label>
+        <input id="q" type="text" name="q">
+        <input type="submit" value="Search" class="btn-primary btn" >
+    </form>
+    <table>
+        {% show_table items perms member %}
+    </table>
+
+
+{% endblock %}

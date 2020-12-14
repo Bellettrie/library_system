@@ -80,12 +80,13 @@ class Member(MemberData):
         return self.end_date is None or current_date < self.end_date
 
     def can_lend_item_type(self, item_type, current_date=None):
-        from lendings.models import Lending
+        from lendings.models import Lending, Reservation
         from works.models import ItemType, Category
 
         lendings = Lending.objects.filter(member=self, item__location__category__item_type=item_type, handed_in=False)
+        reservations = Reservation.objects.filter(member=self, reservation_end_date__gt=datetime.now())
         from config.models import LendingSettings
-        return len(lendings) < LendingSettings.get_max_count(item_type, self)
+        return (len(lendings) + len(reservations)) < LendingSettings.get_max_count(item_type, self)
 
     def has_late_items(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())

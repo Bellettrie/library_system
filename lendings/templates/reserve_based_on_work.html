@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}
+    Select a Member for Reservation
+{% endblock %}
+{% block content %}
+    Reservation for work: {{ item.publication.title }}
+    <form action="/lend/reserve_work/{{ item.pk }}" method="get">
+        <label for="Query">Name: </label>
+        <input id="q" type="text" name="q">
+        <input type="submit" value="Search" class="btn-primary btn" >
+    </form>
+    <table>
+        {% for member in members %}
+            <tr>
+                <td><a href="{% url RESERVE_FINALIZE item.pk  member.id %}">{{ member.name }}</a></td>
+                <td><a href="{% url RESERVE_FINALIZE item.pk  member.id %}" class="btn btn-sm btn-primary">Finish reservation</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

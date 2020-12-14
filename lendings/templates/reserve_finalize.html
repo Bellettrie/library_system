@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content%}
+Reserving work: {{ item.get_title }} <br />
+Lending to member: {{  member.name }} <br />
+Item expected back at {{ date }}
+<form action="#" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Reserve" class="btn btn-success">
+</form>
+{% endblock %}
