@@ -240,7 +240,6 @@ def finalize_reservation_based(request, id):
 
 @login_required
 def delete_reservation(request, id):
-    member = None
     reservation = get_object_or_404(Reservation, pk=id)
     if not request.user.has_perm('lendings.add_reservation'):
         if not hasattr(request.user, 'member'):

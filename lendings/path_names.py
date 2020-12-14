@@ -17,4 +17,3 @@ RESERVE_FINALIZE = 'lendings.reserve.finalize'
 RESERVE_FAILED = 'lendings.reserve_failed'
 RESERVE_LEND = 'lendings.reserve_lend'
 RESERVE_DELETE = 'lendings.reserve_delete'
-

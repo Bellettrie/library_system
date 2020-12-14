@@ -311,8 +311,6 @@ class Item(NamedThing, BookCode):
             return ''
 
 
-
-
 not_switch_to_available = ["BROKEN", "SOLD"]
 
 
