@@ -209,3 +209,26 @@ def reserve_failed(request, member_id, work_id, reason_id):
     return render(request, 'reservation_cannot_reserve.html', {'item': item,
                                                         'member': member, 'organising_member': organising_member,
                                                         'reason': lending_failed_reasons[reason_id]})
+
+
+@transaction.atomic
+@permission_required('lendings.add_lending')
+def finalize_reservation_based(request, id):
+    reservation = get_object_or_404(Reservation, pk=id)
+    member = reservation.member
+    item = reservation.item
+    if item.is_available():
+        if request.method == 'POST':
+            if not member.can_lend_item_type(item.location.category.item_type):
+                return redirect('/lend/failed_lending/{}/{}/0'.format(item.id, member.id))
+            if not member.is_currently_member():
+                return redirect('/lend/failed_lending/{}/{}/1'.format(item.id, member.id))
+            if member.has_late_items():
+                return redirect('/lend/failed_lending/{}/{}/3'.format(item.id, member.id))
+            reservation.delete()
+            lending = Lending.create_lending(item, member, request.user.member)
+            return render(request, 'lending_finalized.html',
+                          {'member': member, 'item': item, "date": lending.end_date})
+        return render(request, 'lending_finalize.html',
+                      {'member': member, 'item': item, "date": Lending.calc_end_date(member, item)})
+    return redirect('/lend/failed_lending/{}/{}/2'.format(item.id, member.id))
