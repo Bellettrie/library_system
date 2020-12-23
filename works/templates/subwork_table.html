@@ -20,8 +20,9 @@
             {% for author in work.work.get_own_authors %}{% include 'creator_single_line_description.html' %}
                 {% if not forloop.last %}<br/>{% endif %}{% empty %}{% endfor %}
         </td>
-        {% if should_edit %}
+        {% if should_edit and perms.works.change_publication %}
             <td>
+
                 <a href="{% url 'work.subwork.edit' work.pk %}" class="btn btn-primary">Edit</a>
                 <a href="{% url 'work.subwork.delete' work.pk %}" class="btn btn-primary">Delete</a>
             </td>
