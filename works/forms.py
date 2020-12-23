@@ -4,7 +4,7 @@ from django.forms import ModelForm, inlineformset_factory
 from creators.forms import CreatorWidget
 from series.forms import SeriesWidget
 from series.models import WorkInSeries
-from works.models import ItemState, Item, Publication, CreatorToWork, Work
+from works.models import ItemState, Item, Publication, CreatorToWork, Work, SubWork
 from django.forms import formset_factory
 
 
@@ -45,6 +45,26 @@ NAMED_TRANSLATED_LIST = ['title', 'sub_title', 'article', 'original_title', 'ori
 class PublicationCreateForm(ModelForm):
     class Meta:
         model = Publication
+        z_fields = [
+            'hidden',
+            'sorting',
+            'comment',
+            'internal_comment',
+            'date_added'
+        ]
+        widgets = {
+            'date_added': forms.DateInput(attrs={'class': 'datepicker'})
+        }
+        fields = []
+        for i in NAMED_TRANSLATED_LIST:
+            fields.append(i)
+        for field in z_fields:
+            fields.append(field)
+
+
+class SubWorkCreateForm(ModelForm):
+    class Meta:
+        model = SubWork
         z_fields = [
             'hidden',
             'sorting',

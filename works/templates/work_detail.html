@@ -14,7 +14,8 @@
         </tr>
         <tr>
             <th>Authors</th>
-            <td>{% for author in object.get_authors %}{% include 'creator_single_line_description.html' %}{% if not forloop.last %}, {% endif %} {% endfor %}</td>
+            <td>{% for author in object.get_authors %}{% include 'creator_single_line_description.html' %}
+                {% if not forloop.last %}, {% endif %} {% endfor %}</td>
         </tr>
         <tr>
             <th>Comment</th>
@@ -69,8 +70,9 @@
                         {% if perms.works.change_item %}
                             <a href="{% url 'works.item.edit' item.pk %}" class="btn btn-primary btn-sm">Edit</a>
                         {% endif %}
-                        {% if perms.recode.change_recode and recode%}
-                            <a href="{% url 'recode.end' recode.pk %}?next={{ request.path }}" class="btn btn-primary btn-sm">Finish Recode</a>
+                        {% if perms.recode.change_recode and recode %}
+                            <a href="{% url 'recode.end' recode.pk %}?next={{ request.path }}" class="btn btn-primary btn-sm">Finish
+                                Recode</a>
                         {% endif %}
                     </td>
                     <td>
@@ -94,4 +96,18 @@
         {% endfor %}
     </table>
     <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
+
+    <h4>Subworks</h4>
+    {% with tbl=object.get_sub_works %}
+        {% with should_edit=1 %}
+        {% if tbl %}
+
+            <table>
+                {% include 'subwork_table.html' %}
+            </table>
+
+        {% endif %}
+    {% endwith %}
+    {% endwith %}
+    <a href="{% url 'work.subwork.new' object.pk %}" class="btn btn-primary">Add new Subwork</a>
 {% endblock %}

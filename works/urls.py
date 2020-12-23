@@ -11,4 +11,7 @@ urlpatterns = [
     path('<slug:publication_id>/edit', publication_edit, name='works.publication.edit'),
     path('new_publication', publication_new, name='works.publication.new'),
     path('<slug:pk>', views.WorkDetail.as_view(), name='work.view'),
+    path('subworks/new/<slug:publication_id>', views.subwork_new, name='work.subwork.new'),
+    path('subworks/edit/<slug:subwork_id>', views.subwork_edit, name='work.subwork.edit'),
+    path('subworks/delete/<slug:subwork_id>', views.subwork_delete, name='work.subwork.delete'),
 ]
