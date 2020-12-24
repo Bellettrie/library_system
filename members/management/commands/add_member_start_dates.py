@@ -10,6 +10,9 @@ from django.db import connection
 
 def mig():
     from bellettrie_library_system.settings_migration import migration_database
+    from django.conf import settings
+    if not settings.SHOULD_MIGRATE:
+        return
     mycursor = migration_database.cursor(dictionary=True)
     MembershipPeriod.objects.all().delete()
     mycursor.execute("SELECT * FROM klant_archief order by aangemaakt_op")
