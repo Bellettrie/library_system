@@ -6,6 +6,9 @@ from members.management.commands.add_member_start_dates import mig
 def forwards(apps, schema_editor):
     if schema_editor.connection.alias != 'default':
         return
+    from django.conf import settings
+    if not settings.SHOULD_MIGRATE:
+        return
     mig()
     # Your migration code goes here
 

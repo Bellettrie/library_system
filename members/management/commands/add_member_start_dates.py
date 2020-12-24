@@ -9,9 +9,6 @@ from django.db import connection
 
 
 def mig():
-    from django.conf import settings
-    if not settings.SHOULD_MIGRATE:
-        return
     from bellettrie_library_system.settings_migration import migration_database
 
     mycursor = migration_database.cursor(dictionary=True)
