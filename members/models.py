@@ -80,7 +80,7 @@ class Member(MemberData):
     def start_date(self):
         start_date = datetime.fromisoformat("2100-01-01").date()
         for z in MembershipPeriod.objects.filter(member=self):
-            if z.start_date < start_date:
+            if z.start_date is None or start_date is None or z.start_date < start_date:
                 start_date = z.start_date
         return start_date
 
@@ -88,9 +88,15 @@ class Member(MemberData):
     def end_date(self):
         end_date = datetime.fromisoformat("1900-01-01").date()
         for z in MembershipPeriod.objects.filter(member=self):
-            if z.end_date > end_date:
+            if z.end_date is None or end_date is None or  z.end_date > end_date:
                 end_date = z.end_date
         return end_date
+
+    @property
+    def membership_type(self):
+        period = self.get_current_membership_period()
+        if period is not None:
+            return period.membership_type
 
     def has_reservations(self):
         from lendings.models import Reservation
@@ -100,7 +106,7 @@ class Member(MemberData):
     def get_current_membership_period(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
         for period in MembershipPeriod.objects.filter(member=self):
-            if (period.start_date is None or period.start_date) < current_date and (period.end_date is None or current_date < period.end_date):
+            if (period.start_date is None or period.start_date < current_date) and (period.end_date is None or current_date < period.end_date):
                 return period
         return None
 

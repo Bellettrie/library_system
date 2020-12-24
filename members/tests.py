@@ -2,7 +2,7 @@ import datetime
 from django.contrib.auth.models import User, Group
 
 from django.test import TestCase
-from members.models import Member, Committee
+from members.models import Member, Committee, MembershipPeriod
 from works.models import ItemType
 
 
@@ -10,8 +10,11 @@ class LendingCountTest(TestCase):
     def setUp(self):
         self.type1 = ItemType.objects.create(name="Type1", old_id=0)
         self.type2 = ItemType.objects.create(name="Type2", old_id=0)
-        self.member = Member.objects.create(end_date=datetime.date(2023, 4, 4))
-        self.member2 = Member.objects.create(end_date=None)
+        self.member = Member.objects.create()
+        MembershipPeriod.objects.create(member=self.member, start_date=None, end_date="2022-02-02")
+
+        self.member2 = Member.objects.create()
+        MembershipPeriod.objects.create(member=self.member2, start_date=None, end_date="2025-02-02")
 
     def test_member_is_active(self):
         self.assertTrue(self.member.is_currently_member(datetime.date(2022, 1, 1)))
@@ -44,7 +47,6 @@ class MemberTestCase(TestCase):
             email="board@bellettrie.utwente.nl",
             phone="06 666 666 13 13",
             student_number="s123 456 789",
-            end_date=datetime.date(2023, 4, 4),
             notes="",
             is_anonymous_user=False
         )
@@ -57,7 +59,6 @@ class MemberTestCase(TestCase):
             email="board@bellettrie.utwente.nl",
             phone="06 666 666 13 13",
             student_number="s123 456 789",
-            end_date=datetime.date(2023, 4, 4),
             notes="",
             is_anonymous_user=False
         )
@@ -70,7 +71,6 @@ class MemberTestCase(TestCase):
             email="board@bellettrie.utwente.nl",
             phone="06 666 666 13 13",
             student_number="s123 456 789",
-            end_date=datetime.date(2023, 4, 4),
             notes="",
             is_anonymous_user=False
         )
