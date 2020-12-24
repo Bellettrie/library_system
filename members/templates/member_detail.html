@@ -58,8 +58,12 @@
             <td>{{ member.is_anonymous_user }}</td>
         </tr>
         <tr>
-{#            <th>End date</th>#}
-{#            <td>{{ member.end_date }}</td>#}
+            <th>Current Membership Period?</th>
+            <td>{{ member.get_current_membership_period.start_date }} - {{ member.get_current_membership_period.end_date }}</td>
+        </tr>
+            <tr>
+            <th>Currently Member?</th>
+            <td>{{ member.is_currently_member }}</td>
         </tr>
         {% if member.user %}
             <tr>
@@ -87,6 +91,7 @@
             </tr>
         {% endif %}
     </table>
+    <hr>
     <h4>Membership Periods</h4>
     <table>
         <tr>
@@ -106,6 +111,8 @@
         {% endfor %}
 
     </table>
+    <a href="{% url 'members.membership_period_new' member.pk %}">New period</a>
+    <hr>
 
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Lend for</a>
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>

@@ -95,9 +95,15 @@ class Member(MemberData):
 
         return len(Reservation.objects.filter(member=self)) > 0
 
-    def is_currently_member(self, current_date=None):
+    def get_current_membership_period(self, current_date = None):
         current_date = current_date or datetime.date(datetime.now())
-        return self.end_date is None or current_date < self.end_date
+        for period in MembershipPeriod.objects.filter(member=self):
+            if (period.start_date is None or period.start_date) < current_date and (period.end_date is None or current_date < period.end_date):
+                return period
+        return None
+
+    def is_currently_member(self, current_date=None):
+        return self.get_current_membership_period(current_date) is not None
 
     def can_lend_item_type(self, item_type, current_date=None):
         from lendings.models import Lending, Reservation

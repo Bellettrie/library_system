@@ -212,3 +212,22 @@ def edit_membership_period(request, membership_period_id):
     else:
         form = MembershipPeriodForm(instance=member)
     return render(request, 'member_membership_edit.html', {'form': form, 'member': member})
+
+
+@transaction.atomic
+@permission_required('members.change_member')
+def new_membership_period(request, member_id):
+    member = get_object_or_404(Member, pk=member_id)
+    if request.method == 'POST':
+
+        form = MembershipPeriodForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.member = member
+            instance.save()
+
+
+            return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+    else:
+        form = MembershipPeriodForm(instance=member)
+    return render(request, 'member_membership_edit.html', {'form': form, 'member': member})

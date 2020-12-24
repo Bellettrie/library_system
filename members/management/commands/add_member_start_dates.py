@@ -5,6 +5,8 @@ from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 from members.models import Committee, Member, MembershipPeriod, MemberBackground, MembershipType
 from members.permissions import KASCO, BOARD, ADMIN, COMCO, BOOKBUYERS, KICKIN, LENDERS, BOOKS, WEB, KONNICHIWA, RETRIEVAL
+from django.db import connection
+
 
 def mig():
     from bellettrie_library_system.settings_migration import migration_database
@@ -12,12 +14,23 @@ def mig():
     MembershipPeriod.objects.all().delete()
     mycursor.execute("SELECT * FROM klant_archief order by aangemaakt_op")
     for member in Member.objects.all():
-        if member.start_date and member.end_date:
-            MembershipPeriod.objects.create(member=member, start_date=member.start_date, end_date=member.end_date, member_background=member.member_background,
-                                            membership_type=member.membership_type)
-        elif member.start_date:
-            MembershipPeriod.objects.create(member=member, start_date=member.start_date, member_background=member.member_background,
-                                            membership_type=member.membership_type)
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT start_date, end_date, member_background_id, membership_type_id  FROM members_member WHERE id="+str(member.id))
+
+            a  = cursor.fetchone()
+            start_date = a[0]
+            end_date  = a[1]
+            member_background_id = a[2]
+            membership_type_id =a[3]
+            if start_date and end_date:
+                MembershipPeriod.objects.create(member=member, start_date=start_date, end_date=end_date, member_background_id=member_background_id,
+                                                membership_type_id=membership_type_id)
+            elif start_date:
+                MembershipPeriod.objects.create(member=member, start_date=start_date, member_background_id=member_background_id,
+                                                membership_type_id=membership_type_id)
+
+
     for x in mycursor:
         members = Member.objects.filter(old_id=x.get("klantnummer"))
         if len(members) == 0:
@@ -69,6 +82,8 @@ def mig():
             z.delete()
         if len(deleted) == 0:
             break
+
+
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
