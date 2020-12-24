@@ -19,20 +19,19 @@ def mig():
     for member in Member.objects.all():
 
         with connection.cursor() as cursor:
-            cursor.execute("SELECT start_date, end_date, member_background_id, membership_type_id  FROM members_member WHERE id="+str(member.id))
+            cursor.execute("SELECT start_date, end_date, member_background_id, membership_type_id  FROM members_member WHERE id=" + str(member.id))
 
-            a  = cursor.fetchone()
+            a = cursor.fetchone()
             start_date = a[0]
-            end_date  = a[1]
+            end_date = a[1]
             member_background_id = a[2]
-            membership_type_id =a[3]
+            membership_type_id = a[3]
             if start_date and end_date:
                 MembershipPeriod.objects.create(member=member, start_date=start_date, end_date=end_date, member_background_id=member_background_id,
                                                 membership_type_id=membership_type_id)
             elif start_date:
                 MembershipPeriod.objects.create(member=member, start_date=start_date, member_background_id=member_background_id,
                                                 membership_type_id=membership_type_id)
-
 
     for x in mycursor:
         members = Member.objects.filter(old_id=x.get("klantnummer"))
