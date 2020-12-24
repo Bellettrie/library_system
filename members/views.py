@@ -15,8 +15,8 @@ from django.views.generic import ListView
 from bellettrie_library_system.settings import BASE_URL
 from mail.models import mail_member
 from utils.get_query_words import get_query_words
-from .models import Member
-from .forms import EditForm
+from .models import Member, MembershipPeriod
+from .forms import EditForm, MembershipPeriodForm
 
 # Create your views here.
 from django.http import HttpResponseRedirect
@@ -197,3 +197,18 @@ def disable_invite_code(request, member_id):
     member.invitation_code_valid = False
     member.save()
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+
+@transaction.atomic
+@permission_required('members.change_member')
+def edit_membership_period(request, membership_period_id):
+    member = get_object_or_404(MembershipPeriod, pk=membership_period_id)
+    if request.method == 'POST':
+
+        form = MembershipPeriodForm(request.POST, instance=member)
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect(reverse('members.view', args=(member.member.pk,)))
+    else:
+        form = MembershipPeriodForm(instance=member)
+    return render(request, 'member_membership_edit.html', {'form': form, 'member': member})

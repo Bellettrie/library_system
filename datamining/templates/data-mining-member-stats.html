@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load get_list %}
+{% block title %}Filter Members{% endblock %}
+{% block content %}
+    Please use standard iso date formats (ie. 2020-01-01):
+    <form action="#" method="get">
+        <label for="date">Measuring date </label>
+
+        <input id="date" type="text" name="date" value="{{ request.GET.date }}">
+
+
+        <input type="submit" name="exec" value="Search" class="btn-primary btn">
+    </form>
+
+    <table class="table table-striped" style="width: auto;">
+
+        {% for k, v in q.items %}
+            {% if forloop.first %}
+                <tr>
+                    <th>..</th>
+                    {% for z,u in v.items %}
+                        <th>{{ z }}</th>
+                    {% endfor %}
+                </tr>
+            {% endif %}
+            <tr>
+                <td>{% if forloop.last %}<b>{{ k }}</b>
+                    {% for z,u in v.items %}
+                        <td><b>{{ u }}</b></td>
+                    {% endfor %}
+
+                {% else %} {{ k }}
+                    {% for z,u in v.items %}
+                        {% if forloop.last %} <td><b>{{ u }}</b></td>
+                        {% else %}
+                        <td>{{ u }}</td>
+                        {% endif %}
+                    {% endfor %}{% endif %}
+                </td>
+
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

@@ -48,10 +48,11 @@ class MemberData(models.Model):
     email = models.CharField(max_length=255)
     phone = models.CharField(max_length=64)
     student_number = models.CharField(max_length=32, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    # end_date = models.DateField(null=True, blank=True)
+    # start_date = models.DateField(null=True, blank=False, default="2020-09-01")
     is_blacklisted = models.BooleanField(default=False)
-    member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
-    membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
+    # member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
+    # membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
 
     notes = models.TextField(blank=True)
 
@@ -74,7 +75,21 @@ class Member(MemberData):
 
     class Meta:
         permissions = [('committee_update', 'Can update committee')]
+    @property
+    def start_date(self):
+        start_date = datetime.fromisoformat("2100-01-01").date()
+        for z in MembershipPeriod.objects.filter(member=self):
+            if z.start_date < start_date:
+                start_date = z.start_date
+        return start_date
 
+    @property
+    def end_date(self):
+        end_date = datetime.fromisoformat("1900-01-01").date()
+        for z in MembershipPeriod.objects.filter(member=self):
+            if z.end_date > end_date:
+                end_date = z.end_date
+        return end_date
     def has_reservations(self):
         from lendings.models import Reservation
 
@@ -169,6 +184,9 @@ class Member(MemberData):
                     self.user.groups.add(Group.objects.get(name=committee.code))
             self.user.save()
 
+    def get_periods(self):
+        return self.membershipperiod_set.all().order_by('start_date')
+
 
 class MemberLog(MemberData):
     date_edited = models.DateTimeField(auto_now=True)
@@ -185,6 +203,14 @@ class MemberLog(MemberData):
         data.email = member.email
         data.phone = member.phone
         data.student_number = member.student_number
-        data.end_date = member.end_date
+        # data.end_date = member.end_date
         data.notes = member.notes
+        # data.start_date = member.start_date
         data.save()
+
+class MembershipPeriod(models.Model):
+    member = models.ForeignKey(Member, on_delete=PROTECT, null=True)
+    start_date = models.DateField(null=True, blank=False)
+    end_date = models.DateField(null=True, blank=False)
+    member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
+    membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)

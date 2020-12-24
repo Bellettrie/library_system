@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 <!-- Brand and toggle get grouped for better mobile display -->
 <!-- bs-example-navbar-collapse-1 -->
-{% block title %}Member: {{  member.name}}{% endblock %}
+{% block title %}Member: {{ member.name }}{% endblock %}
 {% block content %}
-    {{ extra }}<br />
+    {{ extra }}<br/>
     <table class="table table-striped" style="width: auto;">
         <tr>
             <th>Name</th>
@@ -58,8 +58,8 @@
             <td>{{ member.is_anonymous_user }}</td>
         </tr>
         <tr>
-            <th>End date</th>
-            <td>{{ member.end_date }}</td>
+{#            <th>End date</th>#}
+{#            <td>{{ member.end_date }}</td>#}
         </tr>
         {% if member.user %}
             <tr>
@@ -87,13 +87,32 @@
             </tr>
         {% endif %}
     </table>
+    <h4>Membership Periods</h4>
+    <table>
+        <tr>
+            <th>From</th>
+            <th>To</th>
+            <th>Type</th>
+            <th>Background</th>
+        </tr>
+        {% for p in member.get_periods %}
+            <tr>
+            <td>{{ p.start_date }}</td>
+            <td>{{ p.end_date }}</td>
+            <td>{{ p.membership_type }}</td>
+            <td>{{ p.member_background }}</td>
+            <td><a href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
+        </tr>
+        {% endfor %}
+
+    </table>
 
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Lend for</a>
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
-{% load books %}
+    {% load books %}
     {% get_user_books member perms %}
     {% if member.has_reservations %}
         <h4>Reservations</h4>
-    {% get_user_reserved_books member perms %}
+        {% get_user_reserved_books member perms %}
     {% endif %}
 {% endblock %}
