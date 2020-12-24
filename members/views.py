@@ -198,6 +198,7 @@ def disable_invite_code(request, member_id):
     member.save()
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
 
+
 @transaction.atomic
 @permission_required('members.change_member')
 def edit_membership_period(request, membership_period_id):
@@ -225,7 +226,6 @@ def new_membership_period(request, member_id):
             instance = form.save(commit=False)
             instance.member = member
             instance.save()
-
 
             return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
     else:

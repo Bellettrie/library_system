@@ -9,11 +9,11 @@ def forwards(apps, schema_editor):
     mig()
     # Your migration code goes here
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
         # Dependencies to other migrations
-        ('members','0006_auto_20201224_1304')
+        ('members', '0006_auto_20201224_1304')
     ]
 
     operations = [

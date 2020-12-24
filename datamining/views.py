@@ -81,7 +81,7 @@ def show_members(request):
 
 
 def get_member_statistics(day):
-    members = MembershipPeriod.objects.filter((Q(start_date__lte=day) & Q(end_date__gte=day))|Q(end_date__isnull=True))
+    members = MembershipPeriod.objects.filter((Q(start_date__lte=day) & Q(end_date__gte=day)) | Q(end_date__isnull=True))
     quadrants = dict()
     member_bg_counts = dict()
     member_type_counts = dict()
@@ -99,7 +99,7 @@ def get_member_statistics(day):
 
     for ru in MemberBackground.objects.all():
         zz[ru] = dict()
-    zz[None]= dict()
+    zz[None] = dict()
     for ru in zz:
         for a in MembershipType.objects.all():
             zz[ru][a] = 0
@@ -121,7 +121,7 @@ def get_member_statistics(day):
             r_count += zz[row][z]
             col_counts[z] = col_counts.get(z, 0) + zz[row][z]
         zz[row]['Total'] = r_count
-        col_counts['Total'] = col_counts.get('Total', 0) +  r_count
+        col_counts['Total'] = col_counts.get('Total', 0) + r_count
     for row in zz.keys():
         zz[row].pop(None)
     zz.pop(None)
@@ -132,5 +132,5 @@ def get_member_statistics(day):
 @permission_required('members.view_member')
 def show_membership_stats(request):
     dat = request.GET.get('date', datetime.datetime.now().date().isoformat())
-    q =get_member_statistics(dat)
+    q = get_member_statistics(dat)
     return render(request, 'data-mining-member-stats.html', {'q': q})

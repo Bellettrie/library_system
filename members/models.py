@@ -75,6 +75,7 @@ class Member(MemberData):
 
     class Meta:
         permissions = [('committee_update', 'Can update committee')]
+
     @property
     def start_date(self):
         start_date = datetime.fromisoformat("2100-01-01").date()
@@ -90,12 +91,13 @@ class Member(MemberData):
             if z.end_date > end_date:
                 end_date = z.end_date
         return end_date
+
     def has_reservations(self):
         from lendings.models import Reservation
 
         return len(Reservation.objects.filter(member=self)) > 0
 
-    def get_current_membership_period(self, current_date = None):
+    def get_current_membership_period(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
         for period in MembershipPeriod.objects.filter(member=self):
             if (period.start_date is None or period.start_date) < current_date and (period.end_date is None or current_date < period.end_date):
@@ -213,6 +215,7 @@ class MemberLog(MemberData):
         data.notes = member.notes
         # data.start_date = member.start_date
         data.save()
+
 
 class MembershipPeriod(models.Model):
     member = models.ForeignKey(Member, on_delete=PROTECT, null=True)
