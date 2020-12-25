@@ -73,6 +73,8 @@ class Member(MemberData):
     invitation_code = models.CharField(max_length=64, null=True, blank=True)
     invitation_code_valid = models.BooleanField(default=False)
 
+    is_anonimysed = models.BooleanField(default=False)
+
     class Meta:
         permissions = [('committee_update', 'Can update committee')]
 
@@ -184,6 +186,19 @@ class Member(MemberData):
         self.destroy(MailLog.objects.filter(member=self), 'member', anonymous_members, dry_run)
         self.destroy(MembershipPeriod.objects.filter(member=self), 'member', anonymous_members, dry_run)
         self.destroy(Rating.objects.filter(member=self), 'member', anonymous_members, dry_run)
+        if not dry_run:
+            self.is_anonimysed = True
+            self.addressLineOne = "-"
+            self.addressLineTwo = "-"
+            self.addressLineThree = "-"
+            self.addressLineFour = "-"
+            self.student_number = "-"
+            self.old_customer_type= None
+            self.notes = "-"
+            self.old_id = None
+            self.membership_type_old = "-"
+            self.phone= "-"
+            self.save()
 
 
     @staticmethod
@@ -219,7 +234,10 @@ class Member(MemberData):
         return self.membershipperiod_set.all().order_by('start_date')
 
     def can_be_deleted(self):
-
+        now = datetime.now().date()
+        print(now, self.privacy_reunion_end_date, (now-self.privacy_reunion_end_date).days)
+        if self.privacy_reunions and (now-self.privacy_reunion_end_date).days < 8000:
+            return False
         from lendings.models import Lending
         if len(Lending.objects.filter(Q(lended_by=self) | Q(handed_in_by=self) | Q(member=self))) > 0:
             print("NAY lending")
@@ -237,6 +255,10 @@ class Member(MemberData):
         return True
 
     def should_be_anonymised(self, now=None):
+        if self.is_anonimysed:
+            return False
+        if self.end_date is None:
+            return False
         if now is None:
             now = datetime.now().date()
         if (now - self.end_date).days < 800:
