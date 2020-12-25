@@ -199,6 +199,9 @@ class Publication(Work):
         generator = GENERATORS[location.sig_gen]
         return generator(FakeItem(self, location))
 
+    def get_sub_works(self):
+        return WorkInPublication.objects.filter(publication=self).order_by('number_in_publication')
+
 
 class Item(NamedThing, BookCode):
     old_id = models.IntegerField(null=True)
@@ -230,7 +233,6 @@ class Item(NamedThing, BookCode):
         return Lending.objects.filter(item=self, handed_in=False).count() == 0
 
     def is_reserved(self):
-        print("HERE")
         query = Q(item=self, reservation_end_date__gt=datetime.now()) | Q(item=self, reservation_end_date__isnull=True)
 
         reservations = Reservation.objects.filter(query)

@@ -15,8 +15,8 @@ from book_code_generation.models import standardize_code
 from recode.models import Recode
 from series.models import Series
 from utils.get_query_words import get_query_words
-from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm
-from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState
+from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
+from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState, WorkInPublication
 
 
 def word_to_regex(word: str):
@@ -299,3 +299,83 @@ def publication_edit(request, publication_id=None):
 @permission_required('works.add_publication')
 def publication_new(request):
     return publication_edit(request, publication_id=None)
+
+
+@transaction.atomic
+@permission_required('works.change_publication')
+def subwork_edit(request, subwork_id=None, publication_id=None):
+    from works.forms import CreatorToWorkFormSet
+    from works.forms import SeriesToWorkFomSet
+    creators = None
+    series = None
+    publication = None
+    num = 0
+    disp_num = ''
+    if request.method == 'POST':
+        print(request.POST)
+
+        if subwork_id is not None:
+            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+            num = publication.number_in_publication
+            disp_num = publication.display_number_in_publication
+            form = SubWorkCreateForm(request.POST, instance=publication.work)
+        else:
+            form = SubWorkCreateForm(request.POST)
+        num = request.POST.get('num', num)
+        disp_num = request.POST.get('disp_num', disp_num)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.is_translated = instance.original_language is not None
+            instance.save()
+            creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
+            if creators.is_valid():
+                instances = creators.save(commit=False)
+                for inst in creators.deleted_objects:
+                    inst.delete()
+                for c2w in instances:
+                    c2w.work = instance
+                    c2w.save()
+            else:
+                for error in creators.errors:
+                    form.add_error(None, str(error))
+
+            if subwork_id is None:
+                pub = get_object_or_404(Publication, id=publication_id)
+                publication = WorkInPublication.objects.create(work=instance, publication=pub, number_in_publication=num, display_number_in_publication=disp_num)
+            else:
+                publication.number_in_publication = num
+                publication.display_number_in_publication = disp_num
+                publication.save()
+
+            return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
+    else:
+        if subwork_id is not None:
+            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+            num = publication.number_in_publication
+            disp_num = publication.display_number_in_publication
+            creators = CreatorToWorkFormSet(instance=publication.work)
+            form = SubWorkCreateForm(instance=publication.work)
+        else:
+            creators = CreatorToWorkFormSet()
+            form = SubWorkCreateForm()
+    return render(request, 'subwork_edit.html',
+                  {'series': series, 'publication': publication, 'form': form, 'creators': creators, 'num': num, 'disp_num': disp_num})
+
+
+@transaction.atomic
+@permission_required('works.add_publication')
+def subwork_new(request, publication_id):
+    return subwork_edit(request, publication_id=publication_id)
+
+
+@transaction.atomic
+@permission_required('works.add_publication')
+def subwork_delete(request, subwork_id):
+    publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+
+    if request.GET.get('confirm'):
+        work = publication.work
+        publication.delete()
+        work.delete()
+        return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
+    return render(request, 'are-you-sure.html', {'what': 'delete the subwork ' + publication.work.get_title() + "?"})

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{{ publication.title }}{% endblock %}
+{% block content %}
+
+
+    <form action="#" method="post">
+        {% csrf_token %}
+        <h2> Base info</h2>
+        <table>
+            {{ form.as_table }}
+            <tr>
+                <td>
+                    Number
+                </td>
+                <td>
+                    <input value="{{ num }}" type="number" name="num" id="num">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Display Number
+                </td>
+                <td>
+                    <input value="{{ disp_num }}" name="disp_num" id="disp_num">
+                </td>
+            </tr>
+        </table>
+        <h2> Creators</h2>
+
+        {{ creators.as_p }}
+
+
+        <input class="btn btn-primary" type="submit" value="Save">
+
+    </form>
+
+{% endblock %}

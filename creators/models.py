@@ -155,7 +155,6 @@ def relabel_creator(creator, location, old_number, old_letter, new_number, new_l
     series_handle_list = []
     for series in all_series:
         if series.location == location:
-            print("HERE")
             if pattern.match(series.book_code_sortable):
                 try_to_update_object(series, pattern, new_prefix)
                 series_handle_list.append(series)

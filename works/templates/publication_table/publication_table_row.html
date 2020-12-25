@@ -7,7 +7,8 @@
             </a>
         </td>
         <td>
-            {% for author in publication.get_authors %}{% include 'creator_single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+            {% for author in publication.get_authors %}{% include 'creator_single_line_description.html' %}
+                {% if not forloop.last %}<br/>{% endif %}{% endfor %}
         </td>
         <td>
             {% with item=item_rows.0.item %}
@@ -42,7 +43,8 @@
                 <i>No Title</i> {% endif %}
         </a></td>
         <td>
-            {% for author in publication.get_authors %}{% include 'creator_single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}{% endfor %}</td>
+            {% for author in publication.get_authors %}{% include 'creator_single_line_description.html' %}
+                {% if not forloop.last %}<br/>{% endif %}{% endfor %}</td>
         <td></td>
         <td>
             {% if publication.has_no_items %}
@@ -52,4 +54,14 @@
             {% endif %}
         </td>
     </tr>
+
 {% endif %}
+{% with tbl=publication.get_sub_works %}
+    {% if tbl %}
+        <tr>
+            <td colspan="5">
+                {% include 'subwork_table.html' %}
+            </td>
+        </tr>
+    {% endif %}
+{% endwith %}
