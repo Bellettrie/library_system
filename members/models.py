@@ -172,7 +172,7 @@ class Member(MemberData):
 
     def anonymise_me(self, dry_run=True):
         anonymous_members = list(Member.objects.filter(is_anonymous_user=True))
-        from mail.models import MailLog
+
 
         from lendings.models import Lending
         from ratings.models import Rating

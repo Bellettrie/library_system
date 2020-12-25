@@ -264,6 +264,9 @@ def delete_member(request, member_id):
         return render(request, 'are-you-sure.html', {'what': "delete member with name " + member.name})
     member = get_object_or_404(Member, pk=member_id)
     MembershipPeriod.objects.filter(member=member).delete()
+    from mail.models import MailLog
+    anonymous_members = list(Member.objects.filter(is_anonymous_user=True))
+    member.destroy(MailLog.objects.filter(member=member), 'member', anonymous_members, False)
     member.delete()
 
     return HttpResponseRedirect(reverse('members.list'))
