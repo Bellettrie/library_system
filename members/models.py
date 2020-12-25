@@ -88,7 +88,7 @@ class Member(MemberData):
     def end_date(self):
         end_date = datetime.fromisoformat("1900-01-01").date()
         for z in MembershipPeriod.objects.filter(member=self):
-            if z.end_date is None or end_date is None or  z.end_date > end_date:
+            if z.end_date is None or end_date is None or z.end_date > end_date:
                 end_date = z.end_date
         return end_date
 

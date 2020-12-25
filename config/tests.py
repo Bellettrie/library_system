@@ -16,12 +16,12 @@ class BasicTestCase(TestCase):
         category = Category.objects.create(name="TestCat", item_type=item_type)
         self.location = Location.objects.create(name="TestLoc", category=category, old_id=0)
         self.item = Item.objects.create(publication=self.publication, old_id=0, hidden=False, location=self.location)
-        self.member = Member.objects.create()  #end_date=datetime.date(2023, 4, 4)
+        self.member = Member.objects.create()
         MembershipPeriod.objects.create(member=self.member, start_date=None, end_date="2023-04-04")
-        self.member2 = Member.objects.create() #end_date=datetime.date(2021, 4, 4)
+        self.member2 = Member.objects.create()
         MembershipPeriod.objects.create(member=self.member2, start_date=None, end_date="2021-04-04")
         committee = Committee.objects.create(active_member_committee=True, name="Active com")
-        self.member3 = Member.objects.create() #end_date=datetime.date(2021, 4, 4)
+        self.member3 = Member.objects.create()
         MembershipPeriod.objects.create(member=self.member3, start_date=None, end_date="2021-04-04")
 
         self.member3.committees.add(committee)
@@ -65,7 +65,7 @@ class LendingTermTestCase(BasicTestCase):
     def test_membership_no_end_date(self):
         # self.member2.end_date = None
         z = MembershipPeriod.objects.get(member=self.member2)
-        z.end_date=None
+        z.end_date = None
         z.save()
         self.member2.save()
         self.assertEqual(datetime.date(2022, 5, 5), LendingSettings.get_end_date(self.item, self.member2, datetime.date(2022, 3, 30)))
