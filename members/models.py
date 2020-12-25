@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.contrib.auth.models import User, Group
 from django.db import models
-from django.db.models import CASCADE, PROTECT
+from django.db.models import CASCADE, PROTECT, Q
 
 from members.management.commands.namegen import generate_full_name
 
@@ -143,13 +143,6 @@ class Member(MemberData):
 
     def save(self, *args, **kwargs):
         MemberLog.from_member(self)
-        if self.membership_type:
-            if not self.membership_type.has_end_date:
-                self.end_date = None
-            elif self.end_date is None:
-                print(self.name)
-                print(self.old_id)
-                raise ValueError("Member has to have an end date for this membership type")
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -200,6 +193,26 @@ class Member(MemberData):
 
     def get_periods(self):
         return self.membershipperiod_set.all().order_by('start_date')
+
+    def can_be_deleted(self):
+
+        from lendings.models import Lending
+        if len(Lending.objects.filter(Q(lended_by=self)  | Q(handed_in_by=self) | Q(member=self))) > 0:
+            return False
+        from lendings.models import Reservation
+        if len(Reservation.objects.filter(Q(member=self)|Q(reserved_by=self)))>0:
+            return False
+        from ratings.models import Rating
+
+        if len(Rating.objects.filter(member=self))>0:
+            return False
+        # if len(MembershipPeriod.objects.filter(member=self)) > 0:
+        #     print("MSP")
+        #     return False
+        return True
+
+    def can_be_anonymised(self):
+        pass
 
 
 class MemberLog(MemberData):

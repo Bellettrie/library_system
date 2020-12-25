@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'mail',
     'public_pages',
     'datamining',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

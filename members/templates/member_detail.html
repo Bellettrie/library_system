@@ -116,10 +116,16 @@
 
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Lend for</a>
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
+    {% if member.can_be_deleted %}
+            <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete</a>
+
+
+    {% endif %}
     {% load books %}
     {% get_user_books member perms %}
     {% if member.has_reservations %}
         <h4>Reservations</h4>
         {% get_user_reserved_books member perms %}
     {% endif %}
+
 {% endblock %}
