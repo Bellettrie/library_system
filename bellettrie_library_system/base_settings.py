@@ -164,8 +164,10 @@ def GET_MENU():
     collision_list = MenuItem('Code Collisions', reverse('creator.collides'), 'creators.change_creator', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
 
     my_menu.append(MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, new_series, new_creator, inventarisation, recode_list, collision_list], only_subitems=True, icon='fa fa-book'))
+    anon_members = MenuItem('Anonymous users', reverse('members.list.anon'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
+    member_stats = MenuItem('Member Statistics', reverse('datamining.membership_stats'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
 
     members_list = MenuItem('Member Filter', reverse('datamining.members'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
-    my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar', [members_list], only_subitems=True, icon='fa fa-book'))
+    my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar', [members_list, anon_members, member_stats], only_subitems=True, icon='fa fa-book'))
 
     return my_menu

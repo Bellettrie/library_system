@@ -271,6 +271,7 @@ def delete_member(request, member_id):
 
     return HttpResponseRedirect(reverse('members.list'))
 
+
 @transaction.atomic
 @permission_required('members.delete_member')
 def anonymise(request, member_id):
