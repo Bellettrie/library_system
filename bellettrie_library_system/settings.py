@@ -37,4 +37,4 @@ EMAIL_HOST ='127.0.0.1'
 FAKE_MAIL = True
 FAKE_MAIL_ADDRESS = 'nander@nander.net'
 
-SHOULD_MIGRATE = True
+SHOULD_MIGRATE = False
