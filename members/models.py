@@ -245,7 +245,6 @@ class Member(MemberData):
         return True
 
     def can_be_deleted(self):
-
         from lendings.models import Lending
         if len(Lending.objects.filter(Q(lended_by=self) | Q(handed_in_by=self) | Q(member=self))) > 0:
             print("NAY lending")
@@ -263,6 +262,8 @@ class Member(MemberData):
         return True
 
     def should_be_anonymised(self, now=None):
+        if self.is_active():
+            return False
         if self.is_anonimysed:
             return False
         if self.end_date is None:

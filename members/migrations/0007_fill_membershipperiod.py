@@ -1,4 +1,4 @@
-from django.db import migrations
+from django.db import migrations, models
 
 from members.management.commands.add_member_start_dates import mig
 
@@ -20,5 +20,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name='member',
+            name='is_anonimysed',
+            field=models.BooleanField(default=False),
+        ),
         migrations.RunPython(forwards),
     ]
