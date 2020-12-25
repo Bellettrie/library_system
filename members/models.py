@@ -247,16 +247,12 @@ class Member(MemberData):
     def can_be_deleted(self):
         from lendings.models import Lending
         if len(Lending.objects.filter(Q(lended_by=self) | Q(handed_in_by=self) | Q(member=self))) > 0:
-            print("NAY lending")
             return False
         from lendings.models import Reservation
         if len(Reservation.objects.filter(Q(member=self) | Q(reserved_by=self))) > 0:
-            print("Nay reservation")
             return False
         from ratings.models import Rating
-
         if len(Rating.objects.filter(member=self)) > 0:
-            print("Nay Rating")
             return False
 
         return True
