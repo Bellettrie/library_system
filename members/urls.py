@@ -13,6 +13,8 @@ urlpatterns = [
     path('<int:member_id>/invite', views.generate_invite_code, name='members.generate_invite'),
     path('<int:member_id>/uninvite', views.disable_invite_code, name='members.disable_invite'),
     path('<int:member_id>/delete', views.delete_member, name='members.delete'),
+    path('<int:member_id>/anonymise', views.anonymise, name='members.anonymise'),
+
     path('new', views.new, name=MEMBERS_NEW),
     path('signup/<int:member_id>', signup, name='members.signup'),
     path('change_user/<int:member_id>', change_user, name='members.change_user'),

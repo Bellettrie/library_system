@@ -23,5 +23,6 @@ class Command(BaseCommand):
                 # print(member)
                 counter +=1
                 member.anonymise_me(dry_run=False)
+                member.delete()
 
         print(counter)

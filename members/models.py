@@ -164,7 +164,7 @@ class Member(MemberData):
         import random
 
         for z in filter_list:
-            setattr(z, field, random.sample(anonymous_members,1)[0])
+            setattr(z, field, random.sample(anonymous_members, 1)[0])
             if not dry_run:
                 z.save()
 
@@ -173,6 +173,7 @@ class Member(MemberData):
         from mail.models import MailLog
 
         from lendings.models import Lending
+        from ratings.models import Rating
         self.destroy(Lending.objects.filter(member=self), 'member', anonymous_members, dry_run)
         self.destroy(Lending.objects.filter(lended_by=self), 'lended_by', anonymous_members, dry_run)
         self.destroy(Lending.objects.filter(handed_in_by=self), 'handed_in_by', anonymous_members, dry_run)
@@ -182,8 +183,8 @@ class Member(MemberData):
         self.destroy(Reservation.objects.filter(reserved_by=self), 'reserved_by', anonymous_members, dry_run)
         self.destroy(MailLog.objects.filter(member=self), 'member', anonymous_members, dry_run)
         self.destroy(MembershipPeriod.objects.filter(member=self), 'member', anonymous_members, dry_run)
-        if not dry_run:
-            self.delete()
+        self.destroy(Rating.objects.filter(member=self), 'member', anonymous_members, dry_run)
+
 
     @staticmethod
     def anonymise_people():
@@ -194,7 +195,7 @@ class Member(MemberData):
         for member in members:
             if member.should_be_anonymised():
                 member.anonymise_me(dry_run=False)
-
+                member.delete()
 
     def update_groups(self):
         if self.user is not None:
@@ -221,13 +222,16 @@ class Member(MemberData):
 
         from lendings.models import Lending
         if len(Lending.objects.filter(Q(lended_by=self) | Q(handed_in_by=self) | Q(member=self))) > 0:
+            print("NAY lending")
             return False
         from lendings.models import Reservation
         if len(Reservation.objects.filter(Q(member=self) | Q(reserved_by=self))) > 0:
+            print("Nay reservation")
             return False
         from ratings.models import Rating
 
         if len(Rating.objects.filter(member=self)) > 0:
+            print("Nay Rating")
             return False
 
         return True

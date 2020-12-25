@@ -1,4 +1,3 @@
-
 import random
 import string
 from datetime import datetime
@@ -35,7 +34,7 @@ class MemberList(PermissionRequiredMixin, ListView):
         words = get_query_words(self.request)
         get_previous = self.request.GET.get('previous', False)
 
-        msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now()))& (Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
+        msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now())) & (Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
 
         if words is None:
             return []
@@ -116,7 +115,7 @@ def new(request):
                 raise ValueError("Wrong")
             instance = form.save()
             inst = MembershipPeriodForm(request.POST).save(commit=False)
-            inst.member =instance
+            inst.member = instance
             inst.save()
             if can_change:
                 instance.update_groups()
@@ -268,3 +267,13 @@ def delete_member(request, member_id):
     member.delete()
 
     return HttpResponseRedirect(reverse('members.list'))
+
+@transaction.atomic
+@permission_required('members.delete_member')
+def anonymise(request, member_id):
+    member = get_object_or_404(Member, pk=member_id)
+    if not request.GET.get('confirm'):
+        return render(request, 'are-you-sure.html', {'what': "anonymise member with name " + member.name})
+    member.anonymise_me(dry_run=False)
+
+    return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))

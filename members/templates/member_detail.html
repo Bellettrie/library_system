@@ -118,8 +118,8 @@
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
     {% if member.can_be_deleted %}
             <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete</a>
-
-
+    {% elif member.should_be_anonymised %}
+        <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
     {% endif %}
     {% load books %}
     {% get_user_books member perms %}
