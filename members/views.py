@@ -82,7 +82,7 @@ def show(request, member_id):
             raise PermissionDenied
     member = get_object_or_404(Member, pk=member_id)
     if member.is_anonimysed:
-        return render(request, 'member_detail_anonymous.html', {'member':member})
+        return render(request, 'member_detail_anonymous.html', {'member': member})
     return render(request, 'member_detail.html', {'member': member})
 
 
