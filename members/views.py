@@ -59,6 +59,21 @@ class MemberList(PermissionRequiredMixin, ListView):
         return list(set(result_set))
 
 
+class AnonMemberList(PermissionRequiredMixin, ListView):
+    permission_required = 'members.view_member'
+    model = Member
+    template_name = 'member_anonymisable.html'
+    paginate_by = 50
+
+    def get_queryset(self):  # new
+        result_set = set()
+
+        for member in Member.objects.all():
+            if member.should_be_anonymised():
+                result_set.add(member)
+        return list(set(result_set))
+
+
 def show(request, member_id):
     if not request.user.has_perm('members.view_member'):
         if not hasattr(request.user, 'member'):

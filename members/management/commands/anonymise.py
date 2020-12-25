@@ -16,4 +16,12 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        Member.anonymise_people()
+        counter = 0
+        for member in Member.objects.all():
+
+            if member.should_be_anonymised():
+                # print(member)
+                counter +=1
+                member.anonymise_me(dry_run=False)
+
+        print(counter)

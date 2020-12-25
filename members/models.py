@@ -160,18 +160,41 @@ class Member(MemberData):
         self.notes = "free member"
         self.save()
 
+    def destroy(self, filter_list, field, anonymous_members, dry_run):
+        import random
+
+        for z in filter_list:
+            setattr(z, field, random.sample(anonymous_members,1)[0])
+            if not dry_run:
+                z.save()
+
+    def anonymise_me(self, dry_run=True):
+        anonymous_members = list(Member.objects.filter(is_anonymous_user=True))
+        from mail.models import MailLog
+
+        from lendings.models import Lending
+        self.destroy(Lending.objects.filter(member=self), 'member', anonymous_members, dry_run)
+        self.destroy(Lending.objects.filter(lended_by=self), 'lended_by', anonymous_members, dry_run)
+        self.destroy(Lending.objects.filter(handed_in_by=self), 'handed_in_by', anonymous_members, dry_run)
+
+        from lendings.models import Reservation
+        self.destroy(Reservation.objects.filter(member=self), 'member', anonymous_members, dry_run)
+        self.destroy(Reservation.objects.filter(reserved_by=self), 'reserved_by', anonymous_members, dry_run)
+        self.destroy(MailLog.objects.filter(member=self), 'member', anonymous_members, dry_run)
+        self.destroy(MembershipPeriod.objects.filter(member=self), 'member', anonymous_members, dry_run)
+        if not dry_run:
+            self.delete()
+
     @staticmethod
     def anonymise_people():
         now = datetime.now()
         members = Member.objects.filter(end_date__isnull=False).filter(
             end_date__lte=str(now.year - 10) + "-" + str(now.month) + "-" + str(now.day))
-        anonymous_members = Member.objects.filter(is_anonymous_user=True)
 
         for member in members:
-            for lending in member.lending_set.all():
-                lending.member = anonymous_members[0]
-                lending.save()
-            member.delete()
+            if member.should_be_anonymised():
+                member.anonymise_me(dry_run=False)
+
 
     def update_groups(self):
         if self.user is not None:
@@ -197,22 +220,31 @@ class Member(MemberData):
     def can_be_deleted(self):
 
         from lendings.models import Lending
-        if len(Lending.objects.filter(Q(lended_by=self)  | Q(handed_in_by=self) | Q(member=self))) > 0:
+        if len(Lending.objects.filter(Q(lended_by=self) | Q(handed_in_by=self) | Q(member=self))) > 0:
             return False
         from lendings.models import Reservation
-        if len(Reservation.objects.filter(Q(member=self)|Q(reserved_by=self)))>0:
+        if len(Reservation.objects.filter(Q(member=self) | Q(reserved_by=self))) > 0:
             return False
         from ratings.models import Rating
 
-        if len(Rating.objects.filter(member=self))>0:
+        if len(Rating.objects.filter(member=self)) > 0:
             return False
-        # if len(MembershipPeriod.objects.filter(member=self)) > 0:
-        #     print("MSP")
-        #     return False
+
         return True
 
-    def can_be_anonymised(self):
-        pass
+    def should_be_anonymised(self, now=None):
+        if now is None:
+            now = datetime.now().date()
+        if (now - self.end_date).days < 800:
+            return False
+        from lendings.models import Lending
+        if len(Lending.objects.filter(member=self, handed_in=False)) > 0:
+            return False
+
+        from lendings.models import Reservation
+        if len(Reservation.objects.filter(Q(member=self))) > 0:
+            return False
+        return True
 
 
 class MemberLog(MemberData):
