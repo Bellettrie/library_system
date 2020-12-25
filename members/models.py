@@ -193,13 +193,12 @@ class Member(MemberData):
             self.addressLineThree = "-"
             self.addressLineFour = "-"
             self.student_number = "-"
-            self.old_customer_type= None
+            self.old_customer_type = None
             self.notes = "-"
             self.old_id = None
             self.membership_type_old = "-"
-            self.phone= "-"
+            self.phone = "-"
             self.save()
-
 
     @staticmethod
     def anonymise_people():
@@ -232,10 +231,15 @@ class Member(MemberData):
 
     def get_periods(self):
         return self.membershipperiod_set.all().order_by('start_date')
+
     def privacy_period_ended(self):
         now = datetime.now().date()
-        if self.privacy_reunions and (now-self.privacy_reunion_end_date).days < 8000:
-            return False
+        if self.privacy_reunions:
+            if (now - self.privacy_reunion_end_date).days < 8000:
+                return False
+        else:
+            if (now - self.privacy_reunion_end_date).days < 800:
+                return False
         return True
 
     def can_be_deleted(self):
