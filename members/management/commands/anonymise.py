@@ -22,8 +22,9 @@ class Command(BaseCommand):
             if member.should_be_anonymised():
                 # print(member)
                 counter += 1
+                should_delete =  member.can_be_deleted() and member.privacy_period_ended()
                 member.anonymise_me(dry_run=False)
-                if member.can_be_deleted():
+                if should_delete:
                     member.delete()
 
         print(counter)

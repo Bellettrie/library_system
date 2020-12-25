@@ -232,12 +232,14 @@ class Member(MemberData):
 
     def get_periods(self):
         return self.membershipperiod_set.all().order_by('start_date')
-
-    def can_be_deleted(self):
+    def privacy_period_ended(self):
         now = datetime.now().date()
-        print(now, self.privacy_reunion_end_date, (now-self.privacy_reunion_end_date).days)
         if self.privacy_reunions and (now-self.privacy_reunion_end_date).days < 8000:
             return False
+        return True
+
+    def can_be_deleted(self):
+
         from lendings.models import Lending
         if len(Lending.objects.filter(Q(lended_by=self) | Q(handed_in_by=self) | Q(member=self))) > 0:
             print("NAY lending")
