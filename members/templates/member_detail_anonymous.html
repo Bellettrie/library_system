@@ -10,62 +10,10 @@
             <td>{{ member.name }}</td>
         </tr>
         <tr>
-            <th>Nickname</th>
-            <td>{{ member.nickname }}</td>
-        </tr>
-        <tr>
-            <th>Adress</th>
-            <td>{{ member.addressLineOne }}</td>
-        </tr>
-        <tr>
-            <th></th>
-            <td>{{ member.addressLineTwo }}</td>
-        </tr>
-        <tr>
-            <th></th>
-            <td>{{ member.addressLineThree }}</td>
-        </tr>
-        <tr>
             <th>E-mail</th>
             <td>{{ member.email }}</td>
         </tr>
-        <tr>
-            <th>Phone #</th>
-            <td>{{ member.phone }}</td>
-        </tr>
-        <tr>
-            <th>Student #</th>
-            <td>{{ member.student_number }}</td>
-        </tr>
-        <tr>
-            <th>Old membership type</th>
-            <td>{{ member.membership_type_old }}</td>
-        </tr>
-        <tr>
-            <th>Notes</th>
-            <td>{{ member.notes }}</td>
-        </tr>
-        <tr>
-            <th>Old customer type</th>
-            <td>{{ member.old_customer_type }}</td>
-        </tr>
-        <tr>
-            <th>Old id</th>
-            <td>{{ member.old_id }}</td>
-        </tr>
-        <tr>
-            <th>Anonymous user</th>
-            <td>{{ member.is_anonymous_user }}</td>
-        </tr>
-        <tr>
-            <th>Current Membership Period?</th>
-            <td>{{ member.get_current_membership_period.start_date }}
-                - {{ member.get_current_membership_period.end_date }}</td>
-        </tr>
-        <tr>
-            <th>Currently Member?</th>
-            <td>{{ member.is_currently_member }}</td>
-        </tr>
+
         {% if member.user %}
             <tr>
                 <th>User</th>
@@ -93,32 +41,11 @@
                 </td>
             </tr>
         {% endif %}
-    </table>
-    <hr>
-
-    <h4>Membership Periods</h4>
-    <table>
         <tr>
-            <th>From</th>
-            <th>To</th>
-            <th>Type</th>
-            <th>Background</th>
+            <th>Last Activity</th>
+            <td>{{ member.privacy_reunion_end_date }}</td>
         </tr>
-        {% for p in member.get_periods %}
-            <tr>
-                <td>{{ p.start_date }}</td>
-                <td>{{ p.end_date }}</td>
-                <td>{{ p.membership_type }}</td>
-                <td>{{ p.member_background }}</td>
-                <td><a href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
-            </tr>
-        {% endfor %}
-
     </table>
-    <a href="{% url 'members.membership_period_new' member.pk %}">New period</a>
-    <hr>
-
-
 
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
     {% if member.can_be_deleted %}
