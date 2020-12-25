@@ -233,6 +233,8 @@ class Member(MemberData):
         return self.membershipperiod_set.all().order_by('start_date')
 
     def privacy_period_ended(self):
+        if self.is_anonimysed and not self.privacy_reunions:
+            return True
         now = datetime.now().date()
         if self.privacy_reunions:
             if (now - self.privacy_reunion_end_date).days < 8000:
