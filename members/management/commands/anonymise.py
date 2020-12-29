@@ -19,7 +19,7 @@ class Command(BaseCommand):
         counter = 0
         for member in Member.objects.all():
 
-            if member.should_be_anonymised():
+            if member.should_be_anonymised() and not member.is_blacklisted:
                 # print(member)
                 counter += 1
                 should_delete = member.privacy_period_ended()

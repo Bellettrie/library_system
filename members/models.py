@@ -257,6 +257,8 @@ class Member(MemberData):
         return True
 
     def should_be_anonymised(self, now=None):
+        if self.user is not None and (self.user.last_login.date() - datetime.now()) < -180:
+            return False
         if self.is_active():
             return False
         if self.is_anonimysed:
