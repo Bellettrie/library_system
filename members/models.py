@@ -92,6 +92,8 @@ class Member(MemberData):
         for z in MembershipPeriod.objects.filter(member=self):
             if z.end_date is None or end_date is None or z.end_date > end_date:
                 end_date = z.end_date
+
+            return None
         return end_date
 
     @property
@@ -256,27 +258,34 @@ class Member(MemberData):
 
         return True
 
-    def should_be_anonymised(self, now=None):
-        if self.user is not None and (self.user.last_login.date() - datetime.now().date()).days < -400:
-            return False
-        if self.is_active():
-            return False
-        if self.is_anonimysed:
-            return False
-        if self.end_date is None:
-            return False
+    def should_be_anonymised_reason(self, now=None):
         if now is None:
             now = datetime.now().date()
+        if self.user is not None and (self.user.last_login.date() - now).days < -400:
+            return "Logged in recently;  will be anonymised in "+str(400 - (self.user.last_login.date() - now).days) + " days."
+        if self.is_active():
+            return "Member is still active"
+        if self.is_anonimysed:
+            return "Already anonymised"
+        if self.end_date is None:
+            return "No end date"
+        if self.is_blacklisted:
+            return "Is blacklisted"
         if (now - self.end_date).days < 800:
-            return False
+            return "Was recently a member; will be anonymised in " + str(800 - (now - self.end_date).days) + " days."
         from lendings.models import Lending
         if len(Lending.objects.filter(member=self, handed_in=False)) > 0:
-            return False
+            return "Still has a book lent."
 
         from lendings.models import Reservation
         if len(Reservation.objects.filter(Q(member=self))) > 0:
-            return False
-        return True
+            return "Still has a reservation"
+        return None
+
+    def should_be_anonymised(self, now=None):
+        if now is None:
+            now = datetime.now().date()
+        return self.should_be_anonymised_reason(now=now) is None
 
 
 class MemberLog(MemberData):

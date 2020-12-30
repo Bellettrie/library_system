@@ -40,7 +40,7 @@ def mig():
         start = (x.get("aangemaakt_op") or datetime.fromisoformat("1997-01-01")).date()
         end = (x.get("vervangen_op") or datetime.fromisoformat("2100-01-01")).date()
 
-        r = x.get("einde") or (datetime.fromisoformat("2100-01-01").date())
+        r = x.get("einde", None) or (datetime.fromisoformat("2100-01-01").date())
         if r < end:
             end = r
         mc = MembershipPeriod.objects.create(member=member, start_date=start, end_date=end)

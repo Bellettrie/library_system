@@ -62,6 +62,10 @@
             <td>{{ member.get_current_membership_period.start_date }}
                 - {{ member.get_current_membership_period.end_date }}</td>
         </tr>
+            <tr>
+            <th>Should be anonymised?</th>
+                <td>{% if member.should_be_anonymised %}[YES]{% else %}[NO] {{ member.should_be_anonymised_reason }}{% endif %}</td>
+        </tr>
         <tr>
             <th>Currently Member?</th>
             <td>{{ member.is_currently_member }}</td>

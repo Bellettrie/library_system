@@ -22,6 +22,7 @@ class Command(BaseCommand):
             if member.should_be_anonymised() and not member.is_blacklisted:
                 # print(member)
                 counter += 1
+                print(member)
                 should_delete = member.privacy_period_ended()
                 member.anonymise_me(dry_run=False)
                 if should_delete and member.can_be_deleted():
