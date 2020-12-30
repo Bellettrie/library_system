@@ -272,7 +272,7 @@ class Member(MemberData):
         if self.is_active():
             return "Member is still active"
         if self.user is not None and (self.user.last_login.date() - now).days < -400:
-            return "Logged in recently;  will be anonymised in "+str(400 - (self.user.last_login.date() - now).days) + " days."
+            return "Logged in recently;  will be anonymised in " + str(400 - (self.user.last_login.date() - now).days) + " days."
         if (now - self.end_date).days < 800:
             return "Was recently a member; will be anonymised in " + str(800 - (now - self.end_date).days) + " days."
         from lendings.models import Lending
@@ -285,7 +285,6 @@ class Member(MemberData):
         from lendings.models import Reservation
         if len(Reservation.objects.filter(Q(member=self))) > 0:
             return "Still has a reservation"
-
 
         return None
 
