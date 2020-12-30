@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.db.models import CASCADE, PROTECT, Q
@@ -93,7 +93,7 @@ class Member(MemberData):
             if z.end_date is None or end_date is None or z.end_date > end_date:
                 end_date = z.end_date
 
-            return None
+            # return None
         return end_date
 
     @property
@@ -261,25 +261,32 @@ class Member(MemberData):
     def should_be_anonymised_reason(self, now=None):
         if now is None:
             now = datetime.now().date()
-        if self.user is not None and (self.user.last_login.date() - now).days < -400:
-            return "Logged in recently;  will be anonymised in "+str(400 - (self.user.last_login.date() - now).days) + " days."
-        if self.is_active():
-            return "Member is still active"
         if self.is_anonimysed:
             return "Already anonymised"
-        if self.end_date is None:
-            return "No end date"
         if self.is_blacklisted:
             return "Is blacklisted"
+        if self.end_date is None:
+            return "Member is a special member."
+        if self.is_currently_member():
+            return "Is currently a member."
+        if self.is_active():
+            return "Member is still active"
+        if self.user is not None and (self.user.last_login.date() - now).days < -400:
+            return "Logged in recently;  will be anonymised in "+str(400 - (self.user.last_login.date() - now).days) + " days."
         if (now - self.end_date).days < 800:
             return "Was recently a member; will be anonymised in " + str(800 - (now - self.end_date).days) + " days."
         from lendings.models import Lending
         if len(Lending.objects.filter(member=self, handed_in=False)) > 0:
             return "Still has a book lent."
-
+        a = now - timedelta(days=180)
+        print(a)
+        if len(Lending.objects.filter(member=self, handed_in_on__gte="2020-01-01")):
+            return "Recently lent a book"
         from lendings.models import Reservation
         if len(Reservation.objects.filter(Q(member=self))) > 0:
             return "Still has a reservation"
+
+
         return None
 
     def should_be_anonymised(self, now=None):
