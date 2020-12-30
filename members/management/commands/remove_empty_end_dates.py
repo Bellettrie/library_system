@@ -15,3 +15,7 @@ class Command(BaseCommand):
         for p in MembershipPeriod.objects.filter(end_date__gte="2088-01-01"):
             p.end_date = None
             p.save()
+        for p in MembershipPeriod.objects.filter(start_date__lte="1930-01-01"):
+            print(p)
+            p.start_date = None
+            p.save()
