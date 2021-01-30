@@ -8,6 +8,7 @@ from members.management.commands.namegen import generate_full_name
 PAST = datetime.date(datetime.fromisoformat('1900-01-01'))
 FUTURE = datetime.date(datetime.fromisoformat('2100-01-01'))
 
+
 def overlaps(startA, endA, startB, endB):
     startA = startA or datetime.date(datetime.fromisoformat('1900-01-01'))
     startB = startB or datetime.date(datetime.fromisoformat('1900-01-01'))
@@ -15,6 +16,7 @@ def overlaps(startA, endA, startB, endB):
     endB = endB or datetime.date(datetime.fromisoformat('2100-01-01'))
 
     return (startA <= endB) and (endA >= startB)
+
 
 class Committee(models.Model):
     name = models.CharField(max_length=255)
@@ -58,12 +60,7 @@ class MemberData(models.Model):
     email = models.CharField(max_length=255)
     phone = models.CharField(max_length=64)
     student_number = models.CharField(max_length=32, blank=True)
-    # end_date = models.DateField(null=True, blank=True)
-    # start_date = models.DateField(null=True, blank=False, default="2020-09-01")
     is_blacklisted = models.BooleanField(default=False)
-    # member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
-    # membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
-
     notes = models.TextField(blank=True)
 
 
@@ -159,7 +156,6 @@ class Member(MemberData):
         MemberLog.from_member(self)
         super().save(*args, **kwargs)
 
-
     def try_and_delete_double_periods(self):
         to_delete = set()
 
@@ -189,6 +185,7 @@ class Member(MemberData):
                             to_delete.add(msp2)
         for z in to_delete:
             z.delete()
+
     def __str__(self):
         return self.name
 
