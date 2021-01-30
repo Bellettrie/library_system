@@ -172,7 +172,7 @@ class Member(MemberData):
                         msp.end_date = max(msp.end_date or FUTURE, msp2.end_date or FUTURE)
                         if msp.start_date == FUTURE:
                             msp.start_date = None
-                        if msp.end_date == PAST:
+                        if msp.end_date == FUTURE:
                             msp.end_date = None
                         msp.save()
                         to_delete.add(msp2)
