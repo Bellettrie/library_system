@@ -4,7 +4,8 @@ from django.db import models
 from django.db.models import CASCADE, PROTECT, Q
 
 from members.management.commands.namegen import generate_full_name
-
+from backports.datetime_fromisoformat import MonkeyPatch
+MonkeyPatch.patch_fromisoformat()
 
 class Committee(models.Model):
     name = models.CharField(max_length=255)

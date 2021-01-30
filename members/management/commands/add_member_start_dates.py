@@ -6,7 +6,8 @@ from django.core.management.base import BaseCommand
 from members.models import Committee, Member, MembershipPeriod, MemberBackground, MembershipType
 from members.permissions import KASCO, BOARD, ADMIN, COMCO, BOOKBUYERS, KICKIN, LENDERS, BOOKS, WEB, KONNICHIWA, RETRIEVAL
 from django.db import connection
-
+from backports.datetime_fromisoformat import MonkeyPatch
+MonkeyPatch.patch_fromisoformat()
 
 def mig():
     from bellettrie_library_system.settings_migration import migration_database
