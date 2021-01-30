@@ -23,9 +23,9 @@ def mig():
             for msp2 in MembershipPeriod.objects.filter(member=member):
                 if msp != msp2 and msp2 not in to_delete and overlaps(msp.start_date, msp.end_date, msp2.start_date, msp2.end_date):
                     if msp.member_background == msp2.member_background and msp.membership_type == msp2.membership_type:
-                        msp.start_date = min(msp.start_date or FUTURE, msp2.start_date or FUTURE)
+                        msp.start_date = min(msp.start_date or PAST, msp2.start_date or PAST)
 
-                        msp.end_date = max(msp.end_date or PAST, msp2.end_date or PAST)
+                        msp.end_date = max(msp.end_date or FUTURE, msp2.end_date or FUTURE)
                         if msp.start_date == FUTURE:
                             msp.start_date = None
                         if msp.end_date == PAST:
