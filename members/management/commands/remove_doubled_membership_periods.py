@@ -4,7 +4,8 @@ from django.contrib.auth.models import Group
 
 from django.core.management.base import BaseCommand
 from members.models import Committee, Member, MembershipPeriod, MemberBackground, MembershipType
-
+PAST = datetime.date(datetime.fromisoformat('1900-01-01'))
+FUTURE = datetime.date(datetime.fromisoformat('2100-01-01'))
 
 def overlaps(startA, endA, startB, endB):
     startA = startA or datetime.date(datetime.fromisoformat('1900-01-01'))
@@ -22,8 +23,13 @@ def mig():
             for msp2 in MembershipPeriod.objects.filter(member=member):
                 if msp != msp2 and msp2 not in to_delete and overlaps(msp.start_date, msp.end_date, msp2.start_date, msp2.end_date):
                     if msp.member_background == msp2.member_background and msp.membership_type == msp2.membership_type:
-                        msp.start_date = min(msp.start_date, msp2.start_date)
-                        msp.end_date = max(msp.end_date, msp2.end_date)
+                        msp.start_date = min(msp.start_date or FUTURE, msp2.start_date or FUTURE)
+
+                        msp.end_date = max(msp.end_date or PAST, msp2.end_date or PAST)
+                        if msp.start_date == FUTURE:
+                            msp.start_date = None
+                        if msp.end_date == PAST:
+                            msp.end_date = None
                         msp.save()
                         to_delete.add(msp2)
                     else:
