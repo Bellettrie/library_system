@@ -1,17 +1,12 @@
 {% extends 'base.html' %}
 <!-- Brand and toggle get grouped for better mobile display -->
 <!-- bs-example-navbar-collapse-1 -->
-{% block title %}Edit Member{% endblock %}
+{% block title %}Edit Membership period for {{ member.get_name }}{% endblock %}
 {% block content %}
-    <p style="color:red">{{ error }}</p>
 <form action="#" method="post">
     {% csrf_token %}
-
     <table>
         {{ form.as_table }}
-        {% if new %}
-        {{md_form.as_table}}
-        {%endif %}
     </table>
     <input type="submit" value="Submit">
 </form>

@@ -2,7 +2,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from members.models import Member
+from members.models import Member, MembershipPeriod
 
 
 def get_name(x):
@@ -19,13 +19,10 @@ class Command(BaseCommand):
         counter = 0
         for member in Member.objects.all():
 
-            if member.should_be_anonymised() and not member.is_blacklisted:
-                # print(member)
+            if member.can_be_deleted() and member.privacy_period_ended():
                 counter += 1
-                print(member)
-                should_delete = member.privacy_period_ended()
-                member.anonymise_me(dry_run=False)
-                if should_delete and member.can_be_deleted():
-                    member.delete()
+                MembershipPeriod.objects.filter(member=member).delete()
+
+                member.delete()
 
         print(counter)

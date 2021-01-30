@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 <!-- Brand and toggle get grouped for better mobile display -->
 <!-- bs-example-navbar-collapse-1 -->
-{% block title %}Member: {{  member.name}}{% endblock %}
+{% block title %}Member: {{ member.name }}{% endblock %}
 {% block content %}
-    {{ extra }}<br />
+    {{ extra }}<br/>
     <table class="table table-striped" style="width: auto;">
         <tr>
             <th>Name</th>
@@ -58,8 +58,17 @@
             <td>{{ member.is_anonymous_user }}</td>
         </tr>
         <tr>
-            <th>End date</th>
-            <td>{{ member.end_date }}</td>
+            <th>Current Membership Period?</th>
+            <td>{{ member.get_current_membership_period.start_date }}
+                - {{ member.get_current_membership_period.end_date }}</td>
+        </tr>
+            <tr>
+            <th>Should be anonymised?</th>
+                <td>{% if member.should_be_anonymised %}[YES]{% else %}[NO] {{ member.should_be_anonymised_reason }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Currently Member?</th>
+            <td>{{ member.is_currently_member }}</td>
         </tr>
         {% if member.user %}
             <tr>
@@ -79,21 +88,53 @@
                 <td>
                     <a href="{% url 'members.signup' member.pk %}" class="btn-sm btn-outline-primary">Add new</a>
                     {% if not member.invitation_code_valid %}
-                        <a href="{% url 'members.generate_invite' member.pk %}" class="btn-sm btn-outline-primary">Invite</a>
+                        <a href="{% url 'members.generate_invite' member.pk %}"
+                           class="btn-sm btn-outline-primary">Invite</a>
                     {% else %}
-                        <a href="{% url 'members.disable_invite' member.pk %}" class="btn-sm btn-outline-primary">Uninvite</a>
+                        <a href="{% url 'members.disable_invite' member.pk %}"
+                           class="btn-sm btn-outline-primary">Uninvite</a>
                     {% endif %}
                 </td>
             </tr>
         {% endif %}
     </table>
+    <hr>
+
+    <h4>Membership Periods</h4>
+    <table>
+        <tr>
+            <th>From</th>
+            <th>To</th>
+            <th>Type</th>
+            <th>Background</th>
+        </tr>
+        {% for p in member.get_periods %}
+            <tr>
+                <td>{{ p.start_date }}</td>
+                <td>{{ p.end_date }}</td>
+                <td>{{ p.membership_type }}</td>
+                <td>{{ p.member_background }}</td>
+                <td><a href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
+            </tr>
+        {% endfor %}
+
+    </table>
+    <a href="{% url 'members.membership_period_new' member.pk %}">New period</a>
+    <hr>
+
 
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Lend for</a>
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
-{% load books %}
+    {% if member.can_be_deleted %}
+        <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete</a>
+    {% elif member.should_be_anonymised %}
+        <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
+    {% endif %}
+    {% load books %}
     {% get_user_books member perms %}
     {% if member.has_reservations %}
         <h4>Reservations</h4>
-    {% get_user_reserved_books member perms %}
+        {% get_user_reserved_books member perms %}
     {% endif %}
+
 {% endblock %}

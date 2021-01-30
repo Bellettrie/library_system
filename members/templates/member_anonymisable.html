@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+<!-- Brand and toggle get grouped for better mobile display -->
+<!-- bs-example-navbar-collapse-1 -->
+
+{% block title %}Members that can be anonymised{% endblock %}
+{% block content %}
+    {#    {% include 'member_search_field.html' %}#}
+    {% include 'pagination.html' %}
+
+    <table class="table table-striped" style="width: auto;">
+        {% for member in object_list %}
+            <tr>
+                <td><a href="{% url 'members.view' member.id %}">{{ member.name }}</a>{% if member.nickname %}<br/>
+                    <i>{{ member.nickname }}</i>{% endif %}</td>
+                <td><a href="{% url 'members.anonymise' member.id %}" class="btn btn-primary btn-sm">Anonymise</a></td>
+            </tr>
+
+
+
+
+        {% empty %}
+            <i> No results</i>
+        {% endfor %}
+
+    </table>
+    <hr>
+    <a href="{% url 'members.new' %}" class="btn btn-outline-primary">New member</a>
+{% endblock %}

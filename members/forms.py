@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from members.models import Member
+from members.models import Member, MembershipPeriod
 
 
 class EditForm(ModelForm):
@@ -22,10 +22,7 @@ class EditForm(ModelForm):
                   'student_number',
                   'notes',
                   'is_anonymous_user',
-                  'end_date',
                   'committees',
-                  'member_background',
-                  'membership_type',
                   'is_blacklisted',
                   'privacy_activities',
                   'privacy_publications',
@@ -41,15 +38,29 @@ class EditForm(ModelForm):
                   'student_number': 'Student #',
                   'notes': 'Notes',
                   'is_anonymous_user': 'Is anonymous user',
-                  'end_date': 'End date',
                   'committees': 'Committees',
-                  'member_background': 'Member Background',
-                  'membership_type': 'Membership Type',
                   'is_blacklisted': 'Is Blacklisted?',
                   'privacy_activities': 'Mails for Activities?',
                   'privacy_publications': 'Photos in Publications?',
                   'privacy_reunions': 'Mails for Reunions?'
                   }
         widgets = {
+            'end_date': forms.DateInput(attrs={'class': 'datepicker'})
+        }
+
+
+class MembershipPeriodForm(ModelForm):
+    class Meta:
+        model = MembershipPeriod
+        fields = ['member_background',
+                  'membership_type',
+                  'start_date',
+                  'end_date']
+        labels = {'member_background': 'Member Background',
+                  'membership_type': 'Membership Type',
+                  'start_date': 'Start Date',
+                  'end_date': 'End Date'}
+        widgets = {
+            'start_date': forms.DateInput(attrs={'class': 'datepicker'}),
             'end_date': forms.DateInput(attrs={'class': 'datepicker'})
         }

@@ -80,7 +80,7 @@ def finalize(request, work_id, member_id):
                 return redirect('/lend/failed_lending/{}/{}/1'.format(work_id, member_id))
             if member.has_late_items():
                 return redirect('/lend/failed_lending/{}/{}/3'.format(work_id, member_id))
-            if item.is_reserved() and not item.is_reserved_by(member):
+            if item.is_reserved() and not item.is_reserved_for(member):
                 return redirect('/lend/failed_lending/{}/{}/4'.format(work_id, member_id))
             lending = Lending.create_lending(item, member, request.user.member)
             return render(request, 'lending_finalized.html',

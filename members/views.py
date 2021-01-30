@@ -15,8 +15,8 @@ from django.views.generic import ListView
 from bellettrie_library_system.settings import BASE_URL
 from mail.models import mail_member
 from utils.get_query_words import get_query_words
-from .models import Member
-from .forms import EditForm
+from .models import Member, MembershipPeriod
+from .forms import EditForm, MembershipPeriodForm
 
 # Create your views here.
 from django.http import HttpResponseRedirect
@@ -34,25 +34,42 @@ class MemberList(PermissionRequiredMixin, ListView):
         words = get_query_words(self.request)
         get_previous = self.request.GET.get('previous', False)
 
+        msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now())) & (Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
+
         if words is None:
             return []
         if len(words) == 0:
             m = Member.objects.filter(is_anonymous_user=False)
             if not get_previous:
-                m = m.filter(Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
+                m = m.filter(membershipperiod__in=msps)
             return m
 
         result_set = None
         for word in words:
             members = Member.objects.filter(Q(name__icontains=word) | Q(nickname__icontains=word))
             if not get_previous:
-                members = members.filter(Q(end_date__gte=datetime.now()) | Q(end_date__isnull=True))
+                members = members.filter(membershipperiod__in=msps)
 
             if result_set is None:
                 result_set = members
             else:
                 result_set = result_set & members
 
+        return list(set(result_set))
+
+
+class AnonMemberList(PermissionRequiredMixin, ListView):
+    permission_required = 'members.view_member'
+    model = Member
+    template_name = 'member_anonymisable.html'
+    paginate_by = 50
+
+    def get_queryset(self):  # new
+        result_set = set()
+
+        for member in Member.objects.all():
+            if member.should_be_anonymised():
+                result_set.add(member)
         return list(set(result_set))
 
 
@@ -63,7 +80,10 @@ def show(request, member_id):
         member = request.user.member
         if not (member and member.pk == member_id):
             raise PermissionDenied
-    return render(request, 'member_detail.html', {'member': get_object_or_404(Member, pk=member_id)})
+    member = get_object_or_404(Member, pk=member_id)
+    if member.is_anonimysed:
+        return render(request, 'member_detail_anonymous.html', {'member': member})
+    return render(request, 'member_detail.html', {'member': member})
 
 
 @transaction.atomic
@@ -92,16 +112,22 @@ def new(request):
     if request.method == 'POST':
         can_change = request.user.has_perm('members.change_committee')
         form = EditForm(can_change, request.POST)
-        if form.is_valid():
+        print(request.POST)
+        if form.is_valid() and request.POST.get('end_date'):
             if not can_change and 'committees' in form.changed_data:
                 raise ValueError("Wrong")
             instance = form.save()
+            inst = MembershipPeriodForm(request.POST).save(commit=False)
+            inst.member = instance
+            inst.save()
             if can_change:
                 instance.update_groups()
             return HttpResponseRedirect(reverse('members.view', args=(instance.pk,)))
+        else:
+            return render(request, 'member_edit.html', {'form': form, 'new': True, 'error': "No end date specified", 'md_form': MembershipPeriodForm(request.POST)})
     else:
         form = EditForm()
-    return render(request, 'member_edit.html', {'form': form})
+    return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': MembershipPeriodForm()})
 
 
 @transaction.atomic
@@ -196,4 +222,65 @@ def disable_invite_code(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     member.invitation_code_valid = False
     member.save()
+    return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+
+
+@transaction.atomic
+@permission_required('members.change_member')
+def edit_membership_period(request, membership_period_id):
+    member = get_object_or_404(MembershipPeriod, pk=membership_period_id)
+    if request.method == 'POST':
+
+        form = MembershipPeriodForm(request.POST, instance=member)
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect(reverse('members.view', args=(member.member.pk,)))
+    else:
+        form = MembershipPeriodForm(instance=member)
+    return render(request, 'member_membership_edit.html', {'form': form, 'member': member})
+
+
+@transaction.atomic
+@permission_required('members.change_member')
+def new_membership_period(request, member_id):
+    member = get_object_or_404(Member, pk=member_id)
+    if request.method == 'POST':
+
+        form = MembershipPeriodForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.member = member
+            instance.save()
+
+            return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+    else:
+        form = MembershipPeriodForm(instance=member)
+    return render(request, 'member_membership_edit.html', {'form': form, 'member': member})
+
+
+@transaction.atomic
+@permission_required('members.delete_member')
+def delete_member(request, member_id):
+    member = get_object_or_404(Member, pk=member_id)
+    if not request.GET.get('confirm'):
+        return render(request, 'are-you-sure.html', {'what': "delete member with name " + member.name})
+    member = get_object_or_404(Member, pk=member_id)
+    MembershipPeriod.objects.filter(member=member).delete()
+    from mail.models import MailLog
+    anonymous_members = list(Member.objects.filter(is_anonymous_user=True))
+    member.destroy(MailLog.objects.filter(member=member), 'member', anonymous_members, False)
+    member.delete()
+
+    return HttpResponseRedirect(reverse('members.list'))
+
+
+@transaction.atomic
+@permission_required('members.delete_member')
+def anonymise(request, member_id):
+    member = get_object_or_404(Member, pk=member_id)
+    if not request.GET.get('confirm'):
+        return render(request, 'are-you-sure.html', {'what': "anonymise member with name " + member.name})
+    member.anonymise_me(dry_run=False)
+
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
