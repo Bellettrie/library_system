@@ -234,10 +234,11 @@ def edit_membership_period(request, membership_period_id):
         form = MembershipPeriodForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
-
+            member.member.try_and_delete_double_periods()
             return HttpResponseRedirect(reverse('members.view', args=(member.member.pk,)))
     else:
         form = MembershipPeriodForm(instance=member)
+
     return render(request, 'member_membership_edit.html', {'form': form, 'member': member})
 
 
@@ -252,6 +253,7 @@ def new_membership_period(request, member_id):
             instance = form.save(commit=False)
             instance.member = member
             instance.save()
+            member.try_and_delete_double_periods()
 
             return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
     else:
