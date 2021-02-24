@@ -287,6 +287,7 @@ def anonymise(request, member_id):
 
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
 
+
 @transaction.atomic
 @permission_required('members.delete_member')
 def anonymise_list(request):
