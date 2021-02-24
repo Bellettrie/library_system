@@ -9,6 +9,7 @@ from django.db import connection
 from backports.datetime_fromisoformat import MonkeyPatch
 MonkeyPatch.patch_fromisoformat()
 
+
 def mig():
     from bellettrie_library_system.settings_migration import migration_database
 
