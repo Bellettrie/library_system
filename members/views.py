@@ -293,7 +293,7 @@ def anonymise_list(request):
     # return HttpResponse("HI")
     errors = []
     for member_pk in request.POST.getlist('member'):
-        member= Member.objects.get(pk=member_pk)
+        member = Member.objects.get(pk=member_pk)
         if member.should_be_anonymised():
             member.anonymise_me(dry_run=False)
             if member.can_be_deleted():
