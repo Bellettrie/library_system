@@ -14,6 +14,7 @@ urlpatterns = [
     path('<int:member_id>/uninvite', views.disable_invite_code, name='members.disable_invite'),
     path('<int:member_id>/delete', views.delete_member, name='members.delete'),
     path('<int:member_id>/anonymise', views.anonymise, name='members.anonymise'),
+    path('anonymise_list', views.anonymise_list, name='members.anonymise_all'),
 
     path('new', views.new, name=MEMBERS_NEW),
     path('signup/<int:member_id>', signup, name='members.signup'),
