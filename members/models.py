@@ -4,6 +4,20 @@ from django.db import models
 from django.db.models import CASCADE, PROTECT, Q
 
 from members.management.commands.namegen import generate_full_name
+from backports.datetime_fromisoformat import MonkeyPatch
+MonkeyPatch.patch_fromisoformat()
+
+PAST = datetime.date(datetime.fromisoformat('1900-01-01'))
+FUTURE = datetime.date(datetime.fromisoformat('2100-01-01'))
+
+
+def overlaps(startA, endA, startB, endB):
+    startA = startA or datetime.date(datetime.fromisoformat('1900-01-01'))
+    startB = startB or datetime.date(datetime.fromisoformat('1900-01-01'))
+    endA = endA or datetime.date(datetime.fromisoformat('2100-01-01'))
+    endB = endB or datetime.date(datetime.fromisoformat('2100-01-01'))
+
+    return (startA <= endB) and (endA >= startB)
 
 
 class Committee(models.Model):
@@ -48,12 +62,7 @@ class MemberData(models.Model):
     email = models.CharField(max_length=255)
     phone = models.CharField(max_length=64)
     student_number = models.CharField(max_length=32, blank=True)
-    # end_date = models.DateField(null=True, blank=True)
-    # start_date = models.DateField(null=True, blank=False, default="2020-09-01")
     is_blacklisted = models.BooleanField(default=False)
-    # member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
-    # membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
-
     notes = models.TextField(blank=True)
 
 
@@ -148,6 +157,36 @@ class Member(MemberData):
     def save(self, *args, **kwargs):
         MemberLog.from_member(self)
         super().save(*args, **kwargs)
+
+    def try_and_delete_double_periods(self):
+        to_delete = set()
+
+        for msp in MembershipPeriod.objects.filter(member=self):
+            for msp2 in MembershipPeriod.objects.filter(member=self):
+                if msp != msp2 and msp2 not in to_delete and msp not in to_delete and overlaps(msp.start_date, msp.end_date, msp2.start_date, msp2.end_date):
+                    if msp.member_background == msp2.member_background and msp.membership_type == msp2.membership_type:
+                        msp.start_date = min(msp.start_date or FUTURE, msp2.start_date or FUTURE)
+
+                        msp.end_date = max(msp.end_date or FUTURE, msp2.end_date or FUTURE)
+                        if msp.start_date == FUTURE:
+                            msp.start_date = None
+                        if msp.end_date == FUTURE:
+                            msp.end_date = None
+                        msp.save()
+                        to_delete.add(msp2)
+                    else:
+                        if msp.start_date < msp2.start_date:
+                            msp.end_date = msp2.start_date
+                        else:
+                            msp2.end_date = msp.start_date
+                        msp.save()
+                        msp2.save()
+                        if msp.end_date and msp.start_date >= msp.end_date:
+                            to_delete.add(msp)
+                        if msp2.end_date and msp2.start_date >= msp2.end_date:
+                            to_delete.add(msp2)
+        for z in to_delete:
+            z.delete()
 
     def __str__(self):
         return self.name
@@ -318,6 +357,6 @@ class MemberLog(MemberData):
 class MembershipPeriod(models.Model):
     member = models.ForeignKey(Member, on_delete=PROTECT, null=True)
     start_date = models.DateField(null=True, blank=False)
-    end_date = models.DateField(null=True, blank=False)
+    end_date = models.DateField(null=True, blank=True)
     member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
     membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
