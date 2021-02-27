@@ -19,7 +19,7 @@ from .models import Member, MembershipPeriod
 from .forms import EditForm, MembershipPeriodForm
 
 # Create your views here.
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 
 from django.contrib.auth.decorators import permission_required
 
@@ -62,7 +62,7 @@ class AnonMemberList(PermissionRequiredMixin, ListView):
     permission_required = 'members.view_member'
     model = Member
     template_name = 'member_anonymisable.html'
-    paginate_by = 50
+    paginate_by = 20
 
     def get_queryset(self):  # new
         result_set = set()
@@ -286,3 +286,21 @@ def anonymise(request, member_id):
     member.anonymise_me(dry_run=False)
 
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+
+
+@transaction.atomic
+@permission_required('members.delete_member')
+def anonymise_list(request):
+    # return HttpResponse("HI")
+    errors = []
+    for member_pk in request.POST.getlist('member'):
+        member = Member.objects.get(pk=member_pk)
+        if member.should_be_anonymised():
+            member.anonymise_me(dry_run=False)
+            if member.can_be_deleted():
+                member.delete()
+        else:
+            errors.append(member)
+    if len(errors) > 0:
+        return HttpResponse(" ".join(errors))
+    return HttpResponseRedirect(reverse('members.list.anon'))
