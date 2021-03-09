@@ -133,7 +133,7 @@ def new(request):
             return render(request, 'member_edit.html', {'form': form, 'new': True, 'error': "No end date specified", 'md_form': MembershipPeriodForm(request.POST)})
     else:
         form = EditForm()
-    md_form =MembershipPeriodForm(initial={'start_date': datetime.date(datetime.now()), 'end_date':get_end_date(datetime.now().year, datetime.now().month > 6)})
+    md_form = MembershipPeriodForm(initial={'start_date': datetime.date(datetime.now()), 'end_date': get_end_date(datetime.now().year, datetime.now().month > 6)})
     return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': md_form})
 
 
