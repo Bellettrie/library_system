@@ -105,6 +105,11 @@ def edit(request, member_id):
         form = EditForm(instance=member)
     return render(request, 'member_edit.html', {'form': form, 'member': member})
 
+def get_end_date(year, month_second_half):
+    if month_second_half:
+        year += 1
+    return str(year) + "-06-30"
+
 
 @transaction.atomic
 @permission_required('members.add_member')
@@ -127,7 +132,8 @@ def new(request):
             return render(request, 'member_edit.html', {'form': form, 'new': True, 'error': "No end date specified", 'md_form': MembershipPeriodForm(request.POST)})
     else:
         form = EditForm()
-    return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': MembershipPeriodForm()})
+    md_form =MembershipPeriodForm(initial={'start_date': datetime.date(datetime.now()), 'end_date':get_end_date(datetime.now().year, datetime.now().month > 6)})
+    return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': md_form})
 
 
 @transaction.atomic
