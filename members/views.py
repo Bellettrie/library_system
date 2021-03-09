@@ -105,6 +105,7 @@ def edit(request, member_id):
         form = EditForm(instance=member)
     return render(request, 'member_edit.html', {'form': form, 'member': member})
 
+
 def get_end_date(year, month_second_half):
     if month_second_half:
         year += 1
