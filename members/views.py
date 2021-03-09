@@ -256,7 +256,7 @@ def new_membership_period(request, member_id):
 
             return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
     else:
-        form = MembershipPeriodForm(instance=member)
+        form = MembershipPeriodForm(instance=member, initial={'start_date': datetime.date(datetime.now()), 'end_date': get_end_date(datetime.now().year, datetime.now().month > 6)})
     return render(request, 'member_membership_edit.html', {'form': form, 'member': member})
 
 
