@@ -10,7 +10,9 @@
 {% if option == "finalize" %}
     {% finalize_button item perms member %}
 {% endif %}
-
+{% if option == "finalizeRes" %}
+    {% reserve_button item perms member %}
+{% endif %}
 {% if option == "extend" %}
     {% extend_button item perms member %}
 {% endif %}

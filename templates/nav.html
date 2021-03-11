@@ -1,5 +1,10 @@
 {% load menu %}
+{% load cross_login %}
+
 <ul class="sidebar-menu" style="max-width:100%">
+    {% if not user.is_anonymous and user.member %}
+        <li class="treeview"><a href="{% get_crosslogin_url user.member %}"><span>Register Visit</span></a></li>
+    {% endif %}
     {% render_menu 'sidebar-item' 'sidebar' %}
 
     {% if user.is_authenticated %}

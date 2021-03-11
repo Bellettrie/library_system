@@ -1,15 +1,19 @@
 {% if perms.lendings.add_reservation %}
     {% if item.is_reserved %}
-            <a class="btn btn-primary btn-sm disabled" role="button">Already reserved</a>
+        <a class="btn btn-primary btn-sm disabled" role="button">Already reserved</a>
     {% else %}
-        <a href="{% url 'lendings.reserve.item' item.pk %}" class="btn btn-primary btn-sm" role="button">Reserve</a>
+        {% if member %}
+            <a href="{% url 'lendings.reserve.finalize' item.pk member.id %}" class="btn btn-sm btn-primary">Finalize</a>
+        {% else %}
+            <a href="{% url 'lendings.reserve.item' item.pk %}" class="btn btn-primary btn-sm" role="button">Reserve</a>
+        {% endif %}
     {% endif %}
 {% else %}
-    {% if user.member != Null %}
+    {% if member %}
         {% if item.is_reserved %}
             <a class="btn btn-primary btn-sm disabled">Already reserved</a>
         {% else %}
-            <a href="{% url 'lendings.reserve.finalize' item.pk user.member.id %}" class="btn btn-sm btn-primary"
+            <a href="{% url 'lendings.reserve.finalize' item.pk member.id %}" class="btn btn-sm btn-primary"
                role="button">Finish reservation</a>
         {% endif %}
     {% else %}

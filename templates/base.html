@@ -37,7 +37,8 @@
 
     <title>Bellettrie</title>
     <script defer src="{% static 'fa/solid.js' %}"></script>
-<meta name="description" content="Bellettrie is a student run library at the University of Twente, specialised in Science Fiction and Fantasy "> 
+    <meta name="description"
+          content="Bellettrie is a student run library at the University of Twente, specialised in Science Fiction and Fantasy ">
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <!-- Our Custom CSS -->
@@ -47,7 +48,7 @@
     <script src="{% static 'jquery.js' %} "></script>
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <link  href="{% static 'datepicker/datepicker.min.css' %}" rel="stylesheet">
+    <link href="{% static 'datepicker/datepicker.min.css' %}" rel="stylesheet">
     <script src="{% static 'datepicker/datepicker.min.js' %} "></script>
 
     {#    <link href="https://fonts.googleapis.com/css2?family=Pangolin&family=Rubik:wght@500&display=swap" rel="stylesheet">#}
@@ -95,13 +96,12 @@
         </a>
         <hr>
         <div class="top-nav-left  ">
-            {% render_menu 'desktop-top' 'top-left'%}
-
+            {% render_menu 'desktop-top' 'top-left' %}
 
 
         </div>
         <div class="top-nav hiddenMobile">
-            {% render_menu 'desktop-top' 'top-right'%}
+            {% render_menu 'desktop-top' 'top-right' %}
             <a class="vertical"> </a>
         </div>
     </div>
@@ -109,13 +109,17 @@
     {% if not user.is_anonymous %}
         {% if not user.is_anonymous and user.member %}
             <div id="sidebar-header" class="collapsed loggedin">
-                <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a></div>
+                <a href="{% url 'members.view' user.member.id %}">{{ user.member.name }}</a>
+
+            </div>
         {% else %}
 
         {% endif %}
         <button id="toggle-sidebar"><</button>
 
         <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %}">
+
+
             {% include 'nav.html' %}
         </nav>
     {% else %}
@@ -125,17 +129,17 @@
         </nav>
 
     {% endif %}
-    <!-- Page Content Holder -->
-    <article id="content">
-        <h2>{% block title %}Title{% endblock %}</h2>
-        {% block content %}
-        {% endblock %}
-        <br />
-        <br />
-    </article>
-    {% if user.is_anonymous %}
-        <div id="rightBar"></div>
-    {% endif %}
+<!-- Page Content Holder -->
+<article id="content">
+    <h2>{% block title %}Title{% endblock %}</h2>
+    {% block content %}
+    {% endblock %}
+    <br/>
+    <br/>
+</article>
+{% if user.is_anonymous %}
+    <div id="rightBar"></div>
+{% endif %}
 </div>
 {##}
 {#<!-- jQuery CDN - Slim version (=without AJAX) -->#}
@@ -152,11 +156,11 @@
     };
 </script>
 <script>
-  $(function() {
-    $(".datepicker").datepicker({
-      format:'yyyy-mm-dd'
+    $(function () {
+        $(".datepicker").datepicker({
+            format: 'yyyy-mm-dd'
+        });
     });
-  });
 </script>
 
 </html>

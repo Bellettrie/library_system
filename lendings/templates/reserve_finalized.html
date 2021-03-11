@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
+{% load cross_login %}
+
 {% block title %}Reserved!{% endblock %}
 {%block content %}
 <a href="{% url 'members.view' member.id %}">{{member.name}}</a> Has reserved {{ item.publication.title }}.
 <br/>
-<td><a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary btn-sm">Lend an other book</a></td>
+<a href="{% url 'lendings.reserve.member' member.id %}" class="btn btn-primary btn-sm">Reserve an other book</a>
+    <a href="{% get_crosslogin_url user.member %}" class="btn btn-outline-primary btn-sm"><span>Register Visit</span></a>
 {% endblock %}

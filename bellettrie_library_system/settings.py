@@ -4,7 +4,12 @@ import os
 
 WSGI_APPLICATION = 'bellettrie_library_system.wsgi.application'
 
+
 SECRET_KEY = '9_meq=rl3q!wh4=lr4g9t)ra9l*o_d7!exbh&^brhj=*_xm5y*'
+
+CROSS_LOGIN_KEY = 'XP6kvnD5NQN3lL0zyjPeQumogu8y3YRtPi3NqKid9BA='
+CROSS_LOGIN_SECRET = "VmYq3t6v"
+CROSS_LOGIN_TIMEOUT = 3600*2
 
 DEBUG = True
 # Database
