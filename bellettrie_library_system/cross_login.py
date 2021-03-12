@@ -1,54 +1,41 @@
 import string
 import time
-from datetime import datetime
+import datetime
 
+import jwt
 from django.conf import settings
-from simplecrypt import encrypt, decrypt
 import random
 
 import sys
-from cryptography.fernet import Fernet
+
+from members.models import Member, Committee
 
 
-# Generate encryption key
-def passkey():
-    # Generate key
-    key = Fernet.generate_key()
-    # Decoded encryption key to be stored
-    keyDecoded = key.decode("utf-8")
-    return keyDecoded
+class MemberData:
+    def __init__(self, name, id, perm_level):
+        self.name = name
+        self.id = id
+        self.perm_level= perm_level
 
 
-# Encrypt password using key
-def passencrypt(mykey, mypassword):
-    # Take key from stored form and convert it back to byte form
-    keyRecovered = mykey.encode("utf-8")
-    encryptKeyRecovered = Fernet(keyRecovered)
-    # Encrypt password from byte form with str.encode
-    encryptPass = encryptKeyRecovered.encrypt(mypassword)
-    # Decode encrypted password to string form to be stored
-    encryptPassDecoded = encryptPass.decode("utf-8")
-    return encryptPassDecoded
+def my_encrypt_from_member(member) -> str:
+    lenders  = Committee.objects.get(code="LENDERS")
+    admins = Committee.objects.get(code="ADMIN")
+    board = Committee.objects.get(code="BOARD")
+    perm_level = 0
+    if lenders in member.committees.all():
+        perm_level = 1
+    if admins in member.committees.all() or board in member.committees.all():
+        perm_level = 2
+    return my_encrypt(MemberData(member.name, member.pk, perm_level))
 
 
-# Decrypt password using key
-def passdecrypt(mykey, mypasswordencrypted):
-    # Take key from stored form and convert it back to byte form
-    keyRecovered = mykey.encode("utf-8")
-    encryptKeyRecovered = Fernet(keyRecovered)
-    # Using recovered key unencrypt stored password
-    encryptPassEncode = mypasswordencrypted.encode("utf-8")
-    originalPassByte = encryptKeyRecovered.decrypt(encryptPassEncode)
-    originalPass = originalPassByte.decode("utf-8")
-    return originalPass
+def my_encrypt(member: MemberData) -> str:
+    data = {"exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2), 'name': member.name, 'id': member.id, 'perms':member.perm_level}
+    print(data)
+    return jwt.encode(data, settings.CROSS_LOGIN_KEY, algorithm="HS256")
 
 
-def my_encrypt(name):
-    letters = string.ascii_lowercase
-
-    strr = (''.join(random.choice(letters) for i in range(10)) + "|" + str(time.time()) + "|" + settings.CROSS_LOGIN_SECRET + "|" + name).encode()
-    return passencrypt(settings.CROSS_LOGIN_KEY, strr)
-
-
-def my_decrypt(data):
-    return passdecrypt(settings.CROSS_LOGIN_KEY, data)
+def my_decrypt(data: str) -> MemberData:
+    data = jwt.decode(data, settings.CROSS_LOGIN_KEY,algorithms=["HS256"])
+    return MemberData(data.get('name'), data.get('id'), data.get('perms'))

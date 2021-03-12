@@ -8,3 +8,4 @@ django-mail-templated
 unidecode
 backports-datetime-fromisoformat
 cryptography
+pyjwt
