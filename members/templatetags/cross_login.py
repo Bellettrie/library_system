@@ -5,6 +5,7 @@ from members.models import Member
 
 register = template.Library()
 
+
 @register.inclusion_tag('cross_login_url.html')
 def get_crosslogin_url(member: Member):
     return {'token': my_encrypt_from_member(member)}
