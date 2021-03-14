@@ -14,7 +14,7 @@
             <a class="btn btn-primary btn-sm disabled">Already reserved</a>
         {% else %}
             <a href="{% url 'lendings.reserve.finalize' item.pk member.id %}" class="btn btn-sm btn-primary"
-               role="button">Finish reservation</a>
+               role="button">Reserve</a>
         {% endif %}
     {% endif %}
 {% endif %}
