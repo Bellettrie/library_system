@@ -34,8 +34,8 @@ def return_button(item, perms, member):
 def reserve_button(item, perms, user):
     if hasattr(user, "member"):
         user = user.member
-        print(user)
-    print(user.id)
+    if user.id is None:
+        user = None
 
     return {"item": item, "perms": perms, "user": user, "member": user}
 

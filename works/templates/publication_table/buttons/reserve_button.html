@@ -16,11 +16,5 @@
             <a href="{% url 'lendings.reserve.finalize' item.pk member.id %}" class="btn btn-sm btn-primary"
                role="button">Finish reservation</a>
         {% endif %}
-    {% else %}
-        {% if not item.is_available %}
-            Lent Out
-        {% else %}
-            Available
-        {% endif %}
     {% endif %}
 {% endif %}
