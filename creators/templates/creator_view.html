@@ -6,6 +6,7 @@
 {% block content %}
 
 {{creator.name}}
-    <a class="btn btn-primary" href="{% url 'creator.edit' creator.pk %}">Edit</a><a class="btn btn-danger" href="{% url 'creator.delete' creator.pk %}">Delete</a>
+{%if perms.creators.change_creator %}
+    <a class="btn btn-primary" href="{% url 'creator.edit' creator.pk %}">Edit</a><a class="btn btn-danger" href="{% url 'creator.delete' creator.pk %}">Delete</a>{%endif%}
     {% get_creator_books creator perms %}
 {% endblock %}

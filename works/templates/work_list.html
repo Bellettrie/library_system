@@ -43,7 +43,6 @@
     Note that other regex commands are not supported.
     <hr>
     <a class="btn btn-info" href="{% url 'series.list' %}">Find Series</a>
-    {% if perms.creators.view_creator %}
         <a class="btn btn-info" href="{% url 'creator.list' %}">Find Authors</a>
-    {% endif %}
+
 {% endblock %}
