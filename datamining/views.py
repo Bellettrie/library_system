@@ -152,7 +152,8 @@ def get_lending_stats(start_date, end_date):
 
 @login_required()
 def show_lending_stats(request):
-    start_date = request.GET.get('s_date', datetime.datetime.now().date().isoformat())
-    end_date = request.GET.get('e_date', datetime.datetime.now().date().isoformat())
+    start_date = request.GET.get('start_date', datetime.datetime.now().date().isoformat())
+    end_date = request.GET.get('end_date', datetime.datetime.now().date().isoformat())
     q = get_lending_stats(start_date, end_date)
+    print(q)
     return render(request, 'data-mining-lending-stats.html', {'q': q})
