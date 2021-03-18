@@ -7,6 +7,6 @@ from .views import show_members, show_membership_stats, show_lending_stats
 
 urlpatterns = [
     path('member_filtered', show_members, name='datamining.members'),
-    path('member_stats', show_membership_stats, name='datamining.membership_stats')
+    path('member_stats', show_membership_stats, name='datamining.membership_stats'),
     path('lending_stats', show_lending_stats, name='datamining.lending_stats')
 ]
