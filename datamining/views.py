@@ -150,7 +150,7 @@ def get_lending_stats(start_date, end_date):
     return quadrants
 
 
-@login_required()
+@permission_required('works.view_work')
 def show_lending_stats(request):
     start_date = request.GET.get('start_date', datetime.datetime.now().date().isoformat())
     end_date = request.GET.get('end_date', datetime.datetime.now().date().isoformat())

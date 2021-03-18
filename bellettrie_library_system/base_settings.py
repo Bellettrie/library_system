@@ -166,7 +166,7 @@ def GET_MENU():
         MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, new_series, new_creator, inventarisation, recode_list, collision_list], only_subitems=True, icon='fa fa-book'))
     anon_members = MenuItem('Anonymous users', reverse('members.list.anon'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
     member_stats = MenuItem('Member Statistics', reverse('datamining.membership_stats'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
-    lending_stats = MenuItem('Lending Statistics', reverse('datamining.lending_stats'), None, 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
+    lending_stats = MenuItem('Lending Statistics', reverse('datamining.lending_stats'), 'works.view_work', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
 
     members_list = MenuItem('Member Filter', reverse('datamining.members'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
     my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar', [members_list, anon_members, member_stats, lending_stats], only_subitems=True, icon='fa fa-book'))
