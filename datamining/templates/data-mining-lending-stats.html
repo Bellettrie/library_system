@@ -6,8 +6,8 @@
     <form action="#" method="get">
         <label for="date">Measuring date </label>
 
-        <input id="date" type="text" name="start_date" value="{{ request.GET.start_date }}">
-        <input id="date" type="text" name="end_date" value="{{ request.GET.end_date }}">
+        <input id="date"  class="datepicker" type="text" name="start_date" value="{{ request.GET.start_date }}">
+        <input id="date" class="datepicker" type="text" name="end_date" value="{{ request.GET.end_date }}">
 
 
         <input type="submit" name="exec" value="Search" class="btn-primary btn">
