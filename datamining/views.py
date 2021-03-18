@@ -1,10 +1,11 @@
 import datetime
 
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
+from lendings.models import Lending
 from members.models import Member, Committee, MembershipPeriod, MembershipType, MemberBackground
 
 
@@ -134,3 +135,24 @@ def show_membership_stats(request):
     dat = request.GET.get('date', datetime.datetime.now().date().isoformat())
     q = get_member_statistics(dat)
     return render(request, 'data-mining-member-stats.html', {'q': q})
+
+
+def get_lending_stats(start_date, end_date):
+    lendings = Lending.objects.filter(Q(start_date__gte=start_date) & Q(start_date__lte=end_date))
+    quadrants = dict()
+
+    for lending in lendings:
+        cat = lending.item.location.category
+        count = quadrants.get(cat, 0)
+        quadrants[cat] = count + 1
+
+    return quadrants
+
+
+@permission_required('works.view_work')
+def show_lending_stats(request):
+    start_date = request.GET.get('start_date', datetime.datetime.now().date().isoformat())
+    end_date = request.GET.get('end_date', datetime.datetime.now().date().isoformat())
+    q = get_lending_stats(start_date, end_date)
+    print(q)
+    return render(request, 'data-mining-lending-stats.html', {'q': q})
