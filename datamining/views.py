@@ -138,8 +138,8 @@ def show_membership_stats(request):
 
 
 
-def get_lending_stats(s_date, end_date):
-    lendings = Lending.objects.filter(Q(start_date__gte=s_date) & Q(star_date__lte=end_date))
+def get_lending_stats(start_date, end_date):
+    lendings = Lending.objects.filter(Q(start_date__gte=start_date) & Q(start_date__lte=end_date))
     quadrants = dict()
 
     for lending in lendings:
