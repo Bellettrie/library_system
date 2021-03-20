@@ -51,7 +51,7 @@
                     <td>{{ item.get_isbn10 }} {{ item.get_isbn13 }}</td>
                     <td>{{ item.get_pages }}</td>
                     <td>{{ item.year }}</td>
-                    <td>{% if not item.is_lent %}<p data-toggle="tooltip" data-placement="top" title="{{ item.get_state.reason}}"> {{ item.get_state.get_type_display }} </p>
+                    <td>{% if not item.is_lent %}<a href="{% url 'works.item.states' item.pk %}" data-toggle="tooltip" data-placement="top" title="{{ item.get_state.reason}}"> {{ item.get_state.get_type_display }} </p>
 
                     {% else %}
                         {% if perms.members.view_member %}
@@ -60,7 +60,7 @@
                         {% else %}
                             LENT
                         {% endif %}
-                        {% if item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top" title="{{ item.get_state.reason}}">[ {{ item.get_state.get_type_display }} ]</p>{% endif %}{% endif %}</td>
+                        {% if item.get_state.type != 'AVAILABLE' %}<a href="{% url 'works.item.states' item.pk %}" data-toggle="tooltip" data-placement="top" title="{{ item.get_state.reason}}">[ {{ item.get_state.get_type_display }} ]</a>{% endif %}{% endif %}</td>
                     {% if perms.auth.add_item_state %}
                         <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change
                             state</a>
