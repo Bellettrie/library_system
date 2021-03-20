@@ -16,12 +16,12 @@ class LendingPreLendingTestCase(BasicTestCase):
         self.lending = Lending.create_lending(self.item2, self.member, self.member, datetime.date(datetime.fromisoformat("2020-02-02")))
 
     def test_item_available(self):
-        self.assertTrue(self.item.is_available())
-        self.assertFalse(self.item2.is_available())
+        self.assertTrue(self.item.is_available_for_lending())
+        self.assertFalse(self.item2.is_available_for_lending())
 
     def test_return_book(self):
         self.item2.current_lending().register_returned(self.member, datetime.date(datetime.fromisoformat("2020-03-02")))
-        self.assertTrue(self.item2.is_available())
+        self.assertTrue(self.item2.is_available_for_lending())
 
     def test_late_items(self):
         self.assertTrue(self.member.has_late_items(datetime.date(datetime.fromisoformat("2021-02-02"))))

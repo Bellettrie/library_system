@@ -72,7 +72,7 @@ def lending_failed(request, member_id, work_id, reason_id):
 def finalize(request, work_id, member_id):
     member = get_object_or_404(Member, pk=member_id)
     item = get_object_or_404(Item, pk=work_id)
-    if item.is_available():
+    if item.is_available_for_lending():
         if request.method == 'POST':
             if not member.can_lend_item_type(item.location.category.item_type):
                 return redirect('/lend/failed_lending/{}/{}/0'.format(work_id, member_id))
@@ -221,7 +221,7 @@ def finalize_reservation_based(request, id):
     reservation = get_object_or_404(Reservation, pk=id)
     member = reservation.member
     item = reservation.item
-    if item.is_available():
+    if item.is_available_for_lending():
         if request.method == 'POST':
             if not member.can_lend_item_type(item.location.category.item_type):
                 return redirect('/lend/failed_lending/{}/{}/0'.format(item.id, member.id))

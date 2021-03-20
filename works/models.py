@@ -229,14 +229,25 @@ class Item(NamedThing, BookCode):
     def display_code(self):
         return self.book_code + self.book_code_extension
 
-    def is_available(self):
-        return Lending.objects.filter(item=self, handed_in=False).count() == 0
+    def in_available_state(self):
+        print(self.get_state())
+        return self.get_state().type in available_states
+
+    def is_lent_out(self):
+        return Lending.objects.filter(item=self, handed_in=False).count() > 0
+
+    def is_available_for_lending(self):
+        print("HERE")
+        return self.in_available_state() and not self.is_lent_out()
 
     def is_reserved(self):
         query = Q(item=self, reservation_end_date__gt=datetime.now()) | Q(item=self, reservation_end_date__isnull=True)
 
         reservations = Reservation.objects.filter(query)
         return reservations.count() > 0
+
+    def is_available_for_reservation(self):
+        return self.in_available_state() and not self.is_reserved()
 
     def is_reserved_for(self, member):
         query = Q(item=self, member=member, reservation_end_date__gt=datetime.now()) | Q(item=self, member=member, reservation_end_date__isnull=True)
@@ -313,13 +324,14 @@ class Item(NamedThing, BookCode):
             return ''
 
 
-not_switch_to_available = ["BROKEN", "SOLD"]
+not_switch_to_available = ["BROKEN", "SOLD", "DISPLAY", "OFFSITE", "FEATURED"]
+available_states = ['AVAILABLE', 'FEATURED']
 
 
 class ItemState(models.Model):
     item = models.ForeignKey(Item, on_delete=CASCADE)
     dateTime = models.DateTimeField(auto_now=True)
-    type = models.CharField(max_length=64, choices=(("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"), ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display")))
+    type = models.CharField(max_length=64, choices=(("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"), ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured")))
     reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
 
