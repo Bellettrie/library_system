@@ -157,7 +157,7 @@ class Publication(Work):
         if len(self.get_items()) == 0:
             return "Not available"
         else:
-            return "Lended out"
+            return "Lendet out"
 
     def get_primary_series_or_none(self):
         from series.models import Series, WorkInSeries
@@ -319,8 +319,8 @@ not_switch_to_available = ["BROKEN", "SOLD"]
 class ItemState(models.Model):
     item = models.ForeignKey(Item, on_delete=CASCADE)
     dateTime = models.DateTimeField(auto_now=True)
-    type = models.CharField(max_length=64, choices=(("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken")))
-    reason = models.TextField()
+    type = models.CharField(max_length=64, choices=(("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"), ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display")))
+    reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
 
 
