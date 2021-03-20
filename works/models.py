@@ -331,7 +331,7 @@ class ItemState(models.Model):
     item = models.ForeignKey(Item, on_delete=CASCADE)
     dateTime = models.DateTimeField(default=datetime.now)
     type = models.CharField(max_length=64, choices=(
-    ("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"), ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured")))
+        ("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"), ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured")))
     reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
 
