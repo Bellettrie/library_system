@@ -237,7 +237,6 @@ class Item(NamedThing, BookCode):
         return Lending.objects.filter(item=self, handed_in=False).count() > 0
 
     def is_available_for_lending(self):
-        print("HERE")
         return self.in_available_state() and not self.is_lent_out()
 
     def is_reserved(self):
