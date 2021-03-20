@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
         for lending in Lending.objects.filter(member=dentist):
             print(lending.item.get_title(), lending.member.name, lending.handed_in_on)
-            ItemState.objects.create(dateTime=lending.lended_on,type="OFFSITE", reason="Dentist", item=lending.item)
+            ItemState.objects.create(dateTime=lending.lended_on, type="OFFSITE", reason="Dentist", item=lending.item)
             if lending.handed_in_on is not None:
                 ItemState.objects.create(dateTime=lending.handed_in_on, type="AVAILABLE", item=lending.item)
             lending.delete()
