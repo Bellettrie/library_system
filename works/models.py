@@ -157,7 +157,7 @@ class Publication(Work):
         if len(self.get_items()) == 0:
             return "Not available"
         else:
-            return "Lendet out"
+            return "Lent out"
 
     def get_primary_series_or_none(self):
         from series.models import Series, WorkInSeries
