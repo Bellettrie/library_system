@@ -237,6 +237,15 @@ def item_edit(request, item_id):
 
 
 @transaction.atomic
+@permission_required('works.change_item')
+def item_history(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    return render(request, 'item_history.html',
+                  {'item': item,
+                   'history': ItemState.objects.filter(item=item).order_by('-dateTime')})
+
+
+@transaction.atomic
 @permission_required('works.change_publication')
 def publication_edit(request, publication_id=None):
     from works.forms import CreatorToWorkFormSet

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Lended!{% endblock %}
+{% block title %}Lent!{% endblock %}
 {%block content %}
 <a href="{% url 'members.view' member.id %}">{{member.name}}</a> may keep {{ item.publication.title }} until: {{ date }}
 <br/>
