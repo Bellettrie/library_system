@@ -62,15 +62,7 @@ class AnonMemberList(PermissionRequiredMixin, ListView):
     permission_required = 'members.view_member'
     model = Member
     template_name = 'member_anonymisable.html'
-    paginate_by = 20
-
-    def get_queryset(self):  # new
-        result_set = set()
-
-        for member in Member.objects.all():
-            if member.should_be_anonymised():
-                result_set.add(member)
-        return list(set(result_set))
+    paginate_by = 50
 
 
 def show(request, member_id):
@@ -106,6 +98,12 @@ def edit(request, member_id):
     return render(request, 'member_edit.html', {'form': form, 'member': member})
 
 
+def get_end_date(year, month_second_half):
+    if month_second_half:
+        year += 1
+    return str(year) + "-06-30"
+
+
 @transaction.atomic
 @permission_required('members.add_member')
 def new(request):
@@ -127,7 +125,8 @@ def new(request):
             return render(request, 'member_edit.html', {'form': form, 'new': True, 'error': "No end date specified", 'md_form': MembershipPeriodForm(request.POST)})
     else:
         form = EditForm()
-    return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': MembershipPeriodForm()})
+    md_form = MembershipPeriodForm(initial={'start_date': datetime.date(datetime.now()), 'end_date': get_end_date(datetime.now().year, datetime.now().month > 6)})
+    return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': md_form})
 
 
 @transaction.atomic
@@ -257,7 +256,7 @@ def new_membership_period(request, member_id):
 
             return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
     else:
-        form = MembershipPeriodForm(instance=member)
+        form = MembershipPeriodForm(instance=member, initial={'start_date': datetime.date(datetime.now()), 'end_date': get_end_date(datetime.now().year, datetime.now().month > 6)})
     return render(request, 'member_membership_edit.html', {'form': form, 'member': member})
 
 

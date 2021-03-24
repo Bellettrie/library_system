@@ -147,7 +147,7 @@ def GET_MENU():
     my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'sidebar', [], anonymous=False, icon='fa fa-book'))
     my_menu.append(MenuItem('Members', reverse('members.list'), 'members.view_member', 'sidebar', [], anonymous=None, icon='fa fa-user'))
     my_menu.append(MenuItem('Lendings', reverse('lendings.list'), 'lendings.view_lending', 'sidebar', [], anonymous=None, icon='fa fa-bookmark'))
-    my_menu.append(MenuItem('Reservations', reverse('lendings.reserve.list'), 'lendings.reserve.list', 'sidebar', [], anonymous=None, icon='fa fa-bookmark'))
+    my_menu.append(MenuItem('Reservations', reverse('lendings.reserve.list'), 'lendings.view_lending', 'sidebar', [], anonymous=None, icon='fa fa-bookmark'))
     holiday_item = MenuItem('Holidays', reverse('holiday.list'), 'config.view_holiday', 'sidebar', [], anonymous=None, icon='fa fa-plane')
     my_menu.append(MenuItem('Settings', reverse('logout'), None, 'sidebar', [holiday_item], only_subitems=True, icon='fa fa-cogs'))
 
@@ -166,8 +166,9 @@ def GET_MENU():
         MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, new_series, new_creator, inventarisation, recode_list, collision_list], only_subitems=True, icon='fa fa-book'))
     anon_members = MenuItem('Anonymous users', reverse('members.list.anon'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
     member_stats = MenuItem('Member Statistics', reverse('datamining.membership_stats'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
+    lending_stats = MenuItem('Lending Statistics', reverse('datamining.lending_stats'), 'works.view_work', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
 
     members_list = MenuItem('Member Filter', reverse('datamining.members'), 'members.change_member', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
-    my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar', [members_list, anon_members, member_stats], only_subitems=True, icon='fa fa-book'))
+    my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar', [members_list, anon_members, member_stats, lending_stats], only_subitems=True, icon='fa fa-book'))
 
     return my_menu
