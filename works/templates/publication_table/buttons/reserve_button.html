@@ -6,7 +6,11 @@
             <a class="btn btn-primary btn-sm disabled">Not Reservable</a>
         {% endif %}
     {% else %}
-        <a href="{% url 'lendings.reserve.item' item.pk %}" class="btn btn-primary btn-sm" role="button">Reserve</a>
+        {% if member %}
+            <a href="{% url 'lendings.reserve.finalize' item.pk member.id %}" class="btn btn-sm btn-primary">Finalize</a>
+        {% else %}
+            <a href="{% url 'lendings.reserve.item' item.pk %}" class="btn btn-primary btn-sm" role="button">Reserve</a>
+        {% endif %}
     {% endif %}
 {% else %}
     {% if user.member != Null %}
@@ -21,7 +25,5 @@
             <a href="{% url 'lendings.reserve.finalize' item.pk user.member.id %}" class="btn btn-sm btn-primary"
                role="button">Finish reservation</a>
         {% endif %}
-    {% else %}
-
     {% endif %}
 {% endif %}

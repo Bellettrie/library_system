@@ -171,7 +171,7 @@ def reserve_member(request, member_id):
     if q is not None:
         items = get_works(request)
         for row in items:
-            row.set_item_options(["finalize"])
+            row.set_item_options(["finalizeRes"])
 
     return render(request, 'reserve_based_on_member.html',
                   {'items': items, 'member': get_object_or_404(Member, pk=member_id),

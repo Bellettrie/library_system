@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 <!-- Brand and toggle get grouped for better mobile display -->
 <!-- bs-example-navbar-collapse-1 -->
+{% load cross_login %}
+
 {% block title %}Member: {{ member.name }}{% endblock %}
 {% block content %}
     {{ extra }}<br/>
@@ -124,6 +126,8 @@
 
 
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Lend for</a>
+    <a href="{% url 'lendings.reserve.member' member.id %}" class="btn btn-primary">Reserve for</a>
+
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
     {% if member.can_be_deleted %}
         <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete</a>
@@ -131,6 +135,7 @@
     {% if member.should_be_anonymised %}
         <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
     {% endif %}
+    <a href="{% get_crosslogin_url user.member %}" class="btn btn-outline-primary"><span>Register Visit</span></a>
     {% load books %}
     {% get_user_books member perms %}
     {% if member.has_reservations %}
