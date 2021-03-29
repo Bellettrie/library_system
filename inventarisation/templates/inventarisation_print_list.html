@@ -15,7 +15,7 @@
                     <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
                     <td style="font-size:10px">{{ item.display_code }}</td>
                     <td style="font-size:10px">{{ item.get_state.type }}</td>
-                <td style="font-size:10px">{%  if not item.is_available %}U{% endif %}</td>
+                <td style="font-size:10px">{%  if item.is_lent_out %}(LENT){% endif %}</td>
                 </tr>
             {% endfor %}
         </table>
