@@ -78,14 +78,14 @@ body {
     height: 100vh;
     color: var(--main-text-color);
     display: grid;
-    grid-template-rows: 75px 75px 1fr;
+    grid-template-rows: 75px 75px  minmax(0, 1fr);
     grid-template-columns: 250px auto;
     overflow: hidden;
 }
 
 #wrapper.isAnonymous {
 
-    grid-template-rows: 75px 75px 1fr;
+    grid-template-rows: 75px 75px minmax(0, 1fr);
     grid-template-columns: 1fr 6fr 1fr;
     overflow-y: auto;
 }
