@@ -2,6 +2,7 @@
 <html lang="en">
 {% load static %}
 {% load menu %}
+{% load logo %}
 <head>
 
     <link rel="apple-touch-icon" sizes="57x57" href="{% static 'icons/apple-icon-57x57.png' %}">
@@ -90,10 +91,7 @@
         }
     </style>
     <div id="header" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
-        <a href="{% url 'homepage' %}" class="logo-part" style=" text-align: center;width:100%; "><img
-                src="{% static 'images/wurm.png' %}"
-                style="height:75px;     font-family: 'Pangolin'; "/> Bellettrie
-        </a>
+{% get_logo %}
         <hr>
         <div class="top-nav-left  ">
             {% render_menu 'desktop-top' 'top-left' %}

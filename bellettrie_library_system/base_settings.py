@@ -24,6 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+UPSIDE_DOWN=False
 
 ALLOWED_HOSTS = ["localhost", "nander.net", "127.0.0.1"]
 

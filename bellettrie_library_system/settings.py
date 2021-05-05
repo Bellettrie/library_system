@@ -12,6 +12,7 @@ CROSS_LOGIN_SECRET = "VmYq3t6v"
 CROSS_LOGIN_TIMEOUT = 3600*2
 
 DEBUG = True
+UPSIDE_DOWN = True
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -38,7 +39,7 @@ OLD_PWD = 'root'
 
 BASE_URL = '/'
 EMAIL_PORT = 1025
-EMAIL_HOST ='127.0.0.1'
+EMAIL_HOST = '127.0.0.1'
 FAKE_MAIL = True
 FAKE_MAIL_ADDRESS = 'nander@nander.net'
 
