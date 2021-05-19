@@ -100,6 +100,9 @@ def standardize_code(cc: str):
                     if num > 0:
                         c += str.rjust(str(num), 6, "0")
                     c += char
+
+            if num > 0:
+                c += str.rjust(str(num), 6, "0")
         return_value = return_value + "-" + c
     return return_value
 
