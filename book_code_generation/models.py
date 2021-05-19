@@ -78,7 +78,8 @@ def get_number_for_code(code: str):
 
 # Turn code with strange numbers into standardized numbers:
 # SF-T-370-lr1 ==> SF-T-37-lr1
-def standardize_code(code: str):
+def standardize_code(cc: str):
+    code = cc.replace(" ", "").replace(".","")
     code_parts = code.split("-")
     if len(code_parts) > 2:
         try:
@@ -87,7 +88,19 @@ def standardize_code(code: str):
             pass
     return_value = code_parts[0]
     for i in range(1, len(code_parts)):
-        return_value = return_value + "-" + code_parts[i]
+        c = code_parts[i]
+        if i == len(code_parts) - 1:
+            num = 0
+            c = ""
+            for char in code_parts[i]:
+                if char in "0123456789":
+                    num *= 10
+                    num += int(char)
+                else:
+                    if num > 0:
+                        c += str.rjust(str(num), 6, "0")
+                    c += char
+        return_value = return_value + "-" + c
     return return_value
 
 
