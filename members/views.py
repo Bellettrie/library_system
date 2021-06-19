@@ -34,8 +34,8 @@ class MemberList(PermissionRequiredMixin, ListView):
         words = get_query_words(self.request)
         get_previous = self.request.GET.get('previous', False)
 
-        msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now())) & (
-                    Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
+        msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now()))
+                                               & (Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
 
         if words is None:
             return []
