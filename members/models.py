@@ -82,6 +82,8 @@ class Member(MemberData):
     invitation_code = models.CharField(max_length=64, null=True, blank=True)
     invitation_code_valid = models.BooleanField(default=False)
 
+    dms_registered = models.BooleanField(default=False)
+
     is_anonimysed = models.BooleanField(default=False)
 
     class Meta:

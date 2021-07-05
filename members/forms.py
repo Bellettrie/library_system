@@ -5,10 +5,12 @@ from members.models import Member, MembershipPeriod
 
 
 class EditForm(ModelForm):
-    def __init__(self, can_edit=False, *args, **kwargs):
+    def __init__(self, can_edit=False, dms_edit=False, *args, **kwargs):
         super(EditForm, self).__init__(*args, **kwargs)
         if not can_edit:
             self.fields['committees'].widget.attrs['readonly'] = True
+        if not dms_edit:
+            self.fields['dms_registered'].widget.attrs['disabled'] = True
 
     class Meta:
         model = Member
@@ -22,6 +24,7 @@ class EditForm(ModelForm):
                   'student_number',
                   'notes',
                   'is_anonymous_user',
+                  'dms_registered',
                   'committees',
                   'is_blacklisted',
                   'privacy_activities',
@@ -38,6 +41,7 @@ class EditForm(ModelForm):
                   'student_number': 'Student #',
                   'notes': 'Notes',
                   'is_anonymous_user': 'Is anonymous user',
+                  'dms_registered': 'Is registered in DMS',
                   'committees': 'Committees',
                   'is_blacklisted': 'Is Blacklisted?',
                   'privacy_activities': 'Mails for Activities?',

@@ -34,7 +34,8 @@ class MemberList(PermissionRequiredMixin, ListView):
         words = get_query_words(self.request)
         get_previous = self.request.GET.get('previous', False)
 
-        msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now())) & (Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
+        msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now()))
+                                               & (Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
 
         if words is None:
             return []
@@ -82,10 +83,11 @@ def show(request, member_id):
 @permission_required('members.change_member')
 def edit(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
+    can_change = request.user.has_perm('members.change_committee')
+    edit_dms = request.user.has_perm('members.change_committee')
     if request.method == 'POST':
-        can_change = request.user.has_perm('members.change_committee')
 
-        form = EditForm(can_change, request.POST, instance=member)
+        form = EditForm(can_change, request.POST, dms_edit=edit_dms, instance=member)
         if form.is_valid():
             if not can_change and 'committees' in form.changed_data:
                 raise ValueError("Wrong")
@@ -94,7 +96,8 @@ def edit(request, member_id):
                 member.update_groups()
             return HttpResponseRedirect(reverse('members.view', args=(member_id,)))
     else:
-        form = EditForm(instance=member)
+        edit_dms = request.user.has_perm('members.change_committee')
+        form = EditForm(instance=member, dms_edit=edit_dms)
     return render(request, 'member_edit.html', {'form': form, 'member': member})
 
 
@@ -122,10 +125,12 @@ def new(request):
                 instance.update_groups()
             return HttpResponseRedirect(reverse('members.view', args=(instance.pk,)))
         else:
-            return render(request, 'member_edit.html', {'form': form, 'new': True, 'error': "No end date specified", 'md_form': MembershipPeriodForm(request.POST)})
+            return render(request, 'member_edit.html', {'form': form, 'new': True, 'error': "No end date specified",
+                                                        'md_form': MembershipPeriodForm(request.POST)})
     else:
         form = EditForm()
-    md_form = MembershipPeriodForm(initial={'start_date': datetime.date(datetime.now()), 'end_date': get_end_date(datetime.now().year, datetime.now().month > 6)})
+    md_form = MembershipPeriodForm(initial={'start_date': datetime.date(datetime.now()),
+                                            'end_date': get_end_date(datetime.now().year, datetime.now().month > 6)})
     return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': md_form})
 
 
@@ -256,7 +261,9 @@ def new_membership_period(request, member_id):
 
             return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
     else:
-        form = MembershipPeriodForm(instance=member, initial={'start_date': datetime.date(datetime.now()), 'end_date': get_end_date(datetime.now().year, datetime.now().month > 6)})
+        form = MembershipPeriodForm(instance=member, initial={'start_date': datetime.date(datetime.now()),
+                                                              'end_date': get_end_date(datetime.now().year,
+                                                                                       datetime.now().month > 6)})
     return render(request, 'member_membership_edit.html', {'form': form, 'member': member})
 
 
