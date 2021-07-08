@@ -86,8 +86,7 @@ def edit(request, member_id):
     can_change = request.user.has_perm('members.change_committee')
     edit_dms = request.user.has_perm('members.change_committee')
     if request.method == 'POST':
-
-        form = EditForm(can_change, request.POST, dms_edit=edit_dms, instance=member)
+        form = EditForm(can_change, edit_dms, request.POST, instance=member)
         if form.is_valid():
             if not can_change and 'committees' in form.changed_data:
                 raise ValueError("Wrong")
@@ -96,8 +95,7 @@ def edit(request, member_id):
                 member.update_groups()
             return HttpResponseRedirect(reverse('members.view', args=(member_id,)))
     else:
-        edit_dms = request.user.has_perm('members.change_committee')
-        form = EditForm(instance=member, dms_edit=edit_dms)
+        form = EditForm(can_change, edit_dms, instance=member)
     return render(request, 'member_edit.html', {'form': form, 'member': member})
 
 
@@ -110,10 +108,10 @@ def get_end_date(year, month_second_half):
 @transaction.atomic
 @permission_required('members.add_member')
 def new(request):
+    can_change = request.user.has_perm('members.change_committee')
+    edit_dms = request.user.has_perm('members.change_committee')
     if request.method == 'POST':
-        can_change = request.user.has_perm('members.change_committee')
-        form = EditForm(can_change, request.POST)
-        print(request.POST)
+        form = EditForm(can_change, edit_dms, request.POST)
         if form.is_valid() and request.POST.get('end_date'):
             if not can_change and 'committees' in form.changed_data:
                 raise ValueError("Wrong")
@@ -128,7 +126,7 @@ def new(request):
             return render(request, 'member_edit.html', {'form': form, 'new': True, 'error': "No end date specified",
                                                         'md_form': MembershipPeriodForm(request.POST)})
     else:
-        form = EditForm()
+        form = EditForm(can_change, edit_dms)
     md_form = MembershipPeriodForm(initial={'start_date': datetime.date(datetime.now()),
                                             'end_date': get_end_date(datetime.now().year, datetime.now().month > 6)})
     return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': md_form})
