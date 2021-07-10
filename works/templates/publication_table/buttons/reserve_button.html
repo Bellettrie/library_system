@@ -7,7 +7,7 @@
         {% endif %}
     {% else %}
         {% if member %}
-            <a href="{% url 'lendings.reserve.finalize' item.pk member.id %}" class="btn btn-sm btn-primary">Finalize</a>
+            <a href="{% url 'lendings.reserve.finalize' item.pk member.id %}" class="btn btn-sm btn-primary">Finalize Reservation</a>
         {% else %}
             <a href="{% url 'lendings.reserve.item' item.pk %}" class="btn btn-primary btn-sm" role="button">Reserve</a>
         {% endif %}
