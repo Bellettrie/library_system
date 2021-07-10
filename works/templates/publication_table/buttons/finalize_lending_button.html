@@ -1,7 +1,9 @@
 {% if perms.lendings.add_lending %}
-    {% if item.is_available %}
-        <a href="{% url "lendings.finalize" item.pk member.pk %}" class="btn btn-primary btn-sm" role="button">Finalize</a>
+    {% if item.is_available_for_lending %}
+        <a href="{% url "lendings.finalize" item.pk member.pk %}" class="btn btn-primary btn-sm" role="button">Finalize Lending</a>
     {% else %}
+        {% if item.in_available_state %}
         Lent Out
+            {% endif %}
     {% endif %}
 {% endif %}
