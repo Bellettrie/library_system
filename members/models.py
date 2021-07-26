@@ -121,7 +121,7 @@ class Member(MemberData):
     def get_current_membership_period(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
         for period in MembershipPeriod.objects.filter(member=self):
-            if (period.start_date is None or period.start_date < current_date) and (period.end_date is None or current_date < period.end_date):
+            if (period.start_date is None or period.start_date <= current_date) and (period.end_date is None or current_date <= period.end_date):
                 return period
         return None
 
