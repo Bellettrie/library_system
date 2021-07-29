@@ -2,7 +2,7 @@
 {% block title %}{{ item.publication.title }}{% endblock %}
 {% block content %}
     <a class="btn btn-primary" href="{% url 'work.view' item.publication.pk %}">Back to Publication</a>
-    {% if perms.works.add_item_state %}
+    {% if perms.works.change_item %}
         <a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary">Change
             state</a>
 
