@@ -34,7 +34,7 @@
             <th>pages</th>
             <th>year</th>
             <th>Status</th>
-            {% if perms.works.add_item_state %}
+            {% if perms.works.change_item %}
                 <th>Settings</th>
             {% endif %}
             {% if perms.works.change_item %}
@@ -68,7 +68,7 @@
                                    data-placement="top"
                                    title="{{ item.get_state.reason }}">[ {{ item.get_state.get_type_display }} ]</a>
                             {% endif %}{% endif %}</td>
-                    {% if perms.works.add_item_state %}
+                    {% if perms.works.change_item %}
                         <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change
                             state</a>
                         </td>
