@@ -34,7 +34,7 @@
             <th>pages</th>
             <th>year</th>
             <th>Status</th>
-            {% if perms.auth.add_item_state %}
+            {% if perms.works.add_item_state %}
                 <th>Settings</th>
             {% endif %}
             {% if perms.works.change_item %}
@@ -47,20 +47,27 @@
 
             <tr>
                 {% with recode=item.get_recode %}
-                    <td>{{ item.display_code }}{% if recode %} [Needs recode to {{ recode.book_code }} {% if recode.book_code_extension %}{{   recode.book_code_extension  }}{% endif %}]{% endif %}</td>
+                    <td>{{ item.display_code }}{% if recode %} [Needs recode to {{ recode.book_code }}
+                        {% if recode.book_code_extension %}{{ recode.book_code_extension }}{% endif %}]{% endif %}</td>
                     <td>{% if item.isbn13 %}{{ item.isbn13 }}{% elif item.isbn10 %}{{ item.isbn10 }}{% endif %} </td>
                     <td>{% if item.pages %}{{ item.pages }}{% endif %}</td>
                     <td>{{ item.publication_year }}</td>
-                    <td>{% if not item.is_lent %}<a href="{% url 'works.item.states' item.pk %}" data-toggle="tooltip" data-placement="top" title="{{ item.get_state.reason}}"> {{ item.get_state.get_type_display }} </p>
+                    <td>{% if not item.is_lent %}
+                        <a href="{% url 'works.item.states' item.pk %}" data-toggle="tooltip" data-placement="top"
+                           title="{{ item.get_state.reason }}"> {{ item.get_state.get_type_display }} </p>
 
-                    {% else %}
-                        {% if perms.members.view_member %}
-                            {% with member=item.current_lending.member %}
-                                <a href="{% url 'members.view' member.pk %}">LENT</a> {% endwith %}
-                        {% else %}
-                            LENT
-                        {% endif %}
-                        {% if item.get_state.type != 'AVAILABLE' %}<a href="{% url 'works.item.states' item.pk %}" data-toggle="tooltip" data-placement="top" title="{{ item.get_state.reason}}">[ {{ item.get_state.get_type_display }} ]</a>{% endif %}{% endif %}</td>
+                            {% else %}
+                            {% if perms.members.view_member %}
+                                {% with member=item.current_lending.member %}
+                                    <a href="{% url 'members.view' member.pk %}">LENT</a> {% endwith %}
+                            {% else %}
+                                LENT
+                            {% endif %}
+                            {% if item.get_state.type != 'AVAILABLE' %}
+                                <a href="{% url 'works.item.states' item.pk %}" data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="{{ item.get_state.reason }}">[ {{ item.get_state.get_type_display }} ]</a>
+                            {% endif %}{% endif %}</td>
                     {% if perms.works.add_item_state %}
                         <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change
                             state</a>
@@ -71,7 +78,8 @@
                             <a href="{% url 'works.item.edit' item.pk %}" class="btn btn-primary btn-sm">Edit</a>
                         {% endif %}
                         {% if perms.recode.change_recode and recode %}
-                            <a href="{% url 'recode.end' recode.pk %}?next={{ request.path }}" class="btn btn-primary btn-sm">Finish
+                            <a href="{% url 'recode.end' recode.pk %}?next={{ request.path }}"
+                               class="btn btn-primary btn-sm">Finish
                                 Recode</a>
                         {% endif %}
                     </td>
