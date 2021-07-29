@@ -328,7 +328,7 @@ class Item(NamedThing, BookCode):
             return ''
 
 
-not_switch_to_available = ["BROKEN", "SOLD", "DISPLAY", "OFFSITE", "FEATURED"]
+not_switch_to_available = ["BROKEN", "FORSALE", "SOLD", "DISPLAY", "OFFSITE", "FEATURED"]
 available_states = ['AVAILABLE', 'FEATURED']
 
 
@@ -337,7 +337,8 @@ class ItemState(models.Model):
     dateTime = models.DateTimeField(default=datetime.now)
     type = models.CharField(max_length=64, choices=(
         ("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"),
-        ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured")))
+        ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured"), ("SOLD", "Sold"),
+        ("FORSALE", "For Sale")))
     reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
 
