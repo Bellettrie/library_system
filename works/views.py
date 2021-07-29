@@ -169,7 +169,7 @@ class WorkDetail(DetailView):
 
 
 @transaction.atomic
-@permission_required('auth.add_item_state')
+@permission_required('works.change_item')
 def create_item_state(request, item_id):
     if request.method == 'POST':
         form = ItemStateCreateForm(request.POST)
