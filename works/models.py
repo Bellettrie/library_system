@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 
 from book_code_generation.models import BookCode, FakeItem
 from book_code_generation.location_number_creation import CutterCodeRange
-from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, generate_code_abc, generate_code_from_title, generate_code_abc_translated
+from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, \
+    generate_code_abc, generate_code_from_title, generate_code_abc_translated
 from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
 from lendings.models import Lending, Reservation
@@ -78,7 +79,8 @@ class Location(models.Model):
     category = models.ForeignKey(Category, on_delete=PROTECT)
     name = models.CharField(null=True, blank=True, max_length=255)
     old_id = models.IntegerField()
-    sig_gen = models.CharField(max_length=64, choices=[("Author", "author"), ("Author_Translated", "author_translated"), ("Title", "title")], default='author')
+    sig_gen = models.CharField(max_length=64, choices=[("Author", "author"), ("Author_Translated", "author_translated"),
+                                                       ("Title", "title")], default='author')
 
     def __str__(self):
         return self.category.name + "-" + self.name
@@ -98,7 +100,8 @@ class Work(NamedTranslatableThing):
         if len(authors) == 0:
             self.listed_author = "ZZZZZZ"
         else:
-            self.listed_author = authors[0].creator.name + ", " + authors[0].creator.given_names + str(authors[0].creator.pk)
+            self.listed_author = authors[0].creator.name + ", " + authors[0].creator.given_names + str(
+                authors[0].creator.pk)
         self.save()
 
     def get_authors(self):
@@ -227,7 +230,7 @@ class Item(NamedThing, BookCode):
             return None
 
     def display_code(self):
-        return self.book_code + self.book_code_extension
+        return self.book_code + " " + self.book_code_extension
 
     def in_available_state(self):
         print(self.get_state())
@@ -249,7 +252,8 @@ class Item(NamedThing, BookCode):
         return self.in_available_state() and not self.is_reserved()
 
     def is_reserved_for(self, member):
-        query = Q(item=self, member=member, reservation_end_date__gt=datetime.now()) | Q(item=self, member=member, reservation_end_date__isnull=True)
+        query = Q(item=self, member=member, reservation_end_date__gt=datetime.now()) | Q(item=self, member=member,
+                                                                                         reservation_end_date__isnull=True)
         reservations = Reservation.objects.filter(query)
         return reservations.count() > 0
 
@@ -296,7 +300,8 @@ class Item(NamedThing, BookCode):
         state = self.get_state()
         if state.type != "AVAILABLE":
             if state.type not in not_switch_to_available:
-                ItemState.objects.create(item=self, type="AVAILABLE", reason="Automatically switched because of reason: " + reason)
+                ItemState.objects.create(item=self, type="AVAILABLE",
+                                         reason="Automatically switched because of reason: " + reason)
 
     def generate_code_full(self):
         return self.publication.generate_code_full(self.location)
@@ -323,7 +328,7 @@ class Item(NamedThing, BookCode):
             return ''
 
 
-not_switch_to_available = ["BROKEN", "SOLD", "DISPLAY", "OFFSITE", "FEATURED"]
+not_switch_to_available = ["BROKEN", "FORSALE", "SOLD", "DISPLAY", "OFFSITE", "FEATURED"]
 available_states = ['AVAILABLE', 'FEATURED']
 
 
@@ -331,7 +336,9 @@ class ItemState(models.Model):
     item = models.ForeignKey(Item, on_delete=CASCADE)
     dateTime = models.DateTimeField(default=datetime.now)
     type = models.CharField(max_length=64, choices=(
-        ("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"), ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured")))
+        ("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"),
+        ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured"), ("SOLD", "Sold"),
+        ("FORSALE", "For Sale")))
     reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
 

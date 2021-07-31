@@ -28,11 +28,16 @@ def render_md(markdown_text: str):
         f = urllib.request.urlopen(URL, timeout=5)
         data = f.read()
         my_data = str(data).split(",")
-        is_open = (my_data[2][:-1] == "True")
+
+        is_open = (my_data[2] == "True")
         max_capacity = int(my_data[1])
+
         current_count = int(my_data[0][2:])
+        cc = str(current_count)
+        if int(my_data[3].strip()[:-1]) < max_capacity:
+            cc += "( with reservations: " + str(current_count - (int(my_data[3][:-1].strip()) - max_capacity)) + ")"
         zz = open_template.render(
-            context={'open': is_open, 'max_capacity': max_capacity, 'current_count': current_count,
+            context={'open': is_open, 'max_capacity': max_capacity, 'current_count': cc,
                      'full': current_count >= max_capacity})
         html = html.replace("----OPEN----", zz)
     return html
@@ -43,8 +48,10 @@ def view_named_page(request, page_name, sub_page_name):
 
     can_edit = False
 
-    if not request.user.is_anonymous and (request.user and (hasattr(request.user, 'member') and page_group.committees in request.user.member.committees.all())) or request.user.has_perm(
-            'public_pages.change_publicpage'):
+    if not request.user.is_anonymous and (request.user
+                                          and (hasattr(request.user, 'member')
+                                               and page_group.committees in request.user.member.committees.all())) \
+            or request.user.has_perm('public_pages.change_publicpage'):
         can_edit = True
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     html = render_md(page.text)
@@ -57,6 +64,7 @@ def view_named_page(request, page_name, sub_page_name):
 def view_page(page_name: str, sub_page_name: str):
     def view_function(request: HttpRequest):
         return view_named_page(request, page_name, sub_page_name)
+
     return view_function
 
 
@@ -78,8 +86,8 @@ def edit_named_page(request, page_name, sub_page_name):
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     can_edit = False
     if not request.user.is_anonymous and (
-            request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm(
-                'public_pages.change_publicpage'):
+            request.user.member and page_group.committees in request.user.member.committees.all())\
+            or request.user.has_perm('public_pages.change_publicpage'):
         can_edit = True
     if not can_edit:
         return HttpResponse("cannot edit")
@@ -103,8 +111,8 @@ def new_named_page(request, page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
     can_edit = False
     if not request.user.is_anonymous and (
-            request.user.member and page_group.committees in request.user.member.committees.all()) or request.user.has_perm(
-                'public_pages.change_publicpage'):
+            request.user.member and page_group.committees in request.user.member.committees.all()) \
+            or request.user.has_perm('public_pages.change_publicpage'):
         can_edit = True
     if not can_edit:
         return HttpResponse("cannot edit")

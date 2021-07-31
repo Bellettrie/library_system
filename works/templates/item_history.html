@@ -1,16 +1,25 @@
 {% extends 'base.html' %}
 {% block title %}{{ item.publication.title }}{% endblock %}
 {% block content %}
-    <a class="btn btn-primary" href="{% url 'work.view' item.publication.pk %}">Back to Publication</a>   {% if perms.auth.add_item_state %}
-                        <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary">Change
-                            state</a>
-                        </td>
-                    {% endif %}
+    <a class="btn btn-primary" href="{% url 'work.view' item.publication.pk %}">Back to Publication</a>
+    {% if perms.works.change_item %}
+        <a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary">Change
+            state</a>
+
+    {% endif %}
     <h2>History</h2>
     <table>
-    <tr><th>Time</th><th>State</th><th>Reason</th></tr>
-    {% for hist in history %}
-        <tr><td>{{ hist.dateTime }}</td><td>{{ hist.get_type_display }}</td><td>{{ hist.reason }}</td></tr>
-    {% endfor %}
+        <tr>
+            <th>Time</th>
+            <th>State</th>
+            <th>Reason</th>
+        </tr>
+        {% for hist in history %}
+            <tr>
+                <td>{{ hist.dateTime }}</td>
+                <td>{{ hist.get_type_display }}</td>
+                <td>{{ hist.reason }}</td>
+            </tr>
+        {% endfor %}
     </table>
 {% endblock %}
