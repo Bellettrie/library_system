@@ -35,7 +35,7 @@ def render_md(markdown_text: str):
         current_count = int(my_data[0][2:])
         cc = str(current_count)
         if int(my_data[3].strip()[:-1]) < max_capacity:
-            cc += "( with reservations: " + str(current_count-(int(my_data[3][:-1].strip()) - max_capacity)) + ")"
+            cc += "( with reservations: " + str(current_count - (int(my_data[3][:-1].strip()) - max_capacity)) + ")"
         zz = open_template.render(
             context={'open': is_open, 'max_capacity': max_capacity, 'current_count': cc,
                      'full': current_count >= max_capacity})
@@ -50,7 +50,7 @@ def view_named_page(request, page_name, sub_page_name):
 
     if not request.user.is_anonymous and (request.user and (hasattr(request.user,
                                                                     'member') and page_group.committees in request.user.member.committees.all())) or request.user.has_perm(
-            'public_pages.change_publicpage'):
+        'public_pages.change_publicpage'):
         can_edit = True
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     html = render_md(page.text)
