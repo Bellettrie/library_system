@@ -9,7 +9,14 @@
     {% get_locations request.GET.location %}
     <hr>
     <table>
-    <tr><th>Old Code</th><th>New Code</th><th>ISBN</th><th>Title</th><th>Status</th><th>Edit</th></tr>
+        <tr>
+            <th>Old Code</th>
+            <th>New Code</th>
+            <th>ISBN</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Edit</th>
+        </tr>
         {% for recode in object_list %}
 
             {% with item=recode.item %}
@@ -18,19 +25,18 @@
                     <td>{% if recode %}{{ recode.book_code }} : {{ recode.book_code_extension }}{% endif %}</td>
                     <td>{{ item.get_isbn10 }};{{ item.get_isbn13 }}</td>
 
-                    <td><a href="{%  url 'work.view' item.publication.pk  %}">{{ item.get_title }}</a></td>
+                    <td><a href="{% url 'work.view' item.publication.pk %}">{{ item.get_title }}</a></td>
                     <td>{% if item.is_available %}{{ item.get_state.type }}
                     {% else %}
-                               {% if item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top"
-                                                              title="{{ item.get_state.reason }}">{{ item.get_state.get_type_display }}</p>
+                        {% if item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top"
+                                                                      title="{{ item.get_state.reason }}">{{ item.get_state.get_type_display }}</p>
 
-                {% endif %}
-
-                    {% else %}
-                      LENT [{% if item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top"
-                                                              title="{{ item.get_state.reason }}">{{ item.get_state.get_type_display }}</p> ]
-
-                    {% endif %}</td>
+                        {% else %}
+                            AVAILABLE
+                        {% endif %}
+                    {% endif %}
+                        {% if item.is_lent_out %}[LENT]
+                        {% endif %}</td>
                     {% if perms.recode.change_recode %}
                         <td><a href="{% url 'recode.end' recode.pk %}" class="btn btn-primary btn-sm">Finish
                             Recode</a>
