@@ -17,7 +17,7 @@
                     <td style="font-size:10px">{{ item.publication.get_authors.0.creator.name|truncatechars:20 }}</td>
                     <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
                     <td style="font-size:10px">{{ item.display_code }}</td>
-                    <td style="font-size:10px">{{ item.get_prev_state.type }}{%  if item.is_lent_out %} (LENT){% endif %}</td>
+                    <td style="font-size:10px">{{ item.get_state.type }}{%  if item.is_lent_out %} (LENT){% endif %}</td>
 
                     <td style="font-size:10px">
                         <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
