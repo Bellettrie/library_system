@@ -21,13 +21,9 @@
                     <td><a href="{%  url 'work.view' item.publication.pk  %}">{{ item.get_title }}</a></td>
                     <td>{% if item.is_available %}{{ item.get_state.type }}
                     {% else %}
-                        {% if perms.members.view_member %}
-                            {% with member=item.current_lending.member %}
-                                <a href="{% url 'members.view' member.pk %}">LENT</a> {% endwith %}
-                        {% else %}
-                            LENT
-                        {% endif %}
-                        {% if item.get_state.type != 'AVAILABLE' %}[ {{ item.get_state.type }} {% endif %}{% endif %}</td>
+                               {% if item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top"
+                                                              title="{{ item.get_state.reason }}">{{ item.get_state.get_type_display }}</p>
+                {% endif %}{% endif %}</td>
                     {% if perms.recode.change_recode %}
                         <td><a href="{% url 'recode.end' recode.pk %}" class="btn btn-primary btn-sm">Finish
                             Recode</a>
