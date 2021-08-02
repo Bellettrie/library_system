@@ -23,7 +23,14 @@
                     {% else %}
                                {% if item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top"
                                                               title="{{ item.get_state.reason }}">{{ item.get_state.get_type_display }}</p>
-                {% endif %}{% endif %}</td>
+
+                {% endif %}
+
+                    {% else %}
+                      LENT [{% if item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top"
+                                                              title="{{ item.get_state.reason }}">{{ item.get_state.get_type_display }}</p> ]
+
+                    {% endif %}</td>
                     {% if perms.recode.change_recode %}
                         <td><a href="{% url 'recode.end' recode.pk %}" class="btn btn-primary btn-sm">Finish
                             Recode</a>
