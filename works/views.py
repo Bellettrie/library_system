@@ -13,11 +13,13 @@ from django.views.generic import DetailView, ListView, CreateView
 
 from book_code_generation.models import standardize_code
 from recode.models import Recode
-from search.queries import BaseSearchQuery, AndOp, AuthorSearchQuery, SeriesSearchQuery, TitleSearchQuery, StateSearchQuery, LocationSearchQuery, BookCodeSearchQuery
+from search.queries import BaseSearchQuery, AndOp, AuthorSearchQuery, SeriesSearchQuery, TitleSearchQuery, \
+    StateSearchQuery, LocationSearchQuery, BookCodeSearchQuery
 from series.models import Series
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
-from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState, WorkInPublication, Category
+from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState, WorkInPublication, \
+    Category
 
 
 def word_to_regex(word: str):
@@ -66,7 +68,8 @@ def merge_queries(query, add_query):
         return AndOp(query, add_query)
 
 
-def get_works_for_publication(words_for_q, words_for_author=[], words_for_series=[], words_for_title=[], states=[], categories=[], book_code=[]):
+def get_works_for_publication(words_for_q, words_for_author=[], words_for_series=[], words_for_title=[], states=[],
+                              categories=[], book_code=[]):
     query = None
     if len(words_for_q) > 0:
         query = merge_queries(query, BaseSearchQuery(" ".join(words_for_q)))
@@ -101,7 +104,8 @@ def get_works_by_book_code(word):
     word = word_to_regex(word)
     if len(word) == 0:
         return []
-    items = Item.objects.filter(Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word)).prefetch_related("publication")
+    items = Item.objects.filter(Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word)).prefetch_related(
+        "publication")
     for item in items:
         dz = pub_dict.get(item.publication, [])
         dz.append(ItemRow(item, []))
@@ -112,6 +116,13 @@ def get_works_by_book_code(word):
 
 
 def get_works(request):
+    if request.GET.get('q', "").count("*") + \
+            request.GET.get('q_author', "").count("*") + \
+            request.GET.get('q_series', "").count("*") + \
+            request.GET.get('q_title', "").count("*") + \
+            request.GET.get('q_bookcode', "").count("*") > 3:
+        raise ValueError("That's too much for me, senpai")
+
     words = get_query_words(request.GET.get('q', ""))
     words_author = get_query_words(request.GET.get('q_author', ""))
     words_series = get_query_words(request.GET.get('q_series', ""))
@@ -221,13 +232,15 @@ def item_edit(request, item_id):
             for rr in recodes:
                 rr.delete()
             if recode:
-                Recode.objects.create(item=instance, book_code=recode_book_code, book_code_extension=recode_book_code_extension)
+                Recode.objects.create(item=instance, book_code=recode_book_code,
+                                      book_code_extension=recode_book_code_extension)
 
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'item_edit.html',
-                  {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode, 'recode_book_code': recode_book_code,
+                  {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode,
+                   'recode_book_code': recode_book_code,
                    'recode_book_code_extension': recode_book_code_extension})
 
 
@@ -344,7 +357,9 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
 
             if subwork_id is None:
                 pub = get_object_or_404(Publication, id=publication_id)
-                publication = WorkInPublication.objects.create(work=instance, publication=pub, number_in_publication=num, display_number_in_publication=disp_num)
+                publication = WorkInPublication.objects.create(work=instance, publication=pub,
+                                                               number_in_publication=num,
+                                                               display_number_in_publication=disp_num)
             else:
                 publication.number_in_publication = num
                 publication.display_number_in_publication = disp_num
@@ -362,7 +377,8 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             creators = CreatorToWorkFormSet()
             form = SubWorkCreateForm()
     return render(request, 'subwork_edit.html',
-                  {'series': series, 'publication': publication, 'form': form, 'creators': creators, 'num': num, 'disp_num': disp_num})
+                  {'series': series, 'publication': publication, 'form': form, 'creators': creators, 'num': num,
+                   'disp_num': disp_num})
 
 
 @transaction.atomic
