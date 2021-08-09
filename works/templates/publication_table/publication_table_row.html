@@ -26,7 +26,7 @@
         {% endif %}
         <td>
             {% with item=item_rows.0.item %}
-                {% if item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top"
+                {% if  item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top"
                                                               title="{{ item.get_state.reason }}">{{ item.get_state.get_type_display }}</p>
                 {% endif %}
             {% endwith %}

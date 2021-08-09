@@ -12,9 +12,9 @@ def get_user_books(member: Member, perms, handed_in=False):
     for lending in member.lending_set.filter(handed_in=handed_in):
         it = ItemRow(lending.item, extra_info=str(lending.end_date))
         if handed_in:
-            result.append(BookResult(lending.item.publication, [it], item_options=[]))
+            result.append(BookResult(lending.item.publication, items=[it], item_options=[]))
         else:
-            result.append(BookResult(lending.item.publication, [it], item_options=["extend", "return"]))
+            result.append(BookResult(lending.item.publication, items=[it], item_options=["extend", "return"]))
     return {"member": member, "perms": perms, "contents": result}
 
 
@@ -23,5 +23,5 @@ def get_user_reserved_books(member: Member, perms):
     result = []
     for lending in member.reservation_set.all():
         it = ItemRow(lending.item)
-        result.append(BookResult(lending.item.publication, [it], item_options=["lendFromRes", 'cancelRes']))
+        result.append(BookResult(lending.item.publication, items=[it], item_options=["lendFromRes", 'cancelRes']))
     return {"member": member, "perms": perms, "contents": result, 'reserve': True}

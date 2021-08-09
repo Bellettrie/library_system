@@ -51,10 +51,11 @@ class ItemRow:
 
 
 class BookResult:
-    def __init__(self, publication: Publication, item_options=[], publication_options=[]):
+    def __init__(self, publication: Publication, item_options=[], publication_options=[], items=None):
         self.publication = publication
         self.item_options = item_options
         self.publication_options = publication_options
+        self.items = items
         self.score = 0
 
     def set_item_options(self, item_options):
