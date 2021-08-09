@@ -4,13 +4,6 @@ from search.models import WordMatch, SearchWord
 from works.models import Publication
 
 
-def get_name(x):
-    vn = x.get("voornaam")
-    if len(vn) == 0:
-        return x.get("naam")
-    return vn + " " + x.get("naam")
-
-
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
