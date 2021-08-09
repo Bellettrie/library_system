@@ -139,7 +139,8 @@ class SeriesWordMatch(WordMatch):
 
     @staticmethod
     def get_all_for_series(work: Publication, series: Series, words):
-
+        if series is None:
+            return
         for word in get_words_in_str(series.article):
             SeriesWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, series=series)
         for word in get_words_in_str(series.original_article):
