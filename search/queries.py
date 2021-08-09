@@ -113,19 +113,15 @@ class BookCodeSearchQuery(SearchOp):
         self.states = states
 
     def exec(self):
-        print("II", self.states)
         res = None
         word = self.states
         if res is None:
             res = Publication.objects
         if word.startswith("*"):
-            print("A")
             res = res.filter(Q(item__book_code_sortable__endswith=self.states.replace("*", "")) | Q(item__book_code__endswith=self.states.replace("*", "")))
         elif word.endswith("*"):
-            print("B")
             res = res.filter(Q(item__book_code_sortable__startswith=self.states.replace("*", "")) | Q(item__book_code__startswith=self.states.replace("*", "")))
         else:
-            print("C")
             res = res.filter(Q(item__book_code_sortable=self.states) | Q(item__book_code=self.states))
 
         return res
