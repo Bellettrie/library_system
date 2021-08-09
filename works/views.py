@@ -132,7 +132,6 @@ def get_works(request):
 
     states = request.GET.getlist('q_states', [])
     categories = request.GET.getlist('q_categories', [])
-    print(words_author)
 
     results = []
     if len(words) == 1 and not request.GET.get('advanced', False):
@@ -150,7 +149,6 @@ class WorkList(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         advanced = self.request.GET.get("advanced", False)
-        print(advanced)
         context['advanced'] = advanced
 
         context['states'] = ItemState.CHOICES
@@ -158,7 +156,6 @@ class WorkList(ListView):
         context['categories'] = Category.objects.all()
         context['selected_categories'] = list(map(lambda val: int(val), self.request.GET.getlist("q_categories", [])))
 
-        print(context['selected_categories'])
         # Add in a QuerySet of all the books
         return context
 
