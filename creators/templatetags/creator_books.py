@@ -23,7 +23,7 @@ def get_creator_books(creator: Creator, perms):
         for item in Item.objects.filter(publication=work):
             it.append(ItemRow(item))
 
-        result.append(BookResult(work, it, item_options=[]))
+        result.append(BookResult(work, it))
     return {"perms": perms, "contents": result}
 
 

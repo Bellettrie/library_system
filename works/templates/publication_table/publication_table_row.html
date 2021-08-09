@@ -33,7 +33,7 @@
         </td>
         <td>
             {% with item=item_rows.0.item %}
-                {% for option in item_rows.0.options %}
+                {% for option in item_options %}
                     {% include 'publication_table/buttons/button_switcher.html' %}
                 {% endfor %}
                 {% if not forloop.last %}<br/>{% endif %}

@@ -16,13 +16,16 @@ def split_ligatures(s):
     """
 
     def untie(letter):
-        m = _ligature_re.match(unicodedata.name(letter))
-        if not m:
-            return letter
-        elif m.group(1):
-            return m.group(2)
-        else:
-            return m.group(2)
+        try:
+            m = _ligature_re.match(unicodedata.name(letter))
+            if not m:
+                return letter
+            elif m.group(1):
+                return m.group(2)
+            else:
+                return m.group(2)
+        except ValueError:
+            return ""
 
     return ''.join(untie(c) for c in s)
 

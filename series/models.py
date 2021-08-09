@@ -89,6 +89,14 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
     def get_all_items(self):
         pass
 
+    def part_of_series_update(self):
+        from search.models import SeriesWordMatch
+        SeriesWordMatch.series_rename(self)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.part_of_series_update()
+
 
 class WorkInSeries(SeriesNode):
     work = models.ForeignKey("works.Work", on_delete=PROTECT)
@@ -101,6 +109,7 @@ class WorkInSeries(SeriesNode):
         if self.is_primary and len(WorkInSeries.objects.filter(work=self.work, is_primary=True)) > required_length:
             raise RuntimeError("Cannot Save")
         super().save(*args, **kwargs)
+        self.part_of_series.part_of_series_update()
 
     def get_authors(self):
         return self.part_of_series.get_authors()
@@ -110,6 +119,10 @@ class CreatorToSeries(models.Model):
     creator = models.ForeignKey("creators.Creator", on_delete=PROTECT)
     series = models.ForeignKey(Series, on_delete=PROTECT)
     number = models.IntegerField(blank=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.series.part_of_series_update()
 
     class Meta:
         unique_together = ("creator", "series", "number")

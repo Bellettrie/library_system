@@ -13,10 +13,11 @@ from django.views.generic import DetailView, ListView, CreateView
 
 from book_code_generation.models import standardize_code
 from recode.models import Recode
+from search.queries import BaseSearchQuery, AndOp, AuthorSearchQuery, SeriesSearchQuery, TitleSearchQuery, StateSearchQuery, LocationSearchQuery, BookCodeSearchQuery
 from series.models import Series
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
-from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState, WorkInPublication
+from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState, WorkInPublication, Category
 
 
 def word_to_regex(word: str):
@@ -48,71 +49,49 @@ class ItemRow:
 
 
 class BookResult:
-    def __init__(self, publication: Publication, item_rows: List[ItemRow], item_options=[], publication_options=[]):
+    def __init__(self, publication: Publication, item_options=[], publication_options=[]):
         self.publication = publication
-        self.item_rows = item_rows
         self.item_options = item_options
         self.publication_options = publication_options
         self.score = 0
-        for row in self.item_rows:
-            row.options = item_options
-            row.book_result = self
 
     def set_item_options(self, item_options):
-        for row in self.item_rows:
-            row.options = item_options
+        self.item_options = item_options
 
 
-def get_works_for_publication(words):
-    result_set = None
-    for word in words:
-        word = word_to_regex(word)
-        if len(word) == 0:
-            return []
-        authors = Creator.objects.filter(Q(name__iregex=word) | Q(given_names__iregex=word))
+def merge_queries(query, add_query):
+    if query is None:
+        return add_query
+    else:
+        return AndOp(query, add_query)
 
-        series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors)
-                                           | Q(title__iregex=word)
-                                           | Q(sub_title__iregex=word)
-                                           | Q(original_title__iregex=word)
-                                           | Q(original_subtitle__iregex=word)
-                                           ))
 
-        prev_len = 0
-        series_len = len(series)
-
-        while prev_len < series_len:
-            prev_len = series_len
-            series = set(series | set(Series.objects.filter(part_of_series__in=series)))
-            series_len = len(series)
-        work_q = Q(Q(title__iregex=word)
-                   | Q(sub_title__iregex=word)
-                   | Q(original_title__iregex=word)
-                   | Q(original_subtitle__iregex=word)
-                   | Q(workinseries__part_of_series__in=series))
-
-        subworks = set(SubWork.objects.filter(
-            Q(creatortowork__creator__in=authors)
-            | work_q))
-
-        word_set = set(Publication.objects.filter(
-            work_q
-            | Q(workinpublication__work__in=subworks)))
-        res2 = set(Publication.objects.filter(creatortowork__creator__in=authors))
-        word_set = word_set | res2
-        if result_set is None:
-            result_set = word_set
-        else:
-            result_set = result_set & word_set
+def get_works_for_publication(words_for_q, words_for_author=[], words_for_series=[], words_for_title=[], states=[], categories=[], book_code=[]):
+    query = None
+    if len(words_for_q) > 0:
+        query = merge_queries(query, BaseSearchQuery(" ".join(words_for_q)))
+    if len(words_for_author) > 0:
+        query = merge_queries(query, AuthorSearchQuery(" ".join(words_for_author)))
+    if len(words_for_series) > 0:
+        query = merge_queries(query, SeriesSearchQuery(" ".join(words_for_series)))
+    if len(words_for_title) > 0:
+        query = merge_queries(query, TitleSearchQuery(" ".join(words_for_title)))
+    if len(states) > 0:
+        query = merge_queries(query, StateSearchQuery(states))
+    if len(categories) > 0:
+        query = merge_queries(query, LocationSearchQuery(categories))
+    if len(book_code) > 0:
+        query = merge_queries(query, BookCodeSearchQuery(book_code))
+    if query is None:
+        return []
+    result_set = query.exec()
     work_list = list(set(result_set))
+    work_list.sort(key=lambda a: a.title.upper())
     work_list.sort(key=lambda a: a.listed_author)
 
     result = []
     for row in work_list:
-        item_rows = []
-        for item in row.item_set.all():
-            item_rows.append(ItemRow(item, []))
-        result.append(BookResult(row, item_rows))
+        result.append(BookResult(row, item_options=['lend', 'reserve']))
     return result
 
 
@@ -122,7 +101,7 @@ def get_works_by_book_code(word):
     word = word_to_regex(word)
     if len(word) == 0:
         return []
-    items = Item.objects.filter(Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word))
+    items = Item.objects.filter(Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word)).prefetch_related("publication")
     for item in items:
         dz = pub_dict.get(item.publication, [])
         dz.append(ItemRow(item, []))
@@ -133,14 +112,20 @@ def get_works_by_book_code(word):
 
 
 def get_works(request):
-    words = get_query_words(request)
-    if words is None or words == []:
-        return []
+    words = get_query_words(request.GET.get('q', ""))
+    words_author = get_query_words(request.GET.get('q_author', ""))
+    words_series = get_query_words(request.GET.get('q_series', ""))
+    words_title = get_query_words(request.GET.get('q_title', ""))
+    book_code = request.GET.get('q_bookcode', "")
+
+    states = request.GET.getlist('q_states', [])
+    categories = request.GET.getlist('q_categories', [])
+    print(words_author)
 
     results = []
-    if len(words) == 1:
+    if len(words) == 1 and not request.GET.get('advanced', False):
         results += get_works_by_book_code(words[0])
-    results += get_works_for_publication(words)
+    results += get_works_for_publication(words, words_author, words_series, words_title, states, categories, book_code)
     return results
 
 
@@ -152,6 +137,16 @@ class WorkList(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
+        advanced = self.request.GET.get("advanced", False)
+        print(advanced)
+        context['advanced'] = advanced
+
+        context['states'] = ItemState.CHOICES
+        context['selected_states'] = self.request.GET.getlist("q_states", [])
+        context['categories'] = Category.objects.all()
+        context['selected_categories'] = list(map(lambda val: int(val), self.request.GET.getlist("q_categories", [])))
+
+        print(context['selected_categories'])
         # Add in a QuerySet of all the books
         return context
 
@@ -266,7 +261,7 @@ def publication_edit(request, publication_id=None):
             creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
 
             if creators.is_valid():
-                instances = creators.save(commit=False)
+                instances = creators.save()
                 for inst in creators.deleted_objects:
                     inst.delete()
                 for c2w in instances:
@@ -279,7 +274,7 @@ def publication_edit(request, publication_id=None):
             series = SeriesToWorkFomSet(request.POST, request.FILES, instance=instance)
 
             if series.is_valid():
-                instances = series.save(commit=False)
+                instances = series.save()
                 for inst in series.deleted_objects:
                     inst.delete()
                 for i in instances:
@@ -321,7 +316,6 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
     num = 0
     disp_num = ''
     if request.method == 'POST':
-        print(request.POST)
 
         if subwork_id is not None:
             publication = get_object_or_404(WorkInPublication, pk=subwork_id)
@@ -338,7 +332,7 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             instance.save()
             creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
             if creators.is_valid():
-                instances = creators.save(commit=False)
+                instances = creators.save()
                 for inst in creators.deleted_objects:
                     inst.delete()
                 for c2w in instances:
