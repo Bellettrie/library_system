@@ -55,7 +55,7 @@ class BookResult:
         self.publication = publication
         self.item_options = item_options
         self.publication_options = publication_options
-        self.items = items
+        self.item_rows = items
         self.score = 0
 
     def set_item_options(self, item_options):
