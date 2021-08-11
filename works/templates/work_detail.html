@@ -9,9 +9,39 @@
             <td>{{ object.get_title }}</td>
         </tr>
         <tr>
+            <th>
+                Language:
+            </th>
+            <td>
+                {{ object.language }}
+            </td>
+        </tr>
+        <tr>
+            {% if object.original_language %}
+                <th>
+                    Original Language
+                </th>
+                <td>
+                    {{ object.original_language }}
+                </td>
+            {% endif %}
+        </tr>
+
+        <tr>
             <th>Sub-title</th>
             <td>{{ object.sub_title }}</td>
         </tr>
+        {% if object.original_title %}
+            <tr>
+                <th>Original Title</th>
+
+                <td>{{ object.original_title }}</td>
+            </tr>
+            <tr>
+                <th>Original Sub-title</th>
+                <td>{{ object.original_subtitle }}</td>
+            </tr>
+        {% endif %}
         <tr>
             <th>Authors</th>
             <td>{% for author in object.get_authors %}{% include 'creator_single_line_description.html' %}
