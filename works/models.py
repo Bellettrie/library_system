@@ -205,6 +205,11 @@ class Publication(Work):
     def get_sub_works(self):
         return WorkInPublication.objects.filter(publication=self).order_by('number_in_publication')
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        from search.models import WordMatch
+        WordMatch.create_all_for(self)
+
 
 class Item(NamedThing, BookCode):
     old_id = models.IntegerField(null=True)
@@ -233,7 +238,6 @@ class Item(NamedThing, BookCode):
         return self.book_code + " " + self.book_code_extension
 
     def in_available_state(self):
-        print(self.get_state())
         return self.get_state().type in available_states
 
     def is_lent_out(self):
@@ -333,12 +337,12 @@ available_states = ['AVAILABLE', 'FEATURED']
 
 
 class ItemState(models.Model):
+    CHOICES = (("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"),
+               ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured"), ("SOLD", "Sold"),
+               ("FORSALE", "For Sale"))
     item = models.ForeignKey(Item, on_delete=CASCADE)
     dateTime = models.DateTimeField(default=datetime.now)
-    type = models.CharField(max_length=64, choices=(
-        ("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"),
-        ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured"), ("SOLD", "Sold"),
-        ("FORSALE", "For Sale")))
+    type = models.CharField(max_length=64, choices=CHOICES)
     reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
 
@@ -350,6 +354,11 @@ class SubWork(Work, TranslatedThing):
     def is_part_of_multiple(self):
         return len(self.workinpublication_set) > 1
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        from search.models import SubWorkWordMatch
+        SubWorkWordMatch.subwork_rename(self)
+
 
 class WorkInPublication(models.Model):
     publication = models.ForeignKey(Publication, on_delete=PROTECT)
@@ -357,6 +366,11 @@ class WorkInPublication(models.Model):
     number_in_publication = models.IntegerField()
     display_number_in_publication = models.CharField(max_length=64)
     unique_together = ('work', 'publication')
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        from search.models import SubWorkWordMatch
+        SubWorkWordMatch.subwork_rename(self.work)
 
 
 class CreatorToWork(models.Model):

@@ -47,7 +47,7 @@ def edit(request, creator_id=None):
             locations = CreatorLocationNumberFormset(request.POST)
         if form.is_valid() and locations.is_valid():
             instance = form.save()
-            instances = locations.save(commit=False)
+            instances = locations.save()
             for inst in locations.deleted_objects:
                 inst.delete()
             for c2w in instances:
@@ -101,7 +101,7 @@ class CreatorList(ListView):
     paginate_by = 10
 
     def get_queryset(self):  # new
-        words = get_query_words(self.request)
+        words = get_query_words(self.request.GET.get('q'))
 
         if words is None:
             return []

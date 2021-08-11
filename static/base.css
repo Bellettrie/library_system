@@ -130,7 +130,7 @@ body {
     line-height: 0px;
     text-align: center;
     padding-left: 100px;
-    font-size: 24px;
+    font-size: 12px;
     background: var(--header-bg);
     color: var(--header-color);
     display: flex;

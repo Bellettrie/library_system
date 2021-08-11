@@ -31,7 +31,7 @@ class MemberList(PermissionRequiredMixin, ListView):
     paginate_by = 50
 
     def get_queryset(self):  # new
-        words = get_query_words(self.request)
+        words = get_query_words(self.request.GET.get("q"))
         get_previous = self.request.GET.get('previous', False)
 
         msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now()))

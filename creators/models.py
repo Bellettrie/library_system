@@ -46,6 +46,28 @@ class Creator(models.Model):
                 result.append(item)
         return result
 
+    def get_all_publications(self):
+        result = []
+        from works.models import Item, Publication
+        creators = set(Creator.objects.filter(is_alias_of=self))
+        creators.add(self)
+        if self.is_alias_of:
+            creators.add(self.is_alias_of)
+        for work in Publication.objects.filter(creatortowork__creator__in=creators):
+            result.append(work)
+        for creator in creators:
+            for s in creator.get_all_series():
+                s.part_of_series_update()
+        return result
+
+    def author_word_search_update(self):
+        from search.models import AuthorWordMatch
+        AuthorWordMatch.author_rename(self)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.author_word_search_update()
+
     def get_all_series(self):
 
         from series.models import Series

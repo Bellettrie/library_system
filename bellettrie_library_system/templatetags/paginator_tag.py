@@ -6,9 +6,20 @@ register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def url_replace(context, **kwargs):
-    query = context['request'].GET.dict()
+    query = {}
+    cget = context['request'].GET
+    multikeys = []
+    for k in cget.keys():
+        if len(cget.getlist(k)) == 1:
+            query[k] = cget[k]
+        else:
+            multikeys.append(k)
     query.update(kwargs)
-    return urlencode(query)
+    multikeys_part = ""
+    for key in multikeys:
+        for v in cget.getlist(key):
+            multikeys_part += "&" + urlencode({key: v})
+    return urlencode(query) + multikeys_part
 
 
 @register.filter('get_value_from_dict')

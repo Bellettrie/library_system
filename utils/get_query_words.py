@@ -1,10 +1,9 @@
-def get_query_words(request):
-    query = request.GET.get('q')
+def get_query_words(query):
     if query is None:
         return None
     p_words = query.split(" ")
     words = []
     for word in p_words:
-        if len(word) > 2:
+        if len(word) > 0:
             words.append(word)
     return words
