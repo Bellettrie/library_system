@@ -81,7 +81,7 @@ def show_members(request):
 
         if len(member.email) > 0:
             r_str += ("; " + member.email)
-    return render(request, 'data-mining-member-filtering.html', {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'dms':request.GET.get('dms'), 'members': found_members, 'committees': committees})
+    return render(request, 'data-mining-member-filtering.html', {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'dms': request.GET.get('dms'), 'members': found_members, 'committees': committees})
 
 
 # Create your models here.
