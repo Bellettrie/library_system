@@ -17,6 +17,9 @@
         <label for="mails">Get mail address list: </label>
         <input id="mails" type="checkbox" name="mails"
                {% if mails %}checked{% endif %}>
+        <label for="dms">Not DMS registered: </label>
+        <input id="dms" type="checkbox" name="dms"
+               {% if dms %}checked{% endif %}>
         {% with list=request.GET|get_list:'committees' %}
             <select name="committees" id="committees" multiple="true">
                 {% for committee in committees %}
