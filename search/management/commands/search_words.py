@@ -5,7 +5,7 @@ from works.models import Publication
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Generate all search words for the current catalog.'
 
     def handle(self, *args, **options):
         pubs = Publication.objects.all()

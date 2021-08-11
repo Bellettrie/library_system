@@ -10,13 +10,6 @@ from creators.models import Creator
 from series.models import Series
 from works.models import Publication, SubWork
 
-dead_words = \
-    [
-        "de",
-        "in",
-        "the"
-    ]
-
 
 class SearchWord(models.Model):
     word = models.CharField(max_length=255)
@@ -27,6 +20,9 @@ class SearchWord(models.Model):
 
 
 def get_word_from_set(word: str, word_set: dict):
+    """
+        Given a dictionary of string -> SearchWord, get the word from the dictionary. This is an optimization for the search word generation function.
+    """
     word = word.upper()
     w = word_set.get(word, None)
     if w is not None:
@@ -37,11 +33,17 @@ def get_word_from_set(word: str, word_set: dict):
 
 
 def clean_word(string):
+    """
+    Remove anything not alphanumeric from word.
+    """
     string = normalize_str(string)
     return "".join(ch for ch in string if ch.isalnum() or ch == "*").upper()
 
 
 def get_words_in_str(string):
+    """
+        Split string into spaces and
+    """
     if string is None:
         return []
     z = string.strip().split(" ")

@@ -9,7 +9,7 @@ from works.views import get_works_for_publication
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Test the search feature.'
 
     def handle(self, *args, **options):
         q = LocationSearchQuery(Category.objects.filter(name__contains="Fiction"))
