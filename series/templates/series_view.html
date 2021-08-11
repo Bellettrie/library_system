@@ -3,20 +3,20 @@
 {% block content %}
     <table class="table table-striped">
         <tr>
-            <td>Number</td>
+            <th>Number</th>
             <td>
-                [{{ series.number }}]
+                {% if series.number %}{{ series.number }}{% else %}<i>No Number</i>{% endif %}
             </td>
         </tr>
         <tr>
-            <td>Display number</td>
+            <th>Display number</th>
             <td>
-                [{{ series.display_number }}]
+                {% if series.display_number %}{{ series.display_number }}{% else %}<i>No Display Number</i>{% endif %}
             </td>
         </tr>
         {% with publication=series %}
             <tr>
-                <td>Name</td>
+                <th>Name</th>
                 <td>
                     <a href="/series/view/{{ publication.pk }}">
                         {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
@@ -24,16 +24,40 @@
                     </a>
                 </td>
             </tr>
+            {% if series.original_title %}
+                <tr>
+                    <th> Original Name</th>
+                    <td>
+
+                        {% if publication.original_title %}{% if publication.original_article %}
+                            {{ publication.original_article }}{% endif %} {{ publication.original_title }}
+                            {% if publication.original_sub_title %}<br/>
+                                <i>-{{ publication.original_sub_title }}</i>{% endif %}{% else %}
+                            <i>No Title</i> {% endif %}
+
+                    </td>
+                </tr>
+            {% endif %}
+            {% if series.original_language %}
+                <tr>
+                    <th> Original Language</th>
+                    <td>
+                        {{ series.original_language }}
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
-                <td>Authors</td>
+                <th>Authors</th>
                 <td>
-                    {% for author in publication.get_own_authors %}{% include 'creator_single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+                    {% for author in publication.get_own_authors %}{% include 'creator_single_line_description.html' %}
+                        {% if not forloop.last %}<br/>{% endif %}{% endfor %}
                 </td>
             </tr>
         {% endwith %}
         </tr>
     </table>
-    {% if perms.series.change_series %}<a class="btn btn-primary" href="{% url 'series.edit' series.pk %}">Edit</a>{% endif %}
+    {% if perms.series.change_series %}<a class="btn btn-primary" href="{% url 'series.edit' series.pk %}">Edit</a>
+    {% endif %}
     {% if perms.series.delete_series %}<a class="btn btn-danger" href="{% url 'series.delete' series.pk %}">Delete</a>
     {% endif %}
 
@@ -52,12 +76,16 @@
     <h4>Numbering</h4>
     {% if  series.location_code %}
         <table>
-        <tr><td>
-            {{ series.location_code.name }}</td></tr>
-        <tr><td>{{ series.location_code.number}}</td></tr>
-        <tr><td>{{  series.location_code.letter }}</td></tr>
+            <tr>
+                <td>
+                    {{ series.location_code.name }}</td>
+            </tr>
+            <tr>
+                <td>{{ series.location_code.number }}</td>
+            </tr>
+            <tr>
+                <td>{{ series.location_code.letter }}</td>
+            </tr>
         </table>
     {% endif %}
-
-
 {% endblock %}

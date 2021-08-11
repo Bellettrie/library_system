@@ -95,6 +95,12 @@ class Work(NamedTranslatableThing):
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
 
+    def get_pub(self):
+        a = Publication.objects.filter(id=self.id)
+        if len(a) == 1:
+            return a[0]
+        return None
+
     def update_listed_author(self):
         authors = self.get_authors()
         if len(authors) == 0:

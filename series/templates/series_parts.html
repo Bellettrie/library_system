@@ -16,6 +16,7 @@
                         {% endfor %}
                     </td>
                 {% endwith %}
+                <td> {{ series.book_code }}</td>
                 </tr>
                 {% with counter=counter.increment %}
                     {% include 'series_parts.html' %}
@@ -37,6 +38,10 @@
                     </td>
                     <td>
                     {% for author in publication.get_own_authors %}{% include 'creator_single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}{% endfor %}
+                    </td>
+                    <td>
+
+                    {{ publication.get_pub.get_items.0.book_code }}
                     </td>
                 {% endwith %}
             {% endif %}
