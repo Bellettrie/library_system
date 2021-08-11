@@ -39,6 +39,12 @@ def find_members_by_request(request):
             for member in members:
                 if member.end_date is None:
                     found_members.append(member)
+        if request.GET.get('dms', False):
+            found_2 = []
+            for member in found_members:
+                if not member.dms_registered:
+                    found_2.append(member)
+            found_members = found_2
         if len(found_committees) > 0:
             found_2 = []
             for member in found_members:
@@ -75,7 +81,7 @@ def show_members(request):
 
         if len(member.email) > 0:
             r_str += ("; " + member.email)
-    return render(request, 'data-mining-member-filtering.html', {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'members': found_members, 'committees': committees})
+    return render(request, 'data-mining-member-filtering.html', {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'dms':request.GET.get('dms'), 'members': found_members, 'committees': committees})
 
 
 # Create your models here.
