@@ -131,7 +131,7 @@ class SeriesList(ListView):
         return context
 
     def get_queryset(self):  # new
-        words = get_query_words(self.request)
+        words = get_query_words(self.request.GET.get('q', ""))
         if words is None:
             return []
         result = None
@@ -151,4 +151,6 @@ class SeriesList(ListView):
                 result = series
             else:
                 result = series & result
+        if result is None:
+            return []
         return list(result)
