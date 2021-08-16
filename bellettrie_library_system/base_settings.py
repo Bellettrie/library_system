@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mail_templated',
-    'django_tables2',
     'works',
     'members',
     'series',
@@ -122,8 +121,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-
-DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
 
 LOGOUT_REDIRECT_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/'
