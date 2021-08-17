@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import permission_required
+from django.db import transaction
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect
 
@@ -54,6 +55,7 @@ def view_series(request, pk):
     return render(request, 'series_view.html', {'series': series, 'list': {'things_underneath': [series]}, 'counter': counter})
 
 
+@transaction.atomic
 @permission_required('series.change_series')
 def edit_series(request, pk):
     series = None
@@ -82,7 +84,7 @@ def edit_series(request, pk):
             instance.save()
 
             if creators.is_valid():
-                instances = creators.save()
+                instances = creators.save(commit=False)
                 for inst in creators.deleted_objects:
                     inst.delete()
                 for c2w in instances:
