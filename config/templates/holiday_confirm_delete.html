@@ -6,9 +6,9 @@
         The following holiday will be deleted?
         <ul>
             <input type="hidden" value="{{ object.id }}" name="itemsToDelete"/>
-            <li><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
+            <li><a href="{{ object.get_absolute_url }}">{{ object.name }}</a></li>
         </ul>
-        <input type="submit" class="btn btn-primary" value='Confirm deletion' name="confirm_delete"/>
+        <input type="submit" class="btn btn-danger" value='Confirm deletion' name="confirm_delete"/>
         <a class="btn" href="{% url 'holiday.list' %}" target="_blank"><button  class="btn btn-primary"  type="button">Cancel</button></a>​
 
     </form>

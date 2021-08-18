@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Holiday details for: {{ object.name }}{% endblock %}
 {% block content %}
+<table>
+    <tr><th>Starting date</th><td>{{ object.starting_date }}</td></tr>
+    <tr><th>End date</th><td>{{ object.ending_date }}</td></tr>
+    <tr><th>Skip for fine</th><td>{{ object.skipped_for_fine }}</td></tr>
+</table>
 
-    <a href="{%  url 'holiday.list' %}">Back to overview</a>
+    <a href="{%  url 'holiday.list' %}" class="btn btn-outline-primary">Back to overview</a>
+    <a href="{% url 'holiday.edit' object.id %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'holiday.delete' object.id %}" class="btn btn-danger">Delete</a>
 {% endblock %}

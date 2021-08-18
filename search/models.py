@@ -168,6 +168,8 @@ class SeriesWordMatch(WordMatch):
             if series in handled:
                 continue
             SeriesWordMatch.get_all_for_series(work, series.part_of_series, words)
+            if not series.part_of_series:
+                continue
             if series.part_of_series.part_of_series:
                 ser.append(series.part_of_series)
             handled.append(series)
@@ -220,9 +222,9 @@ class SubWorkWordMatch(WordMatch):
 
     @staticmethod
     def subwork_rename(subwork: SubWork):
-        SubWorkWordMatch.objects.filter(subwork=subwork).delete()
+        SubWorkWordMatch.objects.filter(sub_work=subwork).delete()
         words = {}
         for word in SearchWord.objects.all():
             words[word.word] = word
-        for pub in subwork.workinpublication_set:
-            WordMatch.create_all_for(pub, words)
+        for pub in subwork.workinpublication_set.all():
+            WordMatch.create_all_for(pub.publication, words)
