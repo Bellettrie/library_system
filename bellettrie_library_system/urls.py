@@ -39,6 +39,8 @@ urlpatterns = [
     path('pages/', include('public_pages.urls')),
     path('datamining/', include('datamining.urls')),
     path('', view_page('basic', 'home'), name='homepage'),
+    path('kickin', view_page('basic', 'kickin'), name='kick'),
+    path('kickin/', view_page('basic', 'kickin'), name='kick_alt'),
     path('informatie/', redirect_view, name='homepage.old_link'),
     path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
     path('recode/', include('recode.urls')),

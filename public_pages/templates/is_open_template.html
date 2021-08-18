@@ -1,21 +1,27 @@
 {% load static %}
-<h4>Room Status</h4>
-<div style="width:400px; background-color:lightgrey;  ">
-<div style-="margin: auto;">
+    <div class="col-lg-3 lr-auto">
 
-        {% if open %}
-            The Drakenkelder is open!<br/>
-            {% if full %}
-                <img style="width:100px;" src="{% static 'images/light/yellow.png' %}"><br/>
-                The room is full :(
-            {% else %}
-                <img style="width:100px;" src="{% static 'images/light/green.png' %}"><br/>
-                The room has {{ current_count }} people in the room, out of a maximum {{ max_capacity }}.
-            {% endif %}
-        {% else %}
-            <img style="width:100px;" src="{% static 'images/light/red.png' %}"><br/>
-            The Drakenkelder is closed!
-        {% endif %}
-</div>
-</div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Are we Open?</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    {% if open %}
+                        The Drakenkelder is open!<br/>
+                        {% if full %}
+                            <img style="width:100px;" src="{% static 'images/light/yellow.png' %}"><br/>
+                            The room is full :(
+                        {% else %}
+                            <img style="width:100px;" src="{% static 'images/light/green.png' %}"><br/>
+                            There are currently {{ current_count }} people here, <br> out of a maximum {{ max_capacity }}.
+                        {% endif %}
+                    {% else %}
+                        <img style="width:100px;" src="{% static 'images/light/red.png' %}"><br/>
+                        The Drakenkelder is closed!
+                    {% endif %}
 
+
+                </h6>
+
+            </div>
+        </div>
+    </div>
