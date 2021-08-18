@@ -18,7 +18,7 @@ from public_pages.models import PublicPageGroup, PublicPage, FileUpload
 
 
 def render_md(markdown_text: str):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables'])
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html'])
     search_template = get_template('work_search_field_simple.html')
     open_template = get_template('is_open_template.html')
     html = md.convert(markdown_text).replace("----SEARCH----", search_template.render(context={}))
