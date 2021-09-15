@@ -87,7 +87,9 @@ def get_works_for_publication(words_for_q, words_for_author=[], words_for_series
     if len(book_code) > 0:
         query = merge_queries(query, BookCodeSearchQuery(book_code))
     if query is None:
-        return []
+        return Publication.objects.none()
+    print(query)
+    print(words_for_q)
     result_set = query.exec()
     work_list = list(set(result_set))
     work_list.sort(key=lambda a: (a.title or "").upper())
