@@ -6,7 +6,7 @@ from works.models import Publication, ItemState, Location, Category
 
 class SearchOp:
     def exec(self):
-        return None
+        return Publication.objects.none()
 
 
 class BaseSearchQuery(SearchOp):
@@ -15,7 +15,7 @@ class BaseSearchQuery(SearchOp):
 
     def exec(self):
         if len(self.words) == 0:
-            return None
+            return Publication.objects.none()
         res = None
         for word in self.words:
             if res is None:
@@ -35,7 +35,7 @@ class AuthorSearchQuery(SearchOp):
 
     def exec(self):
         if len(self.words) == 0:
-            return None
+            return Publication.objects.none()
         res = None
         for word in self.words:
             if res is None:
@@ -55,7 +55,7 @@ class SeriesSearchQuery(SearchOp):
 
     def exec(self):
         if len(self.words) == 0:
-            return None
+            return Publication.objects.none()
         res = None
         for word in self.words:
             if res is None:
@@ -75,7 +75,7 @@ class TitleSearchQuery(SearchOp):
 
     def exec(self):
         if len(self.words) == 0:
-            return None
+            return Publication.objects.none()
         res = None
         for word in self.words:
             if res is None:
@@ -95,7 +95,7 @@ class StateSearchQuery(SearchOp):
 
     def exec(self):
         if "AVAILABLE" in self.states:
-            return None
+            return Publication.objects.none()
         recent_states = dict()
         for item_state in ItemState.objects.all():
             state = recent_states.get(item_state.item_id, item_state)
