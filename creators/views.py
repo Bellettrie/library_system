@@ -144,17 +144,15 @@ def collisions(request):
     if location:
         location = int(location)
         my_location = Location.objects.get(pk=location)
-
         creator_location_numbers = dict()
 
-        for cln in CreatorLocationNumber.objects.filter(location=my_location):
+        for cln in CreatorLocationNumber.objects.filter(location__pk=location):
             cln_list = creator_location_numbers.get((cln.letter, cln.number), [])
             cln_list.append(cln)
             creator_location_numbers[(cln.letter, cln.number)] = cln_list
         for cln in creator_location_numbers.keys():
             if len(creator_location_numbers[cln]) > 1:
                 data.append((cln, creator_location_numbers[cln]))
-
     if commit:
         totals[0] = "Newly coded " + str(totals[0])
     return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals, 'marked': marked_authors})
