@@ -24,6 +24,32 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import permission_required
 
 
+def query_members(words, get_previous=False):
+    msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now()))
+                                           & (Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
+
+    if words is None:
+        return []
+    if len(words) == 0:
+        m = Member.objects.filter(is_anonymous_user=False)
+        if not get_previous:
+            m = m.filter(membershipperiod__in=msps)
+        return m
+
+    result_set = None
+    for word in words:
+        members = Member.objects.filter(Q(name__icontains=word) | Q(nickname__icontains=word))
+        if not get_previous:
+            members = members.filter(membershipperiod__in=msps)
+
+        if result_set is None:
+            result_set = members
+        else:
+            result_set = result_set & members
+
+    return list(set(result_set))
+
+
 class MemberList(PermissionRequiredMixin, ListView):
     permission_required = 'members.view_member'
     model = Member
@@ -32,39 +58,13 @@ class MemberList(PermissionRequiredMixin, ListView):
 
     def get_queryset(self):  # new
         words = get_query_words(self.request.GET.get("q"))
-        get_previous = self.request.GET.get('previous', False)
-
-        msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now()))
-                                               & (Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
-
-        if words is None:
-            return []
-        if len(words) == 0:
-            m = Member.objects.filter(is_anonymous_user=False)
-            if not get_previous:
-                m = m.filter(membershipperiod__in=msps)
-            return m
-
-        result_set = None
-        for word in words:
-            members = Member.objects.filter(Q(name__icontains=word) | Q(nickname__icontains=word))
-            if not get_previous:
-                members = members.filter(membershipperiod__in=msps)
-
-            if result_set is None:
-                result_set = members
-            else:
-                result_set = result_set & members
-
-        return list(set(result_set))
-
+        return query_members(words, self.request.GET.get('previous', False))
 
 class AnonMemberList(PermissionRequiredMixin, ListView):
     permission_required = 'members.view_member'
     model = Member
     template_name = 'member_anonymisable.html'
     paginate_by = 50
-
 
 def show(request, member_id):
     if not request.user.has_perm('members.view_member'):
@@ -77,7 +77,6 @@ def show(request, member_id):
     if member.is_anonimysed:
         return render(request, 'member_detail_anonymous.html', {'member': member})
     return render(request, 'member_detail.html', {'member': member})
-
 
 @transaction.atomic
 @permission_required('members.change_member')
@@ -98,12 +97,10 @@ def edit(request, member_id):
         form = EditForm(can_change, edit_dms, instance=member)
     return render(request, 'member_edit.html', {'form': form, 'member': member})
 
-
 def get_end_date(year, month_second_half):
     if month_second_half:
         year += 1
     return str(year) + "-06-30"
-
 
 @transaction.atomic
 @permission_required('members.add_member')
@@ -128,9 +125,9 @@ def new(request):
     else:
         form = EditForm(can_change, edit_dms)
     md_form = MembershipPeriodForm(initial={'start_date': datetime.date(datetime.now()),
-                                            'end_date': get_end_date(datetime.now().year, datetime.now().month > 6)})
+                                            'end_date': get_end_date(datetime.now().year,
+                                                                     datetime.now().month > 6)})
     return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': md_form})
-
 
 @transaction.atomic
 def signup(request, member_id):
@@ -160,7 +157,6 @@ def signup(request, member_id):
         form = UserCreationForm()
     return render(request, 'user_create.html', {'form': form, 'member': member})
 
-
 @transaction.atomic
 @permission_required('auth.change_user')
 def change_user(request, member_id):
@@ -179,13 +175,11 @@ def change_user(request, member_id):
         form = PasswordChangeForm(member.user)
     return render(request, 'user_edit.html', {'form': form, 'member': member, 'user': member.user})
 
-
 @transaction.atomic
 @permission_required('auth.delete_user')
 def remove_user(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     return render(request, 'user_delete.html', {'member': member, 'user': member.user})
-
 
 @transaction.atomic
 @permission_required('auth.delete_user')
@@ -197,7 +191,6 @@ def delete_user(request, member_id):
     user.delete()
 
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
-
 
 @transaction.atomic
 @permission_required('auth.add_user')
@@ -217,7 +210,6 @@ def generate_invite_code(request, member_id):
 
     return render(request, 'member_detail.html', {'member': member, 'extra': "Invitation mail sent"})
 
-
 @transaction.atomic
 @permission_required('auth.add_user')
 def disable_invite_code(request, member_id):
@@ -225,7 +217,6 @@ def disable_invite_code(request, member_id):
     member.invitation_code_valid = False
     member.save()
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
-
 
 @transaction.atomic
 @permission_required('members.change_member')
@@ -242,7 +233,6 @@ def edit_membership_period(request, membership_period_id):
         form = MembershipPeriodForm(instance=member)
 
     return render(request, 'member_membership_edit.html', {'form': form, 'member': member})
-
 
 @transaction.atomic
 @permission_required('members.change_member')
@@ -264,7 +254,6 @@ def new_membership_period(request, member_id):
                                                                                        datetime.now().month > 6)})
     return render(request, 'member_membership_edit.html', {'form': form, 'member': member})
 
-
 @transaction.atomic
 @permission_required('members.delete_member')
 def delete_member(request, member_id):
@@ -280,7 +269,6 @@ def delete_member(request, member_id):
 
     return HttpResponseRedirect(reverse('members.list'))
 
-
 @transaction.atomic
 @permission_required('members.delete_member')
 def anonymise(request, member_id):
@@ -290,7 +278,6 @@ def anonymise(request, member_id):
     member.anonymise_me(dry_run=False)
 
     return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
-
 
 @transaction.atomic
 @permission_required('members.delete_member')
