@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from lendings.models import Lending, Reservation
 from lendings.path_names import LENDING_FINALIZE, RESERVE_FINALIZE
 from members.models import Member
+
 from works.models import Item
 from works.views import get_works
 
@@ -21,12 +22,10 @@ def index(request):
 
 @permission_required('lendings.add_lending')
 def work_based(request, work_id):
-    q = None
-    if 'q' in request.GET.keys():
-        q = request.GET.get('q')
-    members = []
-    if q is not None:
-        members = Member.objects.filter(name__icontains=q)
+    from members.views import query_members
+    from utils.get_query_words import get_query_words
+    words = get_query_words(request.GET.get("q"))
+    members = query_members(words)
     return render(request, 'lending_based_on_work.html',
                   {'members': members, 'item': get_object_or_404(Item, pk=work_id),
                    "LENDING_FINALIZE": LENDING_FINALIZE})
@@ -151,12 +150,10 @@ def reserve_list(request):
 
 @permission_required('lendings.add_reservation')
 def reserve_item(request, work_id):
-    q = None
-    if 'q' in request.GET.keys():
-        q = request.GET.get('q')
-    members = []
-    if q is not None:
-        members = Member.objects.filter(name__icontains=q)
+    from members.views import query_members
+    from utils.get_query_words import get_query_words
+    words = get_query_words(request.GET.get("q"))
+    members = query_members(words)
     return render(request, 'reserve_based_on_work.html',
                   {'members': members, 'item': get_object_or_404(Item, pk=work_id),
                    "RESERVE_FINALIZE": RESERVE_FINALIZE})
