@@ -143,7 +143,6 @@ def collisions(request):
 
     if location:
         location = int(location)
-        my_location = Location.objects.get(pk=location)
         creator_location_numbers = dict()
 
         for cln in CreatorLocationNumber.objects.filter(location__pk=location):
