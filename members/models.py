@@ -90,6 +90,14 @@ class Member(MemberData):
         permissions = [('committee_update', 'Can update committee')]
 
     @property
+    def open_fine(self):
+        from fines.models import Fine
+        amount = 0
+        for fine in Fine.objects.filter(paid=True, member=self):
+            amount += fine.amount
+        return "{} euros".format(amount/100)
+
+    @property
     def start_date(self):
         start_date = datetime.fromisoformat("2100-01-01").date()
         for z in MembershipPeriod.objects.filter(member=self):
@@ -136,6 +144,9 @@ class Member(MemberData):
         reservations = Reservation.objects.filter(member=self, reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(member=self, reservation_end_date__isnull=True)
         from config.models import LendingSettings
         return (len(lendings) + len(reservations)) < LendingSettings.get_max_count(item_type, self)
+
+    def current_total_fine(self, current_date=None):
+        pass
 
     def has_late_items(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
@@ -306,10 +317,13 @@ class Member(MemberData):
             return "Already anonymised"
         if self.is_blacklisted:
             return "Is blacklisted"
+        from fines.models import Fine
         if self.end_date is None:
             return "Member is a special member."
         if self.is_currently_member():
             return "Is currently a member."
+        if len(Fine.objects.filter(paid=True, member=self)) > 0:
+            return "Member still has to pay"
         if self.is_active():
             return "Member is still active"
         if self.user is not None and (self.user.last_login.date() - now).days < -400:

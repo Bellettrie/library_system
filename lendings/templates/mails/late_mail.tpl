@@ -7,8 +7,6 @@ Bellettrie - Some of your books are {%if not has_late %} nearly {%endif %} late
 {% block body %}
 Dear {{member.name}},
 
-
-
 {%if has_late%}
 You have items that are late. Please hand them in as soon as possible. This will limit the fine.
 {%for lending in lendings %}

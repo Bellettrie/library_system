@@ -76,11 +76,16 @@
             <th>DMS registered?</th>
             <td>{{ member.dms_registered }}</td>
         </tr>
+    <tr>
+        <th>Fines</th>
+        <td>{{ member.open_fine }}</td>
+    </tr>
         {% if member.user %}
             <tr>
                 <th>User</th>
                 <td>{{ member.user }}</td>
             </tr>
+
             <tr>
                 <th>User control</th>
                 <td>

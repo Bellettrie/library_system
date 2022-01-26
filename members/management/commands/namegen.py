@@ -1,5 +1,5 @@
-import namegenerator
-import names
+# import namegenerator
+# import names
 import random
 
 consonant = ('b', 'g', 'd', 't', 'f', 'c', 'h', 'm', 'n', 'p', 'h', 'r', 'l', 's', 'g', 'k', 'sh', 'ch')
@@ -22,10 +22,11 @@ def set_rnd(name, count):  # returns random letter, whether consonant or vowel
 
 
 def generate_name():
-    return namegenerator.gen().replace("-", " ")
-
+    # return namegenerator.gen().replace("-", " ")
+    pass
 
 def generate_full_name():
-    return names.get_full_name()
+    #return names.get_full_name()
+    pass
 
 # declares initial running

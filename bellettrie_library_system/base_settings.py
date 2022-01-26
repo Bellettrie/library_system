@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'public_pages',
     'datamining',
     'search',
+    'fines'
 ]
 
 MIDDLEWARE = [

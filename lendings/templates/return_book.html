@@ -2,12 +2,16 @@
 {% block content%}
 Returning work: {{ item.get_title }} <br />
 Return date {{ lending.end_date }} <br />
+
+    <form action="#" method="post">
+    {% csrf_token %}
 {% if late %}
     Book is {{ days_late }} days late! <br />
-    {{ lending.member.name }} needs to pay a &euro;{{ fine }} fine.
+    {{ lending.member.name }} needs to pay a &euro;{{ fine }} fine.<br/>
+    <label for="has_paid">Member has paid?</label><input type="checkbox" name="has_paid" id="has_paid" checked>
+    <br>
 {% endif %}
-<form action="#" method="post">
-    {% csrf_token %}
+
     <input type="submit" value="Return it" class="btn btn-success" >
 </form>
 {% endblock %}

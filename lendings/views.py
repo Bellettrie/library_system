@@ -6,6 +6,8 @@ from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
+from config.models import LendingSettings
+from fines.models import Fine
 from lendings.models import Lending, Reservation
 from lendings.path_names import LENDING_FINALIZE, RESERVE_FINALIZE
 from members.models import Member
@@ -131,6 +133,12 @@ def return_book(request, work_id):
     late_days = datetime.now().date() - lending.end_date
     if request.method == 'POST':
         lending.register_returned(request.user.member)
+        print(request.GET.get("has_paid"))
+        paid_on_date = None
+        if request.POST.get("has_paid") =="on":
+            paid_on_date = datetime.now()
+        Fine.objects.create(paid=request.POST.get("has_paid") =="on", lending=lending, amount=LendingSettings.get_fine(lending.item, lending.member, lending.end_date), return_date=datetime.now(),
+                            paid_on_date=paid_on_date, member=lending.member)
         return redirect('/members/' + str(lending.member.pk))  # TODO intermediate page
     return render(request, 'return_book.html', {'item': item, 'lending': lending,
                                                 'late': lending.end_date < datetime.now().date(),
