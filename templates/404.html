@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Not found{% endblock %}
 {% block content %}
+{% load static %}
+<img src="{% static 'images/errors/error404.png' %}" alt="My image" style="height:50%;"><br>
 Sorry but we cannot find what you are asking for.
 {% endblock %}

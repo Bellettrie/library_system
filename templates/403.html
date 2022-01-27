@@ -2,4 +2,6 @@
 {% block title %}Not allowed{% endblock %}
 {% block content %}
 Sorry but you are not allowed to view this.
+{% load static %}
+<img src="{% static 'images/errors/error403.png' %}" alt="My image" style="height:50%;"><br>
 {% endblock %}
