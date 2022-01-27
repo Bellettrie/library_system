@@ -76,7 +76,8 @@ TEMPLATES = [
         'OPTIONS': {
             'builtins':
                 [
-                    'bellettrie_library_system.templatetags.paginator_tag'
+                    'bellettrie_library_system.templatetags.paginator_tag',
+                    'bellettrie_library_system.templatetags.money_format'
                 ],
             'context_processors':
                 [

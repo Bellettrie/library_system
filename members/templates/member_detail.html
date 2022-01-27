@@ -78,7 +78,7 @@
         </tr>
     <tr>
         <th>Fines</th>
-        <td>{{ member.open_fine }}</td>
+        <td>Open: {%  moneys member.unpaid_fines %}, total: {%  moneys member.current_fines %}</td>
     </tr>
         {% if member.user %}
             <tr>

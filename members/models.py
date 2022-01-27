@@ -89,13 +89,7 @@ class Member(MemberData):
     class Meta:
         permissions = [('committee_update', 'Can update committee')]
 
-    @property
-    def open_fine(self):
-        from fines.models import Fine
-        amount = 0
-        for fine in Fine.objects.filter(paid=True, member=self):
-            amount += fine.amount
-        return "{} euros".format(amount/100)
+
 
     @property
     def start_date(self):
@@ -145,8 +139,32 @@ class Member(MemberData):
         from config.models import LendingSettings
         return (len(lendings) + len(reservations)) < LendingSettings.get_max_count(item_type, self)
 
-    def current_total_fine(self, current_date=None):
-        pass
+
+    def unpaid_fines(self):
+        from fines.models import Fine
+        amount = 0
+        for fine in Fine.objects.filter(paid=False, member=self):
+            amount += fine.amount
+
+        return amount
+
+    def current_fines(self):
+        from lendings.models import Lending
+        from config.models import LendingSettings
+        fine = 0
+        for lending in Lending.objects.filter(member=self, handed_in=False):
+            fine += LendingSettings.get_fine(lending.item, self, lending.end_date)
+        return fine
+
+    def current_total_fine(self):
+        from lendings.models import Lending
+        from config.models import LendingSettings
+        fine = 0
+
+        for lending in Lending.objects.filter(member=self, handed_in=False):
+            fine += LendingSettings.get_fine(lending.item, self, lending)
+
+        return fine
 
     def has_late_items(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
@@ -334,7 +352,6 @@ class Member(MemberData):
         if len(Lending.objects.filter(member=self, handed_in=False)) > 0:
             return "Still has a book lent."
         a = now - timedelta(days=180)
-        print(a)
         if len(Lending.objects.filter(member=self, handed_in_on__gte="2020-01-01")):
             return "Recently lent a book"
         from lendings.models import Reservation
