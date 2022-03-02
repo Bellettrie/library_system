@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('works', '0004_auto_20200912_1529'),
     ]
@@ -24,6 +23,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='itemstate',
             name='type',
-            field=models.CharField(choices=[('AVAILABLE', 'Available'), ('MISSING', 'Missing'), ('LOST', 'Lost'), ('BROKEN', 'Broken'), ('OFFSITE', 'Off-Site'), ('DISPLAY', 'On Display'), ('FEATURED', 'Featured'), ('SOLD', 'Sold'), ('FORSALE', 'For Sale')], max_length=64),
+            field=models.CharField(
+                choices=[('AVAILABLE', 'Available'), ('MISSING', 'Missing'), ('LOST', 'Lost'), ('BROKEN', 'Broken'), ('OFFSITE', 'Off-Site'), ('DISPLAY', 'On Display'), ('FEATURED', 'Featured'),
+                         ('SOLD', 'Sold'), ('FORSALE', 'For Sale')], max_length=64),
         ),
     ]
