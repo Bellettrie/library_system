@@ -116,7 +116,7 @@ class LendingSettings(models.Model):
         try:
             # try something
             ls = LendingSettings.objects.get(item_type=item.location.category.item_type)
-            return ls.fine_amount + LendingSettings.get_borrow_money(ls, member), ls.max_fine
+            return ls.fine_amount , ls.max_fine
         except ObjectDoesNotExist:
             print("Term not found")
             return 10000, 1000000
