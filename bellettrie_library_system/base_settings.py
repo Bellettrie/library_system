@@ -171,3 +171,7 @@ def GET_MENU():
     my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar', [members_list, anon_members, member_stats, lending_stats], only_subitems=True, icon='fa fa-book'))
 
     return my_menu
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
