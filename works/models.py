@@ -12,7 +12,8 @@ from book_code_generation.generators import generate_code_from_author, generate_
     generate_code_abc, generate_code_from_title, generate_code_abc_translated
 from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
-from lendings.models import Lending, Reservation
+from lendings.models.lending import Lending
+from reservations.models.reservation import Reservation
 
 
 def simple_search(search_string: str):

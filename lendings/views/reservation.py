@@ -1,3 +1,4 @@
+
 from datetime import datetime, timedelta
 
 from django.contrib.auth.decorators import permission_required, login_required
@@ -6,87 +7,13 @@ from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
-from lendings.models import Lending, Reservation
-from lendings.path_names import LENDING_FINALIZE, RESERVE_FINALIZE
+from lendings.models.lending import Lending
+from reservations.models.reservation import Reservation
+from reservations.path_names import RESERVE_FINALIZE
 from members.models import Member
 
 from works.models import Item
 from works.views import get_works
-
-
-@permission_required('lendings.add_lending')
-def index(request):
-    lendings = Lending.objects.filter(handed_in=False).order_by('end_date')
-    return render(request, 'lending_list.html', {'lendings': lendings})
-
-
-@permission_required('lendings.add_lending')
-def work_based(request, work_id):
-    from members.views import query_members
-    from utils.get_query_words import get_query_words
-    words = get_query_words(request.GET.get("q"))
-    members = query_members(words)
-    return render(request, 'lending_based_on_work.html',
-                  {'members': members, 'item': get_object_or_404(Item, pk=work_id),
-                   "LENDING_FINALIZE": LENDING_FINALIZE})
-
-
-@permission_required('lendings.add_lending')
-def member_based(request, member_id):
-    q = None
-    if 'q' in request.GET.keys():
-        q = request.GET.get('q')
-    items = []
-    if q is not None:
-        items = get_works(request)
-        for row in items:
-            row.set_item_options(["finalize"])
-
-    return render(request, 'lending_based_on_member.html',
-                  {'items': items, 'member': get_object_or_404(Member, pk=member_id),
-                   "LENDING_FINALIZE": LENDING_FINALIZE})
-
-
-lending_failed_reasons = {
-    0: "Member has too many books",
-    1: "Member is not presently a member",
-    2: "Item is lent out",
-    3: "Member has late items",
-    4: "Item is reserved"
-}
-
-
-@login_required()
-def lending_failed(request, member_id, work_id, reason_id):
-    item = get_object_or_404(Item, pk=work_id)
-    member = get_object_or_404(Member, pk=member_id)
-    organising_member = request.user.member
-    return render(request, 'lending_cannot_lend.html', {'item': item,
-                                                        'member': member, 'organising_member': organising_member,
-                                                        'reason': lending_failed_reasons[reason_id]})
-
-
-@transaction.atomic
-@permission_required('lendings.add_lending')
-def finalize(request, work_id, member_id):
-    member = get_object_or_404(Member, pk=member_id)
-    item = get_object_or_404(Item, pk=work_id)
-    if item.is_available_for_lending():
-        if request.method == 'POST':
-            if not member.can_lend_item_type(item.location.category.item_type):
-                return redirect('/lend/failed_lending/{}/{}/0'.format(work_id, member_id))
-            if not member.is_currently_member():
-                return redirect('/lend/failed_lending/{}/{}/1'.format(work_id, member_id))
-            if member.has_late_items():
-                return redirect('/lend/failed_lending/{}/{}/3'.format(work_id, member_id))
-            if item.is_reserved() and not item.is_reserved_for(member):
-                return redirect('/lend/failed_lending/{}/{}/4'.format(work_id, member_id))
-            lending = Lending.create_lending(item, member, request.user.member)
-            return render(request, 'lending_finalized.html',
-                          {'member': member, 'item': item, "date": lending.end_date})
-        return render(request, 'lending_finalize.html',
-                      {'member': member, 'item': item, "date": Lending.calc_end_date(member, item)})
-    return redirect('/lend/failed_lending/{}/{}/2'.format(work_id, member_id))
 
 
 @transaction.atomic

@@ -45,8 +45,7 @@ class Lending(models.Model):
 
     def is_at_extend_limit(self):
         from config.models import LendingSettings
-        return self.times_extended < LendingSettings.get_extend_count(self.item.location.category.item_type,
-                                                                      self.member)
+        return self.times_extended < LendingSettings.get_for(self.item,self.member).extend_count
 
     def is_late(self, now=None):
         if now is None:
@@ -59,13 +58,16 @@ class Lending(models.Model):
         return self.end_date - timedelta(days=4) < now
 
     def calculate_fine(self):
-        from config.models import LendingSettings
-        return format(LendingSettings.get_fine(self.item, self.member, self.end_date) / 100, '.2f')
+        from lendings.procedures.get_total_fine import get_total_fine_for_lending
+        return format(get_total_fine_for_lending(self, datetime.date(datetime.now())) / 100, '.2f')
 
     def extend(self, member: Member, now=None):
         if now is None:
             now = datetime.date(datetime.now())
-        self.end_date = Lending.calc_end_date(self.member, self.item, now)
+
+        from lendings.procedures.get_end_date import get_end_date
+
+        self.end_date = get_end_date(self.item, self.member, now)
         self.last_extended = now
         self.times_extended = self.times_extended + 1
         self.save()
@@ -87,7 +89,9 @@ class Lending(models.Model):
         if now is None:
             now = datetime.date(datetime.now())
         new_lending = Lending()
-        new_lending.end_date = Lending.calc_end_date(member, item, now)
+
+        from lendings.procedures.get_end_date import get_end_date
+        new_lending.end_date = get_end_date(item, member, now)
         new_lending.member = member
         new_lending.item = item
         new_lending.lended_on = datetime.now()
@@ -97,13 +101,6 @@ class Lending(models.Model):
         new_lending.save()
         item.is_seen("Book was lent out.")
         return new_lending
-
-    @staticmethod
-    def calc_end_date(member, item, now=None):
-        if now is None:
-            now = datetime.date(datetime.now())
-        from config.models import LendingSettings
-        return LendingSettings.get_end_date(item, member, now)
 
     @staticmethod
     def late_mails(fake=False):
@@ -144,23 +141,3 @@ class Lending(models.Model):
 
                     lending.save()
         return almost_late_dict, late_dict, should_mail
-
-
-class Reservation(models.Model):
-    member = models.ForeignKey(Member, on_delete=PROTECT)
-    item = models.ForeignKey("works.Item", on_delete=PROTECT)
-    reserved_on = models.DateField()
-    reserved_by = models.ForeignKey(Member, on_delete=PROTECT, related_name="reservation_action_by")
-    reservation_end_date = models.DateField(null=True, blank=True)
-
-    @staticmethod
-    def create_reservation(item, member: Member, edited_member: Member):
-        if member.is_anonymous_user:
-            raise ValueError("Member is an anonymous user")
-        new_reservation = Reservation()
-        new_reservation.member = member
-        new_reservation.item = item
-        new_reservation.reserved_on = datetime.now()
-        new_reservation.reserved_by = edited_member
-        new_reservation.save()
-        return new_reservation

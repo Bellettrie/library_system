@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'members',
     'series',
     'lendings',
+    'reservations',
     'news',
     'config',
     'inventarisation',
