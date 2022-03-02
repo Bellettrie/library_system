@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
       ('works', '0001_initial'),  
-]
+    ]
 
     operations = [
         migrations.AlterField(
