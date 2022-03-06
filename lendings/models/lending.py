@@ -4,9 +4,7 @@ from django.db import models
 
 # Create your models here.
 from django.db.models import PROTECT
-from django.utils import timezone
 
-from mail.models import mail_member
 from members.models import Member
 from datetime import date
 
@@ -60,24 +58,3 @@ class Lending(models.Model):
     def calculate_fine(self):
         from lendings.procedures.get_total_fine import get_total_fine_for_lending
         return format(get_total_fine_for_lending(self, datetime.date(datetime.now())) / 100, '.2f')
-
-    def extend(self, member: Member, now=None):
-        if now is None:
-            now = datetime.date(datetime.now())
-
-        from lendings.procedures.get_end_date import get_end_date
-
-        self.end_date = get_end_date(self.item, self.member, now)
-        self.last_extended = now
-        self.times_extended = self.times_extended + 1
-        self.save()
-
-    def register_returned(self, member: Member, now=None):
-        if now is None:
-            now = datetime.date(datetime.now())
-        self.handed_in = True
-        self.handed_in_on = now
-        self.handed_in_by = member
-        self.save()
-        self.item.is_seen("Book was returned")
-

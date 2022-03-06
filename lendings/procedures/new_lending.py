@@ -1,10 +1,8 @@
 from datetime import datetime
 
-from config.models import LendingSettings
 from lendings.lendingException import LendingImpossibleException
 from lendings.models import Lending
 from lendings.procedures.get_end_date import get_end_date
-from lendings.procedures.get_fine_days import get_fine_days_for, get_fine_days
 from members.models import Member
 from works.models import Item
 
@@ -12,8 +10,6 @@ from works.models import Item
 def create_lending(item: Item, member: Member, user_member: Member, current_date: datetime.date):
     if member.is_anonymous_user:
         raise LendingImpossibleException("Member {} is an anonymous user".format(member))
-    from works.models import Item
-
     new_lending = Lending()
 
     from lendings.procedures.get_end_date import get_end_date

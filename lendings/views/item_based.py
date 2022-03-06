@@ -1,19 +1,8 @@
+from django.contrib.auth.decorators import permission_required
+from django.shortcuts import render, get_object_or_404
 
-from datetime import datetime, timedelta
-
-from django.contrib.auth.decorators import permission_required, login_required
-from django.core.exceptions import PermissionDenied
-from django.db import transaction
-from django.shortcuts import render, redirect, get_object_or_404
-
-# Create your views here.
-from lendings.models.lending import Lending
 from lendings.path_names import LENDING_FINALIZE
-from members.models import Member
-
 from works.models import Item
-from works.views import get_works
-
 
 @permission_required('lendings.add_lending')
 def item_based(request, work_id):

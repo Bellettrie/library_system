@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from config.models import LendingSettings
-from lendings.procedures.get_fine_days import get_fine_days_for, get_fine_days
+from lendings.procedures.get_fine_days import get_fine_days
 
 
 def get_total_fine_for_lending(lending, current_date: datetime.date):

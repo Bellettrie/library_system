@@ -1,4 +1,4 @@
-from datetime import timezone, timedelta, datetime
+from datetime import timedelta, datetime
 
 from lendings.models import Lending
 from mail.models import mail_member

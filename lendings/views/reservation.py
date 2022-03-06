@@ -1,5 +1,4 @@
-
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.exceptions import PermissionDenied

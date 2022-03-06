@@ -8,7 +8,7 @@ from works.models import Item
 
 def get_end_date(item: Item, member: Member, start_date: datetime.date):
     lending_settings = LendingSettings.get_for(item, member)
-    result_date =  start_date + timedelta(days=lending_settings.term)
+    result_date = start_date + timedelta(days=lending_settings.term)
     result_date = Holiday.get_handin_day_after_or_on(result_date)
     return min(result_date, member.end_date)
 

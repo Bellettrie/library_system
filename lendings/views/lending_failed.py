@@ -1,18 +1,8 @@
-
-from datetime import datetime, timedelta
-
-from django.contrib.auth.decorators import permission_required, login_required
-from django.core.exceptions import PermissionDenied
-from django.db import transaction
-from django.shortcuts import render, redirect, get_object_or_404
-
-# Create your views here.
-from lendings.models.lending import Lending
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
 from members.models import Member
 
 from works.models import Item
-from works.views import get_works
-
 
 lending_failed_reasons = {
     0: "Member has too many books",
