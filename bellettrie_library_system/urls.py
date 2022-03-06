@@ -31,6 +31,8 @@ urlpatterns = [
     path('members/', include('members.urls')),
     path('works/', include('works.urls')),
     path('lend/', include('lendings.urls')),
+    path('reservations/', include('reservations.urls')),
+
     path('config/', include('config.urls')),
     path('inventarisation/', include('inventarisation.urls')),
     path('accounts/', include('django.contrib.auth.urls')),

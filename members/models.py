@@ -114,7 +114,7 @@ class Member(MemberData):
             return period.membership_type
 
     def has_reservations(self):
-        from lendings.models import Reservation
+        from reservations.models import Reservation
 
         return len(Reservation.objects.filter(member=self)) > 0
 
@@ -128,14 +128,15 @@ class Member(MemberData):
     def is_currently_member(self, current_date=None):
         return self.get_current_membership_period(current_date) is not None
 
-    def can_lend_item_type(self, item_type, current_date=None):
-        from lendings.models import Lending, Reservation
+    def can_lend_item(self, item, current_date=None):
+        from lendings.models import Lending
+        from reservations.models import Reservation
         from works.models import ItemType, Category
 
-        lendings = Lending.objects.filter(member=self, item__location__category__item_type=item_type, handed_in=False)
+        lendings = Lending.objects.filter(member=self, item__location__category__item_type=item.location.category.item_type, handed_in=False)
         reservations = Reservation.objects.filter(member=self, reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(member=self, reservation_end_date__isnull=True)
         from config.models import LendingSettings
-        return (len(lendings) + len(reservations)) < LendingSettings.get_max_count(item_type, self)
+        return (len(lendings) + len(reservations)) < LendingSettings.get_for(item, self).extend_count
 
     def has_late_items(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())

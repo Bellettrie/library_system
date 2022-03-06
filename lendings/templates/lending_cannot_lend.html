@@ -2,6 +2,7 @@
 {% block title %}Lending failed!{% endblock %}
 
 {% block content %}
+
     {% if member %}
         {% if item %}
             Member {{ member.name }} cannot lend {{ item.publication.name }} right now.
@@ -9,11 +10,15 @@
             Member {{ member.name }} cannot lend right now.
         {% endif %}
     {% else %}
-    {% if item %}
-        Item {{item.publication.name }} cannot be lent out<hr>
-    {% else %}
-        Something went wrong while lending.
+        {% if item %}
+            Item {{ item.publication.name }} cannot be lentout
+            <hr>
+        {% else %}
+            Something went wrong while lending.
+        {% endif %}
+
     {% endif %}
-    {% endif %}
-    {{ reason }}
+    <br>
+    {{ error }}
+
 {% endblock %}

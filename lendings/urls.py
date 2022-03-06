@@ -9,7 +9,7 @@ from .views.finalize import finalize
 from .views.item_based import item_based
 from .views.lending_failed import lending_failed
 from .views.member_based import member_based
-from .views.reservation import return_book, me, reserve_list, reserve_item, reserve_member, reserve_finalize, reserve_failed, finalize_reservation_based, delete_reservation
+from .views.reservation import return_book, me
 
 urlpatterns = [
     path('', index, name=LENDING_LIST),

@@ -353,6 +353,8 @@ class ItemState(models.Model):
     reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
 
+    def __str__(self):
+        return self.type
 
 class SubWork(Work, TranslatedThing):
     def is_orphaned(self):
