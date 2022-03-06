@@ -356,6 +356,7 @@ class ItemState(models.Model):
     def __str__(self):
         return self.type
 
+
 class SubWork(Work, TranslatedThing):
     def is_orphaned(self):
         return len(self.workinpublication_set) == 0

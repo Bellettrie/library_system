@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from lendings.path_names import LENDING_FINALIZE
 from works.models import Item
 
+
 @permission_required('lendings.add_lending')
 def item_based(request, work_id):
     from members.views import query_members

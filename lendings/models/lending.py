@@ -43,7 +43,7 @@ class Lending(models.Model):
 
     def is_at_extend_limit(self):
         from config.models import LendingSettings
-        return self.times_extended < LendingSettings.get_for(self.item,self.member).extend_count
+        return self.times_extended < LendingSettings.get_for(self.item, self.member).extend_count
 
     def is_late(self, now=None):
         if now is None:

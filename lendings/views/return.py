@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from works.models import Item
-
+from lendings.procedures.register_returned import register_returned
 
 @transaction.atomic
 @permission_required('lendings.return')

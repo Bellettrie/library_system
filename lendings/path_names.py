@@ -9,4 +9,3 @@ LENDING_GET_FINE = 'lendings.getfine'
 LENDING_EXTEND = 'lendings.extend'
 LENDING_MY_LENDINGS = 'lendings.me'
 LENDING_FAILED = 'lendings.failed'
-
