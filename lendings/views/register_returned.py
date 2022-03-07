@@ -8,15 +8,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from works.models import Item
 from lendings.procedures.register_returned import register_returned
 
+
 @transaction.atomic
 @permission_required('lendings.return')
-def register_returned(request, work_id):
+def return_item(request, work_id):
     item = get_object_or_404(Item, pk=work_id)
     lending = item.current_lending()
     late_days = datetime.now().date() - lending.end_date
     if request.method == 'POST':
         register_returned(lending, request.user.member)
-        return redirect('/members/' + str(lending.member.pk))  # TODO intermediate page
+        return redirect('/members/' + str(lending.member.pk))
     return render(request, 'return_book.html', {'item': item, 'lending': lending,
                                                 'late': lending.end_date < datetime.now().date(),
                                                 'days_late': late_days.days,
