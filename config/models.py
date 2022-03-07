@@ -53,6 +53,19 @@ class Holiday(models.Model):
                 handin_date += timedelta(days=1)
         return handin_date
 
+    @staticmethod
+    def get_handin_day_before_or_on(handin_date: datetime.date):
+        should_continue = True
+        holidays = list(Holiday.objects.all())
+
+        while should_continue:
+            should_continue = False
+            for holiday in holidays:
+                if holiday.starting_date <= handin_date <= holiday.ending_date:
+                    should_continue = True
+            if should_continue:
+                handin_date -= timedelta(days=1)
+        return handin_date
 
 class LendingSettings(models.Model):
     item_type = models.ForeignKey("works.ItemType", on_delete=PROTECT)

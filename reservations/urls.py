@@ -1,9 +1,14 @@
 from django.urls import path
 
-from reservations.path_names import RESERVE_LIST, RESERVE_ITEM, RESERVE_MEMBER, RESERVE_FINALIZE, RESERVE_FAILED, RESERVE_LEND, RESERVE_DELETE
+from .path_names import RESERVE_LIST, RESERVE_ITEM, RESERVE_MEMBER, RESERVE_FINALIZE, RESERVE_FAILED, RESERVE_LEND, RESERVE_DELETE
 
-
-from lendings.views.reservation import return_book, me, reserve_list, reserve_item, reserve_member, reserve_finalize, reserve_failed, finalize_reservation_based, delete_reservation
+from .views.delete_reservation import delete_reservation
+from .views.finalize_reservation_based import finalize_reservation_based
+from .views.reserve_failed import reserve_failed
+from .views.reserve_finalize import reserve_finalize
+from .views.reserve_member import reserve_member
+from .views.reserve_item import reserve_item
+from .views.reserve_list import reserve_list
 
 urlpatterns = [
     path('list', reserve_list, name=RESERVE_LIST),

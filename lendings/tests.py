@@ -5,6 +5,7 @@ from django.test import TestCase
 # Create your tests here.
 from config.tests import BasicTestCase
 from lendings.models import Lending
+from lendings.procedures.new_lending import create_lending
 from works.models import Item
 
 
@@ -13,7 +14,7 @@ class LendingPreLendingTestCase(BasicTestCase):
     def setUp(self):
         super().setUp()
         self.item2 = Item.objects.create(publication=self.publication, old_id=0, hidden=False, location=self.location)
-        self.lending = Lending.create_lending(self.item2, self.member, self.member, datetime.date(datetime.fromisoformat("2020-02-02")))
+        self.lending = create_lending(self.item2, self.member, self.member, datetime.date(datetime.fromisoformat("2020-02-02")))
 
     def test_item_available(self):
         self.assertTrue(self.item.is_available_for_lending())
