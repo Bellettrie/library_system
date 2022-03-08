@@ -52,7 +52,7 @@ class NamedTranslatableThing(NamedThing, TranslatedThing):
 
 class ItemType(models.Model):
     name = models.CharField(max_length=255)
-    old_id = models.IntegerField()
+    old_id = models.IntegerField(null=True)
 
     def __str__(self):
         return self.name

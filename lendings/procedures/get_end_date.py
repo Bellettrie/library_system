@@ -11,7 +11,9 @@ def get_end_date(item: Item, member: Member, start_date: datetime.date):
     result_date = start_date + timedelta(days=lending_settings.term)
     result_date = Holiday.get_handin_day_after_or_on(result_date)
 
-    return Holiday.get_handin_day_before_or_on(min(result_date, member.end_date))
+    result_date = min(result_date, member.end_date)
+
+    return Holiday.get_handin_day_before_or_on(result_date)
 
 
 def get_end_date_for_lending(lending: Lending, start_date: datetime.date):
