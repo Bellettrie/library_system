@@ -5,6 +5,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
 from lendings.procedures.get_end_date import get_end_date
+from mail.models import mail_member
 from members.models import Member
 from reservations.models import Reservation
 from works.models import Item
@@ -32,6 +33,8 @@ def reserve_finalize(request, work_id, member_id):
         Reservation.create_reservation(item, member, request.user.member)
         return render(request, 'reserve_finalized.html',
                       {'member': member, 'item': item})
-
+    if item.is_lent_out():
+        mail_member('mails/book_just_got_reserved.tpl',
+                    {'member': item.current_lending().member, 'item': item}, item.current_lending().member, True)
     return render(request, 'reserve_finalize.html',
                   {'member': member, 'item': item, "date": get_end_date(item, member, datetime.now().date())})

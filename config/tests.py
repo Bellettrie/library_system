@@ -103,7 +103,7 @@ class LendingSettingsTestCase(TestCase):
 
     def test_lending_settings_get_for_inactive(self):
         self.assertEqual(LendingSettings.get_for_type(self.book, False), self.b)
-        self.assertEqual(LendingSettings.get_for_type(self.item, False), self.c)
+        self.assertEqual(LendingSettings.get_for_type(self.comic, False), self.c)
 
     def test_lending_settings_get_for_active_with_active(self):
         self.assertEqual(LendingSettings.get_for_type(self.book, True), self.a)
