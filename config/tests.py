@@ -76,30 +76,30 @@ class LendingSettingsTestCase(TestCase):
         self.book = ItemType.objects.create(name="Book")
         self.comic = ItemType.objects.create(name="Comic")
 
-        self.a =LendingSettings.objects.create(item_type=self.book,
-                                                   member_is_active=True,
-                                                   fine_amount=0,
-                                                   max_fine=0,
-                                                   max_count=0,
-                                                   borrow_money=0,
-                                                   extend_count=0,
-                                                   term=0)
+        self.a = LendingSettings.objects.create(item_type=self.book,
+                                                member_is_active=True,
+                                                fine_amount=0,
+                                                max_fine=0,
+                                                max_count=0,
+                                                borrow_money=0,
+                                                extend_count=0,
+                                                term=0)
         self.b = LendingSettings.objects.create(item_type=self.book,
-                                                   member_is_active=False,
-                                                   fine_amount=0,
-                                                   max_fine=0,
-                                                   max_count=0,
-                                                   borrow_money=0,
-                                                   extend_count=0,
-                                                   term=0)
+                                                member_is_active=False,
+                                                fine_amount=0,
+                                                max_fine=0,
+                                                max_count=0,
+                                                borrow_money=0,
+                                                extend_count=0,
+                                                term=0)
         self.c = LendingSettings.objects.create(item_type=self.comic,
-                                                   member_is_active=False,
-                                                   fine_amount=0,
-                                                   max_fine=0,
-                                                   max_count=0,
-                                                   borrow_money=0,
-                                                   extend_count=0,
-                                                   term=0)
+                                                member_is_active=False,
+                                                fine_amount=0,
+                                                max_fine=0,
+                                                max_count=0,
+                                                borrow_money=0,
+                                                extend_count=0,
+                                                term=0)
 
     def test_lending_settings_get_for_inactive(self):
         self.assertEqual(LendingSettings.get_for_type(self.book, False), self.b)
