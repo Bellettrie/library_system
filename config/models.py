@@ -10,6 +10,7 @@ from django.urls import reverse
 
 from members.models import Member
 
+WEEKEND_DAYS= [5,6]
 
 class Holiday(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
@@ -21,7 +22,9 @@ class Holiday(models.Model):
         return reverse('holiday.view', kwargs={'pk': self.pk})
 
     def save(self, *args, **kwargs):
+        from lendings.procedures.get_end_date import get_end_date_for_lending
         from lendings.models import Lending
+
         super().save(*args, **kwargs)
         lendings = Lending.objects.filter(end_date__gt=self.starting_date, handed_in=False)
 
@@ -31,7 +34,6 @@ class Holiday(models.Model):
                 continue
 
             # Import here to prevent circular import
-            from lendings.procedures.get_end_date import get_end_date_for_lending
             new_end = get_end_date_for_lending(lending, lending.start_date)
 
             if lending.end_date < new_end:
@@ -47,7 +49,7 @@ class Holiday(models.Model):
         while should_continue:
             should_continue = False
             for holiday in holidays:
-                if holiday.starting_date <= handin_date <= holiday.ending_date:
+                if holiday.starting_date <= handin_date <= holiday.ending_date or handin_date.weekday()  in WEEKEND_DAYS:
                     should_continue = True
             if should_continue:
                 handin_date += timedelta(days=1)
@@ -61,7 +63,7 @@ class Holiday(models.Model):
         while should_continue:
             should_continue = False
             for holiday in holidays:
-                if holiday.starting_date <= handin_date <= holiday.ending_date:
+                if holiday.starting_date <= handin_date <= holiday.ending_date or handin_date.weekday()  in WEEKEND_DAYS:
                     should_continue = True
             if should_continue:
                 handin_date -= timedelta(days=1)
@@ -80,14 +82,15 @@ class LendingSettings(models.Model):
 
     extend_count = models.IntegerField()
 
+    def __str__(self):
+        return "{}: {}".format(self.item_type.name, "active" if self.member_is_active else "inactive")
+
     @staticmethod
     def get_for(item, member: Member):
         if member.is_active():
             try:
-                print("B")
                 return LendingSettings.objects.get(item_type=item.location.category.item_type, member_is_active=True)
             except LendingSettings.DoesNotExist:
-                print("HERE")
                 pass
             print("No special case for active member for item type {}".format(item.location.category.item_type))
 
