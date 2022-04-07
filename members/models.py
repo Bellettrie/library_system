@@ -5,6 +5,7 @@ from django.db.models import CASCADE, PROTECT, Q
 
 from members.management.commands.namegen import generate_full_name
 from backports.datetime_fromisoformat import MonkeyPatch
+
 MonkeyPatch.patch_fromisoformat()
 
 PAST = datetime.date(datetime.fromisoformat('1900-01-01'))
@@ -41,7 +42,7 @@ class MemberBackground(models.Model):
 class MembershipType(models.Model):
     name = models.CharField(max_length=64)
     visual_name = models.CharField(max_length=64)
-    old_str = models.CharField(max_length=64,null=True, blank=True)
+    old_str = models.CharField(max_length=64, null=True, blank=True)
     needs_union_card = models.BooleanField(default=True)
     has_end_date = models.BooleanField(default=True)
 
@@ -121,7 +122,8 @@ class Member(MemberData):
     def get_current_membership_period(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
         for period in MembershipPeriod.objects.filter(member=self):
-            if (period.start_date is None or period.start_date <= current_date) and (period.end_date is None or current_date <= period.end_date):
+            if (period.start_date is None or period.start_date <= current_date) and (
+                    period.end_date is None or current_date <= period.end_date):
                 return period
         return None
 
@@ -133,8 +135,12 @@ class Member(MemberData):
         from reservations.models import Reservation
         from works.models import ItemType, Category
 
-        lendings = Lending.objects.filter(member=self, item__location__category__item_type=item.location.category.item_type, handed_in=False)
-        reservations = Reservation.objects.filter(member=self, reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(member=self, reservation_end_date__isnull=True)
+        lendings = Lending.objects.filter(member=self,
+                                          item__location__category__item_type=item.location.category.item_type,
+                                          handed_in=False)
+        reservations = Reservation.objects.filter(member=self,
+                                                  reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(
+            member=self, reservation_end_date__isnull=True)
         from config.models import LendingSettings
         return (len(lendings) + len(reservations)) < LendingSettings.get_for(item, self).max_count
 
@@ -166,7 +172,10 @@ class Member(MemberData):
 
         for msp in MembershipPeriod.objects.filter(member=self):
             for msp2 in MembershipPeriod.objects.filter(member=self):
-                if msp != msp2 and msp2 not in to_delete and msp not in to_delete and overlaps(msp.start_date, msp.end_date, msp2.start_date, msp2.end_date):
+                if msp != msp2 and msp2 not in to_delete and msp not in to_delete and overlaps(msp.start_date,
+                                                                                               msp.end_date,
+                                                                                               msp2.start_date,
+                                                                                               msp2.end_date):
                     if msp.member_background == msp2.member_background and msp.membership_type == msp2.membership_type:
                         msp.start_date = min(msp.start_date or FUTURE, msp2.start_date or FUTURE)
 
@@ -314,7 +323,8 @@ class Member(MemberData):
         if self.is_active():
             return "Member is still active"
         if self.user is not None and (self.user.last_login.date() - now).days < -400:
-            return "Logged in recently;  will be anonymised in " + str(400 - (self.user.last_login.date() - now).days) + " days."
+            return "Logged in recently;  will be anonymised in " + str(
+                400 - (self.user.last_login.date() - now).days) + " days."
         if (now - self.end_date).days < 800:
             return "Was recently a member; will be anonymised in " + str(800 - (now - self.end_date).days) + " days."
         from lendings.models import Lending

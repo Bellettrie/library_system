@@ -34,16 +34,19 @@ class LendingPreLendingTestCase(LendingSettingsBase, MemberSetup):
         except LendingImpossibleException as err:
             err_str = str(err)
         self.assertEqual(err_str, str_value)
+
     def test_no_membership_period(self):
         self.attempt_to_fail_lending("End date for this lending would be in the past, cannot lend.")
 
     def test_member_blacklisted(self):
-        MembershipPeriod.objects.create(member=self.member,start_date="2020-01-01", end_date="2020-06-06", membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
         self.member.is_blacklisted = True
         self.attempt_to_fail_lending("Member currently blacklisted, cannot lend")
 
     def test_too_many_lendings(self):
-        MembershipPeriod.objects.create(member=self.member,start_date="2020-01-01", end_date="2020-06-06", membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
         new_lending(self.item1, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         new_lending(self.item2, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         new_lending(self.item3, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
@@ -52,6 +55,7 @@ class LendingPreLendingTestCase(LendingSettingsBase, MemberSetup):
         self.attempt_to_fail_lending("Member currently has lent too many items in category Book")
 
     def test_membership_period(self):
-        MembershipPeriod.objects.create(member=self.member,start_date="2020-01-01", end_date="2020-06-06", membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
         lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         print(lending.end_date)
