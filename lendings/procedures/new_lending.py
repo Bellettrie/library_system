@@ -16,8 +16,8 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
     new_lending.end_date = get_end_date(item, member, current_date)
     new_lending.member = member
     new_lending.item = item
-    new_lending.lended_on = datetime.now()
-    new_lending.last_extended = datetime.now()
+    new_lending.lended_on = current_date
+    new_lending.last_extended = current_date
     new_lending.handed_in = False
     new_lending.lended_by = user_member
     new_lending.save()

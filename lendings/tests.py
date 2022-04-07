@@ -8,6 +8,7 @@ from lendings.procedures.get_fine_days import get_fine_days
 from lendings.procedures.new_lending import create_lending, new_lending
 from members.models import MembershipPeriod
 from members.tests import MemberSetup
+from reservations.models import Reservation
 from works.models import Location, Category
 from works.tests import item_create
 
@@ -53,6 +54,17 @@ class LendingPreLendingTestCase(LendingSettingsBase, MemberSetup):
         new_lending(self.item4, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         new_lending(self.item5, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         self.attempt_to_fail_lending("Member currently has lent too many items in category Book")
+
+    def test_create_lending_already_lent_out(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        create_lending(self.item, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
+        self.attempt_to_fail_lending("Item is lent out")
+
+    def test_already_reserved_someone_else(self):
+        Reservation.create_reservation(self.item, self.member2, self.member2, current_date=datetime(2020, 2, 12))
+        self.attempt_to_fail_lending("Item is reserved for another member")
+
 
     def test_membership_period(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",

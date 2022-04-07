@@ -19,13 +19,17 @@ class Reservation(models.Model):
     reservation_end_date = models.DateField(null=True, blank=True)
 
     @staticmethod
-    def create_reservation(item, member: Member, edited_member: Member):
+    def create_reservation(item, member: Member, edited_member: Member, current_date=None):
+        if current_date is None:
+            current_date = datetime.now()
+
         if member.is_anonymous_user:
             raise ValueError("Member is an anonymous user")
+
         new_reservation = Reservation()
         new_reservation.member = member
         new_reservation.item = item
-        new_reservation.reserved_on = datetime.now()
+        new_reservation.reserved_on = current_date
         new_reservation.reserved_by = edited_member
         new_reservation.save()
         return new_reservation
