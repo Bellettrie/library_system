@@ -71,6 +71,7 @@ class Holiday(models.Model):
                 handin_date += timedelta(days=1)
         return handin_date
 
+
 class LendingSettings(models.Model):
     item_type = models.ForeignKey("works.ItemType", on_delete=PROTECT)
     member_is_active = models.BooleanField(default=False)
