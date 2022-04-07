@@ -6,7 +6,7 @@ from django.test import TestCase
 from config.models import Holiday, LendingSettings
 from works.models import ItemType, Location, Category
 
-""" Start date: 28 february 2022 
+""" Start date: 28 february 2022
     mo | tu | we | th | fr | sa | su
     28 | 01 |[02 | 03 | 04]| 05 | 06
     07 | 08 | 08 | 10 | 11 | 12 | 13
