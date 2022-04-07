@@ -4,7 +4,7 @@ from django.test import TestCase
 
 # Create your tests here.
 from config.models import Holiday, LendingSettings
-from works.models import ItemType
+from works.models import ItemType, Location, Category
 
 """ Start date: 28 february 2022 
     mo | tu | we | th | fr | sa | su
@@ -71,35 +71,47 @@ class HolidayTestCase(TestCase):
         self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 25)), datetime.date(2022, 3, 28))
 
 
-class LendingSettingsTestCase(TestCase):
-    def setUp(self):
+class LendingSettingsBase(TestCase):
+    book = None
+    comic = None
+    a = None
+    b = None
+    c = None
+
+    def lending_settings_create(self):
+
         self.book = ItemType.objects.create(name="Book")
         self.comic = ItemType.objects.create(name="Comic")
 
-        self.a =LendingSettings.objects.create(item_type=self.book,
-                                                   member_is_active=True,
-                                                   fine_amount=0,
-                                                   max_fine=0,
-                                                   max_count=0,
-                                                   borrow_money=0,
-                                                   extend_count=0,
-                                                   term=0)
+        self.a = LendingSettings.objects.create(item_type=self.book,
+                                                member_is_active=True,
+                                                fine_amount=50,
+                                                max_fine=500,
+                                                max_count=5,
+                                                borrow_money=0,
+                                                extend_count=2,
+                                                term=21)
         self.b = LendingSettings.objects.create(item_type=self.book,
-                                                   member_is_active=False,
-                                                   fine_amount=0,
-                                                   max_fine=0,
-                                                   max_count=0,
-                                                   borrow_money=0,
-                                                   extend_count=0,
-                                                   term=0)
+                                                member_is_active=False,
+                                                fine_amount=50,
+                                                max_fine=500,
+                                                max_count=10,
+                                                borrow_money=0,
+                                                extend_count=2,
+                                                term=41)
         self.c = LendingSettings.objects.create(item_type=self.comic,
-                                                   member_is_active=False,
-                                                   fine_amount=0,
-                                                   max_fine=0,
-                                                   max_count=0,
-                                                   borrow_money=0,
-                                                   extend_count=0,
-                                                   term=0)
+                                                member_is_active=False,
+                                                fine_amount=70,
+                                                max_fine=700,
+                                                max_count=10,
+                                                borrow_money=20,
+                                                extend_count=0,
+                                                term=7)
+
+
+class LendingSettingsTestCase(LendingSettingsBase):
+    def setUp(self):
+        self.lending_settings_create()
 
     def test_lending_settings_get_for_inactive(self):
         self.assertEqual(LendingSettings.get_for_type(self.book, False), self.b)

@@ -32,7 +32,7 @@ class Committee(models.Model):
 class MemberBackground(models.Model):
     name = models.CharField(max_length=64)
     visual_name = models.CharField(max_length=64)
-    old_str = models.CharField(max_length=64)
+    old_str = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self):
         return self.visual_name
@@ -41,7 +41,7 @@ class MemberBackground(models.Model):
 class MembershipType(models.Model):
     name = models.CharField(max_length=64)
     visual_name = models.CharField(max_length=64)
-    old_str = models.CharField(max_length=64)
+    old_str = models.CharField(max_length=64,null=True, blank=True)
     needs_union_card = models.BooleanField(default=True)
     has_end_date = models.BooleanField(default=True)
 
@@ -136,7 +136,7 @@ class Member(MemberData):
         lendings = Lending.objects.filter(member=self, item__location__category__item_type=item.location.category.item_type, handed_in=False)
         reservations = Reservation.objects.filter(member=self, reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(member=self, reservation_end_date__isnull=True)
         from config.models import LendingSettings
-        return (len(lendings) + len(reservations)) < LendingSettings.get_for(item, self).extend_count
+        return (len(lendings) + len(reservations)) < LendingSettings.get_for(item, self).max_count
 
     def has_late_items(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())

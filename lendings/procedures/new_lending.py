@@ -28,7 +28,7 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
 def lending_checks(item: Item, member: Member, current_date: datetime.date):
     if not member.can_lend_item(item):
         raise LendingImpossibleException("Member currently has lent too many items in category {}".format(item.location.category.item_type))
-    if member.has_late_items():
+    if member.has_late_items(current_date):
         raise LendingImpossibleException("Member currently has items that are late. These need to be returned before it can be handed in.")
     if member.is_blacklisted:
         raise LendingImpossibleException("Member currently blacklisted, cannot lend")
