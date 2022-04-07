@@ -100,13 +100,11 @@ class Member(MemberData):
 
     @property
     def end_date(self):
-        end_date = datetime.fromisoformat("1900-01-01").date()
-        for z in MembershipPeriod.objects.filter(member=self):
-            if z.end_date is None or end_date is None or z.end_date > end_date:
-                end_date = z.end_date
-
-            # return None
-        return end_date
+        period= self.get_current_membership_period()
+        if period is not None:
+            if not period.end_date:
+                return datetime.date(datetime(9999,1,1))
+            return period.end_date
 
     @property
     def membership_type(self):
@@ -119,7 +117,7 @@ class Member(MemberData):
 
         return len(Reservation.objects.filter(member=self)) > 0
 
-    def get_current_membership_period(self, current_date=None):
+    def get_current_membership_period(self, current_date:datetime.date=None):
         current_date = current_date or datetime.date(datetime.now())
         for period in MembershipPeriod.objects.filter(member=self):
             if (period.start_date is None or period.start_date <= current_date) and (
