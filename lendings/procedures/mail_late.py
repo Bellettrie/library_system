@@ -5,6 +5,14 @@ from mail.models import mail_member
 
 
 def late_mails(fake=False):
+    """
+    Send e-mails for items that are (almost) late
+    :param fake: If true, don't send e-mails; only compute which e-mails should have been sent.
+    :return: Three results:
+     1. Dictionary, mapping members to which items they have that are nearly late
+     2. Dictionary, mapping members to which items they have that are late
+     3. Set, members that need to get an e-mail.
+    """
     lendings = Lending.objects.filter(handed_in=False)
     late_dict = dict()
     almost_late_dict = dict()
@@ -24,7 +32,6 @@ def late_mails(fake=False):
             almost_late_dict[lending.member] = my_list
 
     for member in should_mail:
-
         if not fake:
             late_list = late_dict.get(member, [])
             almost_late_list = almost_late_dict.get(member, [])
@@ -39,6 +46,5 @@ def late_mails(fake=False):
                 lending.save()
             for lending in almost_late_list:
                 lending.last_mailed = datetime.now()
-
                 lending.save()
     return almost_late_dict, late_dict, should_mail

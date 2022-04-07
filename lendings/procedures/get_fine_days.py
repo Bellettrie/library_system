@@ -1,9 +1,13 @@
 from datetime import datetime
 
-
-def get_fine_days_for(item, member, end_date: datetime.date, current_date: datetime.date):
-    return max(0, (current_date - end_date).days)  # TODO: omit holiday days
+from lendings.models import Lending
 
 
-def get_fine_days(lending, current_date: datetime.date):
-    return get_fine_days_for(lending.item, lending.member, lending.end_date, current_date)
+def get_fine_days(lending: Lending, current_date: datetime.date):
+    """
+    Calculate the number of days the person is late.
+    :param lending: what lending to calculate the number of fine days for
+    :param current_date: what is the current date?
+    :return: The number of days the lending is late. 0 if the lending is not late.
+    """
+    return max(0, (current_date - lending.end_date).days)  # TODO: omit holiday days
