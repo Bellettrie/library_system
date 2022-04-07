@@ -79,7 +79,6 @@ class LendingSettingsBase(TestCase):
     c = None
 
     def lending_settings_create(self):
-
         self.book = ItemType.objects.create(name="Book")
         self.comic = ItemType.objects.create(name="Comic")
 
