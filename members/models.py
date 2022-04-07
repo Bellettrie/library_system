@@ -100,10 +100,10 @@ class Member(MemberData):
 
     @property
     def end_date(self):
-        period= self.get_current_membership_period()
+        period = self.get_current_membership_period()
         if period is not None:
             if not period.end_date:
-                return datetime.date(datetime(9999,1,1))
+                return datetime.date(datetime(9999, 1, 1))
             return period.end_date
 
     @property
@@ -117,7 +117,7 @@ class Member(MemberData):
 
         return len(Reservation.objects.filter(member=self)) > 0
 
-    def get_current_membership_period(self, current_date:datetime.date=None):
+    def get_current_membership_period(self, current_date: datetime.date = None):
         current_date = current_date or datetime.date(datetime.now())
         for period in MembershipPeriod.objects.filter(member=self):
             if (period.start_date is None or period.start_date <= current_date) and (

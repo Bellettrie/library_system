@@ -1,4 +1,3 @@
-
 from datetime import datetime
 
 from django.core.exceptions import PermissionDenied

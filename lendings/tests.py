@@ -3,8 +3,6 @@ from django.test import TestCase
 
 from config.tests import LendingSettingsBase
 from lendings.lendingException import LendingImpossibleException
-from lendings.models import Lending
-from lendings.procedures.get_fine_days import get_fine_days
 from lendings.procedures.new_lending import create_lending, new_lending
 from members.models import MembershipPeriod, MemberBackground
 from members.tests import MemberSetup
@@ -76,25 +74,27 @@ class LendingFailureCases(LendingBase):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-02-01", end_date="2020-02-20",
                                         membership_type=self.membership_type, member_background=self.member_background)
         MembershipPeriod.objects.create(member=self.member, start_date="2020-02-15", end_date="2020-06-20",
-                                        membership_type=self.membership_type, member_background=MemberBackground.objects.create(name="T", visual_name="2"))
+                                        membership_type=self.membership_type,
+                                        member_background=MemberBackground.objects.create(name="T", visual_name="2"))
         lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
-        self.assertEqual((lending.end_date-datetime.date(datetime(2020, 2, 12))).days, 21)
+        self.assertEqual((lending.end_date - datetime.date(datetime(2020, 2, 12))).days, 21)
+
 
 class LendingPeriod(LendingBase):
     def test_membership_period(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
         lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
-        self.assertEqual((lending.end_date-datetime.date(datetime(2020, 2, 12))).days, 21)
+        self.assertEqual((lending.end_date - datetime.date(datetime(2020, 2, 12))).days, 21)
 
     def test_membership_period_too_short(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-02-20",
                                         membership_type=self.membership_type, member_background=self.member_background)
         lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
-        self.assertEqual((lending.end_date-datetime.date(datetime(2020, 2, 12))).days, 8)
+        self.assertEqual((lending.end_date - datetime.date(datetime(2020, 2, 12))).days, 8)
 
     def test_honorary_member(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date=None,
                                         membership_type=self.membership_type, member_background=self.member_background)
         lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
-        self.assertEqual((lending.end_date-datetime.date(datetime(2020, 2, 12))).days, 21)
+        self.assertEqual((lending.end_date - datetime.date(datetime(2020, 2, 12))).days, 21)
