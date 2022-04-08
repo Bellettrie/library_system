@@ -23,12 +23,14 @@ def extend(request, work_id):
         if not hasattr(request.user, 'member'):
             # The user who tries to extend is not linked to a member
             return render(request, 'lending_cannot_extend.html',
-                          {'member': lending.member, 'item': lending.item, 'error': "Please contact the web committee, something is spectacularly wrong"})
+                          {'member': lending.member, 'item': lending.item,
+                           'error': "Please contact the web committee, something is spectacularly wrong"})
         member = request.user.member
         if not (member and member == request.user.member):
             # A user without the extend any permission tries to extend someone elses book
             return render(request, 'lending_cannot_extend.html',
-                          {'member': lending.member, 'item': lending.item, 'error': "You lack the permissions to extend an item that you did borrow for yourself."})
+                          {'member': lending.member, 'item': lending.item,
+                           'error': "You lack the permissions to extend an item that you did borrow for yourself."})
     late_days = datetime.now().date() - lending.end_date
 
     # Post checks

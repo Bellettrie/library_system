@@ -28,7 +28,7 @@ def get_end_date(item: Item, member: Member, start_date: datetime.date):
         elif membership_period.end_date is not None:
             end_date = membership_period.end_date
         else:
-            end_date = datetime.date(datetime(9999, 12, 31)) # "Ragnarok"
+            end_date = datetime.date(datetime(9999, 12, 31))  # "Ragnarok"
             break
         if end_date > result_date:
             break
