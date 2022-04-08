@@ -156,5 +156,4 @@ class CalculateFine(LendingBase):
         MembershipPeriod.objects.create(member=self.member, start_date="2023-01-01", end_date="2023-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
         lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2023, 2, 12)))
-        self.assertEqual(get_total_fine_for_lending(lending, lending.end_date+timedelta(days=1)), 50)
-
+        self.assertEqual(get_total_fine_for_lending(lending, lending.end_date + timedelta(days=1)), 50)
