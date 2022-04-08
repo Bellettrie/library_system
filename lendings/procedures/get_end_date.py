@@ -28,7 +28,7 @@ def get_end_date(item: Item, member: Member, start_date: datetime.date):
         elif membership_period.end_date is not None:
             end_date = membership_period.end_date
         else:
-            end_date = datetime.date(datetime(9999, 1, 1))
+            end_date = datetime.date(datetime(9999, 12, 31)) # "Ragnarok"
             break
         if end_date > result_date:
             break
@@ -45,7 +45,7 @@ def get_end_date_for_lending(lending: Lending, start_date: datetime.date):
         Used for:
         1. re-calculate end-days when a holiday is added
         2. extending books
-        :param lending: the Lending for which to calculate a new end date
+        :param lending: the Lending for which to calculate a new end dateend_date
         :param start_date: The expected start date for the lending
         :return: datetime.date: end-date as calculated
     """

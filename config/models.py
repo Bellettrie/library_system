@@ -80,9 +80,9 @@ class LendingSettings(models.Model):
     borrow_money = models.IntegerField()  # in cents
     fine_amount = models.IntegerField()  # in cents, per week
     max_fine = models.IntegerField()  # in cents
-    max_count = models.IntegerField()  # how often can you extend the book?
+    max_count = models.IntegerField()  # how many of this type are you allowed to lend
 
-    extend_count = models.IntegerField()
+    extend_count = models.IntegerField() # how often can you extend the book?
 
     def __str__(self):
         return "{}: {}".format(self.item_type.name, "active" if self.member_is_active else "inactive")

@@ -128,7 +128,7 @@ class Member(MemberData):
     def is_currently_member(self, current_date=None):
         return self.get_current_membership_period(current_date) is not None
 
-    def can_lend_item(self, item, current_date=None):
+    def can_lend_more_of_item(self, item, current_date=None):
         from lendings.models import Lending
         from reservations.models import Reservation
         from works.models import ItemType, Category

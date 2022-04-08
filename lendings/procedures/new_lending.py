@@ -19,8 +19,8 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
     """
     if member.is_anonymous_user:
         raise LendingImpossibleException("Member {} is an anonymous user".format(member))
-    new_lending = Lending()
 
+    new_lending = Lending()
     from lendings.procedures.get_end_date import get_end_date
     new_lending.end_date = get_end_date(item, member, current_date)
     new_lending.member = member
@@ -43,7 +43,7 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date):
     :return: None
     :except LendingImpossibleException: If the lending-checks fail.
     """
-    if not member.can_lend_item(item):
+    if not member.can_lend_more_of_item(item):
         raise LendingImpossibleException(
             "Member currently has lent too many items in category {}".format(item.location.category.item_type))
     if member.has_late_items(current_date):

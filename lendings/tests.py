@@ -100,6 +100,7 @@ class LendingSuccess(LendingBase):
         lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         self.assertEqual((lending.end_date - datetime.date(datetime(2020, 2, 12))).days, 21)
 
+
 class LendingExtend(LendingBase):
     def setUp(self):
         super(LendingExtend, self).setUp()
@@ -109,7 +110,7 @@ class LendingExtend(LendingBase):
 
     def test_extend(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
-                                    membership_type=self.membership_type, member_background=self.member_background)
+                                        membership_type=self.membership_type, member_background=self.member_background)
         extend_lending(self.lending, datetime.date(datetime(2020, 2, 14)))
         self.assertEqual((self.lending.end_date - datetime.date(datetime(2020, 2, 14))).days, 21)
 

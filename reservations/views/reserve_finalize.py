@@ -22,7 +22,7 @@ def reserve_finalize(request, work_id, member_id):
     member = get_object_or_404(Member, pk=member_id)
     item = get_object_or_404(Item, pk=work_id)
     if request.method == 'POST':
-        if not member.can_lend_item(item):
+        if not member.can_lend_more_of_item(item):
             return redirect('/lend/failed_reservation/{}/{}/0'.format(work_id, member_id))
         if not member.is_currently_member():
             return redirect('/lend/failed_reservation/{}/{}/1'.format(work_id, member_id))

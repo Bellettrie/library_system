@@ -11,9 +11,7 @@ def extend_lending(lending: Lending, now: datetime.date):
     :param lending: the lending to be extended
     :param now: what is the date on which the lending is extended?
     :return: None
-    //TODO: Apply same clean code practices from lend to extend
     """
-
     lending.end_date = get_end_date_for_lending(lending, now)
     lending.last_extended = now
     lending.times_extended = lending.times_extended + 1
@@ -29,7 +27,6 @@ def extend_checks(lending: Lending, now: datetime.date):
     :return: None
     :except LendingImpossibleException: If the lending-checks fail.
     """
-
     if lending.member.has_late_items(now):
         raise LendingImpossibleException(
             "Member currently has items that are late. These need to be returned before it can be handed in.")
@@ -43,6 +40,7 @@ def extend_checks(lending: Lending, now: datetime.date):
             "Item is not currently available for lending, the item is {}.".format(lending.item.get_state()))
     if lending.times_extended >= LendingSettings.get_for(lending.item, lending.member).extend_count:
         raise LendingImpossibleException("Item at max number of extensions")
+
 
 def new_extension(lending: Lending, current_date: datetime.date):
     """

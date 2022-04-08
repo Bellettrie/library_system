@@ -29,7 +29,6 @@ class Lending(models.Model):
     last_mailed = models.DateTimeField(default="1900-01-01")
 
     # This flag will be used to differentiate between having mailed for being almost too late, and having mailed for being late.
-    # Almost-too-late is not implemented yet.
     mailed_for_late = models.BooleanField(default=False)
 
     def is_simple_extendable(self, now=None):

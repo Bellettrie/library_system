@@ -32,7 +32,6 @@ urlpatterns = [
     path('works/', include('works.urls')),
     path('lend/', include('lendings.urls')),
     path('reservations/', include('reservations.urls')),
-
     path('config/', include('config.urls')),
     path('inventarisation/', include('inventarisation.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
@@ -41,9 +40,7 @@ urlpatterns = [
     path('pages/', include('public_pages.urls')),
     path('datamining/', include('datamining.urls')),
     path('', view_page('basic', 'home'), name='homepage'),
-    path('kickin', view_page('basic', 'kickin'), name='kick'),
-    path('kickin/', view_page('basic', 'kickin'), name='kick_alt'),
-    path('informatie/', redirect_view, name='homepage.old_link'),
+    path('kickin/', view_page('basic', 'kickin'), name='kick'),
     path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
     path('recode/', include('recode.urls')),
     path('book_code/', include('book_code_generation.urls')),
