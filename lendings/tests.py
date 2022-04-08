@@ -1,4 +1,4 @@
-from _datetime import datetime
+from _datetime import datetime, timedelta
 from django.test import TestCase
 
 from config.tests import LendingSettingsBase
@@ -124,3 +124,11 @@ class LendingExtend(LendingBase):
         except LendingImpossibleException as err:
             err_str = str(err)
         self.assertEqual(err_str, "Item at max number of extensions")
+
+    def test_extend_late(self):
+        err_str = ""
+        try:
+            new_extension(self.lending, self.lending.end_date + timedelta(days=1))
+        except LendingImpossibleException as err:
+            err_str = str(err)
+        self.assertEqual(err_str, "Member currently has items that are late. These need to be returned before it can be handed in.")
