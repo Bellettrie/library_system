@@ -1,11 +1,13 @@
+import sys
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.db.models import CASCADE, PROTECT, Q
 
 from members.management.commands.namegen import generate_full_name
-from backports.datetime_fromisoformat import MonkeyPatch
-MonkeyPatch.patch_fromisoformat()
+if sys.version_info.minor < 8:
+    from backports.datetime_fromisoformat import MonkeyPatch
+    MonkeyPatch.patch_fromisoformat()
 
 PAST = datetime.date(datetime.fromisoformat('1900-01-01'))
 FUTURE = datetime.date(datetime.fromisoformat('2100-01-01'))
