@@ -43,7 +43,7 @@ class Holiday(models.Model):
 
     # This function finds the first available day before given day, that is not in a holiday or weekend.
     @staticmethod
-    def get_handin_day_before_or_on(handin_date: datetime.date):
+    def get_handin_day_before_or_on(handin_date: datetime.date) -> datetime.date:
         should_continue = True
         holidays = list(Holiday.objects.all())
 
@@ -58,7 +58,7 @@ class Holiday(models.Model):
 
     # This function finds the first available day after given day, that is not in a holiday or weekend.
     @staticmethod
-    def get_handin_day_after_or_on(handin_date: datetime.date):
+    def get_handin_day_after_or_on(handin_date: datetime.date) -> datetime.date:
         should_continue = True
         holidays = list(Holiday.objects.all())
 
@@ -70,6 +70,28 @@ class Holiday(models.Model):
             if should_continue:
                 handin_date += timedelta(days=1)
         return handin_date
+
+    @staticmethod
+    def get_number_of_fine_days_between(from_date: datetime.date, to_date: datetime.date) -> int:
+        """
+        Get days between from and to; zero if from > to (and thus, if the current date is before the handin date)
+        :param from_date: start date of period to count
+        :param to_date: end date of period to count
+        :return: number of non-skipped days from to to
+        """
+        runner_date = from_date
+        counter = 0
+        holidays = Holiday.objects.filter(starting_date__lte=to_date, ending_date__gte=from_date, skipped_for_fine=True)
+        while runner_date < to_date:
+            skip = False
+            for holiday in holidays:
+                if holiday.starting_date <= runner_date <= holiday.ending_date:
+                    skip = True
+
+            runner_date += timedelta(days=1)
+            if not skip:
+                counter += 1
+        return counter
 
 
 class LendingSettings(models.Model):

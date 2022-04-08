@@ -1,5 +1,6 @@
-from datetime import datetime
+from _datetime import datetime
 
+from config.models import Holiday
 from lendings.models import Lending
 
 
@@ -10,4 +11,4 @@ def get_fine_days(lending: Lending, current_date: datetime.date):
     :param current_date: what is the current date?
     :return: The number of days the lending is late. 0 if the lending is not late.
     """
-    return max(0, (current_date - lending.end_date).days)  # TODO: omit holiday days
+    return Holiday.get_number_of_fine_days_between(lending.end_date, current_date)

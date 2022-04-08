@@ -120,3 +120,26 @@ class LendingSettingsTestCase(LendingSettingsBase):
 
     def test_lending_settings_get_for_active_without_active(self):
         self.assertEqual(LendingSettings.get_for_type(self.comic, True), self.c)
+
+
+class FineDaysTestCase(TestCase):
+    def setUp(self):
+        Holiday.objects.create(name="1", starting_date=datetime.date(2022, 3, 2),
+                               ending_date=datetime.date(2022, 3, 4), skipped_for_fine=True)
+        Holiday.objects.create(name="1", starting_date=datetime.date(2021, 4, 2),
+                               ending_date=datetime.date(2021, 4, 4), skipped_for_fine=False)
+
+    def test_simple(self):
+        frm = datetime.date(2021, 12, 12)
+        too = datetime.date(2021, 12, 17)
+        self.assertEqual(Holiday.get_number_of_fine_days_between(frm, too), 5)
+
+    def test_simple_holiday_un_skipped(self):
+        frm = datetime.date(2021, 4, 1)
+        too = datetime.date(2021, 4, 6)
+        self.assertEqual(Holiday.get_number_of_fine_days_between(frm, too), 5)
+
+    def test_simple_holiday_skipped(self):
+        frm = datetime.date(2022, 3, 1)
+        too = datetime.date(2022, 3, 6)
+        self.assertEqual(Holiday.get_number_of_fine_days_between(frm, too), 2)

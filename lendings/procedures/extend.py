@@ -45,7 +45,7 @@ def extend_checks(lending: Lending, now: datetime.date):
 def new_extension(lending: Lending, current_date: datetime.date):
     """
     Execute checks. If the checks pass, extend lending.
-    :param item: The lending to be extended
+    :param lending: The lending to be extended
     :param current_date: The date at which the item is lent
     :return: A lending object, already persisted
     :except LendingImpossibleException: If the extension-checks fail.
