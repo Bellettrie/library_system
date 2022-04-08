@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from config.tests import LendingSettingsBase
 from lendings.lendingException import LendingImpossibleException
+from lendings.procedures.extend import extend_lending, new_extension
 from lendings.procedures.new_lending import create_lending, new_lending
 from members.models import MembershipPeriod, MemberBackground
 from members.tests import MemberSetup
@@ -80,7 +81,7 @@ class LendingFailureCases(LendingBase):
         self.assertEqual((lending.end_date - datetime.date(datetime(2020, 2, 12))).days, 21)
 
 
-class LendingPeriod(LendingBase):
+class LendingSuccess(LendingBase):
     def test_membership_period(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
@@ -98,3 +99,27 @@ class LendingPeriod(LendingBase):
                                         membership_type=self.membership_type, member_background=self.member_background)
         lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         self.assertEqual((lending.end_date - datetime.date(datetime(2020, 2, 12))).days, 21)
+
+class LendingExtend(LendingBase):
+    def setUp(self):
+        super(LendingExtend, self).setUp()
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        self.lending = create_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
+
+    def test_extend(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                    membership_type=self.membership_type, member_background=self.member_background)
+        extend_lending(self.lending, datetime.date(datetime(2020, 2, 14)))
+        self.assertEqual((self.lending.end_date - datetime.date(datetime(2020, 2, 14))).days, 21)
+
+    def test_extend_too_many(self):
+        new_extension(self.lending, datetime.date(datetime(2020, 2, 14)))
+        new_extension(self.lending, datetime.date(datetime(2020, 2, 15)))
+
+        err_str = ""
+        try:
+            new_extension(self.lending, datetime.date(datetime(2020, 2, 16)))
+        except LendingImpossibleException as err:
+            err_str = str(err)
+        self.assertEqual(err_str, "Item at max number of extensions")
