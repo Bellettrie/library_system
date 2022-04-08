@@ -1,8 +1,13 @@
 from datetime import datetime
+from math import ceil
 
 from config.models import LendingSettings
 from lendings.models import Lending
 from lendings.procedures.get_fine_days import get_fine_days
+
+
+def get_total_fine_for_days(days: int, lending_settings: LendingSettings):
+    return min(lending_settings.max_fine, lending_settings.fine_amount * ceil(days / 7))
 
 
 def get_total_fine_for_lending(lending: Lending, current_date: datetime.date):
@@ -14,4 +19,4 @@ def get_total_fine_for_lending(lending: Lending, current_date: datetime.date):
     """
     lending_settings = LendingSettings.get_for(lending.item, lending.member)
 
-    return min(lending_settings.max_fine, lending_settings.fine_amount * get_fine_days(lending, current_date))
+    return get_total_fine_for_days(get_fine_days(lending, current_date), lending_settings)

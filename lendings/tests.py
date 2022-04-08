@@ -4,6 +4,7 @@ from django.test import TestCase
 from config.tests import LendingSettingsBase
 from lendings.lendingException import LendingImpossibleException
 from lendings.procedures.extend import extend_lending, new_extension
+from lendings.procedures.get_total_fine import get_total_fine_for_days, get_total_fine_for_lending
 from lendings.procedures.new_lending import create_lending, new_lending
 from members.models import MembershipPeriod, MemberBackground
 from members.tests import MemberSetup
@@ -132,3 +133,28 @@ class LendingExtend(LendingBase):
         except LendingImpossibleException as err:
             err_str = str(err)
         self.assertEqual(err_str, "Member currently has items that are late. These need to be returned before it can be handed in.")
+
+
+class CalculateFine(LendingBase):
+    def test_fine_amount_zero(self):
+        self.assertEqual(get_total_fine_for_days(0, self.a), 0)
+
+    def test_fine_min_amount(self):
+        self.assertEqual(get_total_fine_for_days(1, self.a), 50)
+        self.assertEqual(get_total_fine_for_days(7, self.a), 50)
+
+    def test_fine_bump(self):
+        self.assertEqual(get_total_fine_for_days(8, self.a), 100)
+
+    def test_fine_near_max(self):
+        self.assertEqual(get_total_fine_for_days(63, self.a), 450)
+
+    def test_fine_max_amount(self):
+        self.assertEqual(get_total_fine_for_days(64, self.a), 500)
+
+    def test_for_lending(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2023-01-01", end_date="2023-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2023, 2, 12)))
+        self.assertEqual(get_total_fine_for_lending(lending, lending.end_date+timedelta(days=1)), 50)
+
