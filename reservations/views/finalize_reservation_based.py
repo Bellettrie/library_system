@@ -12,8 +12,8 @@ from reservations.models import Reservation
 
 @transaction.atomic
 @permission_required('lendings.add_lending')
-def finalize_reservation_based(request, id):
-    reservation = get_object_or_404(Reservation, pk=id)
+def finalize_reservation_based(request, reservation_id):
+    reservation = get_object_or_404(Reservation, pk=reservation_id)
     member = reservation.member
     item = reservation.item
     if request.method == "POST":
