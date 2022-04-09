@@ -4,136 +4,142 @@ from django.test import TestCase
 
 # Create your tests here.
 from config.models import Holiday, LendingSettings
-from members.models import Member, Committee, MembershipPeriod
-from works.models import Publication, Item, Category, Location, ItemType
-from works.tests import create_work
+from works.models import ItemType, Location, Category
+
+""" Start date: 28 february 2022
+    mo | tu | we | th | fr | sa | su
+    28 | 01 |[02 | 03 | 04]| 05 | 06
+    07 | 08 | 08 | 10 | 11 | 12 | 13
+    14 |[15 |{16]| 17}| 18 | 19 | 20
+   [21 | 22 | 23 | 24 | 25]| 26 | 27
+    28 |[29 | 30 | 31]| 31 | 01 | 02"""
 
 
-class BasicTestCase(TestCase):
+class HolidayTestCase(TestCase):
     def setUp(self):
-        self.publication = create_work("The one book")
-        item_type = ItemType.objects.create(name="Strip", old_id=0)
-        category = Category.objects.create(name="TestCat", item_type=item_type)
-        self.location = Location.objects.create(name="TestLoc", category=category, old_id=0)
-        self.item = Item.objects.create(publication=self.publication, old_id=0, hidden=False, location=self.location)
-        self.member = Member.objects.create()
-        MembershipPeriod.objects.create(member=self.member, start_date=None, end_date="2023-04-04")
-        self.member2 = Member.objects.create()
-        MembershipPeriod.objects.create(member=self.member2, start_date=None, end_date="2021-04-04")
-        committee = Committee.objects.create(active_member_committee=True, name="Active com")
-        self.member3 = Member.objects.create()
-        MembershipPeriod.objects.create(member=self.member3, start_date=None, end_date="2021-04-04")
+        Holiday.objects.create(name="1", starting_date=datetime.date(2022, 3, 2),
+                               ending_date=datetime.date(2022, 3, 4))
+        Holiday.objects.create(name="2", starting_date=datetime.date(2022, 3, 15),
+                               ending_date=datetime.date(2022, 3, 16))
+        Holiday.objects.create(name="3", starting_date=datetime.date(2022, 3, 16),
+                               ending_date=datetime.date(2022, 3, 17))
+        Holiday.objects.create(name="4", starting_date=datetime.date(2022, 3, 21),
+                               ending_date=datetime.date(2022, 3, 25))
+        Holiday.objects.create(name="4", starting_date=datetime.date(2022, 3, 29),
+                               ending_date=datetime.date(2022, 3, 31))
 
-        self.member3.committees.add(committee)
-        self.member3.save()
-        self.lending_settings = LendingSettings.objects.create(item_type=item_type,
-                                                               term_for_inactive=7,
-                                                               term_for_active=14,
-                                                               hand_in_days=1,
-                                                               borrow_money_inactive=0,
-                                                               borrow_money_active=0,
-                                                               fine_amount=50,
-                                                               max_fine=500,
-                                                               max_count_active=5,
-                                                               max_count_inactive=5,
-                                                               extend_count_active=2,
-                                                               extend_count_inactive=2)
+    def test_before_day_not_in_holiday(self):
+        date = datetime.date(2022, 3, 1)
+        self.assertEqual(Holiday.get_handin_day_before_or_on(date), date)
+
+    def test_after_day_not_in_holiday(self):
+        date = datetime.date(2022, 3, 1)
+        self.assertEqual(Holiday.get_handin_day_after_or_on(date), date)
+
+    def test_before_weekend(self):
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 12)), datetime.date(2022, 3, 11))
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 13)), datetime.date(2022, 3, 11))
+
+    def test_after_weekend(self):
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 12)), datetime.date(2022, 3, 14))
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 13)), datetime.date(2022, 3, 14))
+
+    def test_before_holiday(self):
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 15)), datetime.date(2022, 3, 14))
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 16)), datetime.date(2022, 3, 14))
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 17)), datetime.date(2022, 3, 14))
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 29)), datetime.date(2022, 3, 28))
+
+    def test_after_holiday(self):
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 15)), datetime.date(2022, 3, 18))
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 16)), datetime.date(2022, 3, 18))
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 17)), datetime.date(2022, 3, 18))
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 31)), datetime.date(2022, 4, 1))
+
+    def test_before_holiday_weekend(self):
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 19)), datetime.date(2022, 3, 18))
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 21)), datetime.date(2022, 3, 18))
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 23)), datetime.date(2022, 3, 18))
+        self.assertEqual(Holiday.get_handin_day_before_or_on(datetime.date(2022, 3, 25)), datetime.date(2022, 3, 18))
+
+    def test_after_holiday_weekend(self):
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 3)), datetime.date(2022, 3, 7))
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 19)), datetime.date(2022, 3, 28))
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 21)), datetime.date(2022, 3, 28))
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 23)), datetime.date(2022, 3, 28))
+        self.assertEqual(Holiday.get_handin_day_after_or_on(datetime.date(2022, 3, 25)), datetime.date(2022, 3, 28))
 
 
-class LendingTermTestCase(BasicTestCase):
+class LendingSettingsBase(TestCase):
+    book = None
+    comic = None
+    a = None
+    b = None
+    c = None
+
+    def lending_settings_create(self):
+        self.book = ItemType.objects.create(name="Book")
+        self.comic = ItemType.objects.create(name="Comic")
+
+        self.a = LendingSettings.objects.create(item_type=self.book,
+                                                member_is_active=True,
+                                                fine_amount=50,
+                                                max_fine=500,
+                                                max_count=5,
+                                                borrow_money=0,
+                                                extend_count=2,
+                                                term=21)
+        self.b = LendingSettings.objects.create(item_type=self.book,
+                                                member_is_active=False,
+                                                fine_amount=50,
+                                                max_fine=500,
+                                                max_count=10,
+                                                borrow_money=0,
+                                                extend_count=2,
+                                                term=41)
+        self.c = LendingSettings.objects.create(item_type=self.comic,
+                                                member_is_active=False,
+                                                fine_amount=70,
+                                                max_fine=700,
+                                                max_count=10,
+                                                borrow_money=20,
+                                                extend_count=0,
+                                                term=7)
+
+
+class LendingSettingsTestCase(LendingSettingsBase):
     def setUp(self):
-        super().setUp()
-        # Holidays in different years
-        Holiday.objects.create(name='Sleeping holiday',
-                               starting_date=datetime.date(2022, 4, 4),
-                               ending_date=datetime.date(2022, 5, 4),
-                               skipped_for_fine=False)
-        Holiday.objects.create(name='Very Short Holiday',
-                               starting_date=datetime.date(2019, 1, 1),
-                               ending_date=datetime.date(2019, 1, 1),
-                               skipped_for_fine=False)
+        self.lending_settings_create()
 
-    def test_holiday_one_day(self):
-        self.assertEqual(datetime.date(2019, 1, 2), LendingSettings.get_end_date(self.item, self.member, datetime.date(2018, 12, 31 - 6)))
+    def test_lending_settings_get_for_inactive(self):
+        self.assertEqual(LendingSettings.get_for_type(self.book, False), self.b)
+        self.assertEqual(LendingSettings.get_for_type(self.comic, False), self.c)
 
-    def test_holiday_longer_holiday(self):
-        self.assertEqual(datetime.date(2022, 5, 5), LendingSettings.get_end_date(self.item, self.member, datetime.date(2022, 3, 30)))
+    def test_lending_settings_get_for_active_with_active(self):
+        self.assertEqual(LendingSettings.get_for_type(self.book, True), self.a)
 
-    def test_membership_ends_early(self):
-        self.assertEqual(datetime.date(2021, 4, 4), LendingSettings.get_end_date(self.item, self.member2, datetime.date(2022, 3, 30)))
-
-    def test_membership_no_end_date(self):
-        # self.member2.end_date = None
-        z = MembershipPeriod.objects.get(member=self.member2)
-        z.end_date = None
-        z.save()
-        self.member2.save()
-        self.assertEqual(datetime.date(2022, 5, 5), LendingSettings.get_end_date(self.item, self.member2, datetime.date(2022, 3, 30)))
-
-    def test_no_holidays(self):
-        self.assertEqual(datetime.date(2017, 1, 8), LendingSettings.get_end_date(self.item, self.member2, datetime.date(2017, 1, 1)))
-
-    def test_end_date_not_in_noliday(self):
-        self.assertEqual(datetime.date(2022, 5, 8), LendingSettings.get_end_date(self.item, self.member, datetime.date(2022, 5, 1)))
-
-    def test_active_member(self):
-        self.assertEqual(datetime.date(2019, 1, 2), LendingSettings.get_end_date(self.item, self.member3, datetime.date(2018, 12, 31 - 6 - 7)))
-
-    def test_overlapping_holidays_abba(self):
-        Holiday.objects.create(name='Sleeping holiday',
-                               starting_date=datetime.date(2022, 4, 8),
-                               ending_date=datetime.date(2022, 5, 2),
-                               skipped_for_fine=False)
-        self.assertEqual(datetime.date(2022, 5, 5), LendingSettings.get_end_date(self.item, self.member, datetime.date(2022, 3, 30)))
-
-    def test_overlapping_holidays_abab(self):
-        Holiday.objects.create(name='Sleeping holiday',
-                               starting_date=datetime.date(2022, 4, 8),
-                               ending_date=datetime.date(2022, 5, 8),
-                               skipped_for_fine=False)
-        self.assertEqual(datetime.date(2022, 5, 9), LendingSettings.get_end_date(self.item, self.member, datetime.date(2022, 3, 30)))
-
-    def test_more_handin_days(self):
-        self.lending_settings.hand_in_days = 6
-        self.lending_settings.save()
-        self.assertEqual(datetime.date(2022, 5, 10), LendingSettings.get_end_date(self.item, self.member, datetime.date(2022, 4, 4)))
+    def test_lending_settings_get_for_active_without_active(self):
+        self.assertEqual(LendingSettings.get_for_type(self.comic, True), self.c)
 
 
-class FineTestCase(BasicTestCase):
+class FineDaysTestCase(TestCase):
     def setUp(self):
-        super().setUp()
-        Holiday.objects.create(name='Sleeping holiday',
-                               starting_date=datetime.date(2022, 4, 4),
-                               ending_date=datetime.date(2022, 5, 4),
-                               skipped_for_fine=True)
-        Holiday.objects.create(name='Very Short Holiday',
-                               starting_date=datetime.date(2019, 1, 1),
-                               ending_date=datetime.date(2019, 1, 1),
-                               skipped_for_fine=True)
+        Holiday.objects.create(name="1", starting_date=datetime.date(2022, 3, 2),
+                               ending_date=datetime.date(2022, 3, 4), skipped_for_fine=True)
+        Holiday.objects.create(name="1", starting_date=datetime.date(2021, 4, 2),
+                               ending_date=datetime.date(2021, 4, 4), skipped_for_fine=False)
 
-        Holiday.objects.create(name='Very Short Holiday',
-                               starting_date=datetime.date(2018, 1, 2),
-                               ending_date=datetime.date(2018, 1, 2),
-                               skipped_for_fine=False)
+    def test_simple(self):
+        frm = datetime.date(2021, 12, 12)
+        too = datetime.date(2021, 12, 17)
+        self.assertEqual(Holiday.get_number_of_fine_days_between(frm, too), 5)
 
-    def test_simple_fine(self):
-        self.assertEquals(11, LendingSettings.get_fine_days(datetime.date(2020, 1, 1), datetime.date(2020, 1, 12)))
+    def test_simple_holiday_un_skipped(self):
+        frm = datetime.date(2021, 4, 1)
+        too = datetime.date(2021, 4, 6)
+        self.assertEqual(Holiday.get_number_of_fine_days_between(frm, too), 5)
 
-    def test_early(self):
-        self.assertEquals(0, LendingSettings.get_fine_days(datetime.date(2021, 1, 1), datetime.date(2020, 1, 12)))
-
-    def test_on_time(self):
-        self.assertEquals(0, LendingSettings.get_fine_days(datetime.date(2020, 1, 1), datetime.date(2020, 1, 1)))
-
-    def test_holiday_skip(self):
-        self.assertEquals(0, LendingSettings.get_fine_days(datetime.date(2018, 1, 1), datetime.date(2018, 1, 2)))
-
-    def test_fine_amount(self):
-        self.assertEquals(100, LendingSettings.get_fine(self.item, self.member, datetime.date(2020, 1, 1), datetime.date(2020, 1, 12)))
-
-    def test_fine_lending_money(self):
-        self.lending_settings.borrow_money_active = 10
-        self.lending_settings.borrow_money_inactive = 100
-        self.lending_settings.save()
-        self.assertEquals(300, LendingSettings.get_fine(self.item, self.member, datetime.date(2020, 1, 1), datetime.date(2020, 1, 12)))
-        self.assertEquals(120, LendingSettings.get_fine(self.item, self.member3, datetime.date(2020, 1, 1), datetime.date(2020, 1, 12)))
+    def test_simple_holiday_skipped(self):
+        frm = datetime.date(2022, 3, 1)
+        too = datetime.date(2022, 3, 6)
+        self.assertEqual(Holiday.get_number_of_fine_days_between(frm, too), 2)

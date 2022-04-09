@@ -1,27 +1,24 @@
 from django.urls import path
 
 from lendings.path_names import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, LENDING_FINALIZE, \
-    LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK, LENDING_EXTEND, LENDING_FAILED, \
-    RESERVE_LIST, RESERVE_ITEM, RESERVE_MEMBER, RESERVE_FINALIZE, RESERVE_FAILED, RESERVE_LEND, RESERVE_DELETE
+    LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK, LENDING_EXTEND, LENDING_FAILED
 
-from . import views
-from .views import index
+from .views.index import index
+from .views.extend import extend
+from .views.finalize import finalize
+from .views.item_based import item_based
+from .views.lending_failed import lending_failed
+from .views.me import me
+from .views.member_based import member_based
+from .views.register_returned import return_item
 
 urlpatterns = [
     path('', index, name=LENDING_LIST),
-    path('work/<int:work_id>', views.work_based, name=LENDING_NEW_WORK),
-    path('member/<int:member_id>', views.member_based, name=LENDING_NEW_MEMBER),
-    path('finalize/<int:work_id>/<int:member_id>', views.finalize, name=LENDING_FINALIZE),
-    path('failed_lending/<int:work_id>/<int:member_id>/<int:reason_id>', views.lending_failed, name=LENDING_FAILED),
-    path('extend/<int:work_id>', views.extend, name=LENDING_EXTEND),
-    path('return/<int:work_id>', views.return_book, name=LENDING_RETURNBOOK),
-    path('me/', views.me, name=LENDING_MY_LENDINGS),
-    path('reservations', views.reserve_list, name=RESERVE_LIST),
-    path('reserve_work/<int:work_id>', views.reserve_item, name=RESERVE_ITEM),
-    path('reserve_member/<int:member_id>', views.reserve_member, name=RESERVE_MEMBER),
-    path('reserve_finalize/<int:work_id>/<int:member_id>', views.reserve_finalize, name=RESERVE_FINALIZE),
-    path('failed_reservation/<int:work_id>/<int:member_id>/<int:reason_id>', views.reserve_failed, name=RESERVE_FAILED),
-    path('finalize_reservation_based/<slug:id>', views.finalize_reservation_based, name=RESERVE_LEND),
-    path('delete_reservation/<slug:id>', views.delete_reservation, name=RESERVE_DELETE),
-
+    path('work/<int:work_id>', item_based, name=LENDING_NEW_WORK),
+    path('member/<int:member_id>', member_based, name=LENDING_NEW_MEMBER),
+    path('finalize/<int:work_id>/<int:member_id>', finalize, name=LENDING_FINALIZE),
+    path('failed_lending/<int:work_id>/<int:member_id>/<int:reason_id>', lending_failed, name=LENDING_FAILED),
+    path('extend/<int:work_id>', extend, name=LENDING_EXTEND),
+    path('return/<int:work_id>', return_item, name=LENDING_RETURNBOOK),
+    path('me/', me, name=LENDING_MY_LENDINGS),
 ]

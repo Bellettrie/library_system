@@ -2,7 +2,7 @@ import datetime
 from django.contrib.auth.models import User, Group
 
 from django.test import TestCase
-from members.models import Member, Committee, MembershipPeriod
+from members.models import Member, Committee, MembershipPeriod, MemberBackground, MembershipType
 from works.models import ItemType
 
 
@@ -22,14 +22,24 @@ class LendingCountTest(TestCase):
         self.assertTrue(self.member2.is_currently_member(datetime.date(2024, 1, 1)))
 
 
-class MemberTestCase(TestCase):
-    def setUp(self):
+class MemberSetup:
+    committe1 = None
+    group1 = None
+    group2 = None
+    committe2 = None
+    member = None
+    member2 = None
+    member3 = None
+    user1 = None
+
+    def member_setup(self):
         self.committe1 = Committee.objects.create(
             name="openers",
             code="open",
             active_member_committee=True
         )
-
+        self.member_background = MemberBackground.objects.create(name="Bridge", visual_name="Found this member under the bridge")
+        self.membership_type = MembershipType.objects.create(name="SPECIAL", visual_name="Special Member")
         self.group1 = Group.objects.create(name="open")
         self.group2 = Group.objects.create(name="test")
 
@@ -83,6 +93,11 @@ class MemberTestCase(TestCase):
         self.member2.committees.add(self.committe2)
         self.member2.update_groups()
         self.member2.save()
+
+
+class MemberTestCase(MemberSetup, TestCase):
+    def setUp(self):
+        self.member_setup()
 
     def test_is_active_member(self):
         self.assertEqual(self.member.is_active(), True)

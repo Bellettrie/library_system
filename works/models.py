@@ -12,7 +12,8 @@ from book_code_generation.generators import generate_code_from_author, generate_
     generate_code_abc, generate_code_from_title, generate_code_abc_translated
 from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
-from lendings.models import Lending, Reservation
+from lendings.models.lending import Lending
+from reservations.models.reservation import Reservation
 
 
 def simple_search(search_string: str):
@@ -51,7 +52,7 @@ class NamedTranslatableThing(NamedThing, TranslatedThing):
 
 class ItemType(models.Model):
     name = models.CharField(max_length=255)
-    old_id = models.IntegerField()
+    old_id = models.IntegerField(null=True)
 
     def __str__(self):
         return self.name
@@ -351,6 +352,9 @@ class ItemState(models.Model):
     type = models.CharField(max_length=64, choices=CHOICES)
     reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
+
+    def __str__(self):
+        return self.type
 
 
 class SubWork(Work, TranslatedThing):

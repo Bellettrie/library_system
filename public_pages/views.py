@@ -25,7 +25,7 @@ def render_md(markdown_text: str):
     if "----OPEN----" in html:
         import urllib.request
         URL = 'https://dragoncounter.bellettrie.utwente.nl/crowds/api/'
-        f = urllib.request.urlopen(URL, timeout=5)
+        f = urllib.request.urlopen(URL, timeout=120)
         data = f.read()
         my_data = str(data).split(",")
 
