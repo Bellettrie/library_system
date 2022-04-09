@@ -4,6 +4,7 @@ from config.models import LendingSettings
 from lendings.lendingException import LendingImpossibleException
 from lendings.models import Lending
 from lendings.procedures.get_end_date import get_end_date_for_lending
+from lendings.procedures.member_has_late_items import member_has_late_items
 
 
 def extend_lending(lending: Lending, now: datetime.date):
@@ -27,7 +28,7 @@ def extend_checks(lending: Lending, now: datetime.date):
     :return: None
     :except LendingImpossibleException: If the lending-checks fail.
     """
-    if lending.member.has_late_items(now):
+    if member_has_late_items(lending.member, now):
         raise LendingImpossibleException(
             "Member currently has items that are late. These need to be returned before it can be handed in.")
     if lending.member.is_blacklisted:

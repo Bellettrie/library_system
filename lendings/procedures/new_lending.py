@@ -3,6 +3,7 @@ from datetime import datetime
 from lendings.lendingException import LendingImpossibleException
 from lendings.models import Lending
 from lendings.procedures.get_end_date import get_end_date
+from lendings.procedures.member_has_late_items import member_has_late_items
 from members.models import Member
 from works.models import Item
 
@@ -46,7 +47,7 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date):
     if not member.can_lend_more_of_item(item):
         raise LendingImpossibleException(
             "Member currently has lent too many items in category {}".format(item.location.category.item_type))
-    if member.has_late_items(current_date):
+    if member_has_late_items(member, current_date):
         raise LendingImpossibleException(
             "Member currently has items that are late. These need to be returned before it can be handed in.")
     if member.is_blacklisted:
