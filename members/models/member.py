@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User, Group
 from django.db import models
-from django.db.models import CASCADE
+from django.db.models import CASCADE, Q
 
 from members.management.commands.namegen import generate_full_name
 from members.models.committee import Committee
@@ -28,9 +28,6 @@ def overlaps(startA, endA, startB, endB):
 
 
 class Member(MemberData):
-    membership_type_old = models.CharField(max_length=32)
-    old_customer_type = models.CharField(max_length=64, null=True, blank=True)
-    old_id = models.IntegerField(null=True, blank=True)
     is_anonymous_user = models.BooleanField(default=False)
     user = models.OneToOneField(User, null=True, blank=True, on_delete=CASCADE)
     committees = models.ManyToManyField(Committee, blank=True)
@@ -74,7 +71,6 @@ class Member(MemberData):
 
     def has_reservations(self):
         from reservations.models import Reservation
-
         return len(Reservation.objects.filter(member=self)) > 0
 
     def get_current_membership_period(self, current_date: datetime.date = None):
@@ -88,10 +84,9 @@ class Member(MemberData):
     def is_currently_member(self, current_date=None):
         return self.get_current_membership_period(current_date) is not None
 
-    def can_lend_more_of_item(self, item, current_date=None):
+    def can_lend_more_of_item(self, item):
         from lendings.models import Lending
         from reservations.models import Reservation
-        from works.models import ItemType, Category
 
         lendings = Lending.objects.filter(member=self,
                                           item__location__category__item_type=item.location.category.item_type,
@@ -101,19 +96,6 @@ class Member(MemberData):
             member=self, reservation_end_date__isnull=True)
         from config.models import LendingSettings
         return (len(lendings) + len(reservations)) < LendingSettings.get_for(item, self).max_count
-
-    def has_late_items(self, current_date=None):
-        current_date = current_date or datetime.date(datetime.now())
-
-        from lendings.models import Lending
-        from works.models import ItemType, Category
-
-        lendings = Lending.objects.filter(member=self, handed_in=False)
-
-        for lending in lendings:
-            if lending.is_late(current_date):
-                return True
-        return False
 
     def is_active(self):
         for committee in self.committees.all():
@@ -210,17 +192,6 @@ class Member(MemberData):
             self.membership_type_old = "-"
             self.phone = "-"
             self.save()
-
-    @staticmethod
-    def anonymise_people():
-        now = datetime.now()
-        members = Member.objects.filter(end_date__isnull=False).filter(
-            end_date__lte=str(now.year - 10) + "-" + str(now.month) + "-" + str(now.day))
-
-        for member in members:
-            if member.should_be_anonymised():
-                member.anonymise_me(dry_run=False)
-                member.delete()
 
     def update_groups(self):
         if self.user is not None:

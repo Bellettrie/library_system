@@ -1,0 +1,17 @@
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404, render
+
+from members.models import Member
+
+
+def show(request, member_id):
+    if not request.user.has_perm('members.view_member'):
+        if not hasattr(request.user, 'member'):
+            raise PermissionDenied
+        member = request.user.member
+        if not (member and member.pk == member_id):
+            raise PermissionDenied
+    member = get_object_or_404(Member, pk=member_id)
+    if member.is_anonimysed:
+        return render(request, 'member_detail_anonymous.html', {'member': member})
+    return render(request, 'member_detail.html', {'member': member})
