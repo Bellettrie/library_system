@@ -5,8 +5,10 @@ from django.db import models
 from django.db.models import CASCADE, PROTECT, Q
 
 from members.management.commands.namegen import generate_full_name
+
 if sys.version_info.minor < 8:
     from backports.datetime_fromisoformat import MonkeyPatch
+
     MonkeyPatch.patch_fromisoformat()
 
 PAST = datetime.date(datetime.fromisoformat('1900-01-01'))
@@ -91,24 +93,6 @@ class Member(MemberData):
     class Meta:
         permissions = [('committee_update', 'Can update committee')]
 
-
-
-    @property
-    def start_date(self):
-        start_date = datetime.fromisoformat("2100-01-01").date()
-        for z in MembershipPeriod.objects.filter(member=self):
-            if z.start_date is None or start_date is None or z.start_date < start_date:
-                start_date = z.start_date
-        return start_date
-
-    @property
-    def end_date(self):
-        period = self.get_current_membership_period()
-        if period is not None:
-            if not period.end_date:
-                return datetime.date(datetime(9999, 1, 1))
-            return period.end_date
-
     @property
     def membership_type(self):
         period = self.get_current_membership_period()
@@ -145,13 +129,11 @@ class Member(MemberData):
         from config.models import LendingSettings
         return (len(lendings) + len(reservations)) < LendingSettings.get_for(item, self).max_count
 
-
     def unpaid_fines(self):
         from fines.models import Fine
         amount = 0
         for fine in Fine.objects.filter(paid=False, member=self):
             amount += fine.amount
-
         return amount
 
     def current_fines(self):
@@ -159,7 +141,8 @@ class Member(MemberData):
         from config.models import LendingSettings
         fine = 0
         for lending in Lending.objects.filter(member=self, handed_in=False):
-            fine += LendingSettings.get_fine(lending.item, self, lending.end_date)
+            from lendings.procedures.get_total_fine import get_total_fine_for_lending
+            fine += get_total_fine_for_lending(lending, datetime.date(datetime.now()))
         return fine
 
     def current_total_fine(self):
@@ -345,7 +328,7 @@ class Member(MemberData):
         if self.is_blacklisted:
             return "Is blacklisted"
         from fines.models import Fine
-        if self.end_date is None:
+        if self.get_current_membership_period().end_date is None:
             return "Member is a special member."
         if self.is_currently_member():
             return "Is currently a member."
@@ -356,15 +339,16 @@ class Member(MemberData):
         if self.user is not None and (self.user.last_login.date() - now).days < -400:
             return "Logged in recently;  will be anonymised in " + str(
                 400 - (self.user.last_login.date() - now).days) + " days."
-        if (now - self.end_date).days < 800:
-            return "Was recently a member; will be anonymised in " + str(800 - (now - self.end_date).days) + " days."
+        if (now - self.get_current_membership_period().end_date).days < 800:
+            return "Was recently a member; will be anonymised in " + str(
+                800 - (now - self.get_current_membership_period().end_date).days) + " days."
         from lendings.models import Lending
         if len(Lending.objects.filter(member=self, handed_in=False)) > 0:
             return "Still has a book lent."
         a = now - timedelta(days=180)
         if len(Lending.objects.filter(member=self, handed_in_on__gte="2020-01-01")):
             return "Recently lent a book"
-        from lendings.models import Reservation
+        from reservations.models import Reservation
         if len(Reservation.objects.filter(Q(member=self))) > 0:
             return "Still has a reservation"
 
