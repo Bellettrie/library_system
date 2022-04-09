@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
-from members.models import Member
+from members.models.member import Member
 from datetime import date
 
 

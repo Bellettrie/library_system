@@ -1,17 +1,22 @@
 import sys
 from datetime import datetime, timedelta
+
 from django.contrib.auth.models import User, Group
 from django.db import models
-from django.db.models import CASCADE, PROTECT, Q
+from django.db.models import CASCADE
 
 from members.management.commands.namegen import generate_full_name
-if sys.version_info.minor < 8:
-    from backports.datetime_fromisoformat import MonkeyPatch
-    MonkeyPatch.patch_fromisoformat()
+from members.models.committee import Committee
+from members.models.member_data import MemberData
+from members.models.membership_period import MembershipPeriod
 
 PAST = datetime.date(datetime.fromisoformat('1900-01-01'))
 FUTURE = datetime.date(datetime.fromisoformat('2100-01-01'))
 
+
+if sys.version_info.minor < 8:
+    from backports.datetime_fromisoformat import MonkeyPatch
+    MonkeyPatch.patch_fromisoformat()
 
 def overlaps(startA, endA, startB, endB):
     startA = startA or datetime.date(datetime.fromisoformat('1900-01-01'))
@@ -20,52 +25,6 @@ def overlaps(startA, endA, startB, endB):
     endB = endB or datetime.date(datetime.fromisoformat('2100-01-01'))
 
     return (startA <= endB) and (endA >= startB)
-
-
-class Committee(models.Model):
-    name = models.CharField(max_length=255)
-    code = models.CharField(max_length=64)
-    active_member_committee = models.BooleanField()
-
-    def __str__(self):
-        return self.name
-
-
-class MemberBackground(models.Model):
-    name = models.CharField(max_length=64)
-    visual_name = models.CharField(max_length=64)
-    old_str = models.CharField(max_length=64, null=True, blank=True)
-
-    def __str__(self):
-        return self.visual_name
-
-
-class MembershipType(models.Model):
-    name = models.CharField(max_length=64)
-    visual_name = models.CharField(max_length=64)
-    old_str = models.CharField(max_length=64, null=True, blank=True)
-    needs_union_card = models.BooleanField(default=True)
-    has_end_date = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.visual_name
-
-
-class MemberData(models.Model):
-    class Meta:
-        abstract = True
-
-    name = models.CharField(max_length=255)
-    nickname = models.CharField(max_length=255, null=True, blank=True)
-    addressLineOne = models.CharField(max_length=255)
-    addressLineTwo = models.CharField(max_length=255)
-    addressLineThree = models.CharField(max_length=255, blank=True)
-    addressLineFour = models.CharField(max_length=255, blank=True)
-    email = models.CharField(max_length=255)
-    phone = models.CharField(max_length=64)
-    student_number = models.CharField(max_length=32, blank=True)
-    is_blacklisted = models.BooleanField(default=False)
-    notes = models.TextField(blank=True)
 
 
 class Member(MemberData):
@@ -163,6 +122,7 @@ class Member(MemberData):
         return False
 
     def save(self, *args, **kwargs):
+        from members.models.member_log import MemberLog
         MemberLog.from_member(self)
         super().save(*args, **kwargs)
 
@@ -231,7 +191,7 @@ class Member(MemberData):
         self.destroy(Lending.objects.filter(lended_by=self), 'lended_by', anonymous_members, dry_run)
         self.destroy(Lending.objects.filter(handed_in_by=self), 'handed_in_by', anonymous_members, dry_run)
 
-        from lendings.models import Reservation
+        from reservations.models import Reservation
         self.destroy(Reservation.objects.filter(member=self), 'member', anonymous_members, dry_run)
         self.destroy(Reservation.objects.filter(reserved_by=self), 'reserved_by', anonymous_members, dry_run)
         self.destroy(MailLog.objects.filter(member=self), 'member', anonymous_members, dry_run)
@@ -299,7 +259,7 @@ class Member(MemberData):
         from lendings.models import Lending
         if len(Lending.objects.filter(Q(lended_by=self) | Q(handed_in_by=self) | Q(member=self))) > 0:
             return False
-        from lendings.models import Reservation
+        from reservations.models import Reservation
         if len(Reservation.objects.filter(Q(member=self) | Q(reserved_by=self))) > 0:
             return False
         from ratings.models import Rating
@@ -333,7 +293,7 @@ class Member(MemberData):
         print(a)
         if len(Lending.objects.filter(member=self, handed_in_on__gte="2020-01-01")):
             return "Recently lent a book"
-        from lendings.models import Reservation
+        from reservations.models import Reservation
         if len(Reservation.objects.filter(Q(member=self))) > 0:
             return "Still has a reservation"
 
@@ -343,32 +303,3 @@ class Member(MemberData):
         if now is None:
             now = datetime.now().date()
         return self.should_be_anonymised_reason(now=now) is None
-
-
-class MemberLog(MemberData):
-    date_edited = models.DateTimeField(auto_now=True)
-
-    @staticmethod
-    def from_member(member: Member):
-        data = MemberLog()
-        data.name = member.name
-        data.nickname = member.nickname
-        data.addressLineOne = member.addressLineOne
-        data.addressLineTwo = member.addressLineTwo
-        data.addressLineThree = member.addressLineThree
-        data.addressLineFour = member.addressLineFour
-        data.email = member.email
-        data.phone = member.phone
-        data.student_number = member.student_number
-        # data.end_date = member.end_date
-        data.notes = member.notes
-        # data.start_date = member.start_date
-        data.save()
-
-
-class MembershipPeriod(models.Model):
-    member = models.ForeignKey(Member, on_delete=PROTECT, null=True)
-    start_date = models.DateField(null=True, blank=False)
-    end_date = models.DateField(null=True, blank=True)
-    member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
-    membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
