@@ -84,19 +84,6 @@ class Member(MemberData):
     def is_currently_member(self, current_date=None):
         return self.get_current_membership_period(current_date) is not None
 
-    def can_lend_more_of_item(self, item):
-        from lendings.models import Lending
-        from reservations.models import Reservation
-
-        lendings = Lending.objects.filter(member=self,
-                                          item__location__category__item_type=item.location.category.item_type,
-                                          handed_in=False)
-        reservations = Reservation.objects.filter(member=self,
-                                                  reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(
-            member=self, reservation_end_date__isnull=True)
-        from config.models import LendingSettings
-        return (len(lendings) + len(reservations)) < LendingSettings.get_for(item, self).max_count
-
     def is_active(self):
         for committee in self.committees.all():
             if committee.active_member_committee:
@@ -107,39 +94,6 @@ class Member(MemberData):
         from members.models.member_log import MemberLog
         MemberLog.from_member(self)
         super().save(*args, **kwargs)
-
-    def try_and_delete_double_periods(self):
-        to_delete = set()
-
-        for msp in MembershipPeriod.objects.filter(member=self):
-            for msp2 in MembershipPeriod.objects.filter(member=self):
-                if msp != msp2 and msp2 not in to_delete and msp not in to_delete and overlaps(msp.start_date,
-                                                                                               msp.end_date,
-                                                                                               msp2.start_date,
-                                                                                               msp2.end_date):
-                    if msp.member_background == msp2.member_background and msp.membership_type == msp2.membership_type:
-                        msp.start_date = min(msp.start_date or FUTURE, msp2.start_date or FUTURE)
-
-                        msp.end_date = max(msp.end_date or FUTURE, msp2.end_date or FUTURE)
-                        if msp.start_date == FUTURE:
-                            msp.start_date = None
-                        if msp.end_date == FUTURE:
-                            msp.end_date = None
-                        msp.save()
-                        to_delete.add(msp2)
-                    else:
-                        if msp.start_date < msp2.start_date:
-                            msp.end_date = msp2.start_date
-                        else:
-                            msp2.end_date = msp.start_date
-                        msp.save()
-                        msp2.save()
-                        if msp.end_date and msp.start_date >= msp.end_date:
-                            to_delete.add(msp)
-                        if msp2.end_date and msp2.start_date >= msp2.end_date:
-                            to_delete.add(msp2)
-        for z in to_delete:
-            z.delete()
 
     def __str__(self):
         return self.name
