@@ -1,8 +1,6 @@
 from django.urls import path
 
 from config.views import HolidayDelete, HolidayUpdate, HolidayCreate, HolidayList, HolidayDetail
-from members.views import MemberList
-from . import views
 
 urlpatterns = [
     path('holiday/', HolidayList.as_view(), name='holiday.list'),
