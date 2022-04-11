@@ -1,6 +1,6 @@
 from django import template
 
-from lendings.models import Reservation
+from reservations.models import Reservation
 
 register = template.Library()
 

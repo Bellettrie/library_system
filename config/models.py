@@ -9,7 +9,8 @@ from django.db.models import PROTECT
 from django.urls import reverse
 
 from members.models import Member
-from works.models import ItemType, Item
+
+WEEKEND_DAYS = [5, 6]
 
 
 class Holiday(models.Model):
@@ -22,148 +23,105 @@ class Holiday(models.Model):
         return reverse('holiday.view', kwargs={'pk': self.pk})
 
     def save(self, *args, **kwargs):
+        from lendings.procedures.get_end_date import get_end_date_for_lending
         from lendings.models import Lending
+
         super().save(*args, **kwargs)
         lendings = Lending.objects.filter(end_date__gt=self.starting_date, handed_in=False)
 
         for lending in lendings:
+            # Late lendings do not get recalculated?
             if lending.is_late():
                 continue
-            new_end = lending.calc_end_date(lending.member, lending.item, lending.start_date)
+
+            # Import here to prevent circular import
+            new_end = get_end_date_for_lending(lending, lending.start_date)
 
             if lending.end_date < new_end:
                 lending.end_date = new_end
                 lending.save()
 
+    # This function finds the first available day before given day, that is not in a holiday or weekend.
+    @staticmethod
+    def get_handin_day_before_or_on(handin_date: datetime.date) -> datetime.date:
+        should_continue = True
+        holidays = list(Holiday.objects.all())
+
+        while should_continue:
+            should_continue = False
+            for holiday in holidays:
+                if holiday.starting_date <= handin_date <= holiday.ending_date or handin_date.weekday() in WEEKEND_DAYS:
+                    should_continue = True
+            if should_continue:
+                handin_date -= timedelta(days=1)
+        return handin_date
+
+    # This function finds the first available day after given day, that is not in a holiday or weekend.
+    @staticmethod
+    def get_handin_day_after_or_on(handin_date: datetime.date) -> datetime.date:
+        should_continue = True
+        holidays = list(Holiday.objects.all())
+
+        while should_continue:
+            should_continue = False
+            for holiday in holidays:
+                if holiday.starting_date <= handin_date <= holiday.ending_date or handin_date.weekday() in WEEKEND_DAYS:
+                    should_continue = True
+            if should_continue:
+                handin_date += timedelta(days=1)
+        return handin_date
+
+    @staticmethod
+    def get_number_of_fine_days_between(from_date: datetime.date, to_date: datetime.date) -> int:
+        """
+        Get days between from and to; zero if from > to (and thus, if the current date is before the handin date)
+        :param from_date: start date of period to count
+        :param to_date: end date of period to count
+        :return: number of non-skipped days from to to
+        """
+        runner_date = from_date
+        counter = 0
+        holidays = Holiday.objects.filter(starting_date__lte=to_date, ending_date__gte=from_date, skipped_for_fine=True)
+        while runner_date < to_date:
+            skip = False
+            for holiday in holidays:
+                if holiday.starting_date <= runner_date <= holiday.ending_date:
+                    skip = True
+
+            runner_date += timedelta(days=1)
+            if not skip:
+                counter += 1
+        return counter
+
 
 class LendingSettings(models.Model):
-    item_type = models.ForeignKey(ItemType, on_delete=PROTECT)
-    term_for_inactive = models.IntegerField()
-    term_for_active = models.IntegerField()
-    hand_in_days = models.IntegerField(default=1)
-    borrow_money_inactive = models.IntegerField()  # in cents
-    borrow_money_active = models.IntegerField()  # in cents
-    fine_amount = models.IntegerField()  # in cents
+    item_type = models.ForeignKey("works.ItemType", on_delete=PROTECT)
+    member_is_active = models.BooleanField(default=False)
+
+    term = models.IntegerField()
+    borrow_money = models.IntegerField()  # in cents
+    fine_amount = models.IntegerField()  # in cents, per week
     max_fine = models.IntegerField()  # in cents
-    max_count_inactive = models.IntegerField()
-    max_count_active = models.IntegerField()
-    extend_count_active = models.IntegerField()
-    extend_count_inactive = models.IntegerField()
+    max_count = models.IntegerField()  # how many of this type are you allowed to lend
 
-    @staticmethod
-    def get_term(item: Item, member: Member):
-        try:
-            # try something
-            ls = LendingSettings.objects.get(item_type=item.location.category.item_type)
-            if member.is_active():
-                return ls.term_for_active
-            else:
-                return ls.term_for_inactive
-        except ObjectDoesNotExist:
-            print("Term not found")
-            return 7
-
-    @staticmethod
-    def get_handin_days(item: Item, member: Member):
-        try:
-            # try something
-            ls = LendingSettings.objects.get(item_type=item.location.category.item_type)
-            return ls.hand_in_days
-        except ObjectDoesNotExist:
-            print("Term not found")
-            return 1
-
-    @staticmethod
-    def get_end_date(item: Item, member: Member, start_date=None):
-        if start_date is None:
-            start_date = datetime.date(datetime.now())
-        term = LendingSettings.get_term(item, member)
-        hand_in_days = LendingSettings.get_handin_days(item, member)
-        holidays = Holiday.objects.filter(ending_date__gte=start_date).order_by('starting_date')
-
-        total_days = 0
-        while term > 0:
-            total_days = total_days + 1
-            now_date = start_date + timedelta(days=total_days)
-            is_holiday_day, holidays = LendingSettings.handle_holiday_day(holidays, now_date)
-
-            if not (term <= hand_in_days and is_holiday_day):
-                term = term - 1
-        end_date = start_date + timedelta(days=total_days)
-        if member.end_date is None:
-            return end_date
-        else:
-            return min(end_date, member.end_date)
-
-    @staticmethod
-    def handle_holiday_day(holiday_list, current_date):
-        if len(holiday_list) > 0:
-            while holiday_list[0].ending_date < current_date:
-                holiday_list = holiday_list[1:]
-                if len(holiday_list) == 0:
-                    break
-        return len(holiday_list) > 0 and holiday_list[0].starting_date <= current_date, holiday_list
-
-    @staticmethod
-    def get_borrow_money(ls, member):
-        if member.is_active():
-            return ls.borrow_money_active
-        else:
-            return ls.borrow_money_inactive
-
-    @staticmethod
-    def get_fine_settings(item, member):
-        try:
-            # try something
-            ls = LendingSettings.objects.get(item_type=item.location.category.item_type)
-            return ls.fine_amount + LendingSettings.get_borrow_money(ls, member), ls.max_fine
-        except ObjectDoesNotExist:
-            print("Term not found")
-            return 10000, 1000000
+    extend_count = models.IntegerField()  # how often can you extend the book?
 
     def __str__(self):
-        return self.item_type.name
+        return "{}: {}".format(self.item_type.name, "active" if self.member_is_active else "inactive")
 
     @staticmethod
-    def get_fine_days(ending_date: datetime.date, current_date=None):
-        if current_date is None:
-            current_date = datetime.date(datetime.now())
-        holidays = Holiday.objects.filter(ending_date__gte=ending_date, skipped_for_fine=False).order_by('starting_date')
-        counted_date = ending_date
-        days = 0
-        while counted_date < current_date:
-            counted_date = counted_date + timedelta(days=1)
-            is_holiday_day, holidays = LendingSettings.handle_holiday_day(holidays, counted_date)
+    def get_for_type(item_type, member_is_active: bool):
+        if member_is_active:
+            try:
+                return LendingSettings.objects.get(item_type=item_type, member_is_active=True)
+            except LendingSettings.DoesNotExist:
+                pass
+            print("No special case for active member for item type {}".format(item_type))
 
-            if not is_holiday_day:
-                days = days + 1
-        return days
+        # Mind the fall-through; this statement happens either if the member isn't active,
+        #   or if no settings exist for the active member specifically.
+        return LendingSettings.objects.get(item_type=item_type, member_is_active=False)
 
     @staticmethod
-    def get_fine(item: Item, member: Member, ending_date: datetime.date, current_date=None):
-        days = LendingSettings.get_fine_days(ending_date, current_date)
-        fine_per_week, max_fine = LendingSettings.get_fine_settings(item, member)
-        weeks = math.ceil(days / 7)
-        return min(max_fine, fine_per_week * weeks)
-
-    @staticmethod
-    def get_max_count(item_type: ItemType, member: Member):
-        try:
-            ls = LendingSettings.objects.get(item_type=item_type)
-            if member.is_active():
-                return ls.max_count_active
-            else:
-                return ls.max_count_inactive
-        except LendingSettings.DoesNotExist:
-            return 5
-
-    @staticmethod
-    def get_extend_count(item_type: ItemType, member: Member):
-        try:
-            ls = LendingSettings.objects.get(item_type=item_type)
-            if member.is_active():
-                return ls.extend_count_active
-            else:
-                return ls.extend_count_inactive
-        except LendingSettings.DoesNotExist:
-            return 1
+    def get_for(item, member: Member):
+        return LendingSettings.get_for_type(item.location.category.item_type, member.is_active())

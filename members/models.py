@@ -34,7 +34,7 @@ class Committee(models.Model):
 class MemberBackground(models.Model):
     name = models.CharField(max_length=64)
     visual_name = models.CharField(max_length=64)
-    old_str = models.CharField(max_length=64)
+    old_str = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self):
         return self.visual_name
@@ -43,7 +43,7 @@ class MemberBackground(models.Model):
 class MembershipType(models.Model):
     name = models.CharField(max_length=64)
     visual_name = models.CharField(max_length=64)
-    old_str = models.CharField(max_length=64)
+    old_str = models.CharField(max_length=64, null=True, blank=True)
     needs_union_card = models.BooleanField(default=True)
     has_end_date = models.BooleanField(default=True)
 
@@ -101,13 +101,11 @@ class Member(MemberData):
 
     @property
     def end_date(self):
-        end_date = datetime.fromisoformat("1900-01-01").date()
-        for z in MembershipPeriod.objects.filter(member=self):
-            if z.end_date is None or end_date is None or z.end_date > end_date:
-                end_date = z.end_date
-
-            # return None
-        return end_date
+        period = self.get_current_membership_period()
+        if period is not None:
+            if not period.end_date:
+                return datetime.date(datetime(9999, 1, 1))
+            return period.end_date
 
     @property
     def membership_type(self):
@@ -116,28 +114,34 @@ class Member(MemberData):
             return period.membership_type
 
     def has_reservations(self):
-        from lendings.models import Reservation
+        from reservations.models import Reservation
 
         return len(Reservation.objects.filter(member=self)) > 0
 
-    def get_current_membership_period(self, current_date=None):
+    def get_current_membership_period(self, current_date: datetime.date = None):
         current_date = current_date or datetime.date(datetime.now())
         for period in MembershipPeriod.objects.filter(member=self):
-            if (period.start_date is None or period.start_date <= current_date) and (period.end_date is None or current_date <= period.end_date):
+            if (period.start_date is None or period.start_date <= current_date) and (
+                    period.end_date is None or current_date <= period.end_date):
                 return period
         return None
 
     def is_currently_member(self, current_date=None):
         return self.get_current_membership_period(current_date) is not None
 
-    def can_lend_item_type(self, item_type, current_date=None):
-        from lendings.models import Lending, Reservation
+    def can_lend_more_of_item(self, item, current_date=None):
+        from lendings.models import Lending
+        from reservations.models import Reservation
         from works.models import ItemType, Category
 
-        lendings = Lending.objects.filter(member=self, item__location__category__item_type=item_type, handed_in=False)
-        reservations = Reservation.objects.filter(member=self, reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(member=self, reservation_end_date__isnull=True)
+        lendings = Lending.objects.filter(member=self,
+                                          item__location__category__item_type=item.location.category.item_type,
+                                          handed_in=False)
+        reservations = Reservation.objects.filter(member=self,
+                                                  reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(
+            member=self, reservation_end_date__isnull=True)
         from config.models import LendingSettings
-        return (len(lendings) + len(reservations)) < LendingSettings.get_max_count(item_type, self)
+        return (len(lendings) + len(reservations)) < LendingSettings.get_for(item, self).max_count
 
     def has_late_items(self, current_date=None):
         current_date = current_date or datetime.date(datetime.now())
@@ -167,7 +171,10 @@ class Member(MemberData):
 
         for msp in MembershipPeriod.objects.filter(member=self):
             for msp2 in MembershipPeriod.objects.filter(member=self):
-                if msp != msp2 and msp2 not in to_delete and msp not in to_delete and overlaps(msp.start_date, msp.end_date, msp2.start_date, msp2.end_date):
+                if msp != msp2 and msp2 not in to_delete and msp not in to_delete and overlaps(msp.start_date,
+                                                                                               msp.end_date,
+                                                                                               msp2.start_date,
+                                                                                               msp2.end_date):
                     if msp.member_background == msp2.member_background and msp.membership_type == msp2.membership_type:
                         msp.start_date = min(msp.start_date or FUTURE, msp2.start_date or FUTURE)
 
@@ -315,7 +322,8 @@ class Member(MemberData):
         if self.is_active():
             return "Member is still active"
         if self.user is not None and (self.user.last_login.date() - now).days < -400:
-            return "Logged in recently;  will be anonymised in " + str(400 - (self.user.last_login.date() - now).days) + " days."
+            return "Logged in recently;  will be anonymised in " + str(
+                400 - (self.user.last_login.date() - now).days) + " days."
         if (now - self.end_date).days < 800:
             return "Was recently a member; will be anonymised in " + str(800 - (now - self.end_date).days) + " days."
         from lendings.models import Lending
