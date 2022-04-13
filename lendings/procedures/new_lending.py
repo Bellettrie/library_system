@@ -5,6 +5,7 @@ from lendings.models import Lending
 from lendings.procedures.get_end_date import get_end_date
 from lendings.procedures.member_has_late_items import member_has_late_items
 from members.models import Member
+from members.procedures.can_lend_more_of_item import can_lend_more_of_item
 from works.models import Item
 
 
@@ -44,7 +45,7 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date):
     :return: None
     :except LendingImpossibleException: If the lending-checks fail.
     """
-    if not member.can_lend_more_of_item(item):
+    if not can_lend_more_of_item(member, item):
         raise LendingImpossibleException(
             "Member currently has lent too many items in category {}".format(item.location.category.item_type))
     if member_has_late_items(member, current_date):

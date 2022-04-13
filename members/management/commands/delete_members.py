@@ -19,7 +19,7 @@ class Command(BaseCommand):
         counter = 0
         for member in Member.objects.all():
 
-            if member.can_be_deleted() and member.privacy_period_ended():
+            if member.can_be_deleted() and member.reunion_period_ended():
                 counter += 1
                 MembershipPeriod.objects.filter(member=member).delete()
 

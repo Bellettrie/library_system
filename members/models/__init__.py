@@ -4,4 +4,4 @@ from members.models.member_background import MemberBackground
 from members.models.member_data import MemberData
 from members.models.member_log import MemberLog
 from members.models.membership_period import MembershipPeriod
-from members.models.membership_type import  MembershipType
+from members.models.membership_type import MembershipType
