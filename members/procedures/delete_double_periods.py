@@ -1,5 +1,16 @@
+from datetime import datetime
+
 from members.models import Member, MembershipPeriod
-from members.models.member import overlaps, FUTURE
+
+FUTURE = datetime.date(datetime.fromisoformat('9999-01-01'))
+
+
+def overlaps(start_a, end_a, start_b, end_b):
+    start_a = start_a or datetime.date(datetime.fromisoformat('1900-01-01'))
+    start_b = start_b or datetime.date(datetime.fromisoformat('1900-01-01'))
+    end_a = end_a or datetime.date(datetime.fromisoformat('2100-01-01'))
+    end_b = end_b or datetime.date(datetime.fromisoformat('2100-01-01'))
+    return (start_a <= end_b) and (end_a >= start_b)
 
 
 def delete_double_periods(member: Member):

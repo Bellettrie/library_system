@@ -10,21 +10,10 @@ from members.models.committee import Committee
 from members.models.member_data import MemberData
 from members.models.membership_period import MembershipPeriod
 
-PAST = datetime.date(datetime.fromisoformat('1900-01-01'))
-FUTURE = datetime.date(datetime.fromisoformat('2100-01-01'))
-
 
 if sys.version_info.minor < 8:
     from backports.datetime_fromisoformat import MonkeyPatch
     MonkeyPatch.patch_fromisoformat()
-
-def overlaps(startA, endA, startB, endB):
-    startA = startA or datetime.date(datetime.fromisoformat('1900-01-01'))
-    startB = startB or datetime.date(datetime.fromisoformat('1900-01-01'))
-    endA = endA or datetime.date(datetime.fromisoformat('2100-01-01'))
-    endB = endB or datetime.date(datetime.fromisoformat('2100-01-01'))
-
-    return (startA <= endB) and (endA >= startB)
 
 
 class Member(MemberData):
