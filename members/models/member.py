@@ -37,8 +37,8 @@ class Member(MemberData):
 
     def save(self, *args, **kwargs):
         from members.models.member_log import MemberLog
-        MemberLog.from_member(self)
         super().save(*args, **kwargs)
+        MemberLog.from_member(self)
 
     def __str__(self):
         return self.name
