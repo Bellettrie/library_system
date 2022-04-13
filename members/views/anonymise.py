@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from members.models import Member
+from members.procedures.anonymise import anonymise_or_except
 
 
 @transaction.atomic
@@ -13,6 +14,6 @@ def anonymise(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     if not request.GET.get('confirm'):
         return render(request, 'are-you-sure.html', {'what': "anonymise member with name " + member.name})
-    member.anonymise_me(dry_run=False)
+    anonymise_or_except(dry_run=False)
 
     return HttpResponseRedirect(reverse('members.views', args=(member.pk,)))

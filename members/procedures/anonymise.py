@@ -63,9 +63,9 @@ def anonymise_except(member: Member, current_date: datetime.date) -> None:
     if member.user is not None and (member.user.last_login.date() - current_date).days < -400:
         raise AnonymisationException("Logged in recently;  will be anonymised in " + str(
             400 - (member.user.last_login.date() - current_date).days) + " days.")
-    if (current_date - member.end_date).days < 800:
+    if (current_date - member.last_end_date()).days < 800:
         raise AnonymisationException("Was recently a member; can be anonymised in " + str(
-            800 - (current_date - member.end_date).days) + " days.")
+            800 - (current_date - member.last_end_date()).days) + " days.")
     if len(Lending.objects.filter(member=member, handed_in=False)) > 0:
         raise AnonymisationException("Still has a book lent.")
     a = current_date - timedelta(days=180)
