@@ -18,7 +18,6 @@ def anonymise_list(request):
         member = Member.objects.get(pk=member_pk)
         try:
             anonymise_or_except(member, datetime.date.today(), dry_run=False)
-
             if member.can_be_deleted() and member.reunion_period_ended():
                 member.delete()
         except AnonymisationException as e:

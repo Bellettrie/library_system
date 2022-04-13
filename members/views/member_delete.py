@@ -6,6 +6,7 @@ from django.urls import reverse
 
 from members.models import Member, MembershipPeriod
 from mail.models import MailLog
+from members.procedures.anonymise import anonymise_member
 
 
 @transaction.atomic
@@ -15,9 +16,6 @@ def delete_member(request, member_id):
     if not request.GET.get('confirm'):
         return render(request, 'are-you-sure.html', {'what': "delete member with name " + member.name})
     member = get_object_or_404(Member, pk=member_id)
-    MembershipPeriod.objects.filter(member=member).delete()
-    anonymous_members = list(Member.objects.filter(is_anonymous_user=True))
-    member.destroy(MailLog.objects.filter(member=member), 'member', anonymous_members, False)
+    anonymise_member(member, dry_run=False)
     member.delete()
-
     return HttpResponseRedirect(reverse('members.list'))

@@ -9,8 +9,6 @@ class MemberLog(MemberData):
     date_edited = models.DateTimeField(auto_now=True)
     member = models.ForeignKey(null=True, on_delete=SET_NULL, to=Member)
 
-    # Unfortunately, required due to an oops when migrating, that was only just figured out.
-
     @staticmethod
     def from_member(member: Member):
         data = MemberLog()

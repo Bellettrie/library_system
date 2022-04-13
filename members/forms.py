@@ -11,7 +11,6 @@ class EditForm(ModelForm):
             self.fields['committees'].widget.attrs['readonly'] = True
         if not dms_edit:
             self.fields['dms_registered'].widget.attrs['disabled'] = True
-
     class Meta:
         model = Member
         fields = ['name',

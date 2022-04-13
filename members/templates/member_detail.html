@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
-<!-- Brand and toggle get grouped for better mobile display -->
-<!-- bs-example-navbar-collapse-1 -->
 {% load cross_login %}
-
 {% block title %}Member: {{ member.name }}{% endblock %}
 {% block content %}
     {{ extra }}<br/>
@@ -105,7 +102,6 @@
         {% endif %}
     </table>
     <hr>
-
     <h4>Membership Periods</h4>
     <table>
         <tr>
@@ -123,12 +119,9 @@
                 <td><a href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
             </tr>
         {% endfor %}
-
     </table>
     <a href="{% url 'members.membership_period_new' member.pk %}">New period</a>
     <hr>
-
-
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Lend for</a>
     <a href="{% url 'lendings.reserve.member' member.id %}" class="btn btn-primary">Reserve for</a>
 
@@ -146,5 +139,4 @@
         <h4>Reservations</h4>
         {% get_user_reserved_books member perms %}
     {% endif %}
-
 {% endblock %}
