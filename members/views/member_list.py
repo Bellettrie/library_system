@@ -13,6 +13,7 @@ class MemberList(PermissionRequiredMixin, ListView):
     model = Member
     template_name = 'member_list.html'
     paginate_by = 50
+
     def get_queryset(self):  # new
         words = get_query_words(self.request.GET.get("q"))
         return query_members(words, self.request.GET.get('previous', False))
