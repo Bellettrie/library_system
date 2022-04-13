@@ -2,10 +2,11 @@ import sys
 
 from django.db import models
 
-
 if sys.version_info.minor < 8:
     from backports.datetime_fromisoformat import MonkeyPatch
+
     MonkeyPatch.patch_fromisoformat()
+
 
 class MemberBackground(models.Model):
     name = models.CharField(max_length=64)

@@ -16,4 +16,3 @@ class MemberData(models.Model):
     student_number = models.CharField(max_length=32, blank=True)
     is_blacklisted = models.BooleanField(default=False)
     notes = models.TextField(blank=True)
-
