@@ -1,0 +1,2 @@
+class AnonymisationException(Exception):
+    pass

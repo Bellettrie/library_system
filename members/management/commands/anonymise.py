@@ -1,8 +1,11 @@
+import datetime
+
 import mysql.connector
 
 from django.core.management.base import BaseCommand
 
 from members.models import Member
+from members.procedures.anonymise import anonymise_or_except
 
 
 def get_name(x):
@@ -23,8 +26,8 @@ class Command(BaseCommand):
                 # print(member)
                 counter += 1
                 print(member)
-                should_delete = member.privacy_period_ended()
-                member.anonymise_me(dry_run=False)
+                should_delete = member.reunion_period_ended()
+                anonymise_or_except(member, datetime.date.today(), dry_run=False)
                 if should_delete and member.can_be_deleted():
                     member.delete()
 

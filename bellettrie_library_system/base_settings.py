@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'news',
     'config',
     'inventarisation',
-    'ratings',
     'recode',
     'book_code_generation',
     'creators',

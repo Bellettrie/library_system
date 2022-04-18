@@ -6,7 +6,7 @@ from members.models import Member, Committee, MembershipPeriod, MemberBackground
 from works.models import ItemType
 
 
-class LendingCountTest(TestCase):
+class TestActiveMember(TestCase):
     def setUp(self):
         self.type1 = ItemType.objects.create(name="Type1", old_id=0)
         self.type2 = ItemType.objects.create(name="Type2", old_id=0)

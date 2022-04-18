@@ -1,14 +1,9 @@
 {% extends 'base.html' %}
-<!-- Brand and toggle get grouped for better mobile display -->
-<!-- bs-example-navbar-collapse-1 -->
-
 {% block title %}Members that can be anonymised{% endblock %}
 {% block content %}
-
-
         {% for member in corrects %}
             {% if forloop.first %}
-                Anonimisation succesful for the following members:
+                Anonymization successful for the following members:
                 <table class="table table-striped" style="width: auto;">
             {% endif %}
     <tr><td>{{ member.name }}</td></tr>
@@ -18,7 +13,7 @@
         {% endfor %}
    {% for member in errors %}
             {% if forloop.first %}
-                Anonimisation failed for the following members:
+                Anonymisation failed for the following members:
                 <table class="table table-striped" style="width: auto;">
             {% endif %}
     <tr><td>{{ member.name }}</td></tr>
@@ -26,7 +21,6 @@
                 </table>
             {% endif %}
         {% endfor %}
-    {#    {% include 'member_search_field.html' %}#}
     {% include 'pagination.html' %}
     <form method="post" action="{% url 'members.anonymise_all' %}">
     {% csrf_token %}
@@ -46,10 +40,8 @@
             {% empty %}
                 <i> No results</i>
             {% endfor %}
-
         </table>
     <button type="submit">Anonymise!</button>
     </form>
     <hr>
-
 {% endblock %}
