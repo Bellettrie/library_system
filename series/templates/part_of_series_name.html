@@ -1,5 +1,5 @@
 {% if series.part_of_series %}
     {% with series=series.part_of_series %}
-    <a href="{% url 'series.view' series.pk %}">{% include 'part_of_series_name.html'%} </a> >
+    <a href="{% url 'series.views' series.pk %}">{% include 'part_of_series_name.html'%} </a> >
     {% endwith %}
-{% endif %} <a href="{% url 'series.view' series.pk %}">{{ series.title }} </a>{% if series.display_number %}[{{ series.display_number }}]{% endif %}
+{% endif %} <a href="{% url 'series.views' series.pk %}">{{ series.title }} </a>{% if series.display_number %}[{{ series.display_number }}]{% endif %}

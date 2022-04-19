@@ -90,7 +90,7 @@ def edit_series(request, pk):
                 for c2w in instances:
                     c2w.series = instance
                     c2w.save()
-            return HttpResponseRedirect(reverse('series.view', args=(instance.pk,)))
+            return HttpResponseRedirect(reverse('series.views', args=(instance.pk,)))
     else:
         if pk is not None:
             series = get_object_or_404(Series, pk=pk)
