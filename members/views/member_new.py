@@ -31,7 +31,7 @@ def new(request):
             inst.save()
             if can_change:
                 instance.update_groups()
-            return HttpResponseRedirect(reverse('members.views', args=(instance.pk,)))
+            return HttpResponseRedirect(reverse('members.view', args=(instance.pk,)))
         else:
             return render(request, 'member_edit.html', {'form': form, 'new': True, 'error': "No end date specified",
                                                         'md_form': MembershipPeriodForm(request.POST)})

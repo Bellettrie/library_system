@@ -24,7 +24,7 @@ def new_membership_period(request, member_id):
             instance.member = member
             instance.save()
             delete_double_periods(member)
-            return HttpResponseRedirect(reverse('members.views', args=(member.pk,)))
+            return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
     else:
         form = MembershipPeriodForm(instance=member, initial={'start_date': datetime.date(datetime.now()),
                                                               'end_date': get_end_date(datetime.now().year,
