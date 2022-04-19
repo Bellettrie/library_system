@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from works.models import Item
-from lendings.procedures.register_returned import register_returned
+from lendings.procedures.register_returned import register_returned_with_mail
 
 
 @transaction.atomic
@@ -16,7 +16,7 @@ def return_item(request, work_id):
     lending = item.current_lending()
     late_days = datetime.now().date() - lending.end_date
     if request.method == 'POST':
-        register_returned(lending, request.user.member)
+        register_returned_with_mail(lending, request.user.member)
         return redirect('/members/' + str(lending.member.pk))
     return render(request, 'return_book.html', {'item': item, 'lending': lending,
                                                 'late': lending.end_date < datetime.now().date(),
