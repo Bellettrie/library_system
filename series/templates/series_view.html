@@ -18,7 +18,7 @@
             <tr>
                 <th>Name</th>
                 <td>
-                    <a href="/series/view/{{ publication.pk }}">
+                    <a href="/series/views/{{ publication.pk }}">
                         {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
                             <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
                     </a>
