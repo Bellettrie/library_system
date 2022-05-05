@@ -16,7 +16,7 @@
                 <td colspan="{{ counter.five_minus }}">{% if series.display_number %}[{{ series.display_number }}]{% else %}
                     *{% endif %}</td>
                 {% with publication=series %}
-                    <td><a href="/series/view/{{ publication.pk }}">
+                    <td><a href="/series/views/{{ publication.pk }}">
                         {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
                             <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
                     </a></td>
