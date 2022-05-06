@@ -25,6 +25,7 @@ def find_members_by_request(request):
         dms = request.GET.get('dms', False)
 
         return filter_members(found_committees, found_privacy_settings, before, after, include_honorary, dms)
+    return Member.objects.none()
 
 
 @permission_required('members.view_member')
