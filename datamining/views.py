@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
+from datamining.procedures.filter_members import filter_members
 from lendings.models import Lending
 from members.models import Member, Committee, MembershipPeriod, MembershipType, MemberBackground
 
@@ -15,67 +16,15 @@ def fetch_date(date_str):
 
 
 def find_members_by_request(request):
-    members = Member.objects.all()
-    found_members = []
     if request.GET.get('exec'):
         found_committees = request.GET.getlist('committees')
-        found_privacy_things = request.GET.getlist('privacy')
+        found_privacy_settings = request.GET.getlist('privacy')
+        after = fetch_date(request.GET.get('m_after') or "9999-12-31")
+        before = fetch_date(request.GET.get('m_before') or "1900-01-01")
+        include_honorary = request.GET.get('m_include_honorary', False)
+        dms = request.GET.get('dms', False)
 
-        if request.GET.get('m_after') and request.GET.get('m_before'):
-            after = fetch_date(request.GET.get('m_after'))
-            before = fetch_date(request.GET['m_before'])
-            for member in members:
-                if member.member_between(after, before):
-                    found_members.append(member)
-        elif request.GET.get('m_after'):
-            d = fetch_date(request.GET.get('m_after'))
-            for member in members:
-                if member.member_after_date(d):
-                    found_members.append(member)
-        elif request.GET.get('m_before'):
-            d = fetch_date(request.GET['m_before'])
-            for member in found_members:
-                if member.member_before_date(d):
-                    found_members.append(member)
-
-        if request.GET.get('m_include_honorary', False):
-            for member in members:
-                if member.last_end_date() is None:
-                    found_members.append(member)
-
-        if request.GET.get('dms', False):
-            found_2 = []
-            for member in found_members:
-                if not member.dms_registered:
-                    found_2.append(member)
-            found_members = found_2
-
-        if len(found_committees) > 0:
-            found_2 = []
-            for member in found_members:
-                found = False
-                for committee in member.committees.all():
-                    if str(committee.pk) in found_committees:
-                        found = True
-                if found:
-                    found_2.append(member)
-            found_members = found_2
-
-        if len(found_privacy_things) > 0:
-            found_2 = []
-            for member in found_members:
-                found = False
-                if member.privacy_activities and 'activities' in found_privacy_things:
-                    found = True
-                if member.privacy_publications and 'publications' in found_privacy_things:
-                    found = True
-                if member.privacy_reunions and 'reunions' in found_privacy_things:
-                    found = True
-                if found:
-                    found_2.append(member)
-            found_members = found_2
-
-    return found_members
+        return filter_members(found_committees, found_privacy_settings, before, after, include_honorary, dms)
 
 
 @permission_required('members.view_member')
