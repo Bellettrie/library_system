@@ -24,6 +24,7 @@ def mail_member(template_string: str, context: dict, member: Member, is_logged: 
         if connection:
             send_mail(template_string, context, 'info@bellettrie.utwente.nl', [mail], connection=connection)
         else:
-            send_mail(template_string, context, 'info@bellettrie.utwente.nl', [mail])
+            # send_mail(template_string, context, 'info@bellettrie.utwente.nl', [mail])
+            pass
         if is_logged:
             MailLog.objects.create(member=member, contents=str(context))
