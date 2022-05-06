@@ -12,7 +12,6 @@ from members.models.membership_period import MembershipPeriod
 
 if sys.version_info.minor < 8:
     from backports.datetime_fromisoformat import MonkeyPatch
-
     MonkeyPatch.patch_fromisoformat()
 
 
