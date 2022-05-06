@@ -46,7 +46,10 @@ class Member(MemberData):
     def last_end_date(self):
         end_date = None
         for period in self.get_periods():
-            end_date = max(end_date or period.end_date, period.end_date)
+            if period.end_date:
+                end_date = max(end_date or period.end_date, period.end_date)
+            else:
+                return None
         return end_date
 
     def get_current_membership_period(self, current_date: datetime.date = None):

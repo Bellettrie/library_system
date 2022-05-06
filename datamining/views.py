@@ -23,7 +23,7 @@ def find_members_by_request(request):
         if request.GET.get('m_after'):
             for member in members:
                 d = fetch_date(request.GET.get('m_after'))
-                if member.end_date is not None and member.end_date > d:
+                if member.last_end_date() is not None and member.last_end_date() > d:
                     found_members.append(member)
         else:
             found_members = list(members)
@@ -32,12 +32,12 @@ def find_members_by_request(request):
             found_2 = []
             for member in found_members:
                 d = fetch_date(request.GET['m_before'])
-                if member.end_date is not None and member.end_date < d:
+                if member.last_end_date() is not None and member.last_end_date() < d:
                     found_2.append(member)
             found_members = found_2
         if request.GET.get('m_include_honorary', False):
             for member in members:
-                if member.end_date is None:
+                if member.last_end_date() is None:
                     found_members.append(member)
         if request.GET.get('dms', False):
             found_2 = []
