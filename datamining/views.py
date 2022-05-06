@@ -20,21 +20,23 @@ def find_members_by_request(request):
     if request.GET.get('exec'):
         found_committees = request.GET.getlist('committees')
         found_privacy_things = request.GET.getlist('privacy')
-        if request.GET.get('m_after'):
+
+        if request.GET.get('m_after') and request.GET.get('m_before'):
+            after = fetch_date(request.GET.get('m_after'))
+            before = fetch_date(request.GET['m_before'])
+            for member in members:
+                if member.member_between(after, before):
+                    found_members.append(member)
+        elif request.GET.get('m_after'):
             d = fetch_date(request.GET.get('m_after'))
             for member in members:
                 if member.member_after_date(d):
                     found_members.append(member)
-        else:
-            found_members = list(members)
-
-        if request.GET.get('m_before'):
-            found_2 = []
+        elif request.GET.get('m_before'):
             d = fetch_date(request.GET['m_before'])
             for member in found_members:
                 if member.member_before_date(d):
-                    found_2.append(member)
-            found_members = found_2
+                    found_members.append(member)
 
         if request.GET.get('m_include_honorary', False):
             for member in members:

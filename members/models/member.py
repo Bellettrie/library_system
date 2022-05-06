@@ -71,6 +71,12 @@ class Member(MemberData):
                 return True
         return False
 
+    def member_between(self, start_date, end_date):
+        for period in self.get_periods():
+            if start_date <= period.start_date <= end_date or start_date <= period.end_date <= end_date:
+                return True
+        return False
+
     def get_periods(self):
         return self.membershipperiod_set.all().order_by('start_date')
 
