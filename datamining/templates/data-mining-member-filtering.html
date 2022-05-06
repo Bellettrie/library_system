@@ -4,41 +4,65 @@
 {% block content %}
     Please use standard iso date formats (ie. 2020-01-01):
     <form action="#" method="get">
-        <label for="m_after">Membership Ended After: </label>
+        <table class="table table-striped"style="max-width: 400px">
+            <tr>
+                <th colspan="2" style="text-align: center">Was member during</th>
+            </tr>
+            <tr>
+                <td><label for="m_before">From: </label></td>
+                <td><input id="m_before" class="datepicker" type="text" name="m_before" placeholder="1900-01-01" value="{{ request.GET.m_before }}"></td>
+            </tr>
+            <tr>
+                <td><label for="m_after">To: </label></td>
+                <td><input id="m_after" class="datepicker" type="text" name="m_after" placeholder="2300-12-31" value="{{ request.GET.m_after }}"></td>
+            </tr>
+            <tr>
+                <td><label for="m_include_honorary">Include honorary members: </label></td>
+                <td><input id="m_include_honorary" type="checkbox" name="m_include_honorary"
+                           {% if request.GET.m_include_honorary %}checked{% endif %}></td>
+            </tr>
+            <tr>
+                <th colspan="2" style="text-align: center">Other settings</th>
+            </tr>
+            <tr>
+                <td><label for="dms">Not DMS registered: </label></td>
+                <td><input id="dms" type="checkbox" name="dms"
+                           {% if dms %}checked{% endif %}></td>
+            </tr>
+            <tr>
+                <td><label for="committees">Committees</label></td>
+                <td>{% with list=request.GET|get_list:'committees' %}
+                    <select name="committees" id="committees" multiple="true">
+                        {% for committee in committees %}
 
-        <input id="m_after" type="text" name="m_after" value="{{ request.GET.m_after }}">
+                            <option {% if committee.pk|to_string in list %}selected{% endif %}
+                                    value="{{ committee.pk }}">{{ committee.name }}</option>
 
-        <label for="m_before">Membership Ended Before: </label>
-        <input id="m_before" type="text" name="m_before" value="{{ request.GET.m_before }}">
-
-        <label for="m_include_honorary">Include honorary members: </label>
-        <input id="m_include_honorary" type="checkbox" name="m_include_honorary"
-               {% if request.GET.m_include_honorary %}checked{% endif %}>
-        <label for="mails">Get mail address list: </label>
-        <input id="mails" type="checkbox" name="mails"
-               {% if mails %}checked{% endif %}>
-        <label for="dms">Not DMS registered: </label>
-        <input id="dms" type="checkbox" name="dms"
-               {% if dms %}checked{% endif %}>
-        {% with list=request.GET|get_list:'committees' %}
-            <select name="committees" id="committees" multiple="true">
-                {% for committee in committees %}
-
-                    <option {% if committee.pk|to_string in list %}selected{% endif %}
-                            value="{{ committee.pk }}">{{ committee.name }}</option>
-
-                {% endfor %}
-            </select>
-        {% endwith %}
-        Privacy Settings
-        {% with list=request.GET|get_list:'privacy' %}
-            <select name="privacy" id="privacy" multiple="true">
-                <option {% if 'activities' in list %}selected{% endif %} value="activities">activities</option>
-                <option  {% if 'publications' in list %}selected{% endif %} value="publications">publications</option>
-                <option  {% if 'reunions' in list %}selected{% endif %}  value="reunions">reunions</option>
-            </select>
-        {% endwith %}
-
+                        {% endfor %}
+                    </select>
+                {% endwith %}
+                </td>
+            </tr>
+            <tr>
+                <td><label for="privacy">Privacy Settings</label></td>
+                <td>{% with list=request.GET|get_list:'privacy' %}
+                    <select name="privacy" id="privacy" multiple="true">
+                        <option {% if 'activities' in list %}selected{% endif %} value="activities">activities</option>
+                        <option  {% if 'publications' in list %}selected{% endif %} value="publications">publications</option>
+                        <option  {% if 'reunions' in list %}selected{% endif %}  value="reunions">reunions</option>
+                    </select>
+                {% endwith %}
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2" style="text-align: center">As mailing list?</th>
+            </tr>
+            <tr>
+                <td><label for="mails">Get mail address list: </label></td>
+                <td><input id="mails" type="checkbox" name="mails"
+                           {% if mails %}checked{% endif %}></td>
+            </tr>
+        </table>
         <input type="submit" name="exec" value="Search" class="btn-primary btn">
     </form>
     {% if mails %}
