@@ -59,24 +59,6 @@ class Member(MemberData):
                 return period
         return None
 
-    def member_before_date(self, given_date):
-        for period in self.get_periods():
-            if period.start_date is None or period.start_date <= given_date:
-                return True
-        return False
-
-    def member_after_date(self, given_date):
-        for period in self.get_periods():
-            if period.end_date is None or period.end_date >= given_date:
-                return True
-        return False
-
-    def member_between(self, start_date, end_date):
-        for period in self.get_periods():
-            if start_date <= period.start_date <= end_date or start_date <= period.end_date <= end_date:
-                return True
-        return False
-
     def get_periods(self):
         return self.membershipperiod_set.all().order_by('start_date')
 
