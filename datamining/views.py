@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
+from datamining.procedures.filter_members import filter_members
 from lendings.models import Lending
 from members.models import Member, Committee, MembershipPeriod, MembershipType, MemberBackground
 
@@ -15,60 +16,15 @@ def fetch_date(date_str):
 
 
 def find_members_by_request(request):
-    members = Member.objects.all()
-    found_members = []
     if request.GET.get('exec'):
         found_committees = request.GET.getlist('committees')
-        found_privacy_things = request.GET.getlist('privacy')
-        if request.GET.get('m_after'):
-            for member in members:
-                d = fetch_date(request.GET.get('m_after'))
-                if member.end_date is not None and member.end_date > d:
-                    found_members.append(member)
-        else:
-            found_members = list(members)
+        found_privacy_settings = request.GET.getlist('privacy')
+        after = fetch_date(request.GET.get('m_after') or "9999-12-31")
+        before = fetch_date(request.GET.get('m_before') or "1900-01-01")
+        include_honorary = request.GET.get('m_include_honorary', False)
+        dms = request.GET.get('dms', False)
 
-        if request.GET.get('m_before'):
-            found_2 = []
-            for member in found_members:
-                d = fetch_date(request.GET['m_before'])
-                if member.end_date is not None and member.end_date < d:
-                    found_2.append(member)
-            found_members = found_2
-        if request.GET.get('m_include_honorary', False):
-            for member in members:
-                if member.end_date is None:
-                    found_members.append(member)
-        if request.GET.get('dms', False):
-            found_2 = []
-            for member in found_members:
-                if not member.dms_registered:
-                    found_2.append(member)
-            found_members = found_2
-        if len(found_committees) > 0:
-            found_2 = []
-            for member in found_members:
-                found = False
-                for committee in member.committees.all():
-                    if str(committee.pk) in found_committees:
-                        found = True
-                if found:
-                    found_2.append(member)
-            found_members = found_2
-        if len(found_privacy_things) > 0:
-            found_2 = []
-            for member in found_members:
-                found = False
-                if member.privacy_activities and 'activities' in found_privacy_things:
-                    found = True
-                if member.privacy_publications and 'publications' in found_privacy_things:
-                    found = True
-                if member.privacy_reunions and 'reunions' in found_privacy_things:
-                    found = True
-                if found:
-                    found_2.append(member)
-            found_members = found_2
-    return found_members
+        return filter_members(found_committees, found_privacy_settings, before, after, include_honorary, dms)
 
 
 @permission_required('members.view_member')
@@ -78,13 +34,10 @@ def show_members(request):
     r_str = ""
 
     for member in found_members:
-
         if len(member.email) > 0:
             r_str += ("; " + member.email)
+
     return render(request, 'data-mining-member-filtering.html', {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'dms': request.GET.get('dms'), 'members': found_members, 'committees': committees})
-
-
-# Create your models here.
 
 
 def get_member_statistics(day):
@@ -102,22 +55,23 @@ def get_member_statistics(day):
         member_type_counts[member.membership_type] = count + 1
         if member.membership_type is not None and member.member_background.name == 'employee':
             r_mem.append(member)
-    zz = dict()
 
+    zz = dict()
     for ru in MemberBackground.objects.all():
         zz[ru] = dict()
     zz[None] = dict()
+
     for ru in zz:
         for a in MembershipType.objects.all():
             zz[ru][a] = 0
         zz[ru][None] = 0
+
     for quad in quadrants.keys():
         row = zz.get(quad[0], dict())
-
         row[quad[1]] = quadrants[quad]
         zz[quad[0]] = row
-    col_counts = dict()
 
+    col_counts = dict()
     for row in zz.keys():
         if row is None:
             continue
@@ -129,6 +83,7 @@ def get_member_statistics(day):
             col_counts[z] = col_counts.get(z, 0) + zz[row][z]
         zz[row]['Total'] = r_count
         col_counts['Total'] = col_counts.get('Total', 0) + r_count
+
     for row in zz.keys():
         zz[row].pop(None)
     zz.pop(None)
@@ -160,5 +115,4 @@ def show_lending_stats(request):
     start_date = request.GET.get('start_date', datetime.datetime.now().date().isoformat())
     end_date = request.GET.get('end_date', datetime.datetime.now().date().isoformat())
     q = get_lending_stats(start_date, end_date)
-    print(q)
     return render(request, 'data-mining-lending-stats.html', {'q': q})
