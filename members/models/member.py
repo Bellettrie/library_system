@@ -10,9 +10,9 @@ from members.models.committee import Committee
 from members.models.member_data import MemberData
 from members.models.membership_period import MembershipPeriod
 
-
 if sys.version_info.minor < 8:
     from backports.datetime_fromisoformat import MonkeyPatch
+
     MonkeyPatch.patch_fromisoformat()
 
 
@@ -59,6 +59,18 @@ class Member(MemberData):
                     period.end_date is None or current_date <= period.end_date):
                 return period
         return None
+
+    def member_before_date(self, given_date):
+        for period in self.get_periods():
+            if period.start_date is None or period.start_date <= given_date:
+                return True
+        return False
+
+    def member_after_date(self, given_date):
+        for period in self.get_periods():
+            if period.end_date is None or period.end_date >= given_date:
+                return True
+        return False
 
     def get_periods(self):
         return self.membershipperiod_set.all().order_by('start_date')

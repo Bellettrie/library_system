@@ -21,30 +21,33 @@ def find_members_by_request(request):
         found_committees = request.GET.getlist('committees')
         found_privacy_things = request.GET.getlist('privacy')
         if request.GET.get('m_after'):
+            d = fetch_date(request.GET.get('m_after'))
             for member in members:
-                d = fetch_date(request.GET.get('m_after'))
-                if member.last_end_date() is not None and member.last_end_date() > d:
+                if member.member_after_date(d):
                     found_members.append(member)
         else:
             found_members = list(members)
 
         if request.GET.get('m_before'):
             found_2 = []
+            d = fetch_date(request.GET['m_before'])
             for member in found_members:
-                d = fetch_date(request.GET['m_before'])
-                if member.last_end_date() is not None and member.last_end_date() < d:
+                if member.member_before_date(d):
                     found_2.append(member)
             found_members = found_2
+
         if request.GET.get('m_include_honorary', False):
             for member in members:
                 if member.last_end_date() is None:
                     found_members.append(member)
+
         if request.GET.get('dms', False):
             found_2 = []
             for member in found_members:
                 if not member.dms_registered:
                     found_2.append(member)
             found_members = found_2
+
         if len(found_committees) > 0:
             found_2 = []
             for member in found_members:
@@ -55,6 +58,7 @@ def find_members_by_request(request):
                 if found:
                     found_2.append(member)
             found_members = found_2
+
         if len(found_privacy_things) > 0:
             found_2 = []
             for member in found_members:
@@ -68,6 +72,7 @@ def find_members_by_request(request):
                 if found:
                     found_2.append(member)
             found_members = found_2
+
     return found_members
 
 
