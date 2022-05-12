@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'public_pages',
     'datamining',
     'search',
+    'tables',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +76,11 @@ TEMPLATES = [
         'OPTIONS': {
             'builtins':
                 [
-                    'bellettrie_library_system.templatetags.paginator_tag'
+                    'bellettrie_library_system.templatetags.paginator_tag',
+                    'tables.templatetags.render_square',
+                    'tables.templatetags.member_lending_table',
+                    'tables.templatetags.lending_table',
+                    'tables.templatetags.publications_list_for_member',
                 ],
             'context_processors':
                 [

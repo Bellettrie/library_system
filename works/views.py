@@ -16,6 +16,9 @@ from recode.models import Recode
 from search.queries import BaseSearchQuery, AndOp, AuthorSearchQuery, SeriesSearchQuery, TitleSearchQuery, \
     StateSearchQuery, LocationSearchQuery, BookCodeSearchQuery
 from series.models import Series
+from tables.columns import TitleColumn
+from tables.rows import ItemRow
+from tables.table import Table
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
 from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState, WorkInPublication, \
@@ -39,29 +42,6 @@ def sorter(dictt):
     return lambda a: -dictt[a]
 
 
-class ItemRow:
-    def __init__(self, item: Item, book_result=None, options=[], extra_info=None):
-        self.item = item
-        self.book_result = book_result
-        self.options = options
-        self.extra_info = extra_info
-
-    def __str__(self):
-        return self.item.book_code + self.item.book_code_extension
-
-
-class BookResult:
-    def __init__(self, publication: Publication, item_options=[], publication_options=[], items=None):
-        self.publication = publication
-        self.item_options = item_options
-        self.publication_options = publication_options
-        self.item_rows = items
-        self.score = 0
-
-    def set_item_options(self, item_options):
-        self.item_options = item_options
-
-
 def merge_queries(query, add_query):
     if query is None:
         return add_query
@@ -70,7 +50,7 @@ def merge_queries(query, add_query):
 
 
 def get_works_for_publication(words_for_q, words_for_author=[], words_for_series=[], words_for_title=[], states=[],
-                              categories=[], book_code=[]):
+                              categories=[], book_code=""):
     query = None
     if len(words_for_q) > 0:
         query = merge_queries(query, BaseSearchQuery(" ".join(words_for_q)))
@@ -92,27 +72,18 @@ def get_works_for_publication(words_for_q, words_for_author=[], words_for_series
     work_list = list(set(result_set))
     work_list.sort(key=lambda a: (a.title or "").upper())
     work_list.sort(key=lambda a: a.listed_author)
-
-    result = []
-    for row in work_list:
-        result.append(BookResult(row, item_options=['lend', 'reserve']))
-    return result
+    return work_list
 
 
 def get_works_by_book_code(word):
-    results = []
-    pub_dict = dict()
     word = word_to_regex(word)
     if len(word) == 0:
         return []
     items = Item.objects.filter(Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word)).prefetch_related(
         "publication")
+    results = []
     for item in items:
-        dz = pub_dict.get(item.publication, [])
-        dz.append(ItemRow(item, []))
-        pub_dict[item.publication] = dz
-    for key in pub_dict.keys():
-        results.append(BookResult(key, pub_dict[key]))
+        results.append(item.publication)
     return results
 
 
@@ -137,6 +108,7 @@ def get_works(request):
     if len(words) == 1 and not request.GET.get('advanced', False):
         results += get_works_by_book_code(words[0])
     results += get_works_for_publication(words, words_author, words_series, words_title, states, categories, book_code)
+    print(results)
     return results
 
 
@@ -161,9 +133,6 @@ class WorkList(ListView):
 
     def get_queryset(self):  # new
         result = get_works(self.request)
-        for row in result:
-            row.set_item_options(["lend", "reserve"])
-            row.publication_options = ["edit"]
         return result
 
 

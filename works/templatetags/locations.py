@@ -1,10 +1,6 @@
 from django import template
-from django.db.models import Q
 
-from creators.models import Creator
-from series.models import Series
-from works.models import Publication, Item, Location
-from works.views import ItemRow, BookResult
+from works.models import Location
 
 register = template.Library()
 
