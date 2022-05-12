@@ -8,7 +8,7 @@ class Row:
         self.table = None
 
     def get_item(self) -> Item:
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def is_item(self):
         return True

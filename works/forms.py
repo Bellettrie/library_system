@@ -5,7 +5,6 @@ from creators.forms import CreatorWidget
 from series.forms import SeriesWidget
 from series.models import WorkInSeries
 from works.models import ItemState, Item, Publication, CreatorToWork, Work, SubWork
-from django.forms import formset_factory
 
 
 class SimpleWorkSearch(forms.Form):

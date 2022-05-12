@@ -1,16 +1,17 @@
 from bellettrie_library_system.templatetags.paginator_tag import register
-from lendings.models import Lending
 from members.models import Member
 from reservations.models import Reservation
-from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, ButtonsColumn, FineColumn
+from tables.buttons import ReservationLendButton, ReservationCancelButton
+from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, ButtonsColumn
 from tables.table import Table
-from tables.rows import LendingRow, ReservationRow
+from tables.rows import ReservationRow
 
 cols = [BookCodeColumn(),
         TitleColumn(),
         AllAuthorsColumn(),
         AllAuthorsColumn(),
-        ButtonsColumn([], "Return")
+        ButtonsColumn([ReservationLendButton(),
+                       ReservationCancelButton()], "Return")
         ]
 
 

@@ -1,5 +1,4 @@
 import re
-from typing import List
 
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
@@ -9,19 +8,15 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse
-from django.views.generic import DetailView, ListView, CreateView
+from django.views.generic import DetailView, ListView
 
-from book_code_generation.models import standardize_code
 from recode.models import Recode
 from search.queries import BaseSearchQuery, AndOp, AuthorSearchQuery, SeriesSearchQuery, TitleSearchQuery, \
     StateSearchQuery, LocationSearchQuery, BookCodeSearchQuery
-from series.models import Series
-from tables.columns import TitleColumn
-from tables.rows import ItemRow
-from tables.table import Table
+
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
-from works.models import Work, Publication, Creator, SubWork, CreatorToWork, Item, ItemState, WorkInPublication, \
+from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
     Category
 
 
@@ -108,7 +103,6 @@ def get_works(request):
     if len(words) == 1 and not request.GET.get('advanced', False):
         results += get_works_by_book_code(words[0])
     results += get_works_for_publication(words, words_author, words_series, words_title, states, categories, book_code)
-    print(results)
     return results
 
 

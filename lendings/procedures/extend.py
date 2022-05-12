@@ -41,6 +41,15 @@ def extend_checks(lending: Lending, now: datetime.date):
             "Item is not currently available for lending, the item is {}.".format(lending.item.get_state()))
     if lending.times_extended >= LendingSettings.get_for(lending.item, lending.member).extend_count:
         raise LendingImpossibleException("Item at max number of extensions")
+    if get_end_date_for_lending(lending, now) <= lending.end_date:
+        raise LendingImpossibleException("End date would not change.")
+
+
+def can_extend(lending: Lending, current_date: datetime.date):
+    try:
+        extend_checks(lending, current_date)
+    except LendingImpossibleException as error:
+        return error.__str__()
 
 
 def new_extension(lending: Lending, current_date: datetime.date):

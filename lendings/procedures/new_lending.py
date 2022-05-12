@@ -36,7 +36,7 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
     return new_lending
 
 
-def lending_checks(item: Item, member: Member, current_date: datetime.date):
+def lending_checks(item: Item, member: Member, current_date: datetime.date, from_reservation=False):
     """
     Check whether an item can be lent by a member.
     :param item: The item to be lent
@@ -45,7 +45,7 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date):
     :return: None
     :except LendingImpossibleException: If the lending-checks fail.
     """
-    if not can_lend_more_of_item(member, item):
+    if not can_lend_more_of_item(member, item, from_reservation):
         raise LendingImpossibleException(
             "Member currently has lent too many items in category {}".format(item.location.category.item_type))
     if member_has_late_items(member, current_date):
@@ -67,7 +67,14 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date):
         raise LendingImpossibleException("End date for this lending would be in the past, cannot lend.")
 
 
-def new_lending(item: Item, member: Member, user_member: Member, current_date: datetime.date):
+def can_lend(item: Item, member: Member, current_date: datetime.date, from_reservation=False):
+    try:
+        lending_checks(item, member, current_date, from_reservation)
+    except LendingImpossibleException as error:
+        return error.__str__()
+
+
+def new_lending(item: Item, member: Member, user_member: Member, current_date: datetime.date, from_reservation=False):
     """
     Execute checks. If the checks pass, create a new lending.
     :param item: The item to be lent
@@ -77,5 +84,5 @@ def new_lending(item: Item, member: Member, user_member: Member, current_date: d
     :return: A lending object, already persisted
     :except LendingImpossibleException: If the lending-checks fail.
     """
-    lending_checks(item, member, current_date)
+    lending_checks(item, member, current_date, from_reservation)
     return create_lending(item, member, user_member, current_date)

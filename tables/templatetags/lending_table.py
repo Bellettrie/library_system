@@ -1,6 +1,5 @@
 from bellettrie_library_system.templatetags.paginator_tag import register
 from lendings.models import Lending
-from members.models import Member
 from tables.buttons import LendingTableReturnButton
 from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, LentByColumn, FineColumn, ButtonsColumn
 from tables.table import Table

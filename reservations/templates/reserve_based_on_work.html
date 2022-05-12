@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
     Reservation for work: {{ item.publication.title }}
-    <form action="/lend/reserve_work/{{ item.pk }}" method="get">
+    <form action="/reservations/reserve_item/{{ item.pk }}" method="get">
         <label for="Query">Name: </label>
         <input id="q" type="text" name="q">
         <input type="submit" value="Search" class="btn-primary btn" >

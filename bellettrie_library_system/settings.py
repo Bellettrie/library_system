@@ -4,6 +4,7 @@ import os
 
 WSGI_APPLICATION = 'bellettrie_library_system.wsgi.application'
 
+SKIP_MAIL = True
 
 SECRET_KEY = '9_meq=rl3q!wh4=lr4g9t)ra9l*o_d7!exbh&^brhj=*_xm5y*'
 
