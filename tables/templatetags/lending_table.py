@@ -1,7 +1,8 @@
 from bellettrie_library_system.templatetags.paginator_tag import register
 from lendings.models import Lending
 from tables.buttons import LendingTableReturnButton
-from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, LentByColumn, FineColumn, ButtonsColumn
+from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, LentByColumn, FineColumn, ButtonsColumn, \
+    HandinDate
 from tables.table import Table
 from tables.rows import LendingRow
 
@@ -10,6 +11,7 @@ cols = [
     TitleColumn(),
     AllAuthorsColumn(),
     LentByColumn(),
+    HandinDate(),
     FineColumn(),
     ButtonsColumn([LendingTableReturnButton()], "Return")
 ]

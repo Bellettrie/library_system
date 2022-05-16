@@ -2,7 +2,7 @@ from bellettrie_library_system.templatetags.paginator_tag import register
 from lendings.models import Lending
 from members.models import Member
 from tables.buttons import LendingTableReturnButton, ExtendButton
-from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, FineColumn, ButtonsColumn
+from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, FineColumn, ButtonsColumn, HandinDate
 from tables.table import Table
 from tables.rows import LendingRow
 
@@ -10,6 +10,7 @@ cols = [
     BookCodeColumn(),
     TitleColumn(),
     AllAuthorsColumn(),
+    HandinDate(),
     FineColumn(),
     ButtonsColumn([LendingTableReturnButton(), ExtendButton()], "Return")
 ]

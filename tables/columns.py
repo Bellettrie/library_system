@@ -54,6 +54,15 @@ class LentByColumn(Column):
         return render_to_string("columns/member_column.html", {"member": row.lending.member})
 
 
+class HandinDate(Column):
+    @staticmethod
+    def get_header():
+        return "Handin Date"
+
+    def render(self, row: LendingRow, perms=None):
+        return render_to_string("columns/handin_date.html", {"lending": row.lending})
+
+
 class FineColumn(Column):
     @staticmethod
     def get_header():
