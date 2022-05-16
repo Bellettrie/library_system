@@ -132,7 +132,7 @@ class LendingExtend(LendingBase):
             new_extension(self.lending, self.lending.end_date + timedelta(days=1))
         except LendingImpossibleException as err:
             err_str = str(err)
-        self.assertEqual(err_str, "Member currently has items that are late. These need to be returned before it can be handed in.")
+        self.assertEqual(err_str, "This item is late, and needs to be handed in.")
 
 
 class CalculateFine(LendingBase):

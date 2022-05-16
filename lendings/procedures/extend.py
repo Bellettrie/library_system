@@ -28,7 +28,7 @@ def extend_checks(lending: Lending, now: datetime.date):
     :return: None
     :except LendingImpossibleException: If the lending-checks fail.
     """
-    if lending.is_late():
+    if lending.is_late(now):
         raise LendingImpossibleException(
             "This item is late, and needs to be handed in.")
     if member_has_late_items(lending.member, now):
