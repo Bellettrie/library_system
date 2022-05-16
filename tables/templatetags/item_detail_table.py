@@ -28,8 +28,10 @@ def detailed_items(its, member: Member, perms):
         AnonColumn("Year", lambda row, item, pm: item.publication_year),
         ButtonsColumn([
             StatusButton(),
-            StatusChangeButton(),
         ], "Status"),
+        ButtonsColumn([
+            StatusChangeButton(),
+        ], ""),
         ButtonsColumn([
             ItemEditButton()
         ], "Edit"),
