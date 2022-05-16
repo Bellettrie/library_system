@@ -28,9 +28,12 @@ def extend_checks(lending: Lending, now: datetime.date):
     :return: None
     :except LendingImpossibleException: If the lending-checks fail.
     """
+    if lending.is_late():
+        raise LendingImpossibleException(
+            "This item is late, and needs to be handed in.")
     if member_has_late_items(lending.member, now):
         raise LendingImpossibleException(
-            "Member currently has items that are late. These need to be returned before it can be handed in.")
+            "Member currently has items that are late. These need to be returned before any books can be extended.")
     if lending.member.is_blacklisted:
         raise LendingImpossibleException("Member currently blacklisted, cannot lend")
     if lending.item.is_reserved():
