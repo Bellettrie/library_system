@@ -27,6 +27,11 @@ def detailed_items(its, member: Member, perms):
         AnonColumn("Pages", lambda row, item, pm: item.pages),
         AnonColumn("Year", lambda row, item, pm: item.publication_year),
         ButtonsColumn([
+            LendBookButton(),
+            ReturnBookButton(),
+            IsLentOutStatus(),
+        ], "Lending"),
+        ButtonsColumn([
             StatusButton(),
         ], "Status"),
         ButtonsColumn([
@@ -35,11 +40,6 @@ def detailed_items(its, member: Member, perms):
         ButtonsColumn([
             ItemEditButton()
         ], "Edit"),
-        ButtonsColumn([
-            LendBookButton(),
-            ReturnBookButton(),
-            IsLentOutStatus(),
-        ], "Lending"),
     ]
 
     rows = []
