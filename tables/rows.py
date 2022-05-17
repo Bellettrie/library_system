@@ -29,7 +29,7 @@ class NoItemRow(Row):
         self.publication = publication
 
     def get_item(self) -> Item:
-        return None
+        return Item(publication=self.publication)
 
     def is_item(self):
         return False

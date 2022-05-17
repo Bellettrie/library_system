@@ -33,6 +33,9 @@ class Button:
 
 
 class LendingTableReturnButton(Button):
+    def is_hidden(self, row, perms):
+        return not row.is_item()
+
     def is_enabled(self, row, perms):
         return True, "-"
 
@@ -50,7 +53,7 @@ class LendBookButton(Button):
 
     def is_hidden(self, row, perms: PermWrapper):
         if perms["lendings"]["lendings.add_lending"]:
-            return False
+            return not row.is_item()
         return True
 
     def enabled_render(self, row, perms=None):
@@ -61,6 +64,7 @@ class LendBookButton(Button):
 
 
 class FinalizeLendingButton(Button):
+
     def __init__(self, member: Member):
         self.member = member
 
@@ -71,7 +75,7 @@ class FinalizeLendingButton(Button):
     def is_hidden(self, row, perms: PermWrapper):
         if perms["lendings"]["lendings.add_lending"]:
             return False
-        return True
+        return not row.is_item()
 
     def enabled_render(self, row, perms=None):
         return render_to_string("buttons/finalize_lending_button.html", {"item": row.get_item(), "member": self.member})
@@ -93,7 +97,7 @@ class FinalizeReservationButton(Button):
         if not self.member:
             return True
         if perms["reservations"]["reservations.add_reservation"]:
-            return False
+            return not row.is_item()
         return True
 
     def enabled_render(self, row, perms=None):
@@ -113,7 +117,7 @@ class ReturnBookButton(Button):
 
     def is_hidden(self, row, perms: PermWrapper):
         if perms["lendings"]["lendings.add_lending"]:
-            return False
+            return not row.is_item()
         return True
 
     def enabled_render(self, row, perms=None):
@@ -130,7 +134,7 @@ class IsLentOutStatus(Button):
     def is_hidden(self, row, perms: PermWrapper):
         if perms["lendings"]["lendings.add_lending"]:
             return True
-        return False
+        return not row.is_item()
 
     def enabled_render(self, row, perms=None):
         return "<i>Lent Out</i>"
@@ -145,7 +149,7 @@ class NotInAvailableStatus(Button):
 
     def is_hidden(self, row, perms: PermWrapper):
         if str(row.get_item().get_state()) != "AVAILABLE":
-            return False
+            return not row.is_item()
         return True
 
     def enabled_render(self, row, perms=None):
@@ -153,6 +157,9 @@ class NotInAvailableStatus(Button):
 
 
 class ReservationCancelButton(Button):
+    def is_hidden(self, row, perms):
+        return not row.is_item()
+
     def is_enabled(self, row, perms: PermWrapper):
         return True, "-"
 
@@ -161,6 +168,9 @@ class ReservationCancelButton(Button):
 
 
 class ReservationLendButton(Button):
+    def is_hidden(self, row, perms):
+        return not row.is_item()
+
     def is_enabled(self, row, perms: PermWrapper):
         return not row.get_item().is_lent_out(), "Item is lent out"
 
@@ -172,6 +182,9 @@ class ReservationLendButton(Button):
 
 
 class ExtendButton(Button):
+    def is_hidden(self, row, perms):
+        return not row.is_item()
+
     def is_enabled(self, row: LendingRow, perms: PermWrapper):
         e = can_extend(row.lending, datetime.datetime.now().date())
         return not e, e
@@ -184,6 +197,9 @@ class ExtendButton(Button):
 
 
 class StatusButton(Button):
+    def is_hidden(self, row, perms):
+        return not row.is_item()
+
     def is_enabled(self, row, perms):
         return perms["works"]["change_publication"], "-"
 
@@ -196,6 +212,9 @@ class StatusButton(Button):
 
 
 class StatusChangeButton(Button):
+    def is_hidden(self, row, perms):
+        return not row.is_item()
+
     def is_enabled(self, row, perms):
         return perms["works"]["change_publication"], "-"
 
@@ -208,6 +227,9 @@ class StatusChangeButton(Button):
 
 
 class ItemEditButton(Button):
+    def is_hidden(self, row, perms):
+        return not row.is_item()
+
     def is_enabled(self, row, perms):
         return perms["works"]["change_publication"], "-"
 
@@ -217,3 +239,14 @@ class ItemEditButton(Button):
 
     def disabled_render(self, row, perms=None, err=None):
         return ""
+
+
+class NoItemsButton(Button):
+    def is_hidden(self, row, perms):
+        return row.is_item()
+
+    def is_enabled(self, row, perms):
+        return True, ""
+
+    def enabled_render(self, row: LendingRow, perms=None):
+        return "<i>Not in collection</i>"
