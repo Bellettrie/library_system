@@ -192,7 +192,7 @@ class StatusButton(Button):
                                 {"status": row.get_item().get_state(), "item": row.get_item()})
 
     def disabled_render(self, row, perms=None, err=None):
-        return row.get_item().get_state()
+        return str(row.get_item().get_state().get_type_display())
 
 
 class StatusChangeButton(Button):

@@ -37,10 +37,12 @@ def detailed_items(its, member: Member, perms):
         ButtonsColumn([
             StatusChangeButton(),
         ], ""),
-        ButtonsColumn([
-            ItemEditButton()
-        ], "Edit"),
+
     ]
+    if perms["works"]["works.change_work"]:
+        cols.append(ButtonsColumn([
+            ItemEditButton()
+        ], "Edit"))
 
     rows = []
     for it in its:

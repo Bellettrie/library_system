@@ -52,7 +52,9 @@
             <td>{{ object.comment }}</td>
         </tr>
     </table>
+    {% if perms.works.change_work %}
     <a href="{% url 'works.publication.edit' object.pk %}">Edit</a>
+    {% endif %}
     <h4>Items for this publication</h4>
 
         {% detailed_items object.get_items request.user.member perms  %}
@@ -63,8 +65,10 @@
             {% include 'part_of_series_name.html' %}
         {% endfor %}
     </table>
-    <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
+    {% if perms.works.change_item %}
 
+    <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
+    {% endif %}
     <h4>Subworks</h4>
     {% with tbl=object.get_sub_works %}
         {% with should_edit=1 %}
@@ -73,5 +77,7 @@
             {% endif %}
         {% endwith %}
     {% endwith %}
+    {% if perms.works.change_work %}
     <a href="{% url 'work.subwork.new' object.pk %}" class="btn btn-primary">Add new Subwork</a>
+    {% endif %}
 {% endblock %}
