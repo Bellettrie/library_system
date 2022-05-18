@@ -1,14 +1,9 @@
-import string
-import time
 import datetime
 
 import jwt
 from django.conf import settings
-import random
 
-import sys
-
-from members.models import Member, Committee
+from members.models import Committee
 
 
 class MemberData:

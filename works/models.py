@@ -1,8 +1,6 @@
 from datetime import datetime
-
 from django.db import models
 
-# Create your models here.
 from django.db.models import PROTECT, CASCADE, Q
 from django.shortcuts import get_object_or_404
 

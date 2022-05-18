@@ -3,6 +3,7 @@ from django.db import models, transaction
 # Create your models here.
 from django.db.models import PROTECT
 
+from bellettrie_library_system.settings import SKIP_MAIL
 from members.models import Member
 from mail_templated import send_mail
 from django.conf import settings
@@ -17,6 +18,9 @@ class MailLog(models.Model):
 @transaction.atomic
 def mail_member(template_string: str, context: dict, member: Member, is_logged: bool, connection=None):
     context['BASE_URL'] = settings.BASE_URL
+    if SKIP_MAIL:
+        return
+
     if not member.is_anonymous_user:
         mail = member.email
         if settings.FAKE_MAIL:

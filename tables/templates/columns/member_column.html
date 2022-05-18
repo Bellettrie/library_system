@@ -1,0 +1,4 @@
+<a href="{% url 'members.view' member.pk %}">{{ member.name }}</a>
+{% if member.nickname %}
+    <br/><small><i>{{ member.nickname }}</i></small>
+{% endif %}

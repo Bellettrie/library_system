@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load books_buttons %}
+{% load item_detail_table %}
 {% block title %}{{ object.get_title }}{% endblock %}
 {% block content %}
 
@@ -52,80 +52,12 @@
             <td>{{ object.comment }}</td>
         </tr>
     </table>
+    {% if perms.works.change_work %}
     <a href="{% url 'works.publication.edit' object.pk %}">Edit</a>
-
-
-
+    {% endif %}
     <h4>Items for this publication</h4>
-    <table class="table table-striped" style="width: auto;">
-        <tr>
-            <th>Book code</th>
-            <th>ISBN</th>
-            <th>pages</th>
-            <th>year</th>
-            <th>Status</th>
-            {% if perms.works.change_item %}
-                <th>Settings</th>
-            {% endif %}
-            {% if perms.works.change_item %}
-                <th>Edit</th>
-            {% endif %}
-            <th>Lend</th>
-            <th>Reserve</th>
-        </tr>
-        {% for item in object.get_items %}
 
-            <tr>
-                {% with recode=item.get_recode %}
-                    <td>{{ item.display_code }}{% if recode %} [Needs recode to {{ recode.book_code }}
-                        {% if recode.book_code_extension %}{{ recode.book_code_extension }}{% endif %}]{% endif %}</td>
-                    <td>{% if item.isbn13 %}{{ item.isbn13 }}{% elif item.isbn10 %}{{ item.isbn10 }}{% endif %} </td>
-                    <td>{% if item.pages %}{{ item.pages }}{% endif %}</td>
-                    <td>{{ item.publication_year }}</td>
-                    <td>{% if not item.is_lent %}
-                        <a href="{% url 'works.item.states' item.pk %}" data-toggle="tooltip" data-placement="top"
-                           title="{{ item.get_state.reason }}"> {{ item.get_state.get_type_display }} </p>
-
-                            {% else %}
-                            {% if perms.members.view_member %}
-                                {% with member=item.current_lending.member %}
-                                    <a href="{% url 'members.view' member.pk %}">LENT</a> {% endwith %}
-                            {% else %}
-                                LENT
-                            {% endif %}
-                            {% if item.get_state.type != 'AVAILABLE' %}
-                                <a href="{% url 'works.item.states' item.pk %}" data-toggle="tooltip"
-                                   data-placement="top"
-                                   title="{{ item.get_state.reason }}">[ {{ item.get_state.get_type_display }} ]</a>
-                            {% endif %}{% endif %}</td>
-                    {% if perms.works.change_item %}
-                        <td><a href="{% url 'works.item_state.create' item.pk %}" class="btn btn-primary btn-sm">Change
-                            state</a>
-                        </td>
-                    {% endif %}
-                    <td>
-                        {% if perms.works.change_item %}
-                            <a href="{% url 'works.item.edit' item.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                        {% endif %}
-                        {% if perms.recode.change_recode and recode %}
-                            <a href="{% url 'recode.end' recode.pk %}?next={{ request.path }}"
-                               class="btn btn-primary btn-sm">Finish
-                                Recode</a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% lend_button item perms %}
-                    </td>
-                    <td>
-                        {% reserve_button item perms user %}
-                    </td>
-                {% endwith %}
-
-            </tr>
-        {% endfor %}
-    </table>
-
-
+        {% detailed_items object.get_items request.user.member perms  %}
     <h4>Part of series</h4>
     <table class="table table-striped" style="width: auto;">
 
@@ -133,8 +65,10 @@
             {% include 'part_of_series_name.html' %}
         {% endfor %}
     </table>
-    <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
+    {% if perms.works.change_item %}
 
+    <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
+    {% endif %}
     <h4>Subworks</h4>
     {% with tbl=object.get_sub_works %}
         {% with should_edit=1 %}
@@ -143,5 +77,7 @@
             {% endif %}
         {% endwith %}
     {% endwith %}
+    {% if perms.works.change_work %}
     <a href="{% url 'work.subwork.new' object.pk %}" class="btn btn-primary">Add new Subwork</a>
+    {% endif %}
 {% endblock %}

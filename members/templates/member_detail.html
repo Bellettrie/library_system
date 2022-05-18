@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load member_reservation_table %}
+{% load member_lending_table %}
 {% load cross_login %}
 {% block title %}Member: {{ member.name }}{% endblock %}
 {% block content %}
@@ -110,8 +112,7 @@
     </table>
     <a href="{% url 'members.membership_period_new' member.pk %}">New period</a>
     <hr>
-    <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Lend for</a>
-    <a href="{% url 'lendings.reserve.member' member.id %}" class="btn btn-primary">Reserve for</a>
+    <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Browse catalog for</a>
 
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
     {% if member.can_be_deleted %}
@@ -120,11 +121,9 @@
     {% if member.should_be_anonymised %}
         <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
     {% endif %}
-    <a href="{% get_crosslogin_url user.member %}" class="btn btn-outline-primary"><span>Register Visit</span></a>
-    {% load books %}
-    {% get_user_books member perms %}
-    {% if member.has_reservations %}
+
+    {% member_current_lendings member %}
         <h4>Reservations</h4>
-        {% get_user_reserved_books member perms %}
-    {% endif %}
+        {% member_current_reservations member %}
+
 {% endblock %}

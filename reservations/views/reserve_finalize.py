@@ -34,9 +34,9 @@ def reserve_finalize(request, work_id, member_id):
         return render(request, 'reserve_finalized.html',
                       {'member': member, 'item': item})
 
-    if item.is_lent_out():
-        mail_member('mails/book_just_got_reserved.tpl',
-                    {'member': item.current_lending().member, 'item': item}, item.current_lending().member, True)
+        if item.is_lent_out():
+            mail_member('mails/book_just_got_reserved.tpl',
+                        {'member': item.current_lending().member, 'item': item}, item.current_lending().member, True)
 
     return render(request, 'reserve_finalize.html',
                   {'member': member, 'item': item, "date": get_end_date(item, member, datetime.now().date())})

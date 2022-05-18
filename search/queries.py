@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from search.models import get_words_in_str
-from works.models import Publication, ItemState, Location, Category
+from works.models import Publication, ItemState, Category
 
 
 class SearchOp:

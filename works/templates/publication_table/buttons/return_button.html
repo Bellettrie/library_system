@@ -1,4 +1,0 @@
-{% if perms.lendings.add_lending %}
-    {% if not item.is_available %}<a href="{% url "lendings.returnbook" item.pk %}" class="btn btn-primary btn-sm" role="button">Return</a>
-    {% endif %}
-{% endif %}

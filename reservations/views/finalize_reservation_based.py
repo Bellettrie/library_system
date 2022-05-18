@@ -18,7 +18,7 @@ def finalize_reservation_based(request, reservation_id):
     item = reservation.item
     if request.method == "POST":
         try:
-            lending = new_lending(item, member, request.user.member, datetime.date(datetime.now()))
+            lending = new_lending(item, member, request.user.member, datetime.date(datetime.now()), True)
             return render(request, 'lending_finalized.html',
                           {'member': member, 'item': item, "date": lending.end_date})
         except LendingImpossibleException as error:

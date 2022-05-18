@@ -3,7 +3,7 @@ from datetime import datetime
 from members.models import Member
 
 
-def can_lend_more_of_item(member: Member, item):
+def can_lend_more_of_item(member: Member, item, from_reservation=False):
     from lendings.models import Lending
     from reservations.models import Reservation
 
@@ -14,4 +14,7 @@ def can_lend_more_of_item(member: Member, item):
                                               reservation_end_date__gt=datetime.now()) | Reservation.objects.filter(
         member=member, reservation_end_date__isnull=True)
     from config.models import LendingSettings
-    return (len(lendings) + len(reservations)) < LendingSettings.get_for(item, member).max_count
+    fr = 0
+    if from_reservation:
+        fr = 1
+    return (len(lendings) + len(reservations) - fr) < LendingSettings.get_for(item, member).max_count

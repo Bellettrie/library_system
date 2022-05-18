@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% load books_table %}
+{% load publication_list_to_items %}
+{#{% load books_table %}#}
 {% block title %}Book Search{% endblock %}
 {% block content %}
     {% if advanced %}
@@ -11,7 +12,9 @@
     {% endif %}
     {% include 'pagination.html' %}
     <hr>
-    {% show_table object_list perms user %}
+    {% autoescape off %}
+        {% works_table object_list perms %}
+    {% endautoescape %}
 
     <h3>How to use Search</h3>
     The search function tries to match the search query to words in the title of books, series, as well as the names of

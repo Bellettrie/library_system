@@ -1,0 +1,19 @@
+{% load render_square %}
+{# Takes a table #}
+
+<table class="table table-striped">
+<tr>
+{% for column in table.columns %}
+    <th>{{ column.get_header }}</th>
+{% endfor %}
+</tr>
+{% for row in table.rows %}
+    <tr>
+        {% for column in table.columns %}
+            {% autoescape off %}
+            <td>{% render_square column row perms %}</td>
+            {% endautoescape %}
+        {% endfor %}
+    </tr>
+{% endfor %}
+</table>

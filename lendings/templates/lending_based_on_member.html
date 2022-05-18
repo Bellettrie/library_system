@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
+{% load publications_list_for_member %}
 {% block title %}Select work for lending{% endblock %}
 
-{% load books_table %}
 {% block content %}
     Lending for member: {{ member.name }}
     <form action="/lend/member/{{ member.pk }}" method="get">
@@ -10,7 +10,7 @@
         <input type="submit" value="Search" class="btn-primary btn" >
     </form>
     <table>
-        {% show_table items perms member.user member %}
+        {% works_table_for_member items perms member %}
     </table>
 
 
