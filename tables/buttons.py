@@ -52,7 +52,7 @@ class LendBookButton(Button):
         return True, None
 
     def is_hidden(self, row, perms: PermWrapper):
-        if perms["lendings"]["lendings.add_lending"]:
+        if "lendings.add_lending" in perms:
             return not row.is_item()
         return True
 
@@ -73,7 +73,7 @@ class FinalizeLendingButton(Button):
         return not cl, cl
 
     def is_hidden(self, row, perms: PermWrapper):
-        if perms["lendings"]["lendings.add_lending"]:
+        if "lendings.add_lending" in perms:
             return False
         return not row.is_item()
 
@@ -96,7 +96,7 @@ class FinalizeReservationButton(Button):
     def is_hidden(self, row, perms: PermWrapper):
         if not self.member:
             return True
-        if perms["reservations"]["reservations.add_reservation"]:
+        if "reservations.add_reservation" in perms:
             return not row.is_item()
         return True
 
@@ -116,7 +116,7 @@ class ReturnBookButton(Button):
         return row.get_item().is_lent_out(), "-"
 
     def is_hidden(self, row, perms: PermWrapper):
-        if perms["lendings"]["lendings.add_lending"]:
+        if "lendings.add_lending" in perms:
             return not row.is_item()
         return True
 
@@ -132,7 +132,7 @@ class IsLentOutStatus(Button):
         return row.get_item().is_lent_out(), "-"
 
     def is_hidden(self, row, perms: PermWrapper):
-        if perms["lendings"]["lendings.add_lending"]:
+        if "lendings.add_lending" in perms:
             return True
         return not row.is_item()
 
