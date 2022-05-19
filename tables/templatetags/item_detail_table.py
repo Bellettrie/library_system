@@ -39,7 +39,7 @@ def detailed_items(its, member: Member, perms):
         ], ""),
 
     ]
-    if perms["works"]["works.change_work"]:
+    if "works.change_work" in perms:
         cols.append(ButtonsColumn([
             ItemEditButton()
         ], "Edit"))
