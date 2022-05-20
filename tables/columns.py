@@ -36,7 +36,7 @@ class RecodeColumn(Column):
             a = r.book_code_extension or ""
             if a:
                 a = "("+a+")"
-            return "Recode to" + r.book_code + a
+            return "Recode to: " + r.book_code + a
         return ""
 
 
