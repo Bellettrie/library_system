@@ -24,6 +24,18 @@ class BookCodeColumn(Column):
         return row.get_item().book_code + " " + row.get_item().book_code_extension
 
 
+class RecodeColumn(Column):
+    @staticmethod
+    def get_header():
+        return ""
+
+    def render(self, row: Row, perms=None):
+        s = str(row.get_item().get_recode())
+        if s:
+            return "Recode to" + s
+        return ""
+
+
 class TitleColumn(Column):
     @staticmethod
     def get_header():
