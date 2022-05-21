@@ -30,14 +30,15 @@ class RecodeColumn(Column):
         return ""
 
     def render(self, row: Row, perms=None):
-        r = row.get_item().get_recode()
+        recode = row.get_item().get_recode()
 
-        if r:
-            a = r.book_code_extension or ""
-            if a:
-                a = "("+a+")"
-            return "Recode to: " + r.book_code + a
-        return ""
+        if recode:
+            extension = recode.book_code_extension or ""
+            if extension:
+                extension = "(" + extension + ")"
+            return "Recode to: " + recode.book_code + extension
+        else:
+            return ""
 
 
 class TitleColumn(Column):
