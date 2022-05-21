@@ -33,7 +33,7 @@ class RecodeColumn(Column):
         recode = row.get_item().get_recode()
 
         if recode:
-            return render_to_string("columns/finish_recode.html", {"recode": recode})
+            return render_to_string("columns/finish_recode.html", {"recode": recode, "perms": perms})
         else:
             return ""
 
