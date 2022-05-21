@@ -19,7 +19,7 @@ class Member(MemberData):
     is_anonymous_user = models.BooleanField(default=False)
     user = models.OneToOneField(User, null=True, blank=True, on_delete=CASCADE)
     committees = models.ManyToManyField(Committee, blank=True)
-
+    age = models.IntegerField(default=14)
     privacy_activities = models.BooleanField(default=False)
     privacy_publications = models.BooleanField(default=False)
     privacy_reunions = models.BooleanField(default=False)
