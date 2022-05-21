@@ -33,10 +33,7 @@ class RecodeColumn(Column):
         recode = row.get_item().get_recode()
 
         if recode:
-            extension = recode.book_code_extension or ""
-            if extension:
-                extension = "(" + extension + ")"
-            return "Recode to: " + recode.book_code + extension
+            return render_to_string("columns/finish_recode.html", {"recode": recode})
         else:
             return ""
 
