@@ -28,6 +28,7 @@ def get_creator_books(creator: Creator, perms):
             Q(creatortowork__creator=creator) | Q(workinseries__part_of_series__in=series)):
         for item in work.item_set.all():
             result.append(ItemRow(item))
+    result.sort(key=lambda r: r.get_item().book_code_sortable)
 
     return {"perms": perms, "table": Table(result, cols)}
 
