@@ -20,6 +20,6 @@ cols = [
 @register.inclusion_tag('items_table.html')
 def current_lendings(perms):
     rows = []
-    for lending in Lending.objects.filter(handed_in=False):
+    for lending in Lending.objects.filter(handed_in=False).order_by("end_date"):
         rows.append(LendingRow(lending))
     return {'table': Table(rows, cols)}
