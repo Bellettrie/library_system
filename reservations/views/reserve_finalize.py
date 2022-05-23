@@ -39,4 +39,4 @@ def reserve_finalize(request, work_id, member_id):
                         {'member': item.current_lending().member, 'item': item}, item.current_lending().member, True)
 
     return render(request, 'reserve_finalize.html',
-                  {'member': member, 'item': item, "date": get_end_date(item, member, datetime.now().date())})
+                  {'member': member, 'item': item, "date": get_end_date(item, member, get_today())})

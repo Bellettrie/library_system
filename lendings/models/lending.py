@@ -8,6 +8,8 @@ from django.db.models import PROTECT
 from members.models.member import Member
 from datetime import date
 
+from utils.time import get_now, get_today
+
 
 class Lending(models.Model):
     class Meta:
@@ -33,7 +35,7 @@ class Lending(models.Model):
 
     def is_simple_extendable(self, now=None):
         if now is None:
-            now = datetime.date(datetime.now())
+            now = get_today()
 
         return not self.handed_in and now <= self.end_date
 
@@ -46,14 +48,14 @@ class Lending(models.Model):
 
     def is_late(self, now=None):
         if now is None:
-            now = datetime.date(datetime.now())
+            now = get_today()
         return now > self.end_date
 
     def is_almost_late(self, now=None):
         if now is None:
-            now = datetime.date(datetime.now())
+            now = get_today()
         return self.end_date - timedelta(days=4) < now
 
     def calculate_fine(self):
         from lendings.procedures.get_total_fine import get_total_fine_for_lending
-        return format(get_total_fine_for_lending(self, datetime.date(datetime.now())) / 100, '.2f')
+        return format(get_total_fine_for_lending(self, get_today()) / 100, '.2f')

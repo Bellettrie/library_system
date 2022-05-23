@@ -8,6 +8,7 @@ from django.shortcuts import render
 from datamining.procedures.filter_members import filter_members
 from lendings.models import Lending
 from members.models import Member, Committee, MembershipPeriod, MembershipType, MemberBackground
+from utils.time import get_today
 
 
 def fetch_date(date_str):
@@ -94,7 +95,7 @@ def get_member_statistics(day):
 
 @permission_required('members.view_member')
 def show_membership_stats(request):
-    dat = request.GET.get('date', datetime.datetime.now().date().isoformat())
+    dat = request.GET.get('date', get_today().isoformat())
     q = get_member_statistics(dat)
     return render(request, 'data-mining-member-stats.html', {'q': q})
 
@@ -113,7 +114,7 @@ def get_lending_stats(start_date, end_date):
 
 @permission_required('works.view_work')
 def show_lending_stats(request):
-    start_date = request.GET.get('start_date', datetime.datetime.now().date().isoformat())
-    end_date = request.GET.get('end_date', datetime.datetime.now().date().isoformat())
+    start_date = request.GET.get('start_date', get_today().isoformat())
+    end_date = request.GET.get('end_date', get_today().isoformat())
     q = get_lending_stats(start_date, end_date)
     return render(request, 'data-mining-lending-stats.html', {'q': q})

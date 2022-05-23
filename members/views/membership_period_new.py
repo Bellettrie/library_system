@@ -10,6 +10,7 @@ from members.forms import MembershipPeriodForm
 from members.models import Member
 from members.procedures.delete_double_periods import delete_double_periods
 from members.views.member_new import get_end_date
+from utils.time import get_today, get_now
 
 
 @transaction.atomic
@@ -26,7 +27,7 @@ def new_membership_period(request, member_id):
             delete_double_periods(member)
             return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
     else:
-        form = MembershipPeriodForm(instance=member, initial={'start_date': datetime.date(datetime.now()),
-                                                              'end_date': get_end_date(datetime.now().year,
-                                                                                       datetime.now().month > 6)})
+        form = MembershipPeriodForm(instance=member, initial={'start_date': get_today(),
+                                                              'end_date': get_end_date(get_now().year,
+                                                                                       get_now().month > 6)})
     return render(request, 'member_membership_edit.html', {'form': form, 'member': member})

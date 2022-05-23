@@ -10,6 +10,8 @@ from mail.models import mail_member
 from members.models import Member
 from datetime import date
 
+from utils.time import get_now
+
 
 class Reservation(models.Model):
     member = models.ForeignKey(Member, on_delete=PROTECT)
@@ -21,7 +23,7 @@ class Reservation(models.Model):
     @staticmethod
     def create_reservation(item, member: Member, edited_member: Member, current_date=None):
         if current_date is None:
-            current_date = datetime.now()
+            current_date = get_now()
 
         if member.is_anonymous_user:
             raise ValueError("Member is an anonymous user")

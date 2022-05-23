@@ -12,6 +12,7 @@ from creators.models import Creator, CreatorRole
 from inventarisation.models import Inventarisation
 from lendings.models.lending import Lending
 from reservations.models.reservation import Reservation
+from utils.time import get_now
 
 
 def simple_search(search_string: str):
@@ -252,7 +253,7 @@ class Item(NamedThing, BookCode):
         return self.in_available_state() and not self.is_lent_out()
 
     def is_reserved(self):
-        query = Q(item=self, reservation_end_date__gt=datetime.now()) | Q(item=self, reservation_end_date__isnull=True)
+        query = Q(item=self, reservation_end_date__gt=get_now()) | Q(item=self, reservation_end_date__isnull=True)
 
         reservations = Reservation.objects.filter(query)
         return reservations.count() > 0
@@ -261,7 +262,7 @@ class Item(NamedThing, BookCode):
         return self.in_available_state() and not self.is_reserved()
 
     def is_reserved_for(self, member):
-        query = Q(item=self, member=member, reservation_end_date__gt=datetime.now()) | Q(item=self, member=member,
+        query = Q(item=self, member=member, reservation_end_date__gt=get_now()) | Q(item=self, member=member,
                                                                                          reservation_end_date__isnull=True)
         reservations = Reservation.objects.filter(query)
         return reservations.count() > 0
@@ -296,13 +297,13 @@ class Item(NamedThing, BookCode):
     def get_state(self):
         states = ItemState.objects.filter(item=self).order_by("-dateTime")
         if len(states) == 0:
-            return ItemState(item=self, dateTime=datetime.now(), type="AVAILABLE")
+            return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
         return states[0]
 
     def get_prev_state(self):
         states = ItemState.objects.filter(item=self).order_by("-dateTime")
         if len(states) <= 1:
-            return ItemState(item=self, dateTime=datetime.now(), type="AVAILABLE")
+            return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
         return states[1]
 
     def is_seen(self, reason):

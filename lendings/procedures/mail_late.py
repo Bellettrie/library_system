@@ -2,6 +2,7 @@ from datetime import timedelta, datetime
 
 from lendings.models import Lending
 from mail.models import mail_member
+from utils.time import get_now
 
 
 def late_mails(fake=False):
@@ -19,13 +20,13 @@ def late_mails(fake=False):
     should_mail = set()
     for lending in lendings:
         if lending.is_late():
-            if not lending.mailed_for_late or lending.last_mailed + timedelta(days=7) < datetime.now():
+            if not lending.mailed_for_late or lending.last_mailed + timedelta(days=7) < get_now():
                 should_mail.add(lending.member)
             my_list = late_dict.get(lending.member, [])
             my_list.append(lending)
             late_dict[lending.member] = my_list
         elif lending.is_almost_late():
-            if lending.last_mailed + timedelta(days=2) < datetime.now():
+            if lending.last_mailed + timedelta(days=2) < get_now():
                 should_mail.add(lending.member)
             my_list = almost_late_dict.get(lending.member, [])
             my_list.append(lending)
@@ -40,11 +41,11 @@ def late_mails(fake=False):
                          'has_nearly_late': len(almost_late_list) > 0, 'lendings': late_list,
                          'almost_late': almost_late_list}, member, True)
             for lending in late_list:
-                lending.last_mailed = datetime.now()
+                lending.last_mailed = get_now()
 
                 lending.mailed_for_late = True
                 lending.save()
             for lending in almost_late_list:
-                lending.last_mailed = datetime.now()
+                lending.last_mailed = get_now()
                 lending.save()
     return almost_late_dict, late_dict, should_mail

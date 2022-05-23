@@ -9,6 +9,7 @@ from lendings.procedures.get_end_date import get_end_date
 from lendings.procedures.new_lending import new_lending
 
 from members.models import Member
+from utils.time import get_today
 
 from works.models import Item
 
@@ -20,11 +21,11 @@ def finalize(request, work_id, member_id):
     item = get_object_or_404(Item, pk=work_id)
     if request.method == 'POST':
         try:
-            lending = new_lending(item, member, request.user.member, datetime.date(datetime.now()))
+            lending = new_lending(item, member, request.user.member, get_today())
             return render(request, 'lending_finalized.html',
                           {'member': member, 'item': item, "date": lending.end_date})
         except LendingImpossibleException as error:
             return render(request, 'lending_cannot_lend.html',
                           {'member': member, 'item': item, 'error': error})
     return render(request, 'lending_finalize.html',
-                  {'member': member, 'item': item, "date": get_end_date(item, member, datetime.date(datetime.now()))})
+                  {'member': member, 'item': item, "date": get_end_date(item, member, get_today())})
