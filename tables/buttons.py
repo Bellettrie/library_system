@@ -7,6 +7,7 @@ from lendings.procedures.extend import can_extend
 from lendings.procedures.new_lending import can_lend
 from members.models import Member
 from tables.rows import ReservationRow, LendingRow, Row
+from utils.time import get_today
 
 
 class Button:
@@ -69,7 +70,7 @@ class FinalizeLendingButton(Button):
         self.member = member
 
     def is_enabled(self, row: Row, perms: PermWrapper):
-        cl = can_lend(row.get_item(), self.member, datetime.datetime.now().date())
+        cl = can_lend(row.get_item(), self.member, get_today())
         return not cl, cl
 
     def is_hidden(self, row, perms: PermWrapper):
@@ -186,7 +187,7 @@ class ExtendButton(Button):
         return not row.is_item()
 
     def is_enabled(self, row: LendingRow, perms: PermWrapper):
-        e = can_extend(row.lending, datetime.datetime.now().date())
+        e = can_extend(row.lending, get_today())
         return not e, e
 
     def enabled_render(self, row: LendingRow, perms=None):

@@ -9,6 +9,7 @@ from lendings.lendingException import LendingImpossibleException
 from lendings.models.lending import Lending
 from lendings.procedures.extend import extend_lending, new_extension
 from lendings.procedures.get_end_date import get_end_date
+from utils.time import get_today
 
 from works.models import Item
 
@@ -31,12 +32,12 @@ def extend(request, work_id):
             return render(request, 'lending_cannot_extend.html',
                           {'member': lending.member, 'item': lending.item,
                            'error': "You lack the permissions to extend an item that you did borrow for yourself."})
-    late_days = datetime.now().date() - lending.end_date
+    late_days = get_today() - lending.end_date
 
     # Post checks
     if request.method == 'POST':
         try:
-            new_extension(lending, datetime.now().date())
+            new_extension(lending, get_today())
             return render(request, 'lending_extended.html',
                           {'member': lending.member,
                            'item': item,
@@ -50,9 +51,9 @@ def extend(request, work_id):
                       {'member': lending.member,
                        'item': item,
                        'end_date': lending.end_date,
-                       'is_changed': lending.end_date < get_end_date(item, lending.member, datetime.now().date()),
-                       "date": get_end_date(item, lending.member, datetime.now().date()),
-                       'late': lending.end_date < datetime.now().date(),
+                       'is_changed': lending.end_date < get_end_date(item, lending.member, get_today()),
+                       "date": get_end_date(item, lending.member, get_today()),
+                       'late': lending.end_date < get_today(),
                        'days_late': late_days.days,
                        'fine': lending.calculate_fine()
                        })

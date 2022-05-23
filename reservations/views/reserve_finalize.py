@@ -9,6 +9,7 @@ from mail.models import mail_member
 from members.models import Member
 from reservations.models import Reservation
 from works.models import Item
+from utils.time import get_today
 
 
 @transaction.atomic
@@ -39,4 +40,4 @@ def reserve_finalize(request, work_id, member_id):
                         {'member': item.current_lending().member, 'item': item}, item.current_lending().member, True)
 
     return render(request, 'reserve_finalize.html',
-                  {'member': member, 'item': item, "date": get_end_date(item, member, datetime.now().date())})
+                  {'member': member, 'item': item, "date": get_end_date(item, member, get_today())})
