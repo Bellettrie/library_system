@@ -9,6 +9,7 @@ from mail.models import mail_member
 from members.models import Member
 from reservations.models import Reservation
 from works.models import Item
+from utils.time import get_today
 
 
 @transaction.atomic

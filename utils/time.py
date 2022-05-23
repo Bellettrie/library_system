@@ -7,5 +7,3 @@ def get_now():
 
 def get_today():
     return get_now().date()
-
-
