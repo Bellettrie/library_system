@@ -1,6 +1,6 @@
-# bellettrie_systeem
+# Bellettrie System
 
-This project has as goal to replace the current website of Bellettrie with a modernised one.
+This project (BS) contains the website / Library Management System of Bellettrie. BS uses Django as a web framework, and bootstrap for constructing pages. Other than that, it is light on dependencies, to lower the amount of dependency update hell.
 
 ## Setup of development environment
 1. Install from sources
