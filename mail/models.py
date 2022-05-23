@@ -18,10 +18,11 @@ class MailLog(models.Model):
 @transaction.atomic
 def mail_member(template_string: str, context: dict, member: Member, is_logged: bool, connection=None):
     context['BASE_URL'] = settings.BASE_URL
-    if SKIP_MAIL:
+    if settings.SKIP_MAIL:
         return
 
     if not member.is_anonymous_user:
+        print(context)
         mail = member.email
         if settings.FAKE_MAIL:
             mail = settings.FAKE_MAIL_ADDRESS
