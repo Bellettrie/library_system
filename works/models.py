@@ -262,8 +262,8 @@ class Item(NamedThing, BookCode):
         return self.in_available_state() and not self.is_reserved()
 
     def is_reserved_for(self, member):
-        query = Q(item=self, member=member, reservation_end_date__gt=get_now()) | Q(item=self, member=member,
-                                                                                         reservation_end_date__isnull=True)
+        query = Q(item=self, member=member, reservation_end_date__gt=get_now()) |\
+                Q(item=self, member=member, reservation_end_date__isnull=True)
         reservations = Reservation.objects.filter(query)
         return reservations.count() > 0
 
