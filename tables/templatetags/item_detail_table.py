@@ -19,7 +19,7 @@ class AnonColumn(Column):
         return self.item_func(row, row.get_item(), perms)
 
 
-@register.inclusion_tag('items_table.html')
+@register.inclusion_tag('tables/items_table.html')
 def detailed_items(its, member: Member, perms):
     cols = [
         BookCodeColumn(),

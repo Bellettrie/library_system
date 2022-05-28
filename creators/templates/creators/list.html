@@ -4,12 +4,12 @@
 
 {% block title %}Creator Search{% endblock %}
 {% block content %}
-    {% include 'creator_list_search_field.html' %}
+    {% include 'creators/list_lookup.html' %}
         {% include 'pagination.html' %}
 
     <table class="table table-striped" style="width: auto;">
         {% for member in object_list %}
-            {% include 'creator_list_item.html' %}
+            {% include 'creators/list_item.html' %}
         {% empty %}
             <i> No results</i>
         {% endfor %}

@@ -20,4 +20,4 @@ def delete_reservation(request, reservation_id):
 
     reservation.delete()
 
-    return render(request, 'res_delete.html')
+    return render(request, 'reservations/delete.html')

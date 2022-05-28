@@ -24,7 +24,7 @@
         {% with publication_id=publication.pk %}
 
                 {% with location_id='id_location' %}
-                    {% include 'book_code_lookup.html' %}
+                    {% include 'book_code_generation/code_lookup.html' %}
             {% endwith %}
         {% endwith %}
     {% endif %}
@@ -84,7 +84,7 @@
         {% with publication_id=publication.pk %}
 
                 {% with location_id='id_location' %}
-                    {% include 'book_code_lookup.html' %}
+                    {% include 'book_code_generation/code_lookup.html' %}
             {% endwith %}
         {% endwith %}
     {% endif %}

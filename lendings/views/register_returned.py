@@ -19,7 +19,7 @@ def return_item(request, work_id):
     if request.method == 'POST':
         register_returned_with_mail(lending, request.user.member)
         return redirect('/members/' + str(lending.member.pk))
-    return render(request, 'return_book.html', {'item': item, 'lending': lending,
-                                                'late': lending.end_date < get_today(),
-                                                'days_late': late_days.days,
-                                                'fine': lending.calculate_fine()})
+    return render(request, 'lendings/return_book.html', {'item': item, 'lending': lending,
+                                                         'late': lending.end_date < get_today(),
+                                                         'days_late': late_days.days,
+                                                         'fine': lending.calculate_fine()})

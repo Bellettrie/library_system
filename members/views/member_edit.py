@@ -25,4 +25,4 @@ def edit(request, member_id):
             return HttpResponseRedirect(reverse('members.view', args=(member_id,)))
     else:
         form = EditForm(can_change, edit_dms, instance=member)
-    return render(request, 'member_edit.html', {'form': form, 'member': member})
+    return render(request, 'members/edit.html', {'form': form, 'member': member})

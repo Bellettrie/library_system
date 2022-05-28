@@ -32,12 +32,12 @@ def reserve_finalize(request, work_id, member_id):
         if item.is_reserved():
             return redirect('/lend/failed_reservation/{}/{}/4'.format(work_id, member_id))
         Reservation.create_reservation(item, member, request.user.member)
-        return render(request, 'reserve_finalized.html',
+        return render(request, 'reservations/finalized.html',
                       {'member': member, 'item': item})
 
         if item.is_lent_out():
             mail_member('mails/book_just_got_reserved.tpl',
                         {'member': item.current_lending().member, 'item': item}, item.current_lending().member, True)
 
-    return render(request, 'reserve_finalize.html',
+    return render(request, 'reservations/finalize.html',
                   {'member': member, 'item': item, "date": get_end_date(item, member, get_today())})

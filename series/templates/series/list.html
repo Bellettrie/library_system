@@ -21,7 +21,7 @@
                             <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
                     </a></td>
                     <td>
-                        {% for author in publication.get_own_authors %}{% include 'creator_single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
+                        {% for author in publication.get_own_authors %}{% include 'creators/single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
                         {% endfor %}
                     </td>
                 {% endwith %}

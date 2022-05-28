@@ -55,7 +55,7 @@ class AllAuthorsColumn(Column):
     def render(self, row: Row, perms=None):
         strstr = ""
         for author in row.get_item().publication.get_authors():
-            strstr += render_to_string("creator_single_line_description.html", {"author": author}) + "<br>"
+            strstr += render_to_string("creators/single_line_description.html", {"author": author}) + "<br>"
         return strstr
 
 

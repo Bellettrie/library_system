@@ -108,7 +108,7 @@ def get_works(request):
 
 class WorkList(ListView):
     model = Work
-    template_name = 'work_list.html'
+    template_name = 'works/list.html'
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
@@ -131,7 +131,7 @@ class WorkList(ListView):
 
 
 class WorkDetail(DetailView):
-    template_name = 'work_detail.html'
+    template_name = 'works/detail.html'
     model = Publication
 
 
@@ -147,7 +147,7 @@ def create_item_state(request, item_id):
             return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
     else:
         form = ItemStateCreateForm()
-    return render(request, 'item_reason_edit.html', {'form': form, 'member': get_object_or_404(Item, pk=item_id)})
+    return render(request, 'works/history_new.html', {'form': form, 'member': get_object_or_404(Item, pk=item_id)})
 
 
 @transaction.atomic
@@ -164,7 +164,7 @@ def item_new(request, publication_id=None):
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm()
-    return render(request, 'item_edit.html', {'form': form, 'publication': publication})
+    return render(request, 'works/edit.html', {'form': form, 'publication': publication})
 
 
 @transaction.atomic
@@ -199,7 +199,7 @@ def item_edit(request, item_id):
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
-    return render(request, 'item_edit.html',
+    return render(request, 'works/edit.html',
                   {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode,
                    'recode_book_code': recode_book_code,
                    'recode_book_code_extension': recode_book_code_extension})
@@ -209,7 +209,7 @@ def item_edit(request, item_id):
 @permission_required('works.change_item')
 def item_history(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
-    return render(request, 'item_history.html',
+    return render(request, 'works/history.html',
                   {'item': item,
                    'history': ItemState.objects.filter(item=item).order_by('-dateTime')})
 
@@ -269,7 +269,7 @@ def publication_edit(request, publication_id=None):
             creators = CreatorToWorkFormSet()
             series = SeriesToWorkFomSet()
             form = PublicationCreateForm()
-    return render(request, 'publication_edit.html',
+    return render(request, 'works/publication_edit.html',
                   {'series': series, 'publication': publication, 'form': form, 'creators': creators})
 
 
@@ -337,7 +337,7 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
         else:
             creators = CreatorToWorkFormSet()
             form = SubWorkCreateForm()
-    return render(request, 'subwork_edit.html',
+    return render(request, 'works/subwork_edit.html',
                   {'series': series, 'publication': publication, 'form': form, 'creators': creators, 'num': num,
                    'disp_num': disp_num})
 

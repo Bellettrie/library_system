@@ -16,7 +16,7 @@ urlpatterns = [
     path('list/<slug:inventarisation_id>/<slug:page_id>', inventarisation_form, name='inventarisation.by_number'),
     path('list/<slug:inventarisation_id>/<slug:page_id>/next', get_inventarisation_next, name='inventarisation.next'),
     path('for-all', get_inventarisation_for_all, name='inventarisation.forAll'),
-    path('<slug:inventarisation_id>/finish', get_inventarisation_finish, name='inventarisation.finish'),
-    path('<slug:inventarisation_id>/finished', get_inventarisation_finished, name='inventarisation.finished'),
-    path('<slug:inventarisation_id>/early', get_inventarisation_early_end, name='inventarisation.early')
+    path('finish/<slug:inventarisation_id>', get_inventarisation_finish, name='inventarisation.finish'),
+    path('finished/<slug:inventarisation_id>', get_inventarisation_finished, name='inventarisation.finished'),
+    path('early/<slug:inventarisation_id>', get_inventarisation_early_end, name='inventarisation.early')
 ]

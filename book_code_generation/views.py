@@ -84,13 +84,13 @@ def show_letter_list(request):
                 out_of_order.add(number)
             prev = number
 
-    return render(request, 'code_list.html',
+    return render(request, 'book_code_generation/code_list.html',
                   {'locations': locations, 'location': location, 'letters': letters, 'atoz': atoz, 'entries': numbers,
                    'misses': out_of_order})
 
 
 def view_cutter_numbers(request):
-    return render(request, 'list_cutter_numbers.html',
+    return render(request, 'book_code_generation/cutter_numbers_list.html',
                   {'cutters': CutterCodeRange.objects.all().order_by('from_affix')})
 
 
@@ -107,7 +107,7 @@ def edit(request, cutter_id):
             return HttpResponseRedirect(reverse('book_code.code_list'))
     else:
         form = EditForm(instance=cutter_code)
-    return render(request, 'edit_cutter.html', {'form': form, 'member': cutter_code})
+    return render(request, 'book_code_generation/cutter_numbers_edit.html', {'form': form, 'member': cutter_code})
 
 
 @transaction.atomic
@@ -120,4 +120,4 @@ def new(request):
             return HttpResponseRedirect(reverse('book_code.code_list'))
     else:
         form = EditForm()
-    return render(request, 'edit_cutter.html', {'form': form})
+    return render(request, 'book_code_generation/cutter_numbers_edit.html', {'form': form})

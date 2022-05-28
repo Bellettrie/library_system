@@ -39,7 +39,7 @@ def show_members(request):
         if len(member.email) > 0:
             r_str += ("; " + member.email)
 
-    return render(request, 'data-mining-member-filtering.html', {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'dms': request.GET.get('dms'), 'members': found_members, 'committees': committees})
+    return render(request, 'datamining/member_filtering.html', {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'dms': request.GET.get('dms'), 'members': found_members, 'committees': committees})
 
 
 def get_member_statistics(day):
@@ -97,7 +97,7 @@ def get_member_statistics(day):
 def show_membership_stats(request):
     dat = request.GET.get('date', get_today().isoformat())
     q = get_member_statistics(dat)
-    return render(request, 'data-mining-member-stats.html', {'q': q})
+    return render(request, 'datamining/member_stats.html', {'q': q})
 
 
 def get_lending_stats(start_date, end_date):
@@ -117,4 +117,4 @@ def show_lending_stats(request):
     start_date = request.GET.get('start_date', get_today().isoformat())
     end_date = request.GET.get('end_date', get_today().isoformat())
     q = get_lending_stats(start_date, end_date)
-    return render(request, 'data-mining-lending-stats.html', {'q': q})
+    return render(request, 'datamining/lending_stats.html', {'q': q})

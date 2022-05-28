@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{% if series.pk %}Edit {% include 'part_of_series_name.html' %}{% else %}New Series{% endif %}{% endblock %}
+{% block title %}{% if series.pk %}Edit {% include 'series/part_of_series_name.html' %}{% else %}New Series{% endif %}{% endblock %}
 {% block content %}
     <form method="post" action="#">
         {% csrf_token %}
@@ -11,7 +11,7 @@
             {% with title_id='id_title' %}
                 {% with for_series=True %}
                     {% with location_id='id_location' %}
-                        {% include 'book_code_lookup.html' %}
+                        {% include 'book_code_generation/code_lookup.html' %}
                     {% endwith %}
                 {% endwith %}
             {% endwith %}

@@ -26,7 +26,7 @@ class MenuItem:
 
     def render(self, request):
         sub_items = self.rendered_sub_items(request)
-        return render(request, 'render_menu_item.html', context={'menu': self, 'has_sub_items': len(sub_items) > 0, 'sub_items': sub_items})
+        return render(request, 'config/render_menu_item.html', context={'menu': self, 'has_sub_items': len(sub_items) > 0, 'sub_items': sub_items})
 
     def get_title_shortened(self):
         return self.title.replace(" ", "")

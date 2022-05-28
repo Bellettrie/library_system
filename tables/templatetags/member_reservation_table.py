@@ -15,7 +15,7 @@ cols = [BookCodeColumn(),
         ]
 
 
-@register.inclusion_tag('items_table.html')
+@register.inclusion_tag('tables/items_table.html')
 def member_current_reservations(member: Member):
     rows = []
     for reservation in Reservation.objects.filter(member=member):
@@ -23,7 +23,7 @@ def member_current_reservations(member: Member):
     return {'table': Table(rows, cols)}
 
 
-@register.inclusion_tag('items_table.html')
+@register.inclusion_tag('tables/items_table.html')
 def current_reservations():
     rows = []
     for reservation in Reservation.objects.all():
