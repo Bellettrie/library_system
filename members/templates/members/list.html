@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Member Search{% endblock %}
 {% block content %}
-    {% include 'member_search_field.html' %}
+    {% include 'members/lookup.html' %}
     {% include 'pagination.html' %}
     <table class="table table-striped" style="width: auto;">
         {% for member in object_list %}
-            {% include 'member_list_item.html' %}
+            {% include 'members/list_item.html' %}
         {% empty %}
             <i> No results</i>
         {% endfor %}

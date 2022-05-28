@@ -22,10 +22,10 @@ def finalize(request, work_id, member_id):
     if request.method == 'POST':
         try:
             lending = new_lending(item, member, request.user.member, get_today())
-            return render(request, 'lending_finalized.html',
+            return render(request, 'lendings/finalized.html',
                           {'member': member, 'item': item, "date": lending.end_date})
         except LendingImpossibleException as error:
-            return render(request, 'lending_cannot_lend.html',
+            return render(request, 'lendings/cannot_lend.html',
                           {'member': member, 'item': item, 'error': error})
-    return render(request, 'lending_finalize.html',
+    return render(request, 'lendings/finalize.html',
                   {'member': member, 'item': item, "date": get_end_date(item, member, get_today())})

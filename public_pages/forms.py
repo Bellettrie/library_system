@@ -15,7 +15,7 @@ class UploadFileForm(forms.ModelForm):
 
 class PageTextWidget(Widget):
     def render(self, name, value, attrs=None, renderer=None):
-        template = loader.get_template('page_edit_widget.html')
+        template = loader.get_template('public_pages/page_edit_widget.html')
         return template.render({'name': name, 'value': value, 'BASE_UR': settings.BASE_URL})
 
 

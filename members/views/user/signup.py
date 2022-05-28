@@ -34,4 +34,4 @@ def signup(request, member_id):
             return HttpResponseRedirect(reverse('login'))
     else:
         form = UserCreationForm()
-    return render(request, 'user_create.html', {'form': form, 'member': member})
+    return render(request, 'users/create.html', {'form': form, 'member': member})

@@ -15,7 +15,7 @@ register = template.Library()
 cols = [BookCodeColumn(), TitleColumn(), AllAuthorsColumn()]
 
 
-@register.inclusion_tag('items_table.html')
+@register.inclusion_tag('tables/items_table.html')
 def get_creator_books(creator: Creator, perms):
     series = set(Series.objects.filter(creatortoseries__creator=creator))
     series_len = 0
@@ -41,7 +41,7 @@ def num_get(my_string: str):
     return my_string.split("-")[-2]
 
 
-@register.inclusion_tag('creator_single_line_description.html')
+@register.inclusion_tag('creators/single_line_description.html')
 def get_creator_name(author: Creator):
     return {"author": author}
 

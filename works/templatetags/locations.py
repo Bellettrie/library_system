@@ -5,7 +5,7 @@ from works.models import Location
 register = template.Library()
 
 
-@register.inclusion_tag('location_search.html')
+@register.inclusion_tag('works/location_search.html')
 def get_locations(loc_id, commits=True):
     locations = Location.objects.all()
     if loc_id:

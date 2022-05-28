@@ -11,6 +11,7 @@ def reserve_failed(request, member_id, work_id, reason_id):
     item = get_object_or_404(Item, pk=work_id)
     member = get_object_or_404(Member, pk=member_id)
     organising_member = request.user.member
-    return render(request, 'reservation_cannot_reserve.html', {'item': item,
-                                                               'member': member, 'organising_member': organising_member,
-                                                               'reason': lending_failed_reasons[reason_id]})
+    return render(request, 'reservations/cannot_reserve.html', {'item': item,
+                                                                'member': member,
+                                                                'organising_member': organising_member,
+                                                                'reason': lending_failed_reasons[reason_id]})

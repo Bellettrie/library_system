@@ -17,6 +17,6 @@ def reserve_member(request, member_id):
         for row in items:
             row.set_item_options(["finalizeRes"])
 
-    return render(request, 'reserve_based_on_member.html',
+    return render(request, 'reservations/based_on_member.html',
                   {'items': items, 'member': get_object_or_404(Member, pk=member_id),
                    "RESERVE_FINALIZE": RESERVE_FINALIZE})

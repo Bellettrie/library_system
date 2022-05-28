@@ -19,8 +19,8 @@ from public_pages.models import PublicPageGroup, PublicPage, FileUpload
 
 def render_md(markdown_text: str):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html'])
-    search_template = get_template('work_search_field_simple.html')
-    open_template = get_template('is_open_template.html')
+    search_template = get_template('works/work_search_field_simple.html')
+    open_template = get_template('public_pages/is_open_template.html')
     html = md.convert(markdown_text).replace("----SEARCH----", search_template.render(context={}))
     if "----OPEN----" in html:
         import urllib.request
@@ -56,7 +56,7 @@ def view_named_page(request, page_name, sub_page_name):
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     html = render_md(page.text)
 
-    return HttpResponse(render(request, template_name='public_page_simple.html',
+    return HttpResponse(render(request, template_name='public_pages/public_page_simple.html',
                                context={'BASE_URL': settings.BASE_URL, 'markdown': page.text, 'page_title': page.title,
                                         'page_content': html, 'can_edit': can_edit, 'page': page}))
 
@@ -76,7 +76,7 @@ def render_page_from_request(request):
 
 @login_required
 def test_render_function(request):
-    return HttpResponse(render(request, template_name='page_edit.html', context={}))
+    return HttpResponse(render(request, template_name='public_pages/page_edit.html', context={}))
 
 
 @login_required
@@ -102,7 +102,7 @@ def edit_named_page(request, page_name, sub_page_name):
             print("ERROR")
     else:
         form = PageEditForm(instance=page)
-    return render(request, 'page_edit_form.html', {'MY_URL': settings.BASE_URL, 'form': form, 'page': page})
+    return render(request, 'public_pages/page_edit_form.html', {'MY_URL': settings.BASE_URL, 'form': form, 'page': page})
 
 
 @login_required()
@@ -127,13 +127,13 @@ def new_named_page(request, page_name):
     else:
         instance = PublicPage(group=page_group)
         form = PageEditForm(instance=instance)
-    return render(request, 'page_edit_form.html', {'MY_URL': settings.BASE_URL, 'form': form})
+    return render(request, 'public_pages/page_edit_form.html', {'MY_URL': settings.BASE_URL, 'form': form})
 
 
 @permission_required('public_pages.view_publicpage')
 def list_named_pages(request):
     pages = PublicPage.objects.all()
-    return render(request, 'page_list.html',
+    return render(request, 'public_pages/page_list.html',
                   {'MY_URL': settings.BASE_URL, 'pages': pages, 'groups': PublicPageGroup.objects.all()})
 
 
@@ -151,7 +151,7 @@ def delete_page(request, pk):
 
 def list_uploads(request):
     uploads = FileUpload.objects.all()
-    return render(request, 'uploads_list.html', {'uploads': uploads})
+    return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})
 
 
 @permission_required('public_pages.change_publicpage')
@@ -168,7 +168,7 @@ def new_upload(request):
     else:
         form = UploadFileForm()
 
-    return render(request, 'upload_form.html', {"form": form, "special": special})
+    return render(request, 'public_pages/upload_form.html', {"form": form, "special": special})
 
 
 @permission_required('public_pages.change_publicpage')

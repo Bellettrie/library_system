@@ -27,4 +27,4 @@ def generate_invite_code(request, member_id):
     mail_member('mails/invitation.tpl', {'member': member}, member, True)
     member.save()
 
-    return render(request, 'member_detail.html', {'member': member, 'extra': "Invitation mail sent"})
+    return render(request, 'members/detail.html', {'member': member, 'extra': "Invitation mail sent"})

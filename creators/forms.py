@@ -8,7 +8,7 @@ from django.conf import settings
 
 class CreatorWidget(Widget):
     def render(self, name, value, attrs=None, renderer=None):
-        template = loader.get_template('creator_search_field.html')
+        template = loader.get_template('creators/lookup.html')
         default_options = Creator.objects.filter(pk=value)
         default_option = None
         if len(default_options) == 1:
@@ -35,7 +35,7 @@ class EditForm(ModelForm):
 
 class TurboWidget(TextInput):
     def render(self, name, value, attrs=None, renderer=None):
-        template = loader.get_template('creator_book_code_lookup.html')
+        template = loader.get_template('creators/book_code_lookup.html')
 
         return super().render(name=name, value=value, attrs=attrs) + template.render({'name': name, 'value': value, 'BASE_URL': settings.BASE_URL})
 

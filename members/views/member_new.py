@@ -34,11 +34,11 @@ def new(request):
                 instance.update_groups()
             return HttpResponseRedirect(reverse('members.view', args=(instance.pk,)))
         else:
-            return render(request, 'member_edit.html', {'form': form, 'new': True, 'error': "No end date specified",
-                                                        'md_form': MembershipPeriodForm(request.POST)})
+            return render(request, 'members/edit.html', {'form': form, 'new': True, 'error': "No end date specified",
+                                                         'md_form': MembershipPeriodForm(request.POST)})
     else:
         form = EditForm(can_change, edit_dms)
     md_form = MembershipPeriodForm(initial={'start_date': get_today(),
                                             'end_date': get_end_date(get_now().year,
                                                                      get_now().month > 6)})
-    return render(request, 'member_edit.html', {'form': form, 'new': True, 'md_form': md_form})
+    return render(request, 'members/edit.html', {'form': form, 'new': True, 'md_form': md_form})

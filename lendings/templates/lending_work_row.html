@@ -1,9 +1,0 @@
-<div style="width:100%" class="row table_row_{{ data }}">
-    <div class="col-8 col-md-3"><a href="/works/{{ bork.pk }}">
-        {% if bork.title %}{{ bork.title }} {{ work.sub_title }}{% else %} <i>No Title</i> {% endif %}</a></div>
-    <div class="col-4 col-md-3">
-        {% for author in bork.get_authors %}{{ author.role.name }}{{ author.creator.name }}<br/>{% endfor %}</div>
-    <div class="col-4 col-md-2">{% if perms.lendings.add_lending %}{% if bork.get_lend_item %}
-        <a href="{% url LENDING_FINALIZE  bork.get_lend_item.pk member.pk %}">Lend</a>{% else %}<i>{{ bork.get_why_no }}</i>
-    {% endif %}{% endif %}</div>
-</div>

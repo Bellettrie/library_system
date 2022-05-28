@@ -18,7 +18,7 @@ cols = [
 ]
 
 
-@register.inclusion_tag('items_table.html')
+@register.inclusion_tag('tables/items_table.html')
 def current_reservations():
     rows = []
     for reservation in Reservation.objects.order_by('reserved_on'):
