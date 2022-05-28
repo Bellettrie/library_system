@@ -216,8 +216,8 @@ class SubWorkWordMatch(WordMatch):
             words = {}
             for word in SearchWord.objects.all():
                 words[word.word] = word
-        ser = list(work.get_sub_works())
-        for series in ser:
+        
+        for series in list(work.get_sub_works()):
             SubWorkWordMatch.get_all_for_subwork(work, series.work, words)
             for author in series.get_authors():
                 AuthorWordMatch.get_all_for_author(work, author.creator. words)
