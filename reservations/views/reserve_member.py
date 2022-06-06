@@ -6,7 +6,7 @@ from reservations.path_names import RESERVE_FINALIZE
 from works.views import get_works
 
 
-@permission_required('lendings.add_reservation')
+@permission_required('reservation.add_reservation')
 def reserve_member(request, member_id):
     q = None
     if 'q' in request.GET.keys():

@@ -6,5 +6,4 @@
 <a href="{% url 'members.view' member.id %}">{{member.name}}</a> has reserved {{ item.publication.title }}.
 <br/>
 <a href="{% url 'lendings.reserve.member' member.id %}" class="btn btn-primary btn-sm">Reserve an other book</a>
-    <a href="{% get_crosslogin_url user.member %}" class="btn btn-outline-primary btn-sm"><span>Register Visit</span></a>
 {% endblock %}
