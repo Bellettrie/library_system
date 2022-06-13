@@ -1,9 +1,11 @@
-import datetime
+from datetime import timedelta
 from django.contrib.auth.models import User, Group
 
 from django.test import TestCase
 from members.models import Member, Committee, MembershipPeriod, MemberBackground, MembershipType
+from members.procedures.dms_purge import dms_purge
 from works.models import ItemType
+from utils.time import get_today
 
 
 class TestActiveMember(TestCase):
@@ -136,3 +138,35 @@ class MemberTestCase(MemberSetup, TestCase):
         self.member.update_groups()
         self.member.save()
         self.assertEqual(0, self.member.user.groups.all().__len__())
+
+
+class DmsPurgeTestCase(MemberSetup, TestCase):
+    def setUp(self):
+        self.member_setup()
+
+    def test_purge_old_period(self):
+        MembershipPeriod.objects.create(member=self.member, start_date=None, end_date=get_today() - timedelta(days=1))
+        self.member.dms_registered = True
+        self.member.save()
+        self.assertTrue(self.member.dms_registered)
+        dms_purge()
+        self.member.refresh_from_db()
+        self.assertFalse(self.member.dms_registered)
+
+    def test_purge_ongoing_period(self):
+        MembershipPeriod.objects.create(member=self.member2, start_date=None, end_date=get_today() + timedelta(days=2))
+        self.member2.dms_registered = True
+        self.member2.save()
+        self.assertTrue(self.member2.dms_registered)
+        dms_purge()
+        self.member2.refresh_from_db()
+        self.assertFalse(self.member2.dms_registered)
+
+    def test_purge_nonexisting_period(self):
+        MembershipPeriod.objects.create(member=self.member3, start_date=None, end_date=None)
+        self.member3.dms_registered = True
+        self.member3.save()
+        self.assertTrue(self.member3.dms_registered)
+        dms_purge()
+        self.member3.refresh_from_db()
+        self.assertTrue(self.member3.dms_registered)
