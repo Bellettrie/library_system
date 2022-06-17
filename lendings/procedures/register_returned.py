@@ -3,6 +3,7 @@ from datetime import datetime
 from lendings.models import Lending
 from members.models import Member
 from reservations.procedures.mail_when_returned import mail_when_returned
+from utils.time import get_today
 
 
 def register_returned(lending: Lending, member: Member, now=None):
@@ -14,7 +15,7 @@ def register_returned(lending: Lending, member: Member, now=None):
     :return: None
     """
     if now is None:
-        now = datetime.date(datetime.now())
+        now = get_today()
     lending.handed_in = True
     lending.handed_in_on = now
     lending.handed_in_by = member

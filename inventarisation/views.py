@@ -16,7 +16,7 @@ from works.models import Item, ItemState, Location
 @permission_required('inventarisation.view_inventarisation')
 def list_inventarisations(request):
     inventarisations = Inventarisation.objects.order_by('-is_active', '-dateTime')
-    return render(request, "inventarisation_list.html", {'inventarisations': inventarisations})
+    return render(request, "inventarisation/list.html", {'inventarisations': inventarisations})
 
 
 def get_groups(inventarisation):
@@ -37,14 +37,14 @@ def get_groups(inventarisation):
 def print_list(request, inventarisation_id):
     inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     groups = get_groups(inventarisation)
-    return render(request, "inventarisation_print_list.html", {'groups': groups})
+    return render(request, "inventarisation/list_print.html", {'groups': groups})
 
 
 class InventarisationCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'inventarisation.add_inventarisation'
     model = Inventarisation
     fields = ['location']
-    template_name = 'inventarisation_new.html'
+    template_name = 'inventarisation/new.html'
     success_url = reverse_lazy('inventarisation.list')
 
 
@@ -86,7 +86,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
             pre_filled[item] = ItemState.objects.get(item=item, inventarisation=inventarisation).type
         except ItemState.DoesNotExist:
             pass
-    return render(request, "inventarisation_form.html", {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled, "counts": len(groups)})
+    return render(request, "inventarisation/form.html", {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled, "counts": len(groups)})
 
 
 def get_cur_block(inventarisation, page_id):
@@ -128,7 +128,7 @@ def get_inventarisation_next(request, inventarisation_id, page_id):
 @permission_required('inventarisation.view_inventarisation')
 def get_inventarisation_finish(request, inventarisation_id):
     inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
-    return render(request, "inventarisation_finish.html", {'inventarisation': inventarisation})
+    return render(request, "inventarisation/finish.html", {'inventarisation': inventarisation})
 
 
 @transaction.atomic
@@ -137,13 +137,13 @@ def get_inventarisation_finished(request, inventarisation_id):
     inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     inventarisation.is_active = False
     inventarisation.save()
-    return render(request, "inventarisation_finished.html", {'inventarisation': inventarisation})
+    return render(request, "inventarisation/finished.html", {'inventarisation': inventarisation})
 
 
 @permission_required('inventarisation.view_inventarisation')
 def get_inventarisation_early_end(request, inventarisation_id):
     inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
-    return render(request, "inventarisation_early_end.html", {'inventarisation': inventarisation})
+    return render(request, "inventarisation/early_end.html", {'inventarisation': inventarisation})
 
 
 @transaction.atomic
@@ -152,4 +152,4 @@ def get_inventarisation_for_all(request):
     inventarisations = []
     for location in Location.objects.all():
         inventarisations.append(Inventarisation.objects.create(location=location))
-    return render(request, "inventarisation_add_for_all.html", {'inventarisations': inventarisations})
+    return render(request, "inventarisation/add_for_all.html", {'inventarisations': inventarisations})

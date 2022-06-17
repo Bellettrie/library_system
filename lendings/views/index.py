@@ -7,4 +7,4 @@ from lendings.models.lending import Lending
 @permission_required('lendings.add_lending')
 def index(request):
     lendings = Lending.objects.filter(handed_in=False).order_by('end_date')
-    return render(request, 'lending_list.html', {'lendings': lendings})
+    return render(request, 'lendings/list.html', {'lendings': lendings})

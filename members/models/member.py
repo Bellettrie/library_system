@@ -9,6 +9,7 @@ from members.management.commands.namegen import generate_full_name
 from members.models.committee import Committee
 from members.models.member_data import MemberData
 from members.models.membership_period import MembershipPeriod
+from utils.time import get_today
 
 if sys.version_info.minor < 8:
     from backports.datetime_fromisoformat import MonkeyPatch
@@ -52,7 +53,7 @@ class Member(MemberData):
         return end_date
 
     def get_current_membership_period(self, current_date: datetime.date = None):
-        current_date = current_date or datetime.date(datetime.now())
+        current_date = current_date or get_today()
         for period in MembershipPeriod.objects.filter(member=self):
             if (period.start_date is None or period.start_date <= current_date) and (
                     period.end_date is None or current_date <= period.end_date):
@@ -114,7 +115,7 @@ class Member(MemberData):
     def reunion_period_ended(self):
         if self.is_anonimysed and not self.privacy_reunions:
             return True
-        now = datetime.now().date()
+        now = get_today()
         if self.privacy_reunions:
             if (now - self.privacy_reunion_end_date).days < 8000:
                 return False
@@ -134,6 +135,6 @@ class Member(MemberData):
 
     def should_be_anonymised(self, now=None):
         if now is None:
-            now = datetime.now().date()
+            now = get_today()
         from members.procedures.anonymise import can_be_anonymised
         return can_be_anonymised(self, now)

@@ -17,7 +17,7 @@
                 <i>-{{ work.work.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
         </td>
         <td>
-            {% for author in work.work.get_own_authors %}{% include 'creator_single_line_description.html' %}
+            {% for author in work.work.get_own_authors %}{% include 'creators/single_line_description.html' %}
                 {% if not forloop.last %}<br/>{% endif %}{% empty %}{% endfor %}
         </td>
         {% if should_edit and perms.works.change_publication %}

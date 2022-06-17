@@ -12,7 +12,7 @@ from django.forms import ModelForm, inlineformset_factory
 
 class SeriesWidget(Widget):
     def render(self, name, value, attrs=None, renderer=None):
-        template = loader.get_template('series_search_field.html')
+        template = loader.get_template('series/search_field.html')
         default_options = Series.objects.filter(pk=value)
         default_option = None
         if len(default_options) == 1:

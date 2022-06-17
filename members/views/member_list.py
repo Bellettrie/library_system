@@ -6,12 +6,13 @@ from django.views.generic import ListView
 
 from members.models import Member, MembershipPeriod
 from utils.get_query_words import get_query_words
+from utils.time import get_now
 
 
 class MemberList(PermissionRequiredMixin, ListView):
     permission_required = 'members.view_member'
     model = Member
-    template_name = 'member_list.html'
+    template_name = 'members/list.html'
     paginate_by = 50
 
     def get_queryset(self):  # new
@@ -20,8 +21,8 @@ class MemberList(PermissionRequiredMixin, ListView):
 
 
 def query_members(words, get_previous=False):
-    msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=datetime.now()))
-                                           & (Q(end_date__isnull=True) | Q(end_date__gte=datetime.now())))
+    msps = MembershipPeriod.objects.filter((Q(start_date__isnull=True) | Q(start_date__lte=get_now()))
+                                           & (Q(end_date__isnull=True) | Q(end_date__gte=get_now())))
     if words is None:
         return []
     if len(words) == 0:

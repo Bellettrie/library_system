@@ -10,7 +10,7 @@ from config.models import Holiday
 
 class HolidayList(PermissionRequiredMixin, ListView):
     permission_required = 'config.view_holiday'
-    template_name = 'holiday_list.html'
+    template_name = 'config/holiday_list.html'
     model = Holiday
 
     def get_queryset(self):  # new
@@ -31,24 +31,24 @@ class HolidayCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'config.add_holiday'
     model = Holiday
     form_class = HolidayForm
-    template_name = 'holiday_form.html'
+    template_name = 'config/holiday_form.html'
 
 
 class HolidayUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'config.change_holiday'
     model = Holiday
     form_class = HolidayForm
-    template_name = 'holiday_form.html'
+    template_name = 'config/holiday_form.html'
 
 
 class HolidayDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'config.delete_holiday'
     model = Holiday
-    template_name = 'holiday_confirm_delete.html'
+    template_name = 'config/holiday_confirm_delete.html'
     success_url = reverse_lazy('holiday.list')
 
 
 class HolidayDetail(PermissionRequiredMixin, DetailView):
     permission_required = 'config.view_holiday'
-    template_name = 'holiday_detail.html'
+    template_name = 'config/holiday_detail.html'
     model = Holiday

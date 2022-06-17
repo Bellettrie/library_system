@@ -24,6 +24,20 @@ class BookCodeColumn(Column):
         return row.get_item().book_code + " " + row.get_item().book_code_extension
 
 
+class RecodeColumn(Column):
+    @staticmethod
+    def get_header():
+        return ""
+
+    def render(self, row: Row, perms=None):
+        recode = row.get_item().get_recode()
+
+        if recode:
+            return render_to_string("columns/finish_recode.html", {"recode": recode, "perms": perms})
+        else:
+            return ""
+
+
 class TitleColumn(Column):
     @staticmethod
     def get_header():
@@ -41,7 +55,7 @@ class AllAuthorsColumn(Column):
     def render(self, row: Row, perms=None):
         strstr = ""
         for author in row.get_item().publication.get_authors():
-            strstr += render_to_string("creator_single_line_description.html", {"author": author}) + "<br>"
+            strstr += render_to_string("creators/single_line_description.html", {"author": author}) + "<br>"
         return strstr
 
 

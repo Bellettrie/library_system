@@ -58,7 +58,7 @@ def edit(request, creator_id=None):
                             force_relabel(c2w, ld[0], ld[1])
                         else:
                             form.add_error(None, "To change the location number of one of the locations, items have to be relabeled. Set the checkbox to allow this.")
-                            return render(request, 'creator_edit.html', {'form': form, 'creator': creator, 'locations': locations})
+                            return render(request, 'creators/edit.html', {'form': form, 'creator': creator, 'locations': locations})
 
                 c2w.creator = instance
                 c2w.save()
@@ -71,7 +71,7 @@ def edit(request, creator_id=None):
         else:
             locations = CreatorLocationNumberFormset()
             form = EditForm()
-    return render(request, 'creator_edit.html', {'form': form, 'creator': creator, 'locations': locations})
+    return render(request, 'creators/edit.html', {'form': form, 'creator': creator, 'locations': locations})
 
 
 # @permission_required('creators.view_creator')
@@ -80,7 +80,7 @@ def show(request, creator_id):
 
     works = Publication.objects.filter(creatortowork__creator=creator)
 
-    return render(request, 'creator_view.html', {'creator': creator, 'works': works})
+    return render(request, 'creators/creator_view.html', {'creator': creator, 'works': works})
 
 
 @permission_required('creators.delete_creator')
@@ -97,7 +97,7 @@ def delete(request, creator_id):
 class CreatorList(ListView):
     # permission_required = 'creators.view_creator'
     model = Creator
-    template_name = 'creator_list.html'
+    template_name = 'creators/list.html'
     paginate_by = 10
 
     def get_queryset(self):  # new
@@ -143,18 +143,15 @@ def collisions(request):
 
     if location:
         location = int(location)
-        my_location = Location.objects.get(pk=location)
-
         creator_location_numbers = dict()
 
-        for cln in CreatorLocationNumber.objects.filter(location=my_location):
+        for cln in CreatorLocationNumber.objects.filter(location__pk=location):
             cln_list = creator_location_numbers.get((cln.letter, cln.number), [])
             cln_list.append(cln)
             creator_location_numbers[(cln.letter, cln.number)] = cln_list
         for cln in creator_location_numbers.keys():
             if len(creator_location_numbers[cln]) > 1:
                 data.append((cln, creator_location_numbers[cln]))
-
     if commit:
         totals[0] = "Newly coded " + str(totals[0])
-    return render(request, 'creator_location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals, 'marked': marked_authors})
+    return render(request, 'creators/location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals, 'marked': marked_authors})

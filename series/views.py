@@ -52,7 +52,7 @@ class Counter:
 def view_series(request, pk):
     series = Series.objects.get(pk=pk)
     counter = Counter(0)
-    return render(request, 'series_view.html', {'series': series, 'list': {'things_underneath': [series]}, 'counter': counter})
+    return render(request, 'series/view.html', {'series': series, 'list': {'things_underneath': [series]}, 'counter': counter})
 
 
 @transaction.atomic
@@ -100,7 +100,7 @@ def edit_series(request, pk):
             creators = CreatorToSeriesFormSet()
             form = SeriesCreateForm()
 
-    return render(request, 'series_edit.html', {'series': series, 'form': form, 'creators': creators})
+    return render(request, 'series/edit.html', {'series': series, 'form': form, 'creators': creators})
 
 
 @permission_required('series.add_series')
@@ -123,7 +123,7 @@ def delete_series(request, pk):
 
 class SeriesList(ListView):
     model = Series
-    template_name = 'series_list.html'
+    template_name = 'series/list.html'
     paginate_by = 10
 
     def get_context_data(self, **kwargs):

@@ -5,10 +5,10 @@
 {% block title %}Book Search{% endblock %}
 {% block content %}
     {% if advanced %}
-        {% include 'work_search_field_advanced.html' %}
+        {% include 'works/work_search_field_advanced.html' %}
         <a href="{% url 'works.list' %}">Simple Search</a>
     {% else %}
-        {% include 'work_search_field_simple.html' %}
+        {% include 'works/work_search_field_simple.html' %}
         <a href="?advanced=True">Advanced Search</a>
     {% endif %}
     {% include 'pagination.html' %}

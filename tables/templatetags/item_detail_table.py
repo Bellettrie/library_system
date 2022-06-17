@@ -2,7 +2,7 @@ from bellettrie_library_system.templatetags.paginator_tag import register
 from members.models import Member
 from tables.buttons import LendBookButton, ReturnBookButton, IsLentOutStatus, StatusButton, StatusChangeButton, \
     ItemEditButton, FinalizeReservationButton
-from tables.columns import BookCodeColumn, ButtonsColumn, Column
+from tables.columns import BookCodeColumn, ButtonsColumn, Column, RecodeColumn
 from tables.table import Table
 from tables.rows import ItemRow, Row
 
@@ -19,10 +19,11 @@ class AnonColumn(Column):
         return self.item_func(row, row.get_item(), perms)
 
 
-@register.inclusion_tag('items_table.html')
+@register.inclusion_tag('tables/items_table.html')
 def detailed_items(its, member: Member, perms):
     cols = [
         BookCodeColumn(),
+        RecodeColumn(),
         AnonColumn("ISBN", lambda row, item, pm: (item.isbn10 or "") + " " + (item.isbn13 or "")),
         AnonColumn("Pages", lambda row, item, pm: item.pages),
         AnonColumn("Year", lambda row, item, pm: item.publication_year),

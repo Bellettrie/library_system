@@ -4,6 +4,7 @@ import jwt
 from django.conf import settings
 
 from members.models import Committee
+from utils.time import get_now
 
 
 class MemberData:
@@ -26,7 +27,7 @@ def my_encrypt_from_member(member) -> str:
 
 
 def my_encrypt(member: MemberData) -> str:
-    data = {"exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2), 'name': member.name, 'id': member.id, 'perms': member.perm_level}
+    data = {"exp": get_now() + datetime.timedelta(hours=2), 'name': member.name, 'id': member.id, 'perms': member.perm_level}
     return jwt.encode(data, settings.CROSS_LOGIN_KEY, algorithm="HS256")
 
 

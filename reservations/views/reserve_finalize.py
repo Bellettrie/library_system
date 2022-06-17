@@ -10,6 +10,7 @@ from members.models import Member
 from reservations.procedures.new_reservation import new_reservation
 from reservations.reservationException import ReservationImpossibleException
 from works.models import Item
+from utils.time import get_today
 
 
 @transaction.atomic
@@ -37,5 +38,5 @@ def reserve_finalize(request, work_id, member_id):
             return render(request, 'reservation_cannot_reserve.html',
                           {'member': member, 'item': item, 'error': error})
 
-    return render(request, 'reserve_finalize.html',
-                  {'member': member, 'item': item, "date": get_end_date(item, member, datetime.now().date())})
+    return render(request, 'reservations/finalize.html',
+                  {'member': member, 'item': item, "date": get_end_date(item, member, get_today())})

@@ -11,6 +11,6 @@ def item_based(request, work_id):
     from utils.get_query_words import get_query_words
     words = get_query_words(request.GET.get("q"))
     members = query_members(words)
-    return render(request, 'lending_based_on_work.html',
+    return render(request, 'lendings/based_on_work.html',
                   {'members': members, 'item': get_object_or_404(Item, pk=work_id),
                    "LENDING_FINALIZE": LENDING_FINALIZE})

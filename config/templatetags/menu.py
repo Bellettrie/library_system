@@ -5,7 +5,7 @@ from django.conf import settings
 register = template.Library()
 
 
-@register.inclusion_tag('render_menu_item.html', takes_context=True)
+@register.inclusion_tag('config/render_menu_item.html', takes_context=True)
 def render_menu_item(context, menu_item, mode):
     request = context['request']
 
@@ -13,7 +13,7 @@ def render_menu_item(context, menu_item, mode):
     return {'menu': menu_item, 'has_sub_items': len(menu_item.sub_items) > 0, 'sub_items': sub_items, 'request': request, 'mode': mode}
 
 
-@register.inclusion_tag('render_menu.html', takes_context=True)
+@register.inclusion_tag('config/render_menu.html', takes_context=True)
 def render_menu(context, mode, menu_name=None):
     request = context['request']
     lst = []

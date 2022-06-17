@@ -8,6 +8,7 @@ from lendings.lendingException import LendingImpossibleException
 from lendings.procedures.get_end_date import get_end_date
 from lendings.procedures.new_lending import create_lending, new_lending
 from reservations.models import Reservation
+from utils.time import get_today
 
 
 @transaction.atomic
@@ -18,12 +19,12 @@ def finalize_reservation_based(request, reservation_id):
     item = reservation.item
     if request.method == "POST":
         try:
-            lending = new_lending(item, member, request.user.member, datetime.date(datetime.now()), True)
-            return render(request, 'lending_finalized.html',
+            lending = new_lending(item, member, request.user.member, get_today(), True)
+            return render(request, 'lendings/finalized.html',
                           {'member': member, 'item': item, "date": lending.end_date})
         except LendingImpossibleException as error:
-            return render(request, 'lending_cannot_lend.html',
+            return render(request, 'lendings/cannot_lend.html',
                           {'member': member, 'item': item, 'error': error})
 
-    return render(request, 'lending_finalize.html',
-                  {'member': member, 'item': item, "date": get_end_date(item, member, datetime.now().date())})
+    return render(request, 'lendings/finalize.html',
+                  {'member': member, 'item': item, "date": get_end_date(item, member, get_today())})

@@ -16,7 +16,7 @@ cols = [
 ]
 
 
-@register.inclusion_tag('items_table.html')
+@register.inclusion_tag('tables/items_table.html')
 def member_current_lendings(member: Member):
     rows = []
     for lending in Lending.objects.filter(handed_in=False, member=member):
