@@ -6,11 +6,12 @@ from members.procedures.can_lend_more_of_item import can_lend_more_of_item
 from reservations.models import Reservation
 from reservations.reservationException import ReservationImpossibleException
 from works.models import Item
+from utils.time import get_now
 
 
 def create_reservation(item, member: Member, edited_member: Member, current_date=None):
     if current_date is None:
-        current_date = datetime.now()
+        current_date = get_now()
 
     if member.is_anonymous_user:
         raise ValueError("Member is an anonymous user")

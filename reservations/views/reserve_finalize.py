@@ -25,17 +25,17 @@ def reserve_finalize(request, work_id, member_id):
     item = get_object_or_404(Item, pk=work_id)
     if request.method == 'POST':
         try:
-            reservation = new_reservation(item, member, request.user.member, datetime.date(datetime.now()))
+            new_reservation(item, member, request.user.member, get_today)
             if item.is_lent_out():
                 mail_member('mails/book_just_got_reserved.tpl',
                             {'member': item.current_lending().member, 'item': item},
                             item.current_lending().member,
                             True)
 
-            return render(request, 'reserve_finalized.html',
+            return render(request, 'reservations/finalized.html',
                           {'member': member, 'item': item})
         except ReservationImpossibleException as error:
-            return render(request, 'reservation_cannot_reserve.html',
+            return render(request, 'reservations/cannot_reserve.html',
                           {'member': member, 'item': item, 'error': error})
 
     return render(request, 'reservations/finalize.html',
