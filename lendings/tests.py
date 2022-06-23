@@ -9,6 +9,7 @@ from lendings.procedures.new_lending import create_lending, new_lending
 from members.models import MembershipPeriod, MemberBackground
 from members.tests import MemberSetup
 from reservations.models import Reservation
+from reservations.procedures.new_reservation import new_reservation
 from works.models import Location, Category
 from works.tests import item_create
 
@@ -64,7 +65,7 @@ class LendingFailureCases(LendingBase):
         self.attempt_to_fail_lending("Item is lent out")
 
     def test_already_reserved_someone_else(self):
-        Reservation.create_reservation(self.item, self.member2, self.member2, current_date=datetime(2020, 2, 12))
+        new_reservation(self.item, self.member2, self.member2, current_date=datetime(2020, 2, 12))
         self.attempt_to_fail_lending("Item is reserved for another member")
 
     def test_membership_period_starts_again_after(self):
