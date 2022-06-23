@@ -42,7 +42,7 @@ def reservation_checks(item, member, current_date):
             "Member currently has items that are late. These need to be returned before it can be reserved.")
     if member.is_blacklisted:
         raise ReservationImpossibleException("Member currently blacklisted, cannot reserve")
-    if not member.is_currently_member():
+    if not member.is_currently_member(current_date):
         raise ReservationImpossibleException("Member currently not a member, cannot reserve")
     if item.is_reserved():
         raise ReservationImpossibleException("Item is reserved for another member")
@@ -68,4 +68,4 @@ def new_reservation(item: Item, member: Member, user_member: Member, current_dat
         :except ReservationImpossibleException: If the reservation-checks fail.
     """
     reservation_checks(item, member, current_date)
-    return create_reservation(item, member, user_member)
+    return create_reservation(item, member, user_member, current_date)
