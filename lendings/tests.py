@@ -142,6 +142,17 @@ class LendingExtend(LendingBase):
             err_str = str(err)
         self.assertEqual(err_str, "This item is late, and needs to be handed in.")
 
+    def test_extend_reserved(self):
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_reservation(self.item, self.member2, self.member2, current_date=datetime.date(datetime(2020, 2, 12)))
+        err_str = ""
+        try:
+            new_extension(self.lending, datetime.date(datetime(2020, 2, 14)))
+        except LendingImpossibleException as err:
+            err_str = str(err)
+        self.assertEqual(err_str, "Item is reserved for another member")
+
 
 class CalculateFine(LendingBase):
     def test_fine_amount_zero(self):
