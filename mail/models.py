@@ -22,7 +22,6 @@ def mail_member(template_string: str, context: dict, member: Member, is_logged: 
         return
 
     if not member.is_anonymous_user:
-        print(context)
         mail = member.email
         if settings.FAKE_MAIL:
             mail = settings.FAKE_MAIL_ADDRESS
