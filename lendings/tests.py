@@ -1,5 +1,4 @@
 from _datetime import datetime, timedelta
-from django.test import TestCase
 
 from config.tests import LendingSettingsBase
 from lendings.lendingException import LendingImpossibleException
@@ -46,6 +45,13 @@ class LendingFailureCases(LendingBase):
                                         membership_type=self.membership_type, member_background=self.member_background)
         self.member.is_blacklisted = True
         self.attempt_to_fail_lending("Member currently blacklisted, cannot lend")
+
+    def test_member_has_late_books(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        create_lending(self.item1, self.member, self.member2, datetime.date(datetime(2020, 1, 11)))
+        self.attempt_to_fail_lending(
+            "Member currently has items that are late. These need to be returned before it can be handed out.")
 
     def test_too_many_lendings(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
