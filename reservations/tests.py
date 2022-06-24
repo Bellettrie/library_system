@@ -1,7 +1,4 @@
-from django.test import TestCase
-
-# Create your tests here.
-from _datetime import datetime, timedelta
+from _datetime import datetime
 from config.tests import LendingSettingsBase
 from lendings.procedures.new_lending import create_lending
 from members.models import MembershipPeriod
@@ -75,3 +72,17 @@ class ReservationFailureCases(ReservationBase):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-02-15", end_date="2020-06-20",
                                         membership_type=self.membership_type, member_background=self.member_background)
         self.attempt_to_fail_reservation("Member currently not a member, cannot reserve")
+
+
+class ReservationSuccess(ReservationBase):
+    def test_reservation(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        reservation = new_reservation(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
+        self.assertIsNotNone(reservation)
+
+    def test_honorary_member(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date=None,
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        reservation = new_reservation(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
+        self.assertIsNotNone(reservation)
