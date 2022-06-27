@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, date
 from django.contrib.auth.models import User, Group
 
 from django.test import TestCase
@@ -19,9 +19,9 @@ class TestActiveMember(TestCase):
         MembershipPeriod.objects.create(member=self.member2, start_date=None, end_date="2025-02-02")
 
     def test_member_is_active(self):
-        self.assertTrue(self.member.is_currently_member(datetime.date(2022, 1, 1)))
-        self.assertFalse(self.member.is_currently_member(datetime.date(2024, 1, 1)))
-        self.assertTrue(self.member2.is_currently_member(datetime.date(2024, 1, 1)))
+        self.assertTrue(self.member.is_currently_member(date(2022, 1, 1)))
+        self.assertFalse(self.member.is_currently_member(date(2024, 1, 1)))
+        self.assertTrue(self.member2.is_currently_member(date(2024, 1, 1)))
 
 
 class MemberSetup:
