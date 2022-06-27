@@ -4,8 +4,6 @@ import os
 
 WSGI_APPLICATION = 'bellettrie_library_system.wsgi.application'
 
-SKIP_MAIL = True
-
 SECRET_KEY = '9_meq=rl3q!wh4=lr4g9t)ra9l*o_d7!exbh&^brhj=*_xm5y*'
 
 CROSS_LOGIN_KEY = 'XP6kvnD5NQN3lL0zyjPeQumogu8y3YRtPi3NqKid9BA='
@@ -41,7 +39,6 @@ OLD_PWD = 'root'
 BASE_URL = '/'
 EMAIL_PORT = 1025
 EMAIL_HOST = '127.0.0.1'
-FAKE_MAIL = True
 FAKE_MAIL_ADDRESS = 'nander@nander.net'
 
 SHOULD_MIGRATE = False
