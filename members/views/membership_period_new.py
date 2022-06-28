@@ -30,4 +30,4 @@ def new_membership_period(request, member_id):
         form = MembershipPeriodForm(instance=member, initial={'start_date': get_today(),
                                                               'end_date': get_end_date(get_now().year,
                                                                                        get_now().month > 6)})
-    return render(request, 'members/', {'form': form, 'member': member})
+    return render(request, 'members/membership_edit.html', {'form': form, 'member': member})

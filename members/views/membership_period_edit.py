@@ -22,4 +22,4 @@ def edit_membership_period(request, membership_period_id):
     else:
         form = MembershipPeriodForm(instance=membership_period)
 
-    return render(request, 'members/', {'form': form, 'member': membership_period})
+    return render(request, 'members/membership_edit.html', {'form': form, 'member': membership_period})
