@@ -3,31 +3,37 @@ from django.db import models, transaction
 # Create your models here.
 from django.db.models import PROTECT
 
-from bellettrie_library_system.settings import SKIP_MAIL
 from members.models import Member
-from mail_templated import send_mail
+from mail_templated import EmailMessage
 from django.conf import settings
+
+from utils.time import get_now
 
 
 class MailLog(models.Model):
     member = models.ForeignKey(Member, on_delete=PROTECT)
     contents = models.TextField()
+    subject = models.CharField(max_length=255)
     date = models.DateTimeField(auto_now=True)
+    sent = models.BooleanField(default=True)
+
+    @transaction.atomic
+    def send(self):
+        msg = EmailMessage(subject=self.subject,
+                           body=self.contents,
+                           from_email="info@bellettrie.utwente.nl",
+                           to=[self.member.email])
+        self.sent = True
+        self.save()
+        msg._is_rendered = True
+        msg.send()
 
 
 @transaction.atomic
-def mail_member(template_string: str, context: dict, member: Member, is_logged: bool, connection=None):
+def mail_member(template_string: str, context: dict, member: Member, now=None):
+    if now is None:
+        now = get_now()
     context['BASE_URL'] = settings.BASE_URL
-    if SKIP_MAIL:
-        return
-
     if not member.is_anonymous_user:
-        mail = member.email
-        if settings.FAKE_MAIL:
-            mail = settings.FAKE_MAIL_ADDRESS
-        if connection:
-            send_mail(template_string, context, 'info@bellettrie.utwente.nl', [mail], connection=connection)
-        else:
-            send_mail(template_string, context, 'info@bellettrie.utwente.nl', [mail])
-        if is_logged:
-            MailLog.objects.create(member=member, contents=str(context))
+        m = EmailMessage(template_string, context, "info@bellettrie.utwente.nl", render=True)
+        MailLog.objects.create(member=member, contents=m.body, subject=m.subject, date=now, sent=False)
