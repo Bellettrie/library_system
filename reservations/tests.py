@@ -96,6 +96,6 @@ class ReservationSuccess(ReservationBase):
         new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         try:
             removed_reservation = Reservation.objects.get(id=reservation_id)
-        except Reservation.DoesNotExist as err:
+        except Reservation.DoesNotExist:
             removed_reservation = None
         self.assertIsNone(removed_reservation)
