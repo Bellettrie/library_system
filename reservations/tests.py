@@ -1,8 +1,9 @@
 from _datetime import datetime
 from config.tests import LendingSettingsBase
-from lendings.procedures.new_lending import create_lending
+from lendings.procedures.new_lending import create_lending, new_lending
 from members.models import MembershipPeriod
 from members.tests import MemberSetup
+from reservations.models import Reservation
 from reservations.procedures.new_reservation import new_reservation
 from reservations.reservationException import ReservationImpossibleException
 from works.models import Category, Location
@@ -86,3 +87,15 @@ class ReservationSuccess(ReservationBase):
                                         membership_type=self.membership_type, member_background=self.member_background)
         reservation = new_reservation(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         self.assertIsNotNone(reservation)
+
+    def test_lend_from_reservation(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        reservation = new_reservation(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 11)))
+        reservation_id = reservation.id
+        new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
+        try:
+            removed_reservation = Reservation.objects.get(id=reservation_id)
+        except Reservation.DoesNotExist as err:
+            removed_reservation = None
+        self.assertIsNone(removed_reservation)

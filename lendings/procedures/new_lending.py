@@ -6,6 +6,7 @@ from lendings.procedures.get_end_date import get_end_date
 from lendings.procedures.member_has_late_items import member_has_late_items
 from members.models import Member
 from members.procedures.can_lend_more_of_item import can_lend_more_of_item
+from reservations.models import Reservation
 from works.models import Item
 
 
@@ -32,6 +33,10 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
     new_lending.handed_in = False
     new_lending.lended_by = user_member
     new_lending.save()
+    reservations = Reservation.objects.filter(item=item)
+    if len(reservations) > 0:
+        reservation = reservations.first()
+        reservation.delete()
     item.is_seen("Book was lent out.")
     return new_lending
 
