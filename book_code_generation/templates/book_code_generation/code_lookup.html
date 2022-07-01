@@ -11,7 +11,7 @@
         }
     };
     {% if for_series %}
-        xhttp.open("GET", "/book_code/generate_series/" + x + "/" + y+ "?title=" + title, true);
+        xhttp.open("GET", "/book_code/generate/series/" + x + "/" + y+ "?title=" + title, true);
     {% else %}
         xhttp.open("GET", "/book_code/generate/" + x + "/" + y , true);
     {% endif %}
