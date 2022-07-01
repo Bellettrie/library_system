@@ -217,7 +217,7 @@ class SubWorkWordMatch(WordMatch):
         for series in list(work.get_sub_works()):
             SubWorkWordMatch.get_all_for_subwork(work, series.work, words)
             for author in series.get_authors():
-                AuthorWordMatch.get_all_for_author(work, author.creator. words)
+                AuthorWordMatch.get_all_for_author(work, author.creator, words)
 
     @staticmethod
     def subwork_rename(subwork: SubWork):

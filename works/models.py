@@ -383,6 +383,9 @@ class WorkInPublication(models.Model):
         from search.models import SubWorkWordMatch
         SubWorkWordMatch.subwork_rename(self.work)
 
+    def get_authors(self):
+        return self.work.get_authors()
+
 
 class CreatorToWork(models.Model):
     creator = models.ForeignKey(Creator, on_delete=PROTECT)
