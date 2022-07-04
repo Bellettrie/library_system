@@ -8,7 +8,7 @@ from reservations.models import Reservation
 @login_required
 def delete_reservation(request, reservation_id):
     reservation = get_object_or_404(Reservation, pk=reservation_id)
-    if not request.user.has_perm('lendings.add_reservation'):
+    if not request.user.has_perm('reservations.delete_reservation'):
         if not hasattr(request.user, 'member'):
             raise PermissionDenied
         member = request.user.member

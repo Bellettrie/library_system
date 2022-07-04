@@ -1,5 +1,4 @@
 from _datetime import datetime, timedelta
-from django.test import TestCase
 
 from config.tests import LendingSettingsBase
 from lendings.lendingException import LendingImpossibleException
@@ -8,7 +7,7 @@ from lendings.procedures.get_total_fine import get_total_fine_for_days, get_tota
 from lendings.procedures.new_lending import create_lending, new_lending
 from members.models import MembershipPeriod, MemberBackground
 from members.tests import MemberSetup
-from reservations.models import Reservation
+from reservations.procedures.new_reservation import new_reservation
 from works.models import Location, Category
 from works.tests import item_create
 
@@ -47,6 +46,13 @@ class LendingFailureCases(LendingBase):
         self.member.is_blacklisted = True
         self.attempt_to_fail_lending("Member currently blacklisted, cannot lend")
 
+    def test_member_has_late_books(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        create_lending(self.item1, self.member, self.member2, datetime.date(datetime(2020, 1, 11)))
+        self.attempt_to_fail_lending(
+            "Member currently has items that are late. These need to be returned before it can be handed out.")
+
     def test_too_many_lendings(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
@@ -64,7 +70,9 @@ class LendingFailureCases(LendingBase):
         self.attempt_to_fail_lending("Item is lent out")
 
     def test_already_reserved_someone_else(self):
-        Reservation.create_reservation(self.item, self.member2, self.member2, current_date=datetime(2020, 2, 12))
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_reservation(self.item, self.member2, self.member2, current_date=datetime.date(datetime(2020, 2, 12)))
         self.attempt_to_fail_lending("Item is reserved for another member")
 
     def test_membership_period_starts_again_after(self):
@@ -133,6 +141,17 @@ class LendingExtend(LendingBase):
         except LendingImpossibleException as err:
             err_str = str(err)
         self.assertEqual(err_str, "This item is late, and needs to be handed in.")
+
+    def test_extend_reserved(self):
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_reservation(self.item, self.member2, self.member2, current_date=datetime.date(datetime(2020, 2, 12)))
+        err_str = ""
+        try:
+            new_extension(self.lending, datetime.date(datetime(2020, 2, 14)))
+        except LendingImpossibleException as err:
+            err_str = str(err)
+        self.assertEqual(err_str, "Item is reserved for another member")
 
 
 class CalculateFine(LendingBase):

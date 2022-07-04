@@ -87,29 +87,27 @@ class FinalizeLendingButton(Button):
 
 
 class FinalizeReservationButton(Button):
-    def __init__(self, member: Member, for_self=False):
+    def __init__(self, member: Member):
         self.member = member
-        self.for_self = for_self
 
     def is_enabled(self, row, perms: PermWrapper):
-        return (not row.get_item().is_available_for_lending()) and row.get_item().in_available_state(), "-"
+        if not row.get_item().is_available_for_reservation():
+            return False, "Item is reserved"
+        return True, None
 
     def is_hidden(self, row, perms: PermWrapper):
-        if not self.member:
-            return True
-        if "reservations.add_reservation" in perms:
-            return not row.is_item()
-        return True
+        if self.member:
+            return False
+        return not row.is_item()
 
     def enabled_render(self, row, perms=None):
         return render_to_string("buttons/reserve_item_button.html",
-                                {"item": row.get_item(), "member": self.member, "perms": perms,
-                                 "for_self": self.for_self})
+                                {"item": row.get_item(), "member": self.member, "perms": perms})
 
     def disabled_render(self, row, perms=None, err=None):
         return render_to_string("buttons/reserve_item_disabled_button.html",
                                 {"item": row.get_item(), "member": self.member, "perms": perms,
-                                 "for_self": self.for_self})
+                                 "err": err})
 
 
 class ReturnBookButton(Button):

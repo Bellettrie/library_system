@@ -5,7 +5,7 @@ from reservations.path_names import RESERVE_FINALIZE
 from works.models import Item
 
 
-@permission_required('lendings.add_reservation')
+@permission_required('reservations.add_reservation')
 def reserve_item(request, item_id):
     from members.views.member_list import query_members
     from utils.get_query_words import get_query_words

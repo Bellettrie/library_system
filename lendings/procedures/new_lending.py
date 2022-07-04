@@ -1,14 +1,18 @@
 from datetime import datetime
 
+from django.db import transaction
+
 from lendings.lendingException import LendingImpossibleException
 from lendings.models import Lending
 from lendings.procedures.get_end_date import get_end_date
 from lendings.procedures.member_has_late_items import member_has_late_items
 from members.models import Member
 from members.procedures.can_lend_more_of_item import can_lend_more_of_item
+from reservations.models import Reservation
 from works.models import Item
 
 
+@transaction.atomic
 def create_lending(item: Item, member: Member, user_member: Member, current_date: datetime.date):
     """
     Create a new lending.
@@ -32,6 +36,10 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
     new_lending.handed_in = False
     new_lending.lended_by = user_member
     new_lending.save()
+    reservations = Reservation.objects.filter(item=item)
+    if len(reservations) > 0:
+        reservation = reservations.first()
+        reservation.delete()
     item.is_seen("Book was lent out.")
     return new_lending
 
@@ -50,7 +58,7 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
             "Member currently has lent too many items in category {}".format(item.location.category.item_type))
     if member_has_late_items(member, current_date):
         raise LendingImpossibleException(
-            "Member currently has items that are late. These need to be returned before it can be handed in.")
+            "Member currently has items that are late. These need to be returned before it can be handed out.")
     if member.is_blacklisted:
         raise LendingImpossibleException("Member currently blacklisted, cannot lend")
     if item.is_reserved():
