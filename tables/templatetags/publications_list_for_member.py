@@ -2,7 +2,7 @@ from typing import List
 
 from bellettrie_library_system.templatetags.paginator_tag import register
 from members.models import Member
-from tables.buttons import IsLentOutStatus, FinalizeLendingButton
+from tables.buttons import IsLentOutStatus, FinalizeLendingButton, FinalizeReservationButton
 from tables.columns import Column, TitleColumn, BookCodeColumn, AllAuthorsColumn, ButtonsColumn
 from tables.rows import Row, ItemRow
 from tables.table import Table
@@ -19,6 +19,7 @@ def works_table_for_member(publications: List[Publication], perms, member: Membe
         [
             IsLentOutStatus(),
             FinalizeLendingButton(member),
+            FinalizeReservationButton(member),
         ], "Controls"
     )]
     return {"table": Table(rows, columns), "perms": perms}
