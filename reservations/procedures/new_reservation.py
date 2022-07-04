@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from django.db import transaction
+
 from lendings.procedures.member_has_late_items import member_has_late_items
 from members.models import Member
 from members.procedures.can_lend_more_of_item import can_lend_more_of_item
@@ -9,6 +11,7 @@ from works.models import Item
 from utils.time import get_now
 
 
+@transaction.atomic
 def create_reservation(item, member: Member, edited_member: Member, current_date=None):
     if current_date is None:
         current_date = get_now()
@@ -25,7 +28,7 @@ def create_reservation(item, member: Member, edited_member: Member, current_date
     return new_reservation
 
 
-def reservation_checks(item, member, current_date):
+def assert_member_can_lend_item(item, member, current_date):
     """
         Check whether an item can be lent by a member.
         :param item: The item to be reserved
@@ -53,7 +56,7 @@ def reservation_checks(item, member, current_date):
 
 def can_reserve(item: Item, member: Member, current_date: datetime.date):
     try:
-        reservation_checks(item, member, current_date)
+        assert_member_can_lend_item(item, member, current_date)
     except ReservationImpossibleException as error:
         return error.__str__()
 
@@ -67,5 +70,5 @@ def new_reservation(item: Item, member: Member, user_member: Member, current_dat
         :param current_date: The date at which the item is reserved
         :except ReservationImpossibleException: If the reservation-checks fail.
     """
-    reservation_checks(item, member, current_date)
+    assert_member_can_lend_item(item, member, current_date)
     return create_reservation(item, member, user_member, current_date)

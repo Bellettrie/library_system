@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from django.db import transaction
+
 from lendings.lendingException import LendingImpossibleException
 from lendings.models import Lending
 from lendings.procedures.get_end_date import get_end_date
@@ -10,6 +12,7 @@ from reservations.models import Reservation
 from works.models import Item
 
 
+@transaction.atomic
 def create_lending(item: Item, member: Member, user_member: Member, current_date: datetime.date):
     """
     Create a new lending.
