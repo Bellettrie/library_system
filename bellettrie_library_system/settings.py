@@ -17,7 +17,7 @@ CROSS_LOGIN_TIMEOUT = env("CROSS_LOGIN_TIMEOUT", default=3600 * 2)
 
 DEBUG = env("DEBUG", default=True)
 UPSIDE_DOWN = env("UPSIDE_DOWN", default=True)
-
+CORS_ORIGIN_WHITELIST = env("CORS_ORIGIN_WHITELIST", default=['https://static.bellettrie.utwente.nl'])
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
