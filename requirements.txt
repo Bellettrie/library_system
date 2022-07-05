@@ -1,5 +1,5 @@
 markdown
-django==3.2.10
+django==3.2.13
 namegenerator
 names
 django-tables2
@@ -8,3 +8,4 @@ django-mail-templated
 unidecode
 backports-datetime-fromisoformat
 pyjwt
+django-environ
