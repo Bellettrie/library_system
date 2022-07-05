@@ -96,8 +96,8 @@ class FinalizeReservationButton(Button):
         return True, None
 
     def is_hidden(self, row, perms: PermWrapper):
-        if self.member:
-            return False
+        if not self.member:
+            return True
         return not row.is_item()
 
     def enabled_render(self, row, perms=None):
