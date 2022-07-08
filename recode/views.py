@@ -13,7 +13,7 @@ from recode.models import Recode
 class RecodeList(PermissionRequiredMixin, ListView):
     permission_required = 'recode.view_recode'
     model = Recode
-    template_name = 'list/templates/recode/list.html'
+    template_name = 'recode/list.html'
     paginate_by = 50
 
     def get_queryset(self):  # new
