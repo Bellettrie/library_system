@@ -9,3 +9,5 @@ unidecode
 backports-datetime-fromisoformat
 pyjwt
 django-environ
+gunicorn
+psycopg2-binary
