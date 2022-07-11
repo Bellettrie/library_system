@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
+{% block title %}Return book: {{ item.get_title }}{% endblock %}
 {% block content%}
 Returning work: {{ item.get_title }} <br />
 Return date {{ lending.end_date }} <br />
 {% if reserved %}
     Book is reserved by {{ reservation.member.name }}; please put a note on the book with the name and the date of today and place the book apart. <br />
+{% endif %}
+{% if not item.in_available_state %}
+    <br />
+    Book is {{ item.get_state }}, please treat it accordingly. <br /><br />
 {% endif %}
 {% if late %}
     Book is {{ days_late }} days late! <br />
