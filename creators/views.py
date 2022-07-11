@@ -87,7 +87,7 @@ def show(request, creator_id):
 def delete(request, creator_id):
     creator = Creator.objects.get(pk=creator_id)
     if not request.GET.get('confirm'):
-        return render(request, 'are-you-sure.html', {'what': "delete series with name " + (creator.get_name() or "<No name> ")})
+        return render(request, 'are-you-sure.html', {'what': "delete creator with name " + (creator.get_name() or "<No name> ")})
     CreatorToWork.objects.filter(creator=creator).delete()
     creator.delete()
 
