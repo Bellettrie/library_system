@@ -8,7 +8,7 @@ from utils.time import get_now
 def clear_old_reservations(now=None):
     if now is None:
         now = get_now()
-    for res in Reservation.objects.filter(reservation_end_date__lte=now+timedelta(days=16)):
+    for res in Reservation.objects.filter(reservation_end_date__lte=now):
         mail_member('mails/reservation_cancelled_late.tpl', {'member': res.member, 'item': res.item}, res.member, True)
         res.delete()
 

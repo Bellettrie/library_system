@@ -19,7 +19,7 @@ class SendSingleEmail(CronJobBase):
 
 
 class CleanMailLog(CronJobBase):
-    RUN_EVERY_MINS = 60*6 # Run every time
+    RUN_EVERY_MINS = 60*6 # Run 4 times per day
 
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'mail.cleanup'  # a unique code
