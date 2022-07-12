@@ -3,7 +3,7 @@ from datetime import timedelta
 from django_cron import CronJobBase, Schedule
 
 from mail.models import MailLog
-from reservations.procedures.clear_crons import clear_old_reservations, clear_unavailable
+from reservations.procedures.clear_crons import clear_old_reservations, clear_unavailable, clear_not_member
 from utils.time import get_today
 
 
@@ -16,3 +16,4 @@ class ReservationCancel(CronJobBase):
     def do(self):
         clear_old_reservations()
         clear_unavailable()
+        clear_not_member()
