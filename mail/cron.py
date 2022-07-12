@@ -7,7 +7,7 @@ from utils.time import get_today
 
 
 class SendSingleEmail(CronJobBase):
-    RUN_EVERY_MINS = 0 # Run every time
+    RUN_EVERY_MINS = 0  # Run every time
 
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'mail.send_single_email'  # a unique code
@@ -19,11 +19,11 @@ class SendSingleEmail(CronJobBase):
 
 
 class CleanMailLog(CronJobBase):
-    RUN_EVERY_MINS = 60*6 # Run 4 times per day
+    RUN_EVERY_MINS = 60 * 6  # Run 4 times per day
 
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'mail.cleanup'  # a unique code
 
     def do(self):
-        for mail in MailLog.objects.filter(sent=True, date__lte=get_today()-timedelta(days=60)):
+        for mail in MailLog.objects.filter(sent=True, date__lte=get_today() - timedelta(days=60)):
             mail.delete()

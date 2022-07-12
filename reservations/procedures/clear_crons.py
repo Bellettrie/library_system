@@ -16,12 +16,14 @@ def clear_old_reservations(now=None):
 def clear_unavailable():
     for res in Reservation.objects.all():
         if not res.item.in_available_state():
-            mail_member('mails/reservation_cancelled_unavailable.tpl', {'member': res.member, 'item': res.item}, res.member, True)
+            mail_member('mails/reservation_cancelled_unavailable.tpl', {'member': res.member, 'item': res.item},
+                        res.member, True)
             res.delete()
 
 
 def clear_not_member():
     for res in Reservation.objects.all():
         if not res.member.is_currently_member():
-            mail_member('mails/reservation_cancelled_not_member.tpl', {'member': res.member, 'item': res.item}, res.member, True)
+            mail_member('mails/reservation_cancelled_not_member.tpl', {'member': res.member, 'item': res.item},
+                        res.member, True)
             res.delete()
