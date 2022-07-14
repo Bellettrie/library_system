@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'datamining',
     'search',
     'tables',
+    'django_cron',
 ]
 
 MIDDLEWARE = [
