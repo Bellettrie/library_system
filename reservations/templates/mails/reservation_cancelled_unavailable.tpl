@@ -1,7 +1,7 @@
 {% extends "mail_templated/base.tpl" %}
 
 {% block subject %}
-    Bellettrie - One of your reservations was cancelled, because it was available for too long
+    Bellettrie - One of your reservations was cancelled, because the book is no longer available.
 {% endblock %}
 
 {% block body %}
