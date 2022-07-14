@@ -1,7 +1,7 @@
 {% extends "mail_templated/base.tpl" %}
 
 {% block subject %}
-    Bellettrie - One of your reservations was cancelled, because it was available for too long
+    Bellettrie - One of your reservations was cancelled, because you took more than 14 days to pick it up.
 {% endblock %}
 
 {% block body %}
