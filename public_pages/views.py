@@ -6,6 +6,8 @@ from django.forms import Widget
 from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 
+from django.conf import settings
+
 # Create your views here.
 from django.template import loader
 from django.template.loader import get_template
@@ -24,21 +26,10 @@ def render_md(markdown_text: str):
     html = md.convert(markdown_text).replace("----SEARCH----", search_template.render(context={}))
     if "----OPEN----" in html:
         import urllib.request
-        URL = 'https://dragoncounter.bellettrie.utwente.nl/crowds/api/'
-        f = urllib.request.urlopen(URL, timeout=120)
-        data = f.read()
-        my_data = str(data).split(",")
-
-        is_open = (my_data[2] == "True")
-        max_capacity = int(my_data[1])
-
-        current_count = int(my_data[0][2:])
-        cc = str(current_count)
-        if int(my_data[3].strip()[:-1]) < max_capacity:
-            cc += "( with reservations: " + str(current_count - (int(my_data[3][:-1].strip()) - max_capacity)) + ")"
+        f = urllib.request.urlopen(settings.IS_OPEN_URL, timeout=120)
+        is_open_result = str(f.read()).lower()
         zz = open_template.render(
-            context={'open': is_open, 'max_capacity': max_capacity, 'current_count': cc,
-                     'full': current_count >= max_capacity})
+            context={'open': "true" in is_open_result})
         html = html.replace("----OPEN----", zz)
     return html
 

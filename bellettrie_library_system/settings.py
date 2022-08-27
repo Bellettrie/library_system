@@ -77,3 +77,5 @@ CRON_CLASSES = [
     "lendings.cron.LateMails",
     "reservations.cron.ReservationCancel"
 ]
+
+IS_OPEN_URL = env("IS_OPEN_URL", default="https://dragoncounter.bellettrie.utwente.nl/crowds/api/")
