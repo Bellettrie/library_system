@@ -6,8 +6,6 @@ from django.forms import Widget
 from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 
-from django.conf import settings
-
 # Create your views here.
 from django.template import loader
 from django.template.loader import get_template
