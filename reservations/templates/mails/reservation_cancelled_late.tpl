@@ -1,17 +1,18 @@
 {% extends "mail_templated/base.tpl" %}
 
 {% block subject %}
-    Bellettrie - One of your reserved books was just returned
+    Bellettrie - One of your reservations was cancelled, because you took more than 14 days to pick it up.
 {% endblock %}
 
 {% block body %}
     Dear {{member.name}},
 
-    A book you have reserved is now returned, and you can come to pick it up.
+    You had a reservation on the following book:
 
     {{ item.display_code}}: {{item.publication.title}}
 
-    After 14  days this reservation will automatically be cancelled, to give others a chance to read it as well.
+    However, since you took longer than 14 days to pick it up, we have released the reservation.
+    This means that anyone can borrow it again.
 
     If you have any questions, feel free to contact us by replying to this email.
 
@@ -25,15 +26,16 @@
 {% block html %}
     Dear {{member.name}}, <br />
     <br />
-    A book you have reserved is now returned, and you can come to pick it up. <br />
+You had a reservation on the following book: <br />
 
     <table>
         <tr><th>Book Code</th><th>Title</th></tr>
         {%for lending in lendings %}
             <tr><td>{{item.display_code}}</td><td>{{item.publication.title}} </td></tr>
         {% endfor %}
-    </table><br>
-    After 14  days this reservation will automatically be cancelled, to give others a chance to read it as well.<br>
+    </table>
+    However, since you took longer than 14 days to pick it up, we have released the reservation.<br>
+    This means that anyone can borrow it again.<br>
     <br>
     If you have any questions, feel free to contact us by replying to this email. <br />
     <br />

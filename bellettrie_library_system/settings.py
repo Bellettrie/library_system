@@ -70,6 +70,16 @@ BASE_URL = '/'
 EMAIL_PORT = env("EMAIL_PORT", default=1025)
 EMAIL_HOST = env("EMAIL_HOST", default='127.0.0.1')
 
+EMAIL_BACKEND = env("EMAIL_BACKEND",default='django.core.mail.backends.console.EmailBackend')
+
+CRON_CLASSES = [
+    "mail.cron.SendSingleEmail",
+    "mail.cron.CleanMailLog",
+    "lendings.cron.LateMails",
+    "reservations.cron.ReservationCancel"
+]
+
+
 EXTERNAL_UPLOAD_ENABLED = env("EXTERNAL_UPLOAD_ENABLED", default=False)
 EXTERNAL_UPLOAD_URL_UPLOAD = env("EXTERNAL_UPLOAD_URL_UPLOAD", default='https://upload.bellettrie.net/upload')
 EXTERNAL_UPLOAD_URL_DELETE = env("EXTERNAL_UPLOAD_URL_DELETE", default='https://upload.bellettrie.net/delete')

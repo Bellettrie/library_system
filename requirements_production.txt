@@ -10,3 +10,4 @@ backports-datetime-fromisoformat
 pyjwt
 django-environ
 gunicorn
+django_cron

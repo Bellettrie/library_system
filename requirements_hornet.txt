@@ -9,3 +9,4 @@ unidecode
 backports-datetime-fromisoformat
 pyjwt
 django-environ
+django_cron
