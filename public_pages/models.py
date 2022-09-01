@@ -55,4 +55,4 @@ class ExternalUpload(models.Model):
         return self.external_name
 
     def get_full_url(self):
-        return settings.EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX+self.external_name
+        return settings.EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX + self.external_name
