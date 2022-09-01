@@ -1,3 +1,5 @@
+import json
+
 import markdown
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -177,7 +179,13 @@ def new_upload(request):
                 for file in request.FILES:
                     files[file] = request.FILES[file]
                 r = requests.post(url + "?token=" + settings.EXTERNAL_UPLOAD_URL_API_KEY, files=files)
-                ExternalUpload.objects.create(external_name=r.text.strip(), name=instance.name)
+                tx = json.loads(r.text)
+                for file in files:
+                    nm = tx.get("Files").get(files[file].name)
+                    if not nm:
+                        print("File skipped")
+                        continue
+                    ExternalUpload.objects.create(external_name=nm, name=instance.name)
             form = UploadFileForm()
     else:
         form = UploadFileForm()
