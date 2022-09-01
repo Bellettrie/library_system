@@ -69,3 +69,9 @@ OLD_PWD = 'root'
 BASE_URL = '/'
 EMAIL_PORT = env("EMAIL_PORT", default=1025)
 EMAIL_HOST = env("EMAIL_HOST", default='127.0.0.1')
+
+EXTERNAL_UPLOAD_ENABLED = env("EXTERNAL_UPLOAD_ENABLED", default=False)
+EXTERNAL_UPLOAD_URL_UPLOAD = env("EXTERNAL_UPLOAD_URL_UPLOAD", default='https://upload.bellettrie.net/upload')
+EXTERNAL_UPLOAD_URL_DELETE = env("EXTERNAL_UPLOAD_URL_DELETE", default='https://upload.bellettrie.net/delete')
+EXTERNAL_UPLOAD_URL_API_KEY = env("EXTERNAL_UPLOAD_URL_API_KEY", default='key')
+EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX = env("EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX", default='https://bellettrie.net/static/uploads/')
