@@ -7,12 +7,7 @@
                 <h6 class="card-subtitle mb-2 text-muted">
                     {% if open %}
                         The Drakenkelder is open!<br/>
-                        {% if full %}
-                            <img style="width:100px;" src="{% static 'images/light/yellow.png' %}"><br/>
-                            The room is full :(
-                        {% else %}
                             <img style="width:100px;" src="{% static 'images/light/green.png' %}"><br/>
-                        {% endif %}
                     {% else %}
                         <img style="width:100px;" src="{% static 'images/light/red.png' %}"><br/>
                         The Drakenkelder is closed!
