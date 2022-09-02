@@ -45,3 +45,14 @@ class FileUpload(models.Model):
 
     def get_full_url(self):
         return settings.STATIC_URL + "uploads/" + self.get_file_url()
+
+
+class ExternalUpload(models.Model):
+    external_name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=64, unique=True)
+
+    def get_file_url(self):
+        return self.external_name
+
+    def get_full_url(self):
+        return settings.EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX + self.external_name

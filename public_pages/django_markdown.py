@@ -4,7 +4,8 @@
 from typing import Optional
 import re
 import markdown
-from markdown.inlinepatterns import LinkInlineProcessor, LINK_RE, ImageReferenceInlineProcessor, IMAGE_REFERENCE_RE, IMAGE_LINK_RE, ImageInlineProcessor
+from markdown.inlinepatterns import LinkInlineProcessor, LINK_RE, ImageReferenceInlineProcessor, IMAGE_REFERENCE_RE, \
+    IMAGE_LINK_RE, ImageInlineProcessor
 from urllib.parse import urlparse
 
 from django.core.exceptions import ValidationError
@@ -51,9 +52,10 @@ def clean_link(href: str) -> str:
 
     if href.startswith('~~'):
         static = True
-        print("HERE")
-        print(href[2:])
-        href = settings.STATIC_URL + 'uploads/' + href[2:]
+        if not settings.EXTERNAL_UPLOAD_ENABLED:
+            href = settings.STATIC_URL + 'uploads/' + href[2:]
+        else:
+            href = settings.EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX + href[2:]
 
     z = href.split("|")
     href = z[0]

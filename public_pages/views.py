@@ -1,3 +1,5 @@
+import json
+
 import markdown
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -14,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from public_pages.django_markdown import DjangoUrlExtension
 from public_pages.forms import PageEditForm, UploadFileForm
-from public_pages.models import PublicPageGroup, PublicPage, FileUpload
+from public_pages.models import PublicPageGroup, PublicPage, FileUpload, ExternalUpload
 
 
 def render_md(markdown_text: str):
@@ -75,7 +77,7 @@ def edit_named_page(request, page_name, sub_page_name):
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     can_edit = False
     if not request.user.is_anonymous and (
-            request.user.member and page_group.committees in request.user.member.committees.all())\
+            request.user.member and page_group.committees in request.user.member.committees.all()) \
             or request.user.has_perm('public_pages.change_publicpage'):
         can_edit = True
     if not can_edit:
@@ -91,7 +93,8 @@ def edit_named_page(request, page_name, sub_page_name):
             print("ERROR")
     else:
         form = PageEditForm(instance=page)
-    return render(request, 'public_pages/page_edit_form.html', {'MY_URL': settings.BASE_URL, 'form': form, 'page': page})
+    return render(request, 'public_pages/page_edit_form.html',
+                  {'MY_URL': settings.BASE_URL, 'form': form, 'page': page})
 
 
 @login_required()
@@ -139,8 +142,12 @@ def delete_page(request, pk):
 
 
 def list_uploads(request):
-    uploads = FileUpload.objects.all()
-    return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})
+    if not settings.EXTERNAL_UPLOAD_ENABLED:
+        uploads = FileUpload.objects.all()
+        return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})
+    else:
+        uploads = ExternalUpload.objects.all()
+        return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})
 
 
 @permission_required('public_pages.change_publicpage')
@@ -151,8 +158,23 @@ def new_upload(request):
 
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.save()
-            special = "Succesful upload!"
+            if not settings.EXTERNAL_UPLOAD_ENABLED:
+                instance.save()
+                special = "Succesful upload!"
+            else:
+                import requests
+                url = settings.EXTERNAL_UPLOAD_URL_UPLOAD
+                files = {}
+                for file in request.FILES:
+                    files[file] = request.FILES[file]
+                r = requests.post(url + "?token=" + settings.EXTERNAL_UPLOAD_URL_API_KEY, files=files)
+                tx = json.loads(r.text)
+                for file in files:
+                    nm = tx.get("Files").get(files[file].name)
+                    if not nm:
+                        print("File skipped")
+                        continue
+                    ExternalUpload.objects.create(external_name=nm, name=instance.name)
             form = UploadFileForm()
     else:
         form = UploadFileForm()
@@ -162,9 +184,23 @@ def new_upload(request):
 
 @permission_required('public_pages.change_publicpage')
 def delete_upload(request, pk):
-    page = FileUpload.objects.filter(pk=pk)
-    if not request.GET.get('confirm'):
-        return render(request, 'are-you-sure.html', {'what': "delete attachment with name " + page.first().name})
-    page.delete()
+    if not settings.EXTERNAL_UPLOAD_ENABLED:
+        page = FileUpload.objects.filter(pk=pk)
+        if not request.GET.get('confirm'):
+            return render(request, 'are-you-sure.html', {'what': "delete attachment with name " + page.first().name})
+        page.delete()
 
-    return redirect('list_uploads')
+        return redirect('list_uploads')
+    else:
+        page = ExternalUpload.objects.filter(pk=pk)
+        if not request.GET.get('confirm'):
+            return render(request, 'are-you-sure.html', {'what': "Delete attachment with name " + page.first().name})
+        import requests
+        url = settings.EXTERNAL_UPLOAD_URL_DELETE
+        for file in page.all():
+            print(url + "?token=" + settings.EXTERNAL_UPLOAD_URL_API_KEY + "&files=" + file.external_name)
+            r = requests.post(url + "?token=" + settings.EXTERNAL_UPLOAD_URL_API_KEY + "&files=" + file.external_name)
+            print(r.text)
+            file.delete()
+
+        return redirect('list_uploads')
