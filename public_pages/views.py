@@ -30,7 +30,7 @@ def render_interrupt(markdown_text: str, cmd: str, medium: str, large: str, titl
 
 
 def render_md_section(markdown_text: str, cmd: str, medium: str, large: str, title: str):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html','attr_list'])
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/basic_area.html')
     return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
@@ -44,10 +44,10 @@ def render_square(markdown_text: str, cmd: str, medium: str, large: str, title: 
 
 
 def render_find(markdown_text: str, cmd: str, medium: str, large: str, title: str):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html','attr_list'])
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/search_field.html')
-    return search_template.render(context={"content": html,"sm": 12, "md": medium, "lg": large})
+    return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
 
 
 def get_open():
@@ -65,7 +65,6 @@ def render_trafficlight(markdown_text: str, cmd: str, medium: str, large: str, t
 
 CMDS = {
     "top": render_top,
-    "youtube": render_md_section,
     "base": render_md_section,
     "square": render_square,
     "search": render_find,
@@ -77,21 +76,20 @@ CMDS = {
 def render_md(markdown_text: str):
     lines = ""
     result = ""
-    cmd = "top"
     title = ""
     cms = ["base", "-", "12", "12"]
     first_line = True
-    for l in markdown_text.split("\n"):
-        if l.startswith("#!title"):
-            title = l[7:].strip()
-        elif l.startswith("#!"):
+    for line in markdown_text.split("\n"):
+        if line.startswith("#!title"):
+            title = line[7:].strip()
+        elif line.startswith("#!"):
             if not first_line:
                 result += CMDS[cms[0]](lines, cms[1], cms[2], cms[3], title)
-            cms = l[2:].strip().split(" ")
+            cms = line[2:].strip().split(" ")
             lines = ""
         else:
-            lines += "\n" + l
-        first_line=False
+            lines += "\n" + line
+        first_line = False
     result += CMDS[cms[0]](lines, cms[1], cms[2], cms[3], title)
     return result
 
