@@ -19,11 +19,6 @@ from public_pages.forms import PageEditForm, UploadFileForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload, ExternalUpload
 
 
-def render_top(markdown_text: str, cmd: str, medium: str, large: str, title: str):
-    search_template = get_template('public_pages/elems/top.html')
-    return search_template.render(context={"sm": 12, "md": medium, "lg": large})
-
-
 def render_interrupt(markdown_text: str, cmd: str, medium: str, large: str, title: str):
     search_template = get_template('public_pages/elems/interrupt.html')
     return search_template.render(context={"sm": 12, "md": medium, "lg": large})
@@ -64,7 +59,6 @@ def render_trafficlight(markdown_text: str, cmd: str, medium: str, large: str, t
 
 
 CMDS = {
-    "top": render_top,
     "base": render_md_section,
     "square": render_square,
     "search": render_find,
