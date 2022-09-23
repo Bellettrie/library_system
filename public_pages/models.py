@@ -8,12 +8,6 @@ from members.models import Committee
 from django.conf import settings
 
 
-def youtube_header():
-    return """<div class="video-container">
-<iframe class="video-frame" width="560" height="315" src="https://www.youtube-nocookie.com/embed/9TTleauNhkA?controls=0&rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>"""
-
-
 class PublicPageGroup(models.Model):
     name = models.CharField(max_length=64)
     committees = models.ForeignKey(Committee, on_delete=PROTECT)
@@ -23,16 +17,12 @@ class PublicPageGroup(models.Model):
 
 
 class PublicPage(models.Model):
-    def exec_header(self):
-        if self.custom_header == 'youtube':
-            return youtube_header()
-        return ''
-
     name = models.CharField(max_length=64)
     title = models.CharField(max_length=128)
     text = models.TextField()
     group = models.ForeignKey(PublicPageGroup, on_delete=PROTECT)
-    custom_header = models.CharField(max_length=64, null=True, blank=True)
+    show_title = models.BooleanField(default=True)
+    only_for_logged_in = models.BooleanField(default=False)
 
 
 class FileUpload(models.Model):

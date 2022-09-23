@@ -19,19 +19,81 @@ from public_pages.forms import PageEditForm, UploadFileForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload, ExternalUpload
 
 
+def render_top(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+    search_template = get_template('public_pages/elems/top.html')
+    return search_template.render(context={"sm": 12, "md": medium, "lg": large})
+
+
+def render_interrupt(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+    search_template = get_template('public_pages/elems/interrupt.html')
+    return search_template.render(context={"sm": 12, "md": medium, "lg": large})
+
+
+def render_md_section(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html','attr_list'])
+    html = md.convert(markdown_text)
+    search_template = get_template('public_pages/elems/basic_area.html')
+    return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
+
+
+def render_square(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
+    html = md.convert(markdown_text)
+    search_template = get_template('public_pages/elems/square.html')
+    return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large, "title": title})
+
+
+def render_find(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html','attr_list'])
+    html = md.convert(markdown_text)
+    search_template = get_template('public_pages/elems/search_field.html')
+    return search_template.render(context={"content": html,"sm": 12, "md": medium, "lg": large})
+
+
+def get_open():
+    import urllib.request
+    f = urllib.request.urlopen(settings.IS_OPEN_URL, timeout=120)
+    is_open_result = str(f.read()).lower()
+
+    return "true" in is_open_result
+
+
+def render_trafficlight(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+    search_template = get_template('public_pages/elems/traffic_light.html')
+    return search_template.render(context={"open": get_open(), "sm": 12, "md": medium, "lg": large})
+
+
+CMDS = {
+    "top": render_top,
+    "youtube": render_md_section,
+    "base": render_md_section,
+    "square": render_square,
+    "search": render_find,
+    "light": render_trafficlight,
+    "interrupt": render_interrupt,
+}
+
+
 def render_md(markdown_text: str):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html'])
-    search_template = get_template('works/work_search_field_simple.html')
-    open_template = get_template('public_pages/is_open_template.html')
-    html = md.convert(markdown_text).replace("----SEARCH----", search_template.render(context={}))
-    if "----OPEN----" in html:
-        import urllib.request
-        f = urllib.request.urlopen(settings.IS_OPEN_URL, timeout=120)
-        is_open_result = str(f.read()).lower()
-        zz = open_template.render(
-            context={'open': "true" in is_open_result})
-        html = html.replace("----OPEN----", zz)
-    return html
+    lines = ""
+    result = ""
+    cmd = "top"
+    title = ""
+    cms = ["base", "-", "12", "12"]
+    first_line = True
+    for l in markdown_text.split("\n"):
+        if l.startswith("#!title"):
+            title = l[7:].strip()
+        elif l.startswith("#!"):
+            if not first_line:
+                result += CMDS[cms[0]](lines, cms[1], cms[2], cms[3], title)
+            cms = l[2:].strip().split(" ")
+            lines = ""
+        else:
+            lines += "\n" + l
+        first_line=False
+    result += CMDS[cms[0]](lines, cms[1], cms[2], cms[3], title)
+    return result
 
 
 def view_named_page(request, page_name, sub_page_name):
@@ -44,7 +106,10 @@ def view_named_page(request, page_name, sub_page_name):
                                                and page_group.committees in request.user.member.committees.all())) \
             or request.user.has_perm('public_pages.change_publicpage'):
         can_edit = True
+
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
+    if request.user.is_anonymous and page.only_for_logged_in:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
     html = render_md(page.text)
 
     return HttpResponse(render(request, template_name='public_pages/public_page_simple.html',

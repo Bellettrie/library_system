@@ -26,12 +26,14 @@ class PageEditForm(ModelForm):
                   'title',
                   'group',
                   'text',
-                  'custom_header'
+                  "show_title",
+                  "only_for_logged_in",
                   ]
         labels = {'name': 'Name',
                   'title': 'Title',
                   'text': 'Text',
                   'group': 'Group',
-                  'custom_header': 'Which custom header macro to use? Keep empty in most cases.'
+                  'show_title': 'Show Title?',
+                  "only_for_logged_in": "Only for logged in users?",
                   },
         widgets = {'text': PageTextWidget}
