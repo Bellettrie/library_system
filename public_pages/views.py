@@ -90,7 +90,10 @@ def render_md(markdown_text: str):
 
 def check(page: PublicPage, request):
     committee_check = False
-
+    if request.user.is_anonymous and page.only_for_logged_in:
+        return True
+    if page.only_for_current_members and (request.user.is_anonymous or not request.user.member.is_currently_member()):
+        return True
     if len(page.limited_to_committees.all()) > 0:
         if request.user.is_anonymous:
             committee_check = True
@@ -101,7 +104,7 @@ def check(page: PublicPage, request):
             for c in page.limited_to_committees.all():
                 if c in request.user.member.committees.all():
                     committee_check = False
-    return (request.user.is_anonymous and page.only_for_logged_in) or committee_check
+    return committee_check
 
 
 def view_named_page(request, page_name, sub_page_name):
