@@ -28,6 +28,7 @@ class PageEditForm(ModelForm):
                   'text',
                   "show_title",
                   "only_for_logged_in",
+                  "limited_to_committees",
                   ]
         labels = {'name': 'Name',
                   'title': 'Title',
@@ -35,5 +36,6 @@ class PageEditForm(ModelForm):
                   'group': 'Group',
                   'show_title': 'Show Title?',
                   "only_for_logged_in": "Only for logged in users?",
+                  "limited_to_committees": "Limit to these committees"
                   },
         widgets = {'text': PageTextWidget}

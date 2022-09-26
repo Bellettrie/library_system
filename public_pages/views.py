@@ -88,6 +88,22 @@ def render_md(markdown_text: str):
     return result
 
 
+def check(page: PublicPage, request):
+    committee_check = False
+
+    if len(page.limited_to_committees.all()) > 0:
+        if request.user.is_anonymous:
+            committee_check = True
+        elif request.user.member is None:
+            committee_check = True
+        else:
+            committee_check = True
+            for c in page.limited_to_committees.all():
+                if c in request.user.member.committees.all():
+                    committee_check = False
+    return (request.user.is_anonymous and page.only_for_logged_in) or committee_check
+
+
 def view_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
 
@@ -100,7 +116,8 @@ def view_named_page(request, page_name, sub_page_name):
         can_edit = True
 
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
-    if request.user.is_anonymous and page.only_for_logged_in:
+
+    if check(page, request):
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
     html = render_md(page.text)
 
@@ -132,6 +149,10 @@ def test_render_function(request):
 def edit_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
+
+    if check(page, request):
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+
     can_edit = False
     if not request.user.is_anonymous and (
             request.user.member and page_group.committees in request.user.member.committees.all()) \

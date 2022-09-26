@@ -23,6 +23,7 @@ class PublicPage(models.Model):
     group = models.ForeignKey(PublicPageGroup, on_delete=PROTECT)
     show_title = models.BooleanField(default=True)
     only_for_logged_in = models.BooleanField(default=False)
+    limited_to_committees = models.ManyToManyField(Committee)
 
 
 class FileUpload(models.Model):
