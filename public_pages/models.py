@@ -24,7 +24,7 @@ class PublicPage(models.Model):
     show_title = models.BooleanField(default=True)
     only_for_logged_in = models.BooleanField(default=False)
     only_for_current_members = models.BooleanField(default=False)
-    limited_to_committees = models.ManyToManyField(Committee)
+    limited_to_committees = models.ManyToManyField(Committee, blank=True)
 
 
 class FileUpload(models.Model):
