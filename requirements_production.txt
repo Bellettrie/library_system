@@ -11,3 +11,4 @@ pyjwt
 django-environ
 gunicorn
 django_cron
+importlib-metadata<5.0
