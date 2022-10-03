@@ -48,9 +48,12 @@ def render_find(markdown_text: str, cmd: str, medium: str, large: str, title: st
 
 def get_open():
     import urllib.request
-    f = urllib.request.urlopen(settings.IS_OPEN_URL, timeout=120)
-    is_open_result = str(f.read()).lower()
-
+    try:
+        f = urllib.request.urlopen(settings.IS_OPEN_URL, timeout=120)
+        is_open_result = str(f.read()).lower()
+    except urllib.error.URLError:
+        print("BROKEN")
+        return False
     return "true" in is_open_result
 
 
