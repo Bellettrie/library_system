@@ -122,7 +122,6 @@ def view_named_page(request, page_name, sub_page_name):
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
     is_anonymous = request.user and request.user.is_anonymous
     member = hasattr(request.user, "member") and request.user.member
-    
     if forbid_showing_page(page, is_anonymous, member):
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
     html = render_md(page.text)
