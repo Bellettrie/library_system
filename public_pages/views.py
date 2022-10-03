@@ -20,26 +20,26 @@ from public_pages.forms import PageEditForm, UploadFileForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload, ExternalUpload
 
 
-def render_interrupt(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+def render_interrupt(markdown_text: str, title: str, *_):
     search_template = get_template('public_pages/elems/interrupt.html')
-    return search_template.render(context={"sm": 12, "md": medium, "lg": large})
+    return search_template.render(context={})
 
 
-def render_md_section(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+def render_md_section(markdown_text: str, title: str, medium: str, large: str, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/basic_area.html')
     return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
 
 
-def render_square(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+def render_square(markdown_text: str, title: str, medium: str, large: str, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/square.html')
     return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large, "title": title})
 
 
-def render_find(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+def render_find(markdown_text: str, title: str, medium: str, large: str, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/search_field.html')
@@ -57,7 +57,7 @@ def get_open():
     return "true" in is_open_result
 
 
-def render_trafficlight(markdown_text: str, cmd: str, medium: str, large: str, title: str):
+def render_trafficlight(markdown_text: str, title: str, medium: str, large: str, *_):
     search_template = get_template('public_pages/elems/traffic_light.html')
     return search_template.render(context={"open": get_open(), "sm": 12, "md": medium, "lg": large})
 
@@ -82,13 +82,13 @@ def render_md(markdown_text: str):
             title = line[7:].strip()
         elif line.startswith("#!"):
             if not first_line:
-                result += CMDS[cms[0]](lines, cms[1], cms[2], cms[3], title)
+                result += CMDS[cms[0]](lines, title, *cms[1:])
             cms = line[2:].strip().split(" ")
             lines = ""
         else:
             lines += "\n" + line
         first_line = False
-    result += CMDS[cms[0]](lines, cms[1], cms[2], cms[3], title)
+    result += CMDS[cms[0]](lines, title, *cms[1:])
     return result
 
 
