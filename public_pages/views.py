@@ -14,6 +14,7 @@ from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
+from members.models import Member
 from public_pages.django_markdown import DjangoUrlExtension
 from public_pages.forms import PageEditForm, UploadFileForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload, ExternalUpload
@@ -88,21 +89,21 @@ def render_md(markdown_text: str):
     return result
 
 
-def check(page: PublicPage, request):
+def forbid_showing_page(page: PublicPage, is_anonymous: bool, member: Member, current_date=None):
     committee_check = False
-    if request.user.is_anonymous and page.only_for_logged_in:
+    if is_anonymous and (page.only_for_logged_in or page.only_for_current_members):
         return True
-    if page.only_for_current_members and (request.user.is_anonymous or not request.user.member.is_currently_member()):
+    if page.only_for_current_members and not member.is_currently_member(current_date):
         return True
     if len(page.limited_to_committees.all()) > 0:
-        if request.user.is_anonymous:
+        if is_anonymous:
             committee_check = True
-        elif request.user.member is None:
+        elif member is None:
             committee_check = True
         else:
             committee_check = True
             for c in page.limited_to_committees.all():
-                if c in request.user.member.committees.all():
+                if c in member.committees.all():
                     committee_check = False
     return committee_check
 
@@ -120,7 +121,7 @@ def view_named_page(request, page_name, sub_page_name):
 
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
 
-    if check(page, request):
+    if forbid_showing_page(page, request.user.is_anonymous, request.user.member):
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
     html = render_md(page.text)
 
@@ -153,7 +154,7 @@ def edit_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
 
-    if check(page, request):
+    if forbid_showing_page(page, request.user.is_anonymous, request.user.member):
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
 
     can_edit = False
