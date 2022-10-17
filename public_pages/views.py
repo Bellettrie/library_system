@@ -37,7 +37,7 @@ def render_base_section(markdown_text: str, title: str, medium: str, large: str,
     return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
 
 
-# The render square function creates a bootstrap card component. 
+# The render square function creates a bootstrap card component.
 def render_square(markdown_text: str, title: str, medium: str, large: str, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
