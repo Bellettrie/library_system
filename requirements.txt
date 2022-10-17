@@ -10,3 +10,4 @@ pyjwt
 django-environ
 backports-datetime-fromisoformat
 django_cron
+importlib-metadata<5.0

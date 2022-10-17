@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}{% if not page.custom_header %}{{ page_title }}{% endif %}{% endblock %}
-{% block content %}
-    {% if page.custom_header %}{{  page.exec_header| safe }}{% endif %}
-    {{ page_content |safe }}
-{% if can_edit %}
-    <a href="{% url 'edit_named_page' page.group.name page.name %}">edit</a>
-    {% endif %}
+{% block title %}{% if page.show_title %}{{ page_title }}{% endif %}{% endblock %}
+    {% block content %}
+        <div class="container">
+        <div class="row mt-3">
+            {{ page_content |safe }}
 
-{% endblock %}
+</div>
+            {% if can_edit %}
+        <div class="row"><div class="col sm-12"><a href="{% url 'edit_named_page' page.group.name page.name %}">edit</a></div></div>
+        {% endif %}
+        </div>
+    {% endblock %}

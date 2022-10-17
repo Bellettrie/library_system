@@ -14,24 +14,119 @@ from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
+from members.models import Member
 from public_pages.django_markdown import DjangoUrlExtension
 from public_pages.forms import PageEditForm, UploadFileForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload, ExternalUpload
 
+# These functions are responsible for displaying parts of the webpages. These translate quite directly into bootstrap components
+# The *_ is used to "eat" any unneeded parameters
 
-def render_md(markdown_text: str):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html'])
-    search_template = get_template('works/work_search_field_simple.html')
-    open_template = get_template('public_pages/is_open_template.html')
-    html = md.convert(markdown_text).replace("----SEARCH----", search_template.render(context={}))
-    if "----OPEN----" in html:
-        import urllib.request
+
+# The interrupt ends a bootstrap row component and starts a new one.
+def render_interrupt(markdown_text: str, title: str, *_):
+    search_template = get_template('public_pages/elems/interrupt.html')
+    return search_template.render(context={})
+
+
+# The base section creates a basic text area with a size. Observe that the title parameter is ignored, but it's kept to keep standardised functions.
+def render_base_section(markdown_text: str, title: str, medium: str, large: str, *_):
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
+    html = md.convert(markdown_text)
+    search_template = get_template('public_pages/elems/basic_area.html')
+    return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
+
+
+# The render square function creates a bootstrap card component.
+def render_square(markdown_text: str, title: str, medium: str, large: str, *_):
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
+    html = md.convert(markdown_text)
+    search_template = get_template('public_pages/elems/square.html')
+    return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large, "title": title})
+
+
+# The render find function creates a bootstrap card with a search field for finding books.
+def render_find(markdown_text: str, title: str, medium: str, large: str, *_):
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
+    html = md.convert(markdown_text)
+    search_template = get_template('public_pages/elems/search_field.html')
+    return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
+
+
+def get_open():
+    import urllib.request
+    try:
         f = urllib.request.urlopen(settings.IS_OPEN_URL, timeout=120)
         is_open_result = str(f.read()).lower()
-        zz = open_template.render(
-            context={'open': "true" in is_open_result})
-        html = html.replace("----OPEN----", zz)
-    return html
+    except urllib.error.URLError:
+        print("BROKEN")
+        return False
+    return "true" in is_open_result
+
+
+# The render trafficlight function creates a trafficlight that shows whether the DK is open
+def render_trafficlight(markdown_text: str, title: str, medium: str, large: str, *_):
+    search_template = get_template('public_pages/elems/traffic_light.html')
+    return search_template.render(context={"open": get_open(), "sm": 12, "md": medium, "lg": large})
+
+
+CMDS = {
+    "base": render_base_section,
+    "square": render_square,
+    "search": render_find,
+    "light": render_trafficlight,
+    "interrupt": render_interrupt,
+}
+
+
+# The render_md function is the main rendering function.
+# It collects lines if they are not lines that start new components. If they are a line that starts a new component
+# then the previous component is rendered, and a new one is started.
+def render_md(markdown_text: str):
+    lines = ""
+    result = ""
+    title = ""
+    cms = None
+    first_line = True
+    for line in markdown_text.split("\n"):
+        # Set the title of the current component
+        if line.startswith("#!title"):
+            title = line[7:].strip()
+        # new component barrier
+        elif line.startswith("#!"):
+            if not first_line:
+                result += CMDS[cms[0]](lines, title, *cms[1:])
+            cms = line[2:].strip().split(" ")
+            # Basic sanity check: does the command exist at all
+            if cms[0] not in CMDS.keys():
+                return cms[0] + " : not a valid keyword"
+            lines = ""
+            title = ""
+        else:
+            lines += "\n" + line
+        first_line = False
+    result += CMDS[cms[0]](lines, title, *cms[1:])
+    return result
+
+
+# Check if page rendering should be forbidden, based on user credentials
+def forbid_showing_page(page: PublicPage, is_anonymous: bool, member: Member, current_date=None):
+    committee_check = False
+    if is_anonymous and (page.only_for_logged_in or page.only_for_current_members):
+        return True
+    if page.only_for_current_members and not member.is_currently_member(current_date):
+        return True
+    if len(page.limited_to_committees.all()) > 0:
+        if is_anonymous:
+            committee_check = True
+        elif member is None:
+            committee_check = True
+        else:
+            committee_check = True
+            for c in page.limited_to_committees.all():
+                if c in member.committees.all():
+                    committee_check = False
+    return committee_check
 
 
 def view_named_page(request, page_name, sub_page_name):
@@ -44,7 +139,12 @@ def view_named_page(request, page_name, sub_page_name):
                                                and page_group.committees in request.user.member.committees.all())) \
             or request.user.has_perm('public_pages.change_publicpage'):
         can_edit = True
+
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
+    is_anonymous = request.user and request.user.is_anonymous
+    member = hasattr(request.user, "member") and request.user.member
+    if forbid_showing_page(page, is_anonymous, member):
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
     html = render_md(page.text)
 
     return HttpResponse(render(request, template_name='public_pages/public_page_simple.html',
@@ -75,6 +175,10 @@ def test_render_function(request):
 def edit_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
     page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
+
+    if forbid_showing_page(page, request.user.is_anonymous, request.user.member):
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+
     can_edit = False
     if not request.user.is_anonymous and (
             request.user.member and page_group.committees in request.user.member.committees.all()) \

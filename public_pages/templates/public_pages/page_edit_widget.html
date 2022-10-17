@@ -9,7 +9,7 @@
                 text: document.getElementById("{{ name }}").value,
             }).done(
             function (data, status) {
-                document.getElementById('compiledContent{{ name }}').innerHTML = data;
+                document.getElementById('compiledContent{{ name }}').innerHTML = "<div class=\"row mt-3\">"+data+"</div>";
             });
     });
 
