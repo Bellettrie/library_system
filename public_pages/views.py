@@ -19,26 +19,31 @@ from public_pages.django_markdown import DjangoUrlExtension
 from public_pages.forms import PageEditForm, UploadFileForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload, ExternalUpload
 
+# These functions are responsible for displaying parts of the webpages. These translate quite directly into bootstrap components
+# The *_ is used to "eat" any unneeded parameters
 
+# The interrupt ends a bootstrap row component and starts a new one.
 def render_interrupt(markdown_text: str, title: str, *_):
     search_template = get_template('public_pages/elems/interrupt.html')
     return search_template.render(context={})
 
 
-def render_md_section(markdown_text: str, title: str, medium: str, large: str, *_):
+# The base section creates a basic text area with a size. Observe that the title parameter is ignored, but it's kept to keep standardised functions.
+def render_base_section(markdown_text: str, title: str, medium: str, large: str, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/basic_area.html')
     return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
 
 
+# The render square function creates a bootstrap card component. 
 def render_square(markdown_text: str, title: str, medium: str, large: str, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/square.html')
     return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large, "title": title})
 
-
+# The render find function creates a bootstrap card with a search field for finding books.
 def render_find(markdown_text: str, title: str, medium: str, large: str, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
@@ -56,35 +61,43 @@ def get_open():
         return False
     return "true" in is_open_result
 
-
+# The render trafficlight function creates a trafficlight that shows whether the DK is open
 def render_trafficlight(markdown_text: str, title: str, medium: str, large: str, *_):
     search_template = get_template('public_pages/elems/traffic_light.html')
     return search_template.render(context={"open": get_open(), "sm": 12, "md": medium, "lg": large})
 
 
 CMDS = {
-    "base": render_md_section,
+    "base": render_base_section,
     "square": render_square,
     "search": render_find,
     "light": render_trafficlight,
     "interrupt": render_interrupt,
 }
 
-
+# The render_md function is the main rendering function.
+# It collects lines if they are not lines that start new components. If they are a line that starts a new component
+# then the previous component is rendered, and a new one is started.
 def render_md(markdown_text: str):
     lines = ""
     result = ""
     title = ""
-    cms = ["base", "-", "12", "12"]
+    cms = None
     first_line = True
     for line in markdown_text.split("\n"):
+        # Set the title of the current component
         if line.startswith("#!title"):
             title = line[7:].strip()
+        # new component barrier
         elif line.startswith("#!"):
             if not first_line:
                 result += CMDS[cms[0]](lines, title, *cms[1:])
             cms = line[2:].strip().split(" ")
+            # Basic sanity check: does the command exist at all
+            if cms[0] not in CMDS.keys():
+                return cms[0] +" : not a valid keyword"
             lines = ""
+            title = ""
         else:
             lines += "\n" + line
         first_line = False
@@ -92,6 +105,7 @@ def render_md(markdown_text: str):
     return result
 
 
+# Check if page rendering should be forbidden, based on user credentials
 def forbid_showing_page(page: PublicPage, is_anonymous: bool, member: Member, current_date=None):
     committee_check = False
     if is_anonymous and (page.only_for_logged_in or page.only_for_current_members):
