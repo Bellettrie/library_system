@@ -105,6 +105,9 @@ def render_md(markdown_text: str):
         else:
             lines += "\n" + line
         first_line = False
+    # If no specific blocks are made, make a 12/12 block with *everything*
+    if cms is None:
+        cms = ["base", "-", "12", "12"]
     result += CMDS[cms[0]](lines, title, *cms[1:])
     return result
 
