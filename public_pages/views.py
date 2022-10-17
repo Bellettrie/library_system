@@ -22,6 +22,7 @@ from public_pages.models import PublicPageGroup, PublicPage, FileUpload, Externa
 # These functions are responsible for displaying parts of the webpages. These translate quite directly into bootstrap components
 # The *_ is used to "eat" any unneeded parameters
 
+
 # The interrupt ends a bootstrap row component and starts a new one.
 def render_interrupt(markdown_text: str, title: str, *_):
     search_template = get_template('public_pages/elems/interrupt.html')
@@ -43,6 +44,7 @@ def render_square(markdown_text: str, title: str, medium: str, large: str, *_):
     search_template = get_template('public_pages/elems/square.html')
     return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large, "title": title})
 
+
 # The render find function creates a bootstrap card with a search field for finding books.
 def render_find(markdown_text: str, title: str, medium: str, large: str, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
@@ -61,6 +63,7 @@ def get_open():
         return False
     return "true" in is_open_result
 
+
 # The render trafficlight function creates a trafficlight that shows whether the DK is open
 def render_trafficlight(markdown_text: str, title: str, medium: str, large: str, *_):
     search_template = get_template('public_pages/elems/traffic_light.html')
@@ -74,6 +77,7 @@ CMDS = {
     "light": render_trafficlight,
     "interrupt": render_interrupt,
 }
+
 
 # The render_md function is the main rendering function.
 # It collects lines if they are not lines that start new components. If they are a line that starts a new component
@@ -95,7 +99,7 @@ def render_md(markdown_text: str):
             cms = line[2:].strip().split(" ")
             # Basic sanity check: does the command exist at all
             if cms[0] not in CMDS.keys():
-                return cms[0] +" : not a valid keyword"
+                return cms[0] + " : not a valid keyword"
             lines = ""
             title = ""
         else:
