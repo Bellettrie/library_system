@@ -7,10 +7,8 @@ Bellettrie - Some of your books are {%if not has_late %} nearly {%endif %} late
 {% block body %}
 Dear {{member.name}},
 
+{%if has_late%}You have items that are late. Please hand them in as soon as possible. This will limit the fine.
 
-
-{%if has_late%}
-You have items that are late. Please hand them in as soon as possible. This will limit the fine.
 {%for lending in lendings %}
 {{lending.item.display_code}}:  {{lending.item.publication.title}} -- Due: {{lending.end_date}}
 {% endfor %}
@@ -23,7 +21,7 @@ You have items that are late. Please hand them in as soon as possible. This will
 
 {%endif %}
 {%for lending in almost_late %}
-    {{lending.item.display_code}}:  {{lending.item.publication.title}} -- Due: {{lending.end_date}}
+- {{lending.item.display_code}}:  {{lending.item.publication.title}} ;  Due: {{lending.end_date}}
 {% endfor %}
 If you have any questions regarding your lendings, feel free to contact us by replying to this email.
 
@@ -32,7 +30,6 @@ Kind regards,
 The board of Bellettrie
 
 Ps. This email was sent automatically
-!!
 {% endblock %}
 
 {% block html %}

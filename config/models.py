@@ -27,16 +27,9 @@ class Holiday(models.Model):
         from lendings.models import Lending
 
         super().save(*args, **kwargs)
-        lendings = Lending.objects.filter(end_date__gt=self.starting_date, handed_in=False)
-
+        lendings = Lending.objects.filter(handed_in=False)
         for lending in lendings:
-            # Late lendings do not get recalculated?
-            if lending.is_late():
-                continue
-
-            # Import here to prevent circular import
-            new_end = get_end_date_for_lending(lending, lending.start_date)
-
+            new_end = get_end_date_for_lending(lending, lending. last_extended or lending.start_date)
             if lending.end_date < new_end:
                 lending.end_date = new_end
                 lending.save()
