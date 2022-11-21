@@ -4,6 +4,7 @@ from lendings.procedures.get_end_date import get_end_date_for_lending
 from lendings.models import Lending
 from utils.time import get_now, get_today
 
+
 class Command(BaseCommand):
     help = 'recalc lendings'
 
