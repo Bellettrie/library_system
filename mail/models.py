@@ -25,7 +25,7 @@ class MailLog(models.Model):
                            to=[self.member.email])
         msg._is_rendered = True
         msg.send()
-        
+ 
         self.sent = True
         self.save()
 
