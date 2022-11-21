@@ -23,10 +23,11 @@ class MailLog(models.Model):
                            body=self.contents,
                            from_email="info@bellettrie.utwente.nl",
                            to=[self.member.email])
-        self.sent = True
-        self.save()
         msg._is_rendered = True
         msg.send()
+        
+        self.sent = True
+        self.save()
 
 
 @transaction.atomic
