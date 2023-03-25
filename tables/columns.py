@@ -3,7 +3,7 @@ from typing import List
 from django.template.loader import render_to_string
 
 from tables.buttons import Button
-from tables.rows import Row, LendingRow
+from tables.rows import Row, LendingRow, ReservationRow
 
 
 class Column:
@@ -66,6 +66,15 @@ class LentByColumn(Column):
 
     def render(self, row: LendingRow, perms=None):
         return render_to_string("columns/member_column.html", {"member": row.lending.member})
+
+
+class ReservedByColumn(Column):
+    @staticmethod
+    def get_header():
+        return "Member"
+
+    def render(self, row: ReservationRow, perms=None):
+        return render_to_string("columns/member_column.html", {"member": row.reservation.member})
 
 
 class HandinDate(Column):
