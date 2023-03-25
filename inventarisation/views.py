@@ -113,7 +113,9 @@ def get_next_state_by_action(action, prev_state):
         if prev_state.type == "MISSING" or prev_state.type == "LOST":
             new_state = "AVAILABLE"
     elif action == "no":
-        if prev_state.type == "MISSING":
+        if prev_state.type == "SOLD":
+            new_state = "SOLD"
+        elif prev_state.type == "MISSING":
             new_state = "LOST"
         else:
             new_state = "MISSING"
