@@ -62,17 +62,17 @@ def inventarisation_form(request, inventarisation_id, page_id):
         for z in request.POST:
             if z.startswith('seen'):
                 try:
-                    item_inventarisation_state = request.POST[z] #yes, no, maybe
+                    item_inventarisation_state = request.POST[z]  # yes, no, maybe
 
-                    item = Item.objects.get(pk=int(z[4:])) #what item is it?
-                    current_state = item.get_state()  #what is the current state of the item?
-                    prev_state = current_state # the state after the inventarisation action is the current state
+                    item = Item.objects.get(pk=int(z[4:]))  # what item is it?
+                    current_state = item.get_state()  # what is the current state of the item?
+                    prev_state = current_state  # the state after the inventarisation action is the current state
 
-                    already_in_current_inventarisation = False # if the current state is not part of the inventarisation, we can reuse it
+                    already_in_current_inventarisation = False  # if the current state is not part of the inventarisation, we can reuse it
 
                     if current_state.inventarisation == inventarisation:
-                        prev_state = item.get_prev_state() #if the current state is part of the inventarisation, we need to get the previous state
-                        already_in_current_inventarisation = True #if the current state is part of the inventarisation, we need to reuse it
+                        prev_state = item.get_prev_state()  # if the current state is part of the inventarisation, we need to get the previous state
+                        already_in_current_inventarisation = True  # if the current state is part of the inventarisation, we need to reuse it
 
                     new_state = get_next_state_by_action(item_inventarisation_state, prev_state)
 
