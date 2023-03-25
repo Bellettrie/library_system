@@ -61,32 +61,63 @@ def inventarisation_form(request, inventarisation_id, page_id):
     if request.method == "POST":
         for z in request.POST:
             if z.startswith('seen'):
-                code = int(z[4:])
-                if request.POST[z] == "yes":
-                    try:
-                        item_state = ItemState.objects.get(item_id=code, inventarisation=inventarisation)
-                        item_state.type = "AVAILABLE"
-                        item_state.save()
-                    except ItemState.DoesNotExist:
-                        ItemState.objects.create(item_id=code, type="AVAILABLE", inventarisation=inventarisation)
-                elif request.POST[z] == "no":
-                    try:
-                        item_state = ItemState.objects.get(item_id=code, inventarisation=inventarisation)
-                        item_state.type = "MISSING"
-                        item_state.save()
-                    except ItemState.DoesNotExist:
-                        ItemState.objects.create(item_id=code, type="MISSING", inventarisation=inventarisation)
-                else:
-                    ItemState.objects.filter(item_id=code, inventarisation=inventarisation).delete()
+                try:
+                    item_inventarisation_state = request.POST[z] #yes, no, maybe
+
+                    item = Item.objects.get(pk=int(z[4:])) #what item is it?
+                    current_state = item.get_state()  #what is the current state of the item?
+                    prev_state = current_state # the state after the inventarisation action is the current state
+
+                    already_in_current_inventarisation = False # if the current state is not part of the inventarisation, we can reuse it
+
+                    if current_state.inventarisation == inventarisation:
+                        prev_state = item.get_prev_state() #if the current state is part of the inventarisation, we need to get the previous state
+                        already_in_current_inventarisation = True #if the current state is part of the inventarisation, we need to reuse it
+
+                    new_state = get_next_state_by_action(item_inventarisation_state, prev_state)
+
+                    if already_in_current_inventarisation:
+                        if item_inventarisation_state != "yes" and item_inventarisation_state != "no":
+                            current_state.delete()
+                        else:
+                            current_state.type = new_state
+                            current_state.save()
+                    else:
+                        # This one is there just in case the item is already in the inventarisation, but not as its current state
+                        ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
+
+                        ItemState.objects.create(item=item, type=new_state, inventarisation=inventarisation)
+                except Item.DoesNotExist:
+                    continue
+
         if request.POST.get("next"):
             return get_inventarisation_next(request, inventarisation_id, page_id)
+
     pre_filled = {}
+    prev_states = {}
     for item in group:
         try:
             pre_filled[item] = ItemState.objects.get(item=item, inventarisation=inventarisation).type
+
         except ItemState.DoesNotExist:
             pass
-    return render(request, "inventarisation/form.html", {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled, "counts": len(groups)})
+        prev_states[item] = item.get_most_recent_state_not_this_inventarisation(inventarisation)
+    return render(request, "inventarisation/form.html",
+                  {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled,
+                   "counts": len(groups), "prev_states": prev_states})
+
+
+def get_next_state_by_action(action, prev_state):
+    new_state = prev_state.type
+    if action == "yes":
+        if prev_state.type == "MISSING" or prev_state.type == "LOST":
+            new_state = "AVAILABLE"
+    elif action == "no":
+        if prev_state.type == "MISSING":
+            new_state = "LOST"
+        else:
+            new_state = "MISSING"
+    return new_state
 
 
 def get_cur_block(inventarisation, page_id):
