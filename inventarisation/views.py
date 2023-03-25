@@ -74,7 +74,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
                         prev_state = item.get_prev_state()  # if the current state is part of the inventarisation, we need to get the previous state
                         already_in_current_inventarisation = True  # if the current state is part of the inventarisation, we need to reuse it
 
-                    new_state = get_next_state_by_action(item_inventarisation_state, prev_state)
+                    new_state, description = get_next_state_by_action(item_inventarisation_state, prev_state)
 
                     if already_in_current_inventarisation:
                         if item_inventarisation_state != "yes" and item_inventarisation_state != "no":
@@ -86,7 +86,8 @@ def inventarisation_form(request, inventarisation_id, page_id):
                         # This one is there just in case the item is already in the inventarisation, but not as its current state
                         ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
 
-                        ItemState.objects.create(item=item, type=new_state, inventarisation=inventarisation)
+                        ItemState.objects.create(item=item, type=new_state, inventarisation=inventarisation,
+                                                 description=description)
                 except Item.DoesNotExist:
                     continue
 
@@ -107,19 +108,23 @@ def inventarisation_form(request, inventarisation_id, page_id):
                    "counts": len(groups), "prev_states": prev_states})
 
 
-def get_next_state_by_action(action, prev_state):
+def get_next_state_by_action(action, prev_state) -> (str, str):
     new_state = prev_state.type
+    description = prev_state.description # By default, keep description
     if action == "yes":
         if prev_state.type == "MISSING" or prev_state.type == "LOST":
             new_state = "AVAILABLE"
+            description = "Seen during inventarisation"
     elif action == "no":
         if prev_state.type == "SOLD":
             new_state = "SOLD"
         elif prev_state.type == "MISSING":
             new_state = "LOST"
+            description = "Not seen during inventarisation"
         else:
             new_state = "MISSING"
-    return new_state
+            description = "Not seen during inventarisation"
+    return new_state, description
 
 
 def get_cur_block(inventarisation, page_id):
