@@ -114,7 +114,12 @@ def get_lending_stats(start_date, end_date):
 
 @permission_required('works.view_work')
 def show_lending_stats(request):
-    start_date = request.GET.get('start_date', get_today().isoformat())
+    start_date = request.GET.get('start_date', "1583-01-01")
     end_date = request.GET.get('end_date', get_today().isoformat())
+    if start_date == "":
+        # 1583 is the first year allowed by default
+        start_date = "1583-01-01"
+    if end_date == "":
+        end_date = get_today().isoformat()
     q = get_lending_stats(start_date, end_date)
     return render(request, 'datamining/lending_stats.html', {'q': q})
