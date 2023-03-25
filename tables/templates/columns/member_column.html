@@ -1,4 +1,4 @@
-<a href="{% url 'members.view' member.pk %}">{{ member.name }}</a>
+<a href="{% url 'members.view' member.pk 0 %}">{{ member.name }}</a>
 {% if member.nickname %}
     <br/><small><i>{{ member.nickname }}</i></small>
 {% endif %}

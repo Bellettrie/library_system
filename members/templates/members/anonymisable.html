@@ -29,11 +29,11 @@
                 {% if member.should_be_anonymised %}
                 <tr>
                 <td><input type="checkbox" id="member{{ member.pk }}" name="member" value="{{ member.pk }}"/> <label for="member{{ member.pk }}">Anonymise</label></td>
-                    <td><a href="{% url 'members.view' member.id %}">{{ member.name }}</a>{% if member.nickname %}<br/>
+                    <td><a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a>{% if member.nickname %}<br/>
                         <i>{{ member.nickname }}</i>{% endif %}</td>
                 </tr>
                     {% else %}
-                    <tr><td>Currently Member</td><td><a href="{% url 'members.view' member.id %}">{{ member.name }}</a>{% if member.nickname %}<br/>
+                    <tr><td>Currently Member</td><td><a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a>{% if member.nickname %}<br/>
                         <i>{{ member.nickname }}</i>{% endif %}</td>
                 </tr>
                 {% endif %}

@@ -21,7 +21,7 @@ urlpatterns = [
     path('', MemberList.as_view(), name=MEMBERS_LIST),
     path('anon', AnonMemberList.as_view(), name='members.list.anon'),
 
-    path('<int:member_id>', members.views.member_show.show, name=MEMBERS_VIEW),
+    path('<int:member_id>/<int:full>', members.views.member_show.show, name=MEMBERS_VIEW),
     path('edit/<int:member_id>', members.views.member_edit.edit, name=MEMBERS_EDIT),
     path('invite/<int:member_id>', members.views.user.invite_code_generate.generate_invite_code, name='members.generate_invite'),
     path('uninvite/<int:member_id>', members.views.user.invite_code_disable.disable_invite_code, name='members.disable_invite'),
