@@ -4,6 +4,6 @@
 You are about to delete the user: {{ user.username }} this is not reversable are you sure?
 <br/>
 <a href="{% url 'members.delete_user' member.pk %}" class="btn btn-danger">Delete</a>
-<a href="{% url 'members.view' member.pk %}" class="btn btn-outline-primary">Cancel</a>
+<a href="{% url 'members.view' member.pk 0 %}" class="btn btn-outline-primary">Cancel</a>
 
 {% endblock %}

@@ -15,4 +15,4 @@ def anonymise(request, member_id):
     if not request.GET.get('confirm'):
         return render(request, 'are-you-sure.html', {'what': "anonymise member with name " + member.name})
     anonymise_or_except(dry_run=False)
-    return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+    return HttpResponseRedirect(reverse('members.view', args=(member.pk, 0,)))
