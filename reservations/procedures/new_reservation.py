@@ -49,6 +49,8 @@ def assert_member_can_lend_item(item, member, current_date):
         raise ReservationImpossibleException("Member currently not a member, cannot reserve")
     if item.is_reserved():
         raise ReservationImpossibleException("Item is reserved for another member")
+    if item.is_lent_out() and item.current_lending().member.id == member.id:
+        raise ReservationImpossibleException("Cannot reserve books you have borrowed.")
     if not item.in_available_state():
         raise ReservationImpossibleException(
             "Item is not currently available for reservation, the item is {}.".format(item.get_state()))
