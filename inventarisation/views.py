@@ -111,7 +111,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
 
 def get_next_state_by_action(action, prev_state) -> (str, str):
     new_state = prev_state.type
-    description = prev_state.description # By default, keep description
+    description = prev_state.description  # By default, keep description
     if action == "yes":
         if prev_state.type == "MISSING" or prev_state.type == "LOST":
             new_state = "AVAILABLE"
