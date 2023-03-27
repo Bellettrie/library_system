@@ -10,7 +10,7 @@ We do not accept any code that is not licensed under the GPL-3 license, or a com
 When contributing, we ask you to agree to the license of this project. This is done by adding a line to the bottom of this file, with your name.
 
 ## Code of Conduct
-We expect all contributors to be a constructive part of the community. This means that you should be respectful to others, and that you should not be approaching collaboration with a constructive attitude. 
+We expect all contributors to be a constructive part of the community. This means that you should strive to be respectful, and approach collaboration with a positive mindset. 
 
 We hope that we will not have to further specify what being a nice person is.
 
