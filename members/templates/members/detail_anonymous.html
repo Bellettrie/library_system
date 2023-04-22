@@ -19,8 +19,8 @@
             <tr>
                 <th>User control</th>
                 <td>
-                    <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Edit</a>
-                    <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete</a>
+                    <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Change password</a>
+                    <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete account</a>
                 </td>
             </tr>
         {% else %}
@@ -43,7 +43,7 @@
             <td>{{ member.privacy_reunion_end_date }}</td>
         </tr>
     </table>
-    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
+    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit personal details</a>
     {% if member.can_be_deleted %}
         <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete</a>
     {% elif member.should_be_anonymised %}
