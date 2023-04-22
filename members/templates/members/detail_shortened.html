@@ -36,8 +36,8 @@
             <tr>
                 <th>User control</th>
                 <td>
-                    <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Edit</a>
-                    <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete</a>
+                    <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Change password</a>
+                    <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete account</a>
                 </td>
             </tr>
         {% else %}
@@ -58,7 +58,7 @@
     </table>
 
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Browse catalog for</a>
-    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
+    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit personal details</a>
     <a href="{% url 'members.view' member.id 1 %}" class="btn btn-outline-primary">Detailed info</a>
     {% if member.should_be_anonymised %}
         <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
