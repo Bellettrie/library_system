@@ -312,7 +312,6 @@ class Item(NamedThing, BookCode):
         states = ItemState.objects.filter(item=self).exclude(inventarisation=inventarisation).order_by("-dateTime")
         if len(states) == 0:
             return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
-        print(states[0].type, "Potato")
         return states[0]
 
     def is_seen(self, reason):
