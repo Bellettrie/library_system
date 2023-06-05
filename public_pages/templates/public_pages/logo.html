@@ -1,8 +1,8 @@
 {% load static %}
         <a href="{% url 'homepage' %}" class="logo-part" style=" text-align: center;width:100%; "><img {% if debug %}class="rotate4"{% endif %}
-                src="{% static 'images/wurm.png' %}"
+                src="{% static logo %}"
 
-                style="height:75px;     font-family: 'Pangolin'; "/> Bellettrie
+                style="height:75px;     font-family: 'Pangolin'; "/> {{ name }}
         </a>
 
 <style>
