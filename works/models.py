@@ -308,6 +308,12 @@ class Item(NamedThing, BookCode):
             return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
         return states[1]
 
+    def get_most_recent_state_not_this_inventarisation(self, inventarisation: Inventarisation):
+        states = ItemState.objects.filter(item=self).exclude(inventarisation=inventarisation).order_by("-dateTime")
+        if len(states) == 0:
+            return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
+        return states[0]
+
     def is_seen(self, reason):
         state = self.get_state()
         if state.type != "AVAILABLE":

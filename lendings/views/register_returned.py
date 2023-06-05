@@ -18,7 +18,7 @@ def return_item(request, work_id):
     reservations = Reservation.objects.filter(item=item)
     if request.method == 'POST':
         register_returned_with_mail(lending, request.user.member)
-        return redirect('/members/' + str(lending.member.pk))
+        return redirect('/members/' + str(lending.member.pk) + '/0')
     return render(request, 'lendings/return_book.html', {'item': item, 'lending': lending,
                                                          'late': lending.end_date < get_today(),
                                                          'days_late': late_days.days,

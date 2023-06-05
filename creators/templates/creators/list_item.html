@@ -1,4 +1,5 @@
 <tr>
-    <td><a href="{% url 'creator.view' member.id %}">{% if member.name %} {{ member.name }} {% else %}<i>&lt;No Surname&gt;</i> {% endif %}</a>{% if member.given_names %}
-        <i>{{ member.given_names }}</i>{% endif %}</td>
+    <td><a href="{% url 'creator.view' member.id %}">{% if member.given_names %}
+        {{ member.given_names }}{% endif %}
+        <i>{% if member.name %} {{ member.name }}{% else %}&lt;No Surname&gt; {% endif %}</i></a></td>
 </tr>

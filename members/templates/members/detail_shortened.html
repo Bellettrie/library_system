@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}Anonymised Member: {{ member.name }}{% endblock %}
+{% load member_reservation_table %}
+{% load member_lending_table %}
+{% load cross_login %}
+{% block title %}Member: {{ member.name }}{% endblock %}
 {% block content %}
     {{ extra }}<br/>
     <table class="table table-striped" style="width: auto;">
@@ -8,8 +11,22 @@
             <td>{{ member.name }}</td>
         </tr>
         <tr>
-            <th>E-mail</th>
-            <td>{{ member.email }}</td>
+            <th>Nickname</th>
+            <td>{{ member.nickname }}</td>
+        </tr>
+        <tr>
+	    <th>Notes </th>
+            <td>{{member.notes}}</td>
+	    </tr>
+        <tr>
+            <th>Current Membership Period?</th>
+            <td>{{ member.get_current_membership_period.start_date }}
+                - {{ member.get_current_membership_period.end_date }}
+                <a href="{% url 'members.membership_period_new' member.pk %}" class="btn-sm btn-primary">New</a></td>
+        </tr>
+        <tr>
+            <th>DMS registered?</th>
+            <td>{{ member.dms_registered }}</td>
         </tr>
         {% if member.user %}
             <tr>
@@ -38,21 +55,17 @@
                 </td>
             </tr>
         {% endif %}
-        <tr>
-            <th>Last Activity</th>
-            <td>{{ member.privacy_reunion_end_date }}</td>
-        </tr>
     </table>
+
+    <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Browse catalog for</a>
     <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit personal details</a>
-    {% if member.can_be_deleted %}
-        <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete</a>
-    {% elif member.should_be_anonymised %}
+    <a href="{% url 'members.view' member.id 1 %}" class="btn btn-outline-primary">Detailed info</a>
+    {% if member.should_be_anonymised %}
         <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
     {% endif %}
-    {% load books %}
-    {% get_user_books member perms %}
-    {% if member.has_reservations %}
+
+    {% member_current_lendings member %}
         <h4>Reservations</h4>
-        {% get_user_reserved_books member perms %}
-    {% endif %}
+        {% member_current_reservations member %}
+
 {% endblock %}

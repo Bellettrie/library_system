@@ -18,7 +18,7 @@ def edit_membership_period(request, membership_period_id):
         if form.is_valid():
             form.save()
             delete_double_periods(membership_period.member)
-            return HttpResponseRedirect(reverse('members.view', args=(membership_period.member.pk,)))
+            return HttpResponseRedirect(reverse('members.view', args=(membership_period.member.pk, 0,)))
     else:
         form = MembershipPeriodForm(instance=membership_period)
 

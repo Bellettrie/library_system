@@ -3,16 +3,25 @@ from django.db.models import Q
 
 from creators.models import Creator
 from series.models import Series
-from tables.columns import BookCodeColumn, TitleColumn, AllAuthorsColumn
+from tables.buttons import LendBookButton, ReturnBookButton, IsLentOutStatus, NoItemsButton, NotInAvailableStatus
+from tables.columns import BookCodeColumn, TitleColumn, AllAuthorsColumn, ButtonsColumn
 from tables.rows import ItemRow
 from tables.table import Table
 from works.models import Publication, Item
 
 # from works.views import ItemRow, BookResult
 
+buttons_list = [
+    LendBookButton(),
+    ReturnBookButton(),
+    IsLentOutStatus(),
+    NoItemsButton()
+]
+
 register = template.Library()
 
-cols = [BookCodeColumn(), TitleColumn(), AllAuthorsColumn()]
+cols = [BookCodeColumn(), TitleColumn(), AllAuthorsColumn(), ButtonsColumn([NotInAvailableStatus()], ""),
+        ButtonsColumn(buttons_list, "")]
 
 
 @register.inclusion_tag('tables/items_table.html')
