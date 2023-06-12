@@ -18,3 +18,4 @@ We hope that we will not have to further specify what being a nice person is.
 - Nander
 - Kylian
 - Remco
+- Lu
