@@ -8,7 +8,7 @@ from members.models import Member
 
 
 @transaction.atomic
-@permission_required('auth.add_user')
+@permission_required('auth.delete_user')
 def disable_invite_code(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     member.invitation_code_valid = False
