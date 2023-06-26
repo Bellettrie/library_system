@@ -13,4 +13,4 @@ def disable_invite_code(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     member.invitation_code_valid = False
     member.save()
-    return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+    return HttpResponseRedirect(reverse('members.view', args=(member.pk, 0,)))
