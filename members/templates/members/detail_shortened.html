@@ -2,7 +2,7 @@
 {% load member_reservation_table %}
 {% load member_lending_table %}
 {% load cross_login %}
-{% block title %}Member: {{ member.name }}{% endblock %}
+{% block title %}{% if member.is_blacklisted %}<p style="color:red;">BLACKLISTED</p>{%endif %}Member: {{ member.name }}{% endblock %}
 {% block content %}
     {{ extra }}<br/>
     <table class="table table-striped" style="width: auto;">
