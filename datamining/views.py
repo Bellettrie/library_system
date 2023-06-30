@@ -23,9 +23,10 @@ def find_members_by_request(request):
         after = fetch_date(request.GET.get('m_after') or "9999-12-31")
         before = fetch_date(request.GET.get('m_before') or "1900-01-01")
         include_honorary = request.GET.get('m_include_honorary', False)
+        filter_only_blacklisted = request.GET.get("m_filter_only_blacklisted", False)
         dms = request.GET.get('dms', False)
 
-        return filter_members(found_committees, found_privacy_settings, before, after, include_honorary, dms)
+        return filter_members(found_committees, found_privacy_settings, before, after, include_honorary,filter_only_blacklisted,  dms)
     return Member.objects.none()
 
 
