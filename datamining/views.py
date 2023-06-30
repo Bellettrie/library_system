@@ -20,12 +20,18 @@ def find_members_by_request(request):
     if request.GET.get('exec'):
         found_committees = request.GET.getlist('committees')
         found_privacy_settings = request.GET.getlist('privacy')
-        after = fetch_date(request.GET.get('m_after') or "9999-12-31")
-        before = fetch_date(request.GET.get('m_before') or "1900-01-01")
+        before_date = fetch_date(request.GET.get('m_before') or "1900-01-01")
+        after_date = fetch_date(request.GET.get('m_after') or "9999-12-31")
         include_honorary = request.GET.get('m_include_honorary', False)
+        filter_only_blacklisted = request.GET.get("m_filter_only_blacklisted", False)
         dms = request.GET.get('dms', False)
 
-        return filter_members(found_committees, found_privacy_settings, before, after, include_honorary, dms)
+        return filter_members(found_committees,
+                              found_privacy_settings,
+                              before_date,
+                              after_date,
+                              include_honorary,
+                              filter_only_blacklisted, dms)
     return Member.objects.none()
 
 
@@ -39,11 +45,14 @@ def show_members(request):
         if len(member.email) > 0:
             r_str += ("; " + member.email)
 
-    return render(request, 'datamining/member_filtering.html', {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'dms': request.GET.get('dms'), 'members': found_members, 'committees': committees})
+    return render(request, 'datamining/member_filtering.html',
+                  {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'dms': request.GET.get('dms'),
+                   'members': found_members, 'committees': committees})
 
 
 def get_member_statistics(day):
-    members = MembershipPeriod.objects.filter((Q(start_date__lte=day) & Q(end_date__gte=day)) | Q(end_date__isnull=True))
+    members = MembershipPeriod.objects.filter(
+        (Q(start_date__lte=day) & Q(end_date__gte=day)) | Q(end_date__isnull=True))
     quadrants = dict()
     member_bg_counts = dict()
     member_type_counts = dict()
