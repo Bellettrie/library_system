@@ -75,3 +75,11 @@ def generate_code_from_title(item):
         return title, True
     else:
         return item.location.category.code + "-" + title + "-", True
+
+# Generate code based on title, for tales category.
+def generate_code_from_title_tales(item):
+    title = item.publication.title[0:4].upper()
+    if item.location.category.code == "":
+        return title, True
+    else:
+        return item.location.category.code + "-..-" + title, True
