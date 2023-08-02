@@ -81,7 +81,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
                             current_state.delete()
                         else:
                             current_state.type = new_state
-                            current_state.description = description
+                            current_state.reason = description
                             current_state.save()
                     else:
                         # This one is there just in case the item is already in the inventarisation, but not as its current state
