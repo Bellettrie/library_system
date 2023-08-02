@@ -3,7 +3,7 @@ from django.db.models import Q
 from members.models import Member
 
 
-def filter_members(found_committees, found_privacy_settings, before, after, include_honorary, dms):
+def filter_members(found_committees, found_privacy_settings, before, after, include_honorary, only_blacklisted, dms):
     query = None
     # membership period checks
     after_query = Q(membershipperiod__start_date__lte=after)
@@ -31,6 +31,9 @@ def filter_members(found_committees, found_privacy_settings, before, after, incl
         query = query & Q(privacy_publications=True)
     if 'reunions' in found_privacy_settings:
         query = query & Q(privacy_reunions=True)
+
+    if only_blacklisted:
+        query = query & Q(is_blacklisted=True)
 
     committees = list(map(lambda it: int(it), found_committees))
     if len(committees) > 0:
