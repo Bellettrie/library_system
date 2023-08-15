@@ -19,13 +19,14 @@ from django.urls import path, include
 from bellettrie_library_system.views import index
 from public_pages.views import view_page
 from django.shortcuts import redirect
-
+from django.http import HttpResponse
 
 def redirect_view(request):
     response = redirect('/')
     return response
 
-
+def ok(request):
+    return HttpResponse("OK")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include('members.urls')),
@@ -44,4 +45,5 @@ urlpatterns = [
     path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
     path('recode/', include('recode.urls')),
     path('book_code/', include('book_code_generation.urls')),
+    path('health/', ok),
 ]
