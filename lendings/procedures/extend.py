@@ -37,7 +37,7 @@ def extend_checks(lending: Lending, now: datetime.date):
     if lending.member.is_blacklisted:
         raise LendingImpossibleException("Member currently blacklisted, cannot lend")
     if lending.item.is_reserved():
-        raise LendingImpossibleException("Item is reserved for another member")
+        raise LendingImpossibleException("Item is already reserved")
     if not lending.item.in_available_state():
         raise LendingImpossibleException(
             "Item is not currently available for lending, the item is {}.".format(lending.item.get_state()))
