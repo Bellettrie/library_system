@@ -44,6 +44,8 @@ if DB_ENG == "mysql":
         'OPTIONS': {'charset': 'utf8mb4'},
     }
 if DB_ENG == "postgres":
+    print("Postgres")
+    
     DB = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env("DB_POSTGRESQL_NAME"),
@@ -60,7 +62,7 @@ DATABASES = {
 STATIC_URL = env("STATIC_URL", default='/root/')
 
 # --------------------------------------------------
-STATIC_ROOT = os.path.join(BASE_DIR, 'root')
+STATIC_ROOT = env("STATIC_ROOT",default=os.path.join(BASE_DIR, 'root'))
 # -----------------------------------------------------
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
