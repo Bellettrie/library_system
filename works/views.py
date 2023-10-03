@@ -211,7 +211,7 @@ def item_history(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
     return render(request, 'works/history.html',
                   {'item': item,
-                   'history': ItemState.objects.filter(item=item).order_by('-datetime')})
+                   'history': ItemState.objects.filter(item=item).order_by('-date_time')})
 
 
 @transaction.atomic

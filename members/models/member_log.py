@@ -15,10 +15,10 @@ class MemberLog(MemberData):
         data.member = member
         data.name = member.name
         data.nickname = member.nickname
-        data.addressLineOne = member.addressLineOne
-        data.addressLineTwo = member.addressLineTwo
-        data.addressLineThree = member.addressLineThree
-        data.addressLineFour = member.addressLineFour
+        data.address_line_one = member.address_line_one
+        data.address_line_two = member.address_line_two
+        data.address_line_three = member.address_line_three
+        data.address_line_four = member.address_line_four
         data.email = member.email
         data.phone = member.phone
         data.student_number = member.student_number

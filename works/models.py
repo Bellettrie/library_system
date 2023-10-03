@@ -297,21 +297,21 @@ class Item(NamedThing, BookCode):
         return self.publication.original_language
 
     def get_state(self):
-        states = ItemState.objects.filter(item=self).order_by("-datetime")
+        states = ItemState.objects.filter(item=self).order_by("-date_time")
         if len(states) == 0:
-            return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
+            return ItemState(item=self, date_time=get_now(), type="AVAILABLE")
         return states[0]
 
     def get_prev_state(self):
-        states = ItemState.objects.filter(item=self).order_by("-datetime")
+        states = ItemState.objects.filter(item=self).order_by("-date_time")
         if len(states) <= 1:
-            return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
+            return ItemState(item=self, date_time=get_now(), type="AVAILABLE")
         return states[1]
 
     def get_most_recent_state_not_this_inventarisation(self, inventarisation: Inventarisation):
-        states = ItemState.objects.filter(item=self).exclude(inventarisation=inventarisation).order_by("-dateTime")
+        states = ItemState.objects.filter(item=self).exclude(inventarisation=inventarisation).order_by("-date_time")
         if len(states) == 0:
-            return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
+            return ItemState(item=self, date_time=get_now(), type="AVAILABLE")
         return states[0]
 
     def is_seen(self, reason):
@@ -355,7 +355,7 @@ class ItemState(models.Model):
                ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured"), ("SOLD", "Sold"),
                ("FORSALE", "For Sale"))
     item = models.ForeignKey(Item, on_delete=CASCADE)
-    dateTime = models.DateTimeField(default=datetime.now)
+    date_time = models.DateTimeField(default=datetime.now)
     type = models.CharField(max_length=64, choices=CHOICES)
     reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
