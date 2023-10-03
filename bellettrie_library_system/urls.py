@@ -20,6 +20,7 @@ from bellettrie_library_system.views import index
 from public_pages.views import view_page
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from django.conf import settings
 
 
 def redirect_view(request):
@@ -28,7 +29,7 @@ def redirect_view(request):
 
 
 def ok(request):
-    return HttpResponse("OK")
+    return HttpResponse("OK from ", settings.HOST)
 
 
 urlpatterns = [
