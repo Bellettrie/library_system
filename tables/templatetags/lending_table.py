@@ -1,3 +1,5 @@
+from typing import List
+
 from bellettrie_library_system.templatetags.paginator_tag import register
 from lendings.models import Lending
 from tables.buttons import LendingTableReturnButton
@@ -18,8 +20,8 @@ cols = [
 
 
 @register.inclusion_tag('tables/items_table.html')
-def current_lendings(perms):
+def current_lendings(lendings: List[Lending], perms):
     rows = []
-    for lending in Lending.objects.filter(handed_in=False).order_by("end_date"):
+    for lending in lendings:
         rows.append(LendingRow(lending))
-    return {'table': Table(rows, cols)}
+    return {"table": Table(rows, cols), "perms": perms}

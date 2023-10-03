@@ -4,5 +4,6 @@
 
 {% block title %}All current lendings{% endblock %}
 {% block content %}
-    {% current_lendings perms %}
+    {% include 'pagination.html' %}
+    {% current_lendings object_list perms %}
 {% endblock %}
