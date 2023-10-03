@@ -21,7 +21,7 @@ def generate_invite_code(request, member_id):
         member.invitation_code_valid = False
         member.save()
 
-        return HttpResponseRedirect(reverse('members.view', args=(member.pk,)))
+        return HttpResponseRedirect(reverse('members.view', args=(member.pk, 0,)))
     member.invitation_code = result_str
     member.invitation_code_valid = True
     mail_member('mails/invitation.tpl', {'member': member}, member, True)
