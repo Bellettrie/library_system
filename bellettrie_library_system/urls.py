@@ -29,6 +29,7 @@ def redirect_view(request):
 
 
 def ok(request):
+    print(settings.HOST)
     return HttpResponse("OK from ", settings.HOST)
 
 
