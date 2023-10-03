@@ -24,4 +24,4 @@ def current_lendings(lendings: List[Lending], perms):
     rows = []
     for lending in lendings:
         rows.append(LendingRow(lending))
-    return {"table": Table(rows, cols), "perms": perms}
+    return {'table': Table(rows, cols), 'perms': perms}
