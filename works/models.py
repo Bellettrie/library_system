@@ -297,13 +297,13 @@ class Item(NamedThing, BookCode):
         return self.publication.original_language
 
     def get_state(self):
-        states = ItemState.objects.filter(item=self).order_by("-dateTime")
+        states = ItemState.objects.filter(item=self).order_by("-datetime")
         if len(states) == 0:
             return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
         return states[0]
 
     def get_prev_state(self):
-        states = ItemState.objects.filter(item=self).order_by("-dateTime")
+        states = ItemState.objects.filter(item=self).order_by("-datetime")
         if len(states) <= 1:
             return ItemState(item=self, dateTime=get_now(), type="AVAILABLE")
         return states[1]
