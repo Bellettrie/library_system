@@ -6,7 +6,7 @@ from django.db.models import PROTECT
 
 class Inventarisation(models.Model):
     location = models.ForeignKey("works.Location", on_delete=PROTECT)
-    dateTime = models.DateTimeField(auto_now_add=True)
+    date_time = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
