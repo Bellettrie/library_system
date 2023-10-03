@@ -73,7 +73,7 @@ class LendingFailureCases(LendingBase):
         MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
         new_reservation(self.item, self.member2, self.member2, current_date=datetime.date(datetime(2020, 2, 12)))
-        self.attempt_to_fail_lending("Item is already reserved")
+        self.attempt_to_fail_lending("Item is reserved for another member")
 
     def test_membership_period_starts_again_after(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-02-15", end_date="2020-06-20",
