@@ -12,7 +12,7 @@
         {% for inv in inventarisations %}
             <tr>
                 <td>{{ inv.location.name }}{{ inv.location.category.name }}</td>
-                <td>{{ inv.dateTime }}</td>
+                <td>{{ inv.date_Time }}</td>
 
 
                 {% if inv.is_active %}
