@@ -116,7 +116,7 @@ class Migration(migrations.Migration):
             name='ItemState',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('datetime', models.DateTimeField(default=datetime.datetime.now)),
+                ('dateTime', models.DateTimeField(default=datetime.datetime.now)),
                 ('type', models.CharField(choices=[('AVAILABLE', 'Available'), ('MISSING', 'Missing'), ('LOST', 'Lost'), ('BROKEN', 'Broken'), ('OFFSITE', 'Off-Site'), ('DISPLAY', 'On Display'), ('FEATURED', 'Featured'), ('SOLD', 'Sold'), ('FORSALE', 'For Sale')], max_length=64)),
                 ('reason', models.TextField(blank=True)),
                 ('inventarisation', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='inventarisation.inventarisation')),
