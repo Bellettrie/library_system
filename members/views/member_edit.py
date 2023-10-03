@@ -22,7 +22,7 @@ def edit(request, member_id):
             form.save()
             if can_change:
                 member.update_groups()
-            return HttpResponseRedirect(reverse('members.view', args=(member_id,)))
+            return HttpResponseRedirect(reverse('members.view', args=(member_id, 0,)))
     else:
         form = EditForm(can_change, edit_dms, instance=member)
     return render(request, 'members/edit.html', {'form': form, 'member': member})

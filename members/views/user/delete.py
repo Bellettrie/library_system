@@ -16,7 +16,7 @@ def delete_user(request, member_id):
     member.save()
     user.delete()
 
-    return HttpResponseRedirect(reverse('members.views', args=(member.pk,)))
+    return HttpResponseRedirect(reverse('members.views', args=(member.pk, 0,)))
 
 
 @transaction.atomic

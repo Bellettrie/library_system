@@ -2,7 +2,7 @@
 {% load member_reservation_table %}
 {% load member_lending_table %}
 {% load cross_login %}
-{% block title %}Member: {{ member.name }}{% endblock %}
+{% block title %}{% if member.is_blacklisted %}<p style="color:red;">BLACKLISTED</p>{%endif %}Member: {{ member.name }}{% endblock %}
 {% block content %}
     {{ extra }}<br/>
     <table class="table table-striped" style="width: auto;">
@@ -71,8 +71,8 @@
             <tr>
                 <th>User control</th>
                 <td>
-                    <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Edit</a>
-                    <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete</a>
+                    <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Change password</a>
+                    <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete account</a>
                 </td>
             </tr>
         {% else %}
@@ -114,9 +114,9 @@
     <hr>
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Browse catalog for</a>
 
-    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
+    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit personal details</a>
     {% if member.can_be_deleted %}
-        <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete</a>
+        <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete member</a>
     {% endif %}
     {% if member.should_be_anonymised %}
         <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
