@@ -100,10 +100,10 @@ class StateSearchQuery(SearchOp):
         for item_state in ItemState.objects.all():
             state = recent_states.get(item_state.item_id, item_state)
 
-            if item_state.dateTime >= state.dateTime:
+            if item_state.date_time >= state.date_time:
                 if item_state.type in self.states:
                     recent_states[item_state.item_id] = item_state
-                elif item_state.dateTime > state.dateTime:
+                elif item_state.date_time > state.date_time:
                     recent_states.pop(item_state.item_id)
         return Publication.objects.filter(item__itemstate__in=recent_states.values())
 
