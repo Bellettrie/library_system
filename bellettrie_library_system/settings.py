@@ -85,7 +85,7 @@ CRON_CLASSES = [
     "lendings.cron.LateMails",
     "reservations.cron.ReservationCancel"
 ]
-
+HOST=env("HOSTE",default="-")
 EXTERNAL_UPLOAD_ENABLED = env("EXTERNAL_UPLOAD_ENABLED", default=False)
 EXTERNAL_UPLOAD_URL_UPLOAD = env("EXTERNAL_UPLOAD_URL_UPLOAD", default='https://upload.bellettrie.net/upload')
 EXTERNAL_UPLOAD_URL_DELETE = env("EXTERNAL_UPLOAD_URL_DELETE", default='https://upload.bellettrie.net/delete')

@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1.4
-
 FROM python:3.11-alpine
+ARG HOST
+ENV HOSTE=$HOST
+
 WORKDIR /app 
 COPY requirements_dockerized.txt /app
 RUN pip3 install -r requirements_dockerized.txt --no-cache-dir
