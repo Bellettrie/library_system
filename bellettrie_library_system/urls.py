@@ -31,8 +31,9 @@ def redirect_view(request):
 
 
 def ok(request):
-    logging.getLogger().debug(settings.HOST)
-    return HttpResponse("OK from ", settings.HOST)
+    logger = logging.getLogger(__name__)
+    logger.debug(settings.HOST)
+    return HttpResponse("OK from "+ settings.HOST)
 
 
 urlpatterns = [
