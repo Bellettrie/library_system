@@ -49,5 +49,9 @@ urlpatterns = [
     path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
     path('recode/', include('recode.urls')),
     path('book_code/', include('book_code_generation.urls')),
+
+    # If our service is running, we should return a 200 OK with our liveless checks
     path('healthz/', ok),
+    path('readyz/', ok),
+    path('livez/', ok),
 ]
