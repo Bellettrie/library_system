@@ -15,7 +15,7 @@ from works.models import Item, ItemState, Location
 
 @permission_required('inventarisation.view_inventarisation')
 def list_inventarisations(request):
-    inventarisations = Inventarisation.objects.order_by('-is_active', '-dateTime')
+    inventarisations = Inventarisation.objects.order_by('-is_active', '-datetime')
     return render(request, "inventarisation/list.html", {'inventarisations': inventarisations})
 
 
