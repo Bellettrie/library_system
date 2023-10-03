@@ -21,12 +21,16 @@ from public_pages.views import view_page
 from django.shortcuts import redirect
 from django.http import HttpResponse
 
+
 def redirect_view(request):
     response = redirect('/')
     return response
 
+
 def ok(request):
     return HttpResponse("OK")
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include('members.urls')),
