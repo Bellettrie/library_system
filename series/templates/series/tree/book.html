@@ -4,7 +4,7 @@
                {{ publication.title }}</a>
 
          <span style="float:right">   {%  for item in publication.get_pub.get_items%}
-         {{ item.book_code }}<br>
+         {{ item.book_code }} {{ item.book_code_extension }}<br>
              {% endfor %}
          </span>
 
