@@ -6,20 +6,18 @@
         {% endfor %}
     </div>
     <ul>
-        {% with root=false %}
-            {% for  ss in series.things_underneath %}
-                {% if ss.is_series %}
-                    {% with series=ss.is_series %}
-                        {% include 'series/tree/series.html' %}
-                    {% endwith %}
-                {% else %}
-                    {% with work=ss.is_work %}
-                        {% if work %}
-                           {% include 'series/tree/book.html' %}
-                        {% endif %}
-                    {% endwith %}
-                {% endif %}
-            {% endfor %}
-        {% endwith %}
+        {% for  ss in series.things_underneath %}
+            {% if ss.is_series %}
+                {% with series=ss.is_series %}
+                    {% include 'series/tree/series.html' %}
+                {% endwith %}
+            {% else %}
+                {% with work=ss.is_work %}
+                    {% if work %}
+                       {% include 'series/tree/book.html' %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
     </ul>
 </li>
