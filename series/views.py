@@ -35,24 +35,9 @@ def get_series_by_query(request, search_text):
     return JsonResponse({'results': list}, safe=False)
 
 
-class Counter:
-    def get_count(self):
-        return self.count
-
-    def five_minus(self):
-        return 5 - self.count
-
-    def __init__(self, count):
-        self.count = count
-
-    def increment(self):
-        return Counter(self.count + 1)
-
-
 def view_series(request, pk):
     series = Series.objects.get(pk=pk)
-    counter = Counter(0)
-    return render(request, 'series/view.html', {'true':True, 'false':False, 'series': series, 'counter': counter})
+    return render(request, 'series/view.html', {'series': series})
 
 
 @transaction.atomic
