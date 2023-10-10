@@ -52,7 +52,8 @@ class Counter:
 def view_series(request, pk):
     series = Series.objects.get(pk=pk)
     counter = Counter(0)
-    return render(request, 'series/view.html', {'series': series, 'list': {'things_underneath': [series]}, 'counter': counter})
+    print(series.__str__())
+    return render(request, 'series/view.html', {'true':True, 'false':False, 'series': series, 'counter': counter})
 
 
 @transaction.atomic
