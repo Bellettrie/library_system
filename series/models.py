@@ -16,8 +16,7 @@ class SeriesNode(models.Model):
     number = models.DecimalField(null=True, blank=True, decimal_places=1, max_digits=5)
     display_number = models.CharField(max_length=255, blank=True)
     old_id = models.IntegerField(null=True, blank=True)
-    def __str__(self):
-        return self.display_number or str(self.number)
+
     def things_underneath(self):
         return SeriesNode.objects.filter(part_of_series=self).order_by('number')
 
@@ -98,8 +97,6 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
         super().save(*args, **kwargs)
         self.part_of_series_update()
 
-    def __str__(self):
-        return self.title + ">" + self.things_underneath().__str__()
 
 class WorkInSeries(SeriesNode):
     work = models.ForeignKey("works.Work", on_delete=PROTECT)

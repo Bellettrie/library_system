@@ -52,7 +52,6 @@ class Counter:
 def view_series(request, pk):
     series = Series.objects.get(pk=pk)
     counter = Counter(0)
-    print(series.__str__())
     return render(request, 'series/view.html', {'true':True, 'false':False, 'series': series, 'counter': counter})
 
 
