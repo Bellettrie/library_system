@@ -5,6 +5,7 @@
        <br> {% for author in series.get_own_authors %}{% include 'creators/single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
         {% endfor %}
     </div>
+
     <ul>
         {% for  ss in series.things_underneath %}
             {% if ss.is_series %}
