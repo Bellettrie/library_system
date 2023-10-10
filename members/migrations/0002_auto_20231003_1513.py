@@ -12,42 +12,42 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RenameField(
             model_name='member',
-            old_name='addresslinefour',
+            old_name='addressLineFour',
             new_name='address_line_four',
         ),
         migrations.RenameField(
             model_name='member',
-            old_name='addresslineone',
+            old_name='addressLineOne',
             new_name='address_line_one',
         ),
         migrations.RenameField(
             model_name='member',
-            old_name='addresslinethree',
+            old_name='addressLineThree',
             new_name='address_line_three',
         ),
         migrations.RenameField(
             model_name='member',
-            old_name='addresslinetwo',
+            old_name='addressLineTwo',
             new_name='address_line_two',
         ),
         migrations.RenameField(
             model_name='memberlog',
-            old_name='addresslinefour',
+            old_name='addressLineFour',
             new_name='address_line_four',
         ),
         migrations.RenameField(
             model_name='memberlog',
-            old_name='addresslineone',
+            old_name='addressLineOne',
             new_name='address_line_one',
         ),
         migrations.RenameField(
             model_name='memberlog',
-            old_name='addresslinethree',
+            old_name='addressLineThree',
             new_name='address_line_three',
         ),
         migrations.RenameField(
             model_name='memberlog',
-            old_name='addresslinetwo',
+            old_name='addressLineTwo',
             new_name='address_line_two',
         ),
     ]
