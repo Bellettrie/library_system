@@ -1,0 +1,25 @@
+<li>
+    <div>
+           <a href="/series/views/{{ series.pk }}"> {% if work.display_number %}{{ work.display_number }} - {% endif %}
+            {{   series.title }}</a><span style="float:right">   {{ series.book_code }}     </span>
+       <br> {% for author in series.get_own_authors %}{% include 'creators/single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
+        {% endfor %}
+    </div>
+    <ul>
+        {% with root=false %}
+            {% for  ss in series.things_underneath %}
+                {% if ss.is_series %}
+                    {% with series=ss.is_series %}
+                        {% include 'series/tree/series.html' %}
+                    {% endwith %}
+                {% else %}
+                    {% with work=ss.is_work %}
+                        {% if work %}
+                           {% include 'series/tree/book.html' %}
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+            {% endfor %}
+        {% endwith %}
+    </ul>
+</li>

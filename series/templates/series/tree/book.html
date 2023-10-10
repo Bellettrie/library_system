@@ -1,0 +1,22 @@
+{% with publication=work.work %}
+     <li><div >
+           <a href="/works/publication/{{ publication.pk }}"> {% if work.display_number %}{{ work.display_number }} - {% endif %}
+               {{ publication.title }}</a>
+
+         <span style="float:right">   {%  for item in publication.get_pub.get_items%}
+         {{ item.book_code }}<br>
+             {% endfor %}
+         </span>
+
+    {%  for item in publication.get_pub.get_items%}
+     <br>
+     {% endfor %}
+    {% for author in publication.get_own_authors %}{% include 'creators/single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
+        {% endfor %}
+
+        </div>
+     </li>
+
+
+
+{% endwith %}

@@ -1,19 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block title %}{% include 'series/part_of_series_name.html' %}{% endblock %}
 {% block content %}
     <table class="table table-striped">
-        <tr>
-            <th>Number</th>
-            <td>
-                {% if series.number %}{{ series.number }}{% else %}<i>No Number</i>{% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th>Display number</th>
-            <td>
-                {% if series.display_number %}{{ series.display_number }}{% else %}<i>No Display Number</i>{% endif %}
-            </td>
-        </tr>
+
         {% with publication=series %}
             <tr>
                 <th>Name</th>
@@ -55,24 +46,36 @@
             </tr>
         {% endwith %}
         </tr>
+
+     {% if series.number %}
+ <tr>
+    <th>Position in super-series</th>
+    <td>
+             {% if series.display_number %}{{ series.display_number }}{% endif %}
+        {% if series.number %}({{ series.number }}){% else %}<i>No Number</i>{% endif %}
+    </td>
+</tr>
+
+
+        {% endif %}
     </table>
     {% if perms.series.change_series %}<a class="btn btn-primary" href="{% url 'series.edit' series.pk %}">Edit</a>
     {% endif %}
     {% if perms.series.delete_series %}<a class="btn btn-danger" href="{% url 'series.delete' series.pk %}">Delete</a>
     {% endif %}
 
-    <h4>Parts of the series</h4>
-    {% with series=list %}
-        <style>
-            .series tr {
-                line-height: 12px;
-                font-size: 12px;
-            }
-        </style>
-        <table class="series table table-striped">
-            {% include 'series/parts.html' %}
-        </table>
+<h4>Parts of the series</h4>
+
+<div>
+  <ul class="treez">
+{% with root=true %}
+            {% include 'series/tree/series.html' %}
     {% endwith %}
+  </ul>
+</div>
+
+
+
     <h4>Numbering</h4>
     {% if  series.location_code %}
         <table>
