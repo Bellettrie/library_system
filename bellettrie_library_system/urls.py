@@ -25,15 +25,15 @@ from django.http import HttpResponse
 from django.conf import settings
 
 
-def redirect_view(request):
+def redirect_view(_):
     response = redirect('/')
     return response
 
 
-def ok(request):
+def ok(_):
     logger = logging.getLogger(__name__)
     logger.debug(settings.HOST)
-    return HttpResponse("OK from "+ settings.HOST)
+    return HttpResponse("OK from " + settings.HOST)
 
 
 urlpatterns = [
