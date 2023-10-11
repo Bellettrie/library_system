@@ -9,7 +9,8 @@ from django.urls import reverse
 
 from mail.models import mail_member
 from members.models import Member
-
+from datetime import timedelta
+from django.utils import timezone
 
 @transaction.atomic
 @permission_required('auth.add_user')
@@ -24,6 +25,8 @@ def generate_invite_code(request, member_id):
         return HttpResponseRedirect(reverse('members.view', args=(member.pk, 0,)))
     member.invitation_code = result_str
     member.invitation_code_valid = True
+    member.invitation_code_end_date = timezone.now() + timedelta(days=14)
+
     mail_member('mails/invitation.tpl', {'member': member}, member, True)
     member.save()
 
