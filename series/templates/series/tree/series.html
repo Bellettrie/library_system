@@ -1,5 +1,5 @@
 <li>
-    <div>
+     <div style="overflow:auto;">
            <a href="/series/views/{{ series.pk }}"> {% if work.display_number %}{{ work.display_number }} - {% endif %}
             {{   series.title }}</a><span style="float:right">   {{ series.book_code }}     </span><span></span>
        <br> {% for author in series.get_own_authors %}{% include 'creators/single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
