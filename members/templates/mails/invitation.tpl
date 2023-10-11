@@ -32,7 +32,7 @@ To create an account, follow the link below, and use this to create an account. 
 <br />
 <a href="{{BASE_URL}}/members/signup/{{member.pk}}?key={{member.invitation_code}}">invitation link</a><br />
 <br />
-Note that if you previously had an account, the request for a new account has removed this account.<br />
+If you have any questions regarding this process, feel free to contact us by replying to this email.<br />
 <br />
 Kind regards,<br />
 <br />
