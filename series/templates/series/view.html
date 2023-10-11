@@ -63,8 +63,8 @@
     {% endif %}
     {% if perms.series.delete_series %}<a class="btn btn-danger" href="{% url 'series.delete' series.pk %}">Delete</a>
     {% endif %}
-
-<h4>Parts of the series</h4>
+<br><br>
+<h4>Books in series</h4>
 
 <div>
   <ul class="treez">
@@ -73,19 +73,17 @@
 </div>
 
 
-
-    <h4>Numbering</h4>
     {% if  series.location_code %}
-        <table>
+    <h4>Numbering</h4>
+        This series has it's own book code for one or more locations.<br><br>
+        <table class="table-striped">
+        <tr><th>Location</th><th>Used Name</th><th>Letter</th><th>Number</th></tr>
             <tr>
-                <td>
-                    {{ series.location_code.name }}</td>
-            </tr>
-            <tr>
-                <td>{{ series.location_code.number }}</td>
-            </tr>
-            <tr>
+                <td>{{ series.location }}</td>
+                <td>{{ series.location_code.name }}</td>
                 <td>{{ series.location_code.letter }}</td>
+                <td>{{ series.location_code.number }}</td>
+
             </tr>
         </table>
     {% endif %}
