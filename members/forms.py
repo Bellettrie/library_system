@@ -68,3 +68,13 @@ class MembershipPeriodForm(ModelForm):
             'start_date': forms.DateInput(attrs={'class': 'datepicker'}),
             'end_date': forms.DateInput(attrs={'class': 'datepicker'})
         }
+
+
+class SignupForm(ModelForm):
+    class Meta:
+        model = Member
+        fields = ['student_number',
+                  'email',
+                 ]
+        labels = {'student_number': 'Student Number',
+                  'email': 'Email Address'}

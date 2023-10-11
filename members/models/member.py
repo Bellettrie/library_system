@@ -27,6 +27,8 @@ class Member(MemberData):
     privacy_reunion_end_date = models.DateField(auto_now=True)
 
     invitation_code = models.CharField(max_length=64, null=True, blank=True)
+    invitation_code_end_date = models.DateTimeField(null=True, blank=True)
+
     invitation_code_valid = models.BooleanField(default=False)
 
     dms_registered = models.BooleanField(default=False)

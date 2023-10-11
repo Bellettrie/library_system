@@ -11,6 +11,7 @@ import members.views.member_show
 from members.permissions import MEMBERS_LIST, MEMBERS_NEW, MEMBERS_VIEW, MEMBERS_EDIT, MEMBERS_DELETE
 from .views.member_list import MemberList
 from .views.anon_member_list import AnonMemberList
+from .views.user.self_signup import self_signup, self_signupped
 from .views.user.signup import signup
 from members.views.user.edit import change_user
 from .views.user.delete import delete_user, delete_user_prompt
@@ -31,6 +32,9 @@ urlpatterns = [
 
     path('new', members.views.member_new.new, name=MEMBERS_NEW),
     path('signup/<int:member_id>', members.views.user.signup.signup, name='members.signup'),
+    path('user/new', self_signup, name='members.self_signup'),
+    path('user/new/done', self_signupped, name='members.self_signupped'),
+
     path('user/edit/<int:member_id>', members.views.user.edit.change_user, name='members.change_user'),
     path('user/delete/<int:member_id>', members.views.user.delete.delete_user_prompt, name='members.remove_user'),
     path('user/deleted/<int:member_id>', members.views.user.delete.delete_user, name='members.delete_user'),

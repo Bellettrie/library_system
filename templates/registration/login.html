@@ -30,7 +30,9 @@
 
 <input type="submit" value="login">
 <input type="hidden" name="next" value="{{ next }}">
-</form>
+</form><hr>
+    Click <a class="btn btn-primary badge" href="{% url "members.self_signup" %}">here</a> to register a new account.
 
-If you have lost your password, please contact the board or the web committee.
+
+If you have lost your password, please contact the board, or register a new account.
 {% endblock %}
