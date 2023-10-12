@@ -11,6 +11,7 @@ from mail.models import mail_member
 from members.models import Member
 from datetime import timedelta
 from django.utils import timezone
+from django.conf import settings
 
 
 def handle_member_invite(member):
@@ -20,7 +21,7 @@ def handle_member_invite(member):
     member.invitation_code_valid = True
     member.invitation_code_end_date = timezone.now() + timedelta(days=14)
     member.save()
-    mail_member('mails/invitation.tpl', {'member': member}, member)
+    mail_member('mails/invitation.tpl', {'member': member, 'BASE_URL': settings.BASE_URL}, member, True)
 
 
 @transaction.atomic

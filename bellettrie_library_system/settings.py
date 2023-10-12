@@ -73,7 +73,7 @@ OLD_DB = "bellettrie"
 OLD_USN = 'root'
 OLD_PWD = 'root'
 
-BASE_URL = '/'
+BASE_URL = env("BASE_URL", default="")
 EMAIL_PORT = env("EMAIL_PORT", default=1025)
 EMAIL_HOST = env("EMAIL_HOST", default='127.0.0.1')
 
