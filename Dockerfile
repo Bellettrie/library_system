@@ -1,7 +1,9 @@
 # syntax=docker/dockerfile:1.4
 FROM python:3.11-alpine
 ARG HOST
-ENV HOSTE=$HOST
+# This contains the name given to the individual copy of the site that's running this one.
+# This is so we can identify which specific copy of the site is healthy/unhealthy.
+ENV MY_HOST_NAME=$HOST
 
 WORKDIR /app 
 COPY requirements_dockerized.txt /app
@@ -14,6 +16,8 @@ RUN chmod +x /app/entrypoint.sh
 
 # copy project
 COPY . .
-
+RUN rm -rf /statictarget/*
+RUN python manage.py migrate
+RUN python manage.py collectstatic
 # run entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
