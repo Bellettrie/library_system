@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
-{% block title %}Lendings{% endblock %}
+{% block title %}My Page{% endblock %}
 {% block content %}
-    {% load books %}
-    {% get_user_books member perms %}
-    Older lendings:
-    {% get_user_books member perms True %}
+    Welcome {{ request.user.member.name }},<br>
+    Here you can find the list of all the books you've ever borrowed at Bellettrie. Click <a href="{% url 'members.view' user.member.id 0 %}">here</a> to go to your administrative page.
+    {% include 'pagination.html' %}
+    {% my_lendings object_list perms %}
+
 {% endblock %}
