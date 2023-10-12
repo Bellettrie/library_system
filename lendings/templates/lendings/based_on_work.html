@@ -10,7 +10,6 @@
         <input type="submit" value="Search" class="btn-primary btn" >
     </form>
     <table>
-    {{ members }}
         {% for member in members %}
             <tr>
                 <td><a href="{% url LENDING_FINALIZE item.pk  member.id %}">{{ member.name }}</a></td>
