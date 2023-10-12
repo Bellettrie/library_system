@@ -1,9 +1,7 @@
 # syntax=docker/dockerfile:1.4
 FROM python:3.11-alpine
-ARG HOST
 # This contains the name given to the individual copy of the site that's running this one.
 # This is so we can identify which specific copy of the site is healthy/unhealthy.
-ENV MY_HOST_NAME=$HOST
 
 WORKDIR /app
 
