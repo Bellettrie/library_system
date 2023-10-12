@@ -1,4 +1,3 @@
-from django.conf.urls import url
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import transaction
