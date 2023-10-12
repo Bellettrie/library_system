@@ -2,6 +2,7 @@
 <link href="{% static 'select/select2.min.css' %}" rel="stylesheet"/>
 <script src="{% static 'select/select2.min.js' %}"></script>
 <select class="js-example-basic-single form-control" style="width:100%" id="{{ name }}" name="{{ name }}">
+
     {% if default %}
     <option value="{{  default.pk }}" selected="selected">{{ default.get_canonical_name }}</option>
     {% endif %}
@@ -13,6 +14,12 @@ $('#{{name}}').select2({
       return '/creators/search/' + params.term;
     },
     minimumInputLength: 3,
-  }
+  },
+allowClear: true,
+    placeholder: {
+      id: "-1",
+      text:"No Author",
+      selected:'selected'
+    },
 });
 </script>
