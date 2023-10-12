@@ -12,13 +12,13 @@ ALLOWED_HOSTS = ["*"]
 
 LIBRARY_NAME = env("LIBRARY_NAME", default="Bellettrie")
 LIBRARY_IMAGE_URL = env("LIBRARY_IMAGE_URL", default="images/wurm.png")
-LIBRARY_DESCRIPTION = env("LIBRARY_DESCRIPTION",default="Bellettrie is a student run library at the University of Twente, specialised in Science Fiction and Fantasy")
+LIBRARY_DESCRIPTION = env("LIBRARY_DESCRIPTION",
+                          default="Bellettrie is a student run library at the University of Twente, specialised in Science Fiction and Fantasy")
 
 SECRET_KEY = env("SECRET_KEY", default='9_meq=rl3q!wh4=lr4g9t)ra9l*o_d7!exbh&^brhj=*_xm5y*')
 CROSS_LOGIN_KEY = env("CROSS_LOGIN_KEY", default='XP6kvnD5NQN3lL0zyjPeQumogu8y3YRtPi3NqKid9BA=')
 CROSS_LOGIN_SECRET = env("CROSS_LOGIN_SECRET", default="VmYq3t6v")
 CROSS_LOGIN_TIMEOUT = env("CROSS_LOGIN_TIMEOUT", default=3600 * 2)
-
 
 DEBUG = env("DEBUG", default=True)
 UPSIDE_DOWN = env("UPSIDE_DOWN", default=True)
@@ -45,7 +45,7 @@ if DB_ENG == "mysql":
     }
 if DB_ENG == "postgres":
     print("Postgres")
-    
+
     DB = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env("DB_POSTGRESQL_NAME"),
@@ -62,7 +62,7 @@ DATABASES = {
 STATIC_URL = env("STATIC_URL", default='/root/')
 
 # --------------------------------------------------
-STATIC_ROOT = env("STATIC_ROOT",default=os.path.join(BASE_DIR, 'root'))
+STATIC_ROOT = env("STATIC_ROOT", default=os.path.join(BASE_DIR, 'root'))
 # -----------------------------------------------------
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
@@ -77,7 +77,7 @@ BASE_URL = '/'
 EMAIL_PORT = env("EMAIL_PORT", default=1025)
 EMAIL_HOST = env("EMAIL_HOST", default='127.0.0.1')
 
-EMAIL_BACKEND = env("EMAIL_BACKEND",default='django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = env("EMAIL_BACKEND", default='django.core.mail.backends.console.EmailBackend')
 
 CRON_CLASSES = [
     "mail.cron.SendSingleEmail",
@@ -85,11 +85,13 @@ CRON_CLASSES = [
     "lendings.cron.LateMails",
     "reservations.cron.ReservationCancel"
 ]
-HOST=env("HOSTE",default="-")
+
+HOST = env("MY_HOST_NAME", default="-")
 EXTERNAL_UPLOAD_ENABLED = env("EXTERNAL_UPLOAD_ENABLED", default=False)
 EXTERNAL_UPLOAD_URL_UPLOAD = env("EXTERNAL_UPLOAD_URL_UPLOAD", default='https://upload.bellettrie.net/upload')
 EXTERNAL_UPLOAD_URL_DELETE = env("EXTERNAL_UPLOAD_URL_DELETE", default='https://upload.bellettrie.net/delete')
 EXTERNAL_UPLOAD_URL_API_KEY = env("EXTERNAL_UPLOAD_URL_API_KEY", default='key')
-EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX = env("EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX", default='https://bellettrie.net/static/uploads/')
+EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX = env("EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX",
+                                          default='https://bellettrie.net/static/uploads/')
 
 IS_OPEN_URL = env("IS_OPEN_URL", default="https://dragoncounter.bellettrie.utwente.nl/crowds/api/")

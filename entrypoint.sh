@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Wait for Postgres to be available
 if [ "$DB_ENGINE" = "postgres" ]
 then
     echo "Waiting for postgres..."
@@ -10,8 +11,7 @@ then
 
     echo "PostgreSQL started"
 fi
-rm -rf /statictarget/*
-python manage.py migrate
-python manage.py collectstatic
-exec "$@"
 
+# Run the entrypoint command (for starting the app, it should be gunicorn ...)
+# This is set by the docker-compose file for the running app.
+exec "$@"
