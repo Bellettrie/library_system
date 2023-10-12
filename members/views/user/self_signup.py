@@ -14,7 +14,7 @@ from datetime import timedelta
 from django.utils import timezone
 
 
-def clean(student_nr: string)-> string:
+def clean(student_nr: string) -> string:
     return "".join([ele for ele in student_nr if ele.isdigit()])
 
 
@@ -36,12 +36,14 @@ def self_signup(request):
             return render(request, 'members/self_signup.html',
                           {"form": form, "error": "Incorrect form input, no such email address."})
         if clean(member.student_number) != clean(f.student_number):
-            return render(request, 'members/self_signup.html', {"form": form, "error": "Incorrect form input, student number does not match."})
+            return render(request, 'members/self_signup.html',
+                          {"form": form, "error": "Incorrect form input, student number does not match."})
         if member.user and (member.user.is_staff or member.user.is_superuser):
-            return render(request, 'members/self_signup.html', {"form": form, "error":"Cannot edit superusers this way"})
+            return render(request, 'members/self_signup.html',
+                          {"form": form, "error": "Cannot edit superusers this way"})
         member.invitation_code = result_str
         member.invitation_code_valid = True
-        member.invitation_code_end_date = timezone.now()+timedelta(days=14)
+        member.invitation_code_end_date = timezone.now() + timedelta(days=14)
         member.save()
 
         mail_member('mails/invitation.tpl', {'member': member}, member, True)

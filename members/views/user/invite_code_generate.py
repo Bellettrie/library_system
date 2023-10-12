@@ -12,6 +12,7 @@ from members.models import Member
 from datetime import timedelta
 from django.utils import timezone
 
+
 @transaction.atomic
 @permission_required('auth.add_user')
 def generate_invite_code(request, member_id):
