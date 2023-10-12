@@ -5,19 +5,29 @@ ARG HOST
 # This is so we can identify which specific copy of the site is healthy/unhealthy.
 ENV MY_HOST_NAME=$HOST
 
-WORKDIR /app 
+WORKDIR /app
+
+# Install requirements
 COPY requirements_dockerized.txt /app
 RUN pip3 install -r requirements_dockerized.txt --no-cache-dir
+
 COPY . /app 
 # copy entrypoint.sh
 COPY ./entrypoint.sh .
+
+# Ready script for running
 RUN sed -i 's/\r$//g' /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 # copy project
 COPY . .
+
+# Staticfiles
 RUN rm -rf /statictarget/*
-RUN python manage.py migrate
 RUN python manage.py collectstatic
+
+# Migrate
+RUN python manage.py migrate
+
 # run entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
