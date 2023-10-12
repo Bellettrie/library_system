@@ -75,6 +75,6 @@ class SignupForm(ModelForm):
         model = Member
         fields = ['student_number',
                   'email',
-                 ]
+                  ]
         labels = {'student_number': 'Student Number',
                   'email': 'Email Address'}

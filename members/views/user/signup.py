@@ -8,6 +8,8 @@ from django.urls import reverse
 from members.models import Member
 
 from django.utils import timezone
+
+
 @transaction.atomic
 def signup(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
