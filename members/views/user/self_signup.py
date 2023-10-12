@@ -13,6 +13,8 @@ from members.models import Member
 from datetime import timedelta
 from django.utils import timezone
 
+from members.views.user.invite_code_generate import handle_member_invite
+
 
 def clean(student_nr: string) -> string:
     return "".join([ele for ele in student_nr if ele.isdigit()])
@@ -22,34 +24,36 @@ def clean(student_nr: string) -> string:
 def self_signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
+
         if not form.is_valid():
             return render(request, 'members/self_signup.html',
                           {"form": form, "error": "Incorrect form input, likely empty form."})
-        f = form.save(commit=False)
 
-        letters = string.ascii_letters + string.digits
-        result_str = ''.join(random.choice(letters) for i in range(16))
+        # Retrieve incomplete member object as supplied by form
+        member_form_data = form.save(commit=False)
 
+        # Retrieve member data
         try:
-            member = get_object_or_404(Member, email=f.email.strip())
+            member = get_object_or_404(Member, email=member_form_data.email.strip())
         except Http404:
             return render(request, 'members/self_signup.html',
                           {"form": form, "error": "Incorrect form input, no such email address."})
-        if clean(member.student_number) != clean(f.student_number):
+
+        # Verify that the member data is consistent
+        if clean(member.student_number) != clean(member_form_data.student_number):
             return render(request, 'members/self_signup.html',
                           {"form": form, "error": "Incorrect form input, student number does not match."})
         if member.user and (member.user.is_staff or member.user.is_superuser):
             return render(request, 'members/self_signup.html',
                           {"form": form, "error": "Cannot edit superusers this way"})
-        member.invitation_code = result_str
-        member.invitation_code_valid = True
-        member.invitation_code_end_date = timezone.now() + timedelta(days=14)
-        member.save()
 
-        mail_member('mails/invitation.tpl', {'member': member}, member, True)
+        handle_member_invite(member)
 
-    form = SignupForm(request.POST)
-    return redirect("members.self_signupped")
+        return redirect("members.self_signupped")
+    else:
+        # New empty form
+        form = SignupForm(request.POST)
+        return render(request, 'members/self_signup.html', {"form": form})
 
 
 @transaction.atomic
