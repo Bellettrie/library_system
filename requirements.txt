@@ -1,5 +1,5 @@
 markdown
-django==3.2.13
+django>3.2.20
 namegenerator
 names
 django-tables2
