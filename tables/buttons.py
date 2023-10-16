@@ -183,7 +183,7 @@ class ReservationLendButton(Button):
 
 class ExtendButton(Button):
     def is_visible(self, row: LendingRow, perms):
-        return row.is_item() and row.lending.handed_in is not None
+        return row.is_item() and not row.lending.handed_in
 
     def is_enabled(self, row: LendingRow, perms: PermWrapper):
         e = can_extend(row.lending, get_today())
