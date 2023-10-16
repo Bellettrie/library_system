@@ -12,10 +12,10 @@ cols = [
     BookCodeColumn(),
     TitleColumn(),
     AllAuthorsColumn(),
-    (),
+    LentByColumn(),
     HandinDate(),
     FineColumn(),
-    ButtonsColumn([ExtendButton()], "Controls")
+    ButtonsColumn([LendingTableReturnButton()], "Return")
 ]
 
 
@@ -25,7 +25,6 @@ def current_lendings(lendings: List[Lending], perms):
     for lending in lendings:
         rows.append(LendingRow(lending))
     return {'table': Table(rows, cols), 'perms': perms}
-
 
 
 cols_me = [
