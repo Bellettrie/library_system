@@ -101,6 +101,8 @@ class FineColumn(Column):
         return "Fine"
 
     def render(self, row: LendingRow, perms=None):
+        if row.lending.handed_in is None:
+            return ""
         return render_to_string("columns/fine_column.html", {"lending": row.lending})
 
 
