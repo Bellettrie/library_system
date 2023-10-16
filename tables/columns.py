@@ -100,11 +100,9 @@ class FineColumn(Column):
     def get_header():
         return "Fine"
 
-    def render(self, row: LendingRow, perms=None):
-        
+    def render(self, row: LendingRow, perms=None):        
         if row.lending.handed_in or not row.lending.is_late():
-            return ""
-        
+            return "" 
         
         return render_to_string("columns/fine_column.html", {"lending": row.lending})
 
