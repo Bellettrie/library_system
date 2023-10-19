@@ -2,7 +2,8 @@
  <li>
      <div style="overflow:auto;">
            <a href="/works/publication/{{ publication.pk }}"> {% if work.display_number %}{{ work.display_number }} - {% endif %}
-               {{ publication.title }}</a>
+<a href="{% url 'work.view' publication.pk %}">{% if publication.article  %}{{ publication.article }}{% endif %} <i>{% if publication.title %}{{ publication.title }}{% else %}&lt;No Title&gt;{% endif %}</i></a>
+
 
          <span style="float:right">   {%  for item in publication.get_pub.get_items%}
          {{ item.book_code }} {{ item.book_code_extension }}<br>
