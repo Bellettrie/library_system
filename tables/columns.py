@@ -83,7 +83,7 @@ class StartDate(Column):
         return "Lent On"
 
     def render(self, row: LendingRow, perms=None):
-        return render_to_string("columns/handin_date.html", {"lending": row.lending})
+        return render_to_string("columns/start_date.html", {"lending": row.lending})
 
 
 class HandinDate(Column):
