@@ -1,11 +1,10 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 
 from lendings.models.lending import Lending
 
 
-class MyLendingList(PermissionRequiredMixin, ListView):
-    permission_required = 'lendings.view_lending'
+class MyLendingList(LoginRequiredMixin, ListView):
     model = Lending
     template_name = 'lendings/detail.html'
     paginate_by = 10
