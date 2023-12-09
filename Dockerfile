@@ -6,8 +6,8 @@ FROM python:3.11-alpine
 WORKDIR /app
 
 # Install requirements
-COPY requirements_dockerized.txt /app
-RUN pip3 install -r requirements_dockerized.txt --no-cache-dir
+COPY requirements_production.txt /app
+RUN pip3 install -r requirements_production.txt --no-cache-dir
 
 COPY . /app 
 # copy entrypoint.sh

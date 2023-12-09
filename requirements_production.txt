@@ -6,9 +6,9 @@ django-tables2
 flake8
 django-mail-templated
 unidecode
-backports-datetime-fromisoformat
 pyjwt
 django-environ
-gunicorn
 django_cron
 importlib-metadata<5.0
+gunicorn==21.2.0
+psycopg2-binary==2.9.6
