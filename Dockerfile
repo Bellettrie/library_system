@@ -20,10 +20,6 @@ RUN chmod +x /app/entrypoint.sh
 # copy project
 COPY . .
 
-# Staticfiles
-RUN rm -rf /statictarget/*
-RUN python manage.py collectstatic
-
 # Migrate
 RUN python manage.py migrate
 
