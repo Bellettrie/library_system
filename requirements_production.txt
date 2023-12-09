@@ -9,6 +9,5 @@ unidecode
 backports-datetime-fromisoformat
 pyjwt
 django-environ
-gunicorn
 django_cron
 importlib-metadata<5.0
