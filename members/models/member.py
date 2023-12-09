@@ -86,10 +86,12 @@ class Member(MemberData):
 
     def pseudonymise(self):
         self.name = generate_full_name()
-        self.addressLineOne = "Hollandstraat 66"
         self.nickname = ""
-        self.addressLineTwo = "6666 HL Enschede"
-        self.addressLineThree = "Holland"
+        self.address_line_one = "Hollandstraat 66"
+        self.address_line_two = "6666 HL Enschede"
+        self.address_line_three = "Holland"
+        self.address_line_four = ""
+        self.AddressTest = "a"
         self.phone = "06 666 666 13 13"
         self.email = "board@bellettrie.utwente.nl"
         self.student_number = "s123 456 789"
