@@ -95,3 +95,5 @@ EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX = env("EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX",
                                           default='https://bellettrie.net/static/uploads/')
 
 IS_OPEN_URL = env("IS_OPEN_URL", default="https://dragoncounter.bellettrie.utwente.nl/crowds/api/")
+
+OVERRIDE_MAIL_ADDRESS = env("OVERRIDE_MAIL_ADDRESS", default='')

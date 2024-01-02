@@ -1,3 +1,6 @@
+import logging
+
+from django import conf
 from django.db import models, transaction
 
 # Create your models here.
@@ -19,10 +22,16 @@ class MailLog(models.Model):
 
     @transaction.atomic
     def send(self):
+        # On test-systems we want to be able to override the mailadress of the users.
+        mail = self.member.email
+        if conf.settings.OVERRIDE_MAIL_ADDRESS != '':
+            logging.info(mail.format("Mailed to %s instead of %s", mail, conf.settings.OVERRIDE_MAIL_ADDRESS))
+            mail = conf.settings.OVERRIDE_MAIL_ADDRESS
+
         msg = EmailMessage(subject=self.subject,
                            body=self.contents,
                            from_email="info@bellettrie.utwente.nl",
-                           to=[self.member.email])
+                           to=[mail])
         msg._is_rendered = True
         msg.send()
         self.sent = True
