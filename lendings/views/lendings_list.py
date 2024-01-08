@@ -12,5 +12,5 @@ class LendingList(PermissionRequiredMixin, ListView):
     ordering = 'end_date'
 
     def get_queryset(self):
-        result_set = Lending.objects.filter(handed_in=False).order_by('end_date')
+        result_set = Lending.objects.filter(handed_in=False).order_by('end_date','-pk')
         return result_set
