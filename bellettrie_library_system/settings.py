@@ -76,7 +76,10 @@ OLD_PWD = 'root'
 BASE_URL = env("BASE_URL", default="")
 EMAIL_PORT = env("EMAIL_PORT", default=1025)
 EMAIL_HOST = env("EMAIL_HOST", default='127.0.0.1')
-
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default='127.0.0.1')
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default='127.0.0.1')
+EMAIL_USE_SSL = env("EMAIL_USE_SSL", default=False)
+OVERRIDE_MAIL_ADDRESS = env("OVERRIDE_MAIL_ADDRESS", default=None)
 EMAIL_BACKEND = env("EMAIL_BACKEND", default='django.core.mail.backends.console.EmailBackend')
 
 CRON_CLASSES = [
