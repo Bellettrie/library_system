@@ -123,7 +123,7 @@ class Work(NamedTranslatableThing):
         for author in authors:
             add = True
             for author_2 in author_set:
-                if author.creator.name == author_2.creator.name and author.role.name == author_2.role.name:
+                if author.creator.pk == author_2.creator.pk and author.role.name == author_2.role.name:
                     add = False
             if add:
                 author_set.append(author)
