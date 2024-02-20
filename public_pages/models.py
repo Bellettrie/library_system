@@ -28,7 +28,7 @@ class PublicPage(models.Model):
 
 
 class FileUpload(models.Model):
-    file = models.FileField(upload_to="root/uploads/")
+    file = models.FileField(upload_to=".")
     name = models.CharField(max_length=64)
 
     def get_file_url(self):
@@ -36,7 +36,7 @@ class FileUpload(models.Model):
         return spl[-1]
 
     def get_full_url(self):
-        return settings.STATIC_URL + "uploads/" + self.get_file_url()
+        return "/media/" + self.get_file_url()
 
 
 class ExternalUpload(models.Model):

@@ -53,7 +53,7 @@ def clean_link(href: str) -> str:
     if href.startswith('~~'):
         static = True
         if not settings.EXTERNAL_UPLOAD_ENABLED:
-            href = settings.STATIC_URL + 'uploads/' + href[2:]
+            href = '/media/' + href[2:]
         else:
             href = settings.EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX + href[2:]
 
