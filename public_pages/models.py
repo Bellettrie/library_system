@@ -5,8 +5,6 @@ from django.db.models import PROTECT
 
 from members.models import Committee
 
-from django.conf import settings
-
 
 class PublicPageGroup(models.Model):
     name = models.CharField(max_length=64)
@@ -38,13 +36,3 @@ class FileUpload(models.Model):
     def get_full_url(self):
         return "/media/" + self.get_file_url()
 
-
-class ExternalUpload(models.Model):
-    external_name = models.CharField(max_length=128, unique=True)
-    name = models.CharField(max_length=64, unique=True)
-
-    def get_file_url(self):
-        return self.external_name
-
-    def get_full_url(self):
-        return settings.EXTERNAL_UPLOAD_URL_DOWNLOAD_PREFIX + self.external_name

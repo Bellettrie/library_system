@@ -1,15 +1,11 @@
-import json
-
 import markdown
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
-from django.forms import Widget
 from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
-from django.template import loader
 from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -17,7 +13,8 @@ from django.views.decorators.csrf import csrf_exempt
 from members.models import Member
 from public_pages.django_markdown import DjangoUrlExtension
 from public_pages.forms import PageEditForm, UploadFileForm
-from public_pages.models import PublicPageGroup, PublicPage, FileUpload, ExternalUpload
+from public_pages.models import PublicPageGroup, PublicPage, FileUpload
+
 
 # These functions are responsible for displaying parts of the webpages. These translate quite directly into bootstrap components
 # The *_ is used to "eat" any unneeded parameters
@@ -249,12 +246,8 @@ def delete_page(request, pk):
 
 
 def list_uploads(request):
-    if not settings.EXTERNAL_UPLOAD_ENABLED:
-        uploads = FileUpload.objects.all()
-        return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})
-    else:
-        uploads = ExternalUpload.objects.all()
-        return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})
+    uploads = FileUpload.objects.all()
+    return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})
 
 
 @permission_required('public_pages.change_publicpage')
@@ -265,23 +258,9 @@ def new_upload(request):
 
         if form.is_valid():
             instance = form.save(commit=False)
-            if not settings.EXTERNAL_UPLOAD_ENABLED:
-                instance.save()
-                special = "Succesful upload!"
-            else:
-                import requests
-                url = settings.EXTERNAL_UPLOAD_URL_UPLOAD
-                files = {}
-                for file in request.FILES:
-                    files[file] = request.FILES[file]
-                r = requests.post(url + "?token=" + settings.EXTERNAL_UPLOAD_URL_API_KEY, files=files)
-                tx = json.loads(r.text)
-                for file in files:
-                    nm = tx.get("Files").get(files[file].name)
-                    if not nm:
-                        print("File skipped")
-                        continue
-                    ExternalUpload.objects.create(external_name=nm, name=instance.name)
+            instance.save()
+            special = "Succesful upload!"
+
             form = UploadFileForm()
     else:
         form = UploadFileForm()
@@ -291,23 +270,9 @@ def new_upload(request):
 
 @permission_required('public_pages.change_publicpage')
 def delete_upload(request, pk):
-    if not settings.EXTERNAL_UPLOAD_ENABLED:
-        page = FileUpload.objects.filter(pk=pk)
-        if not request.GET.get('confirm'):
-            return render(request, 'are-you-sure.html', {'what': "delete attachment with name " + page.first().name})
-        page.delete()
+    page = FileUpload.objects.filter(pk=pk)
+    if not request.GET.get('confirm'):
+        return render(request, 'are-you-sure.html', {'what': "delete attachment with name " + page.first().name})
+    page.delete()
 
-        return redirect('list_uploads')
-    else:
-        page = ExternalUpload.objects.filter(pk=pk)
-        if not request.GET.get('confirm'):
-            return render(request, 'are-you-sure.html', {'what': "Delete attachment with name " + page.first().name})
-        import requests
-        url = settings.EXTERNAL_UPLOAD_URL_DELETE
-        for file in page.all():
-            print(url + "?token=" + settings.EXTERNAL_UPLOAD_URL_API_KEY + "&files=" + file.external_name)
-            r = requests.post(url + "?token=" + settings.EXTERNAL_UPLOAD_URL_API_KEY + "&files=" + file.external_name)
-            print(r.text)
-            file.delete()
-
-        return redirect('list_uploads')
+    return redirect('list_uploads')
