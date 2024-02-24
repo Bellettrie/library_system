@@ -7,7 +7,7 @@ on:
         description: "Who to greet"
         default: "World"
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using ssh key
