@@ -35,4 +35,3 @@ class FileUpload(models.Model):
 
     def get_full_url(self):
         return "/media/" + self.get_file_url()
-
