@@ -14,9 +14,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # We fetch the secrets from the 'Deploy' environment. 
     environment: Deploy
     steps:
-    - name: Update the staging environment on the vps using SSH
+    - name: Update the staging environment on the server using SSH
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
