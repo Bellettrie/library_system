@@ -27,4 +27,6 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.KEY }}
         port: 22
-        script: /services/staging/updater.sh
+        script:  |
+          cd /services/staging
+          ./updater.sh
