@@ -1,0 +1,31 @@
+name: Deploy production
+
+# We deploy production only when the main branch is updated.
+on:
+  push:
+    branches:
+      - 'main'
+
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    # We fetch the secrets from the 'Deploy' environment. 
+    environment: Deploy
+    steps:
+    - name: Deploy
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.KEY }}
+        port: 22
+        script:  |
+          cd /services/prod
+          ./backup.sh
+          cd src
+          git checkout main
+          git pull
+          cd ..
+          docker-compose down
+          docker-compose up -d --build
