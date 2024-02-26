@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from members.models import Member
+from members.permissions import MEMBERS_VIEW
 
 
 @transaction.atomic
@@ -16,7 +17,7 @@ def delete_user(request, member_id):
     member.save()
     user.delete()
 
-    return HttpResponseRedirect(reverse('members.views', args=(member.pk, 0,)))
+    return HttpResponseRedirect(reverse(MEMBERS_VIEW, args=(member.pk, 0,)))
 
 
 @transaction.atomic
