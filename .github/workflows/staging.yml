@@ -1,9 +1,9 @@
-# This is a basic workflow that is manually triggered
-
 name: Deploy staging
 
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
+# We deploy staging if the develop branch is updated, or if any new tag is set
+# This way we can use the tags to test out code easily
+# Observe that updating staging means resetting the database to a recent backup of the production database.
+# This means that there's no issues with testing migrations on a very recent production DB.
 on:
   push:
     branches:
@@ -11,17 +11,12 @@ on:
     tags:
     - '*'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
   deploy:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     environment: Deploy
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Runs a single command using the runners shell
-    - name: Send greeting
+    - name: Update the staging environment on the vps using SSH
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
