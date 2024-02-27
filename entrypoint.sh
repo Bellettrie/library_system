@@ -12,9 +12,9 @@ then
     echo "PostgreSQL started"
 fi
 
+# Make sure the application starts in a consistent state
 rm -rf /statictarget/*
 python manage.py collectstatic
-
 python manage.py migrate
 
 # Run the entrypoint command (for starting the app, it should be gunicorn ...)
