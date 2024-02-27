@@ -1,3 +1,3 @@
 <a href="{% url 'work.view' item.publication.pk %}">{% if item.publication.article  %}{{ item.publication.article }}{% endif %} <i>{% if item.get_title %}{{ item.get_title }}{% else %}&lt;No Title&gt;{% endif %}</i></a>
 {% if item.publication.sub_title %}<br><small><i>Sub.</i> {{ item.publication.sub_title }}</small>{% endif %}
-{% if item.publication.original_language %}<br><small><i>Orig.</i> {{ item.publication.original_title }}</small>{% endif %}
+{% if item.publication.original_language %}<br><small><i>Orig.</i> {{ item.publication.get_original_title }}</small>{% endif %}
