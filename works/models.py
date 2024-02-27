@@ -41,6 +41,9 @@ class TranslatedThing(models.Model):
     original_title = models.CharField(max_length=255, null=True, blank=True)
     original_subtitle = models.CharField(max_length=255, null=True, blank=True)
 
+    def get_original_title(self):
+        return self.original_article + " " + self.original_title if self.original_article else self.original_title
+
 
 class NamedTranslatableThing(NamedThing, TranslatedThing):
     is_translated = models.BooleanField()
