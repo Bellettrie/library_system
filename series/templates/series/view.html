@@ -20,8 +20,7 @@
                     <th> Original Name</th>
                     <td>
 
-                        {% if publication.original_title %}{% if publication.original_article %}
-                            {{ publication.original_article }}{% endif %} {{ publication.original_title }}
+                        {% if publication.get_original_title %} {{ publication.get_original_title }}
                             {% if publication.original_sub_title %}<br/>
                                 <i>-{{ publication.original_sub_title }}</i>{% endif %}{% else %}
                             <i>No Title</i> {% endif %}

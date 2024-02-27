@@ -9,3 +9,4 @@ root/*
 /bellettrie_library_system/settings_production.py
 bellettrie_library_system/.env
 static/images/logo.png
+docker_local/*.sql
