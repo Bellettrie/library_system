@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  db:
+    build:
+      context: .
+      args:
+        DUMP_NAME: startup.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: UJ68dyavBrY7NCSP
+      POSTGRES_DB: bellettrie
+    ports:
+      - "5432:5432"
+    networks:
+      - database
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    networks:
+      - database
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@bellettrie.utwente.nl
+      PGADMIN_DEFAULT_PASSWORD: AyWJ6AR6dwxdQ5pt
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+networks:
+  database:
+volumes:
+  pgadmin-data:
