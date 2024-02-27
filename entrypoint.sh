@@ -15,6 +15,8 @@ fi
 rm -rf /statictarget/*
 python manage.py collectstatic
 
+python manage.py migrate
+
 # Run the entrypoint command (for starting the app, it should be gunicorn ...)
 # This is set by the docker-compose file for the running app.
 exec "$@"
