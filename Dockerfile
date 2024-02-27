@@ -21,7 +21,6 @@ RUN chmod +x /app/mailsender.sh
 COPY . .
 
 # Migrate
-RUN python manage.py migrate
 
 # run entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
