@@ -20,7 +20,5 @@ RUN chmod +x /app/mailsender.sh
 # copy project
 COPY . .
 
-# Migrate
-
-# run entrypoint.sh
+# Set default entrypoint to running the application start script
 ENTRYPOINT ["/app/entrypoint.sh"]
