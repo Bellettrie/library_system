@@ -55,8 +55,7 @@ def get_works_for_publication(words_for_q, words_for_author=[], words_for_series
         query = merge_queries(query, SeriesSearchQuery(" ".join(words_for_series)))
     if len(words_for_title) > 0:
         query = merge_queries(query, TitleSearchQuery(" ".join(words_for_title)))
-    if len(states) > 0:
-        query = merge_queries(query, StateSearchQuery(states))
+
     if len(categories) > 0:
         query = merge_queries(query, LocationSearchQuery(categories))
     if len(book_code) > 0:
@@ -64,7 +63,14 @@ def get_works_for_publication(words_for_q, words_for_author=[], words_for_series
     if query is None:
         return []
     result_set = query.exec()
-    work_list = list(set(result_set))
+    inbetween_list = list(set(result_set))
+    work_list=[]
+    if len(states) > 0:
+        in_right_state_ones = StateSearchQuery(states).exec()
+        for st in in_right_state_ones:
+
+    else:
+        work_list=inbetween_list
     work_list.sort(key=lambda a: (a.title or "").upper())
     work_list.sort(key=lambda a: a.listed_author)
     return work_list
