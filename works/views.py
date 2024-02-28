@@ -12,7 +12,7 @@ from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
 from search.queries import BaseSearchQuery, AndOp, AuthorSearchQuery, SeriesSearchQuery, TitleSearchQuery, \
-    StateSearchQuery, LocationSearchQuery, BookCodeSearchQuery, search_state
+    LocationSearchQuery, BookCodeSearchQuery, search_state
 
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
