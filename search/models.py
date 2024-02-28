@@ -10,7 +10,7 @@ from works.models import Publication, SubWork
 
 
 class SearchWord(models.Model):
-    word = models.CharField(max_length=255)
+    word = models.CharField(max_length=255, db_index=True)
 
     @staticmethod
     def get_word(word):
@@ -56,7 +56,7 @@ def get_words_in_str(string):
 class WordMatch(models.Model):
     word = models.ForeignKey(SearchWord, on_delete=CASCADE, db_index=True)
     publication = models.ForeignKey(Publication, on_delete=CASCADE)
-    type = models.CharField(max_length=8, default="TITLE")
+    type = models.CharField(max_length=8, default="TITLE", db_index=True)
 
     @staticmethod
     def create_all_for(work: Publication, words=None):
