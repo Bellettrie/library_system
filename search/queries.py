@@ -103,15 +103,9 @@ def search_state(states):
         "WHERE date_time = " +
         "(SELECT MAX(w.date_time) FROM works_itemstate as w " +
         "where w.item_id=wx.item_id AND wx.type IN %s);", states))
+    print(r)
+
     return r
-class StateSearchQuery(SearchOp):
-    def __init__(self, states: [str]):
-        self.states = states
-
-    def exec(self):
-
-
-        return r
 
 
 class BookCodeSearchQuery(SearchOp):

@@ -12,7 +12,7 @@ from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
 from search.queries import BaseSearchQuery, AndOp, AuthorSearchQuery, SeriesSearchQuery, TitleSearchQuery, \
-    StateSearchQuery, LocationSearchQuery, BookCodeSearchQuery
+    StateSearchQuery, LocationSearchQuery, BookCodeSearchQuery, search_state
 
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
@@ -66,11 +66,15 @@ def get_works_for_publication(words_for_q, words_for_author=[], words_for_series
     inbetween_list = list(set(result_set))
     work_list=[]
     if len(states) > 0:
-        in_right_state_ones = StateSearchQuery(states).exec()
-        for st in in_right_state_ones:
-
+        in_right_state_ones = set(search_state(states))
+        if len(in_right_state_ones) == 0:
+            work_list = inbetween_list
+        else:
+            for w in inbetween_list:
+                if w in in_right_state_ones:
+                    work_list.append(w)
     else:
-        work_list=inbetween_list
+        work_list = inbetween_list
     work_list.sort(key=lambda a: (a.title or "").upper())
     work_list.sort(key=lambda a: a.listed_author)
     return work_list
