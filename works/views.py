@@ -60,13 +60,15 @@ def get_works_for_publication(words_for_q, words_for_author=[], words_for_series
         query = merge_queries(query, LocationSearchQuery(categories))
     if len(book_code) > 0:
         query = merge_queries(query, BookCodeSearchQuery(book_code))
-    if query is None:
-        return []
-    result_set = query.exec()
-    inbetween_list = list(set(result_set))
+    inbetween_list = []
+    if query is not None:
+        result_set = query.exec()
+        inbetween_list = list(set(result_set))
     work_list=[]
     if len(states) > 0:
         in_right_state_ones = set(search_state(states))
+        if query is None:
+            work_list = list(in_right_state_ones)
         if len(in_right_state_ones) == 0:
             work_list = inbetween_list
         else:
@@ -75,6 +77,7 @@ def get_works_for_publication(words_for_q, words_for_author=[], words_for_series
                     work_list.append(w)
     else:
         work_list = inbetween_list
+
     work_list.sort(key=lambda a: (a.title or "").upper())
     work_list.sort(key=lambda a: a.listed_author)
     return work_list
