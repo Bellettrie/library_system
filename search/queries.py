@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from search.models import get_words_in_str
-from works.models import Publication, ItemState, Category
+from works.models import Publication, ItemState, Category, Item
 
 
 class SearchOp:
@@ -43,7 +43,8 @@ class AuthorSearchQuery(SearchOp):
             if word.startswith("*"):
                 res = res.filter(Q(wordmatch__word__word__endswith=word.replace("*", "")) & Q(wordmatch__type="AUTHOR"))
             elif word.endswith("*"):
-                res = res.filter(Q(wordmatch__word__word__startswith=word.replace("*", "")) & Q(wordmatch__type="AUTHOR"))
+                res = res.filter(
+                    Q(wordmatch__word__word__startswith=word.replace("*", "")) & Q(wordmatch__type="AUTHOR"))
             else:
                 res = res.filter(Q(wordmatch__word__word=word) & Q(wordmatch__type="AUTHOR"))
         return res
@@ -63,7 +64,8 @@ class SeriesSearchQuery(SearchOp):
             if word.startswith("*"):
                 res = res.filter(Q(wordmatch__word__word__endswith=word.replace("*", "")) & Q(wordmatch__type="SERIES"))
             elif word.endswith("*"):
-                res = res.filter(Q(wordmatch__word__word__startswith=word.replace("*", "")) & Q(wordmatch__type="SERIES"))
+                res = res.filter(
+                    Q(wordmatch__word__word__startswith=word.replace("*", "")) & Q(wordmatch__type="SERIES"))
             else:
                 res = res.filter(Q(wordmatch__word__word=word) & Q(wordmatch__type="SERIES"))
         return res
@@ -81,31 +83,35 @@ class TitleSearchQuery(SearchOp):
             if res is None:
                 res = Publication.objects
             if word.startswith("*"):
-                res = res.filter(Q(wordmatch__word__word__endswith=word.replace("*", "")) & Q(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
+                res = res.filter(Q(wordmatch__word__word__endswith=word.replace("*", "")) & Q(
+                    Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
             elif word.endswith("*"):
-                res = res.filter(Q(wordmatch__word__word__startswith=word.replace("*", "")) & Q(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
+                res = res.filter(Q(wordmatch__word__word__startswith=word.replace("*", "")) & Q(
+                    Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
             else:
-                res = res.filter(Q(wordmatch__word__word=word) & Q(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
+                res = res.filter(
+                    Q(wordmatch__word__word=word) & Q(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
         return res
 
 
+def search_state(states):
+    if "AVAILABLE" in states:
+        return None
+    r = (Publication.objects.raw(
+        "SELECT work_ptr_id from works_publication left join works_item ON works_publication.work_ptr_id=works_item.publication_id LEFT JOIN works_itemstate as wx " +
+        "ON works_item.id = wx.item_id " +
+        "WHERE date_time = " +
+        "(SELECT MAX(w.date_time) FROM works_itemstate as w " +
+        "where w.item_id=wx.item_id AND wx.type IN %s);", states))
+    return r
 class StateSearchQuery(SearchOp):
     def __init__(self, states: [str]):
         self.states = states
 
     def exec(self):
-        if "AVAILABLE" in self.states:
-            return Publication.objects.none()
-        recent_states = dict()
-        for item_state in ItemState.objects.all():
-            state = recent_states.get(item_state.item_id, item_state)
 
-            if item_state.date_time >= state.date_time:
-                if item_state.type in self.states:
-                    recent_states[item_state.item_id] = item_state
-                elif item_state.date_time > state.date_time:
-                    recent_states.pop(item_state.item_id)
-        return Publication.objects.filter(item__itemstate__in=recent_states.values())
+
+        return r
 
 
 class BookCodeSearchQuery(SearchOp):
@@ -118,9 +124,11 @@ class BookCodeSearchQuery(SearchOp):
         if res is None:
             res = Publication.objects
         if word.startswith("*"):
-            res = res.filter(Q(item__book_code_sortable__endswith=self.states.replace("*", "")) | Q(item__book_code__endswith=self.states.replace("*", "")))
+            res = res.filter(Q(item__book_code_sortable__endswith=self.states.replace("*", "")) | Q(
+                item__book_code__endswith=self.states.replace("*", "")))
         elif word.endswith("*"):
-            res = res.filter(Q(item__book_code_sortable__startswith=self.states.replace("*", "")) | Q(item__book_code__startswith=self.states.replace("*", "")))
+            res = res.filter(Q(item__book_code_sortable__startswith=self.states.replace("*", "")) | Q(
+                item__book_code__startswith=self.states.replace("*", "")))
         else:
             res = res.filter(Q(item__book_code_sortable=self.states) | Q(item__book_code=self.states))
 
