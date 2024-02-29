@@ -64,7 +64,7 @@ def get_works_for_publication(words_for_q, words_for_author=[], words_for_series
     if query is not None:
         result_set = query.exec()
         inbetween_list = list(set(result_set))
-    work_list=[]
+    work_list = []
     if len(states) > 0:
         in_right_state_ones = set(search_state(states))
         if query is None:
