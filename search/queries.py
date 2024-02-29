@@ -100,22 +100,23 @@ def search_state(states):
         return None
     # We create a query to (at-once) select all works that have an item in a specific state.
     # Therefore we start by joining works with items
-    # And then we join the item on it's most recent itemstate by using an inner query to fetch the maximum of the itemstate's datetimes.
+    # And then we join the item on it's most recent itemstate,
+    # by using an inner query to fetch the maximum of the itemstate's datetimes.
     query = """
-SELECT 
+SELECT
     works_work.id as work_ptr_id, works_work.id,  works_work.title, works_work.listed_author
 FROM
- works_work 
-left join
-    works_item 
-        ON works_work.id=works_item.publication_id 
-    LEFT JOIN works_itemstate as wx
+    works_work
+INNER JOIN
+    works_item
+        ON works_work.id = works_item.publication_id
+    JOIN works_itemstate as wx
         ON works_item.id = wx.item_id
         WHERE date_time =
         (SELECT
             MAX(w.date_time)
          FROM works_itemstate as w
-         WHERE w.item_id=wx.item_id AND wx.type = any(%s)
+         WHERE w.item_id = wx.item_id AND wx.type = any(%s)
      );"""
     return Publication.objects.raw(query, params=[states])
 
