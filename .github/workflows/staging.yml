@@ -29,6 +29,7 @@ jobs:
           git fetch
           git checkout $GITHUB_REF
           git reset --hard
+          git switch -
           git pull origin $GITHUB_SHA
           cd ..
           docker-compose down
