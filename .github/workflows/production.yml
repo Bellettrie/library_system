@@ -23,9 +23,14 @@ jobs:
         script:  |
           cd /services/prod
           ./backup.sh
-          cd src
-          git checkout main
-          git pull
+          docker-compose down
+          docker-compose up -d --build
+          cd ./src
+          git fetch
+          git checkout $GITHUB_REF
+          git reset -- hard
+          git switch -
+          git pull origin $GITHUB_SHA
           cd ..
           docker-compose down
           docker-compose up -d --build
