@@ -27,7 +27,8 @@ jobs:
         script:  |
           cd /services/staging/src
           git fetch
-          git reset --hard origin/$GITHUB_REF
+          git reset --hard
+          git checkout origin/$GITHUB_REF
           cd ..
           docker-compose down
           cp /backups/restore/latest.sql db/startup.sql
