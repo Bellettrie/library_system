@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db import transaction
 
@@ -24,6 +24,10 @@ def create_reservation(item, member: Member, edited_member: Member, current_date
     new_reservation.item = item
     new_reservation.reserved_on = current_date
     new_reservation.reserved_by = edited_member
+
+    if item.is_available_for_lending():
+        new_reservation.reservation_end_date = current_date + timedelta(days=14)
+
     new_reservation.save()
     return new_reservation
 
