@@ -10,6 +10,7 @@ from reservations.reservationException import ReservationImpossibleException
 from works.models import Item
 from utils.time import get_now
 
+from django.conf import settings
 
 @transaction.atomic
 def create_reservation(item, member: Member, edited_member: Member, current_date=None):
@@ -26,7 +27,7 @@ def create_reservation(item, member: Member, edited_member: Member, current_date
     new_reservation.reserved_by = edited_member
 
     if item.is_available_for_lending():
-        new_reservation.reservation_end_date = current_date + timedelta(days=14)
+        new_reservation.reservation_end_date = current_date + timedelta(days=settings.RESERVATION_TIMEOUT_DAYS)
 
     new_reservation.save()
     return new_reservation

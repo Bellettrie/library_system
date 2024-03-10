@@ -4,6 +4,7 @@ from mail.models import mail_member
 from reservations.models import Reservation
 from utils.time import get_now
 
+from django.conf import settings
 
 def clear_old_reservations(now=None):
     if now is None:
@@ -27,7 +28,7 @@ def set_end_date_if_no_lent_out(now=None):
         if not res.item.is_lent_out():
             if now is None:
                 now = get_now()
-            res.reservation_end_date = now + timedelta(days=14)
+            res.reservation_end_date = now + timedelta(days=settings.RESERVATION_TIMEOUT_DAYS)
             res.save()
 
 
