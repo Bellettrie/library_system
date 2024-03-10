@@ -25,7 +25,7 @@ def generate_name():
     return namegenerator.gen().replace("-", " ")
 
 
-def generate_full_name():
+def pseudonimize_name_of_person():
     return names.get_full_name()
 
 # declares initial running
