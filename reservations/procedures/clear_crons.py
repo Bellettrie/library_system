@@ -6,6 +6,7 @@ from utils.time import get_now
 
 from django.conf import settings
 
+
 def clear_old_reservations(now=None):
     if now is None:
         now = get_now()
