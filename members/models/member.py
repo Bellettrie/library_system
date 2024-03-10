@@ -1,19 +1,15 @@
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.db.models import CASCADE, Q
 
-from members.management.commands.namegen import generate_full_name
+from members.procedures.namegen import pseudonimize_name_of_person
 from members.models.committee import Committee
 from members.models.member_data import MemberData
 from members.models.membership_period import MembershipPeriod
 from utils.time import get_today
-
-if sys.version_info.minor < 8:
-    from backports.datetime_fromisoformat import MonkeyPatch
-    MonkeyPatch.patch_fromisoformat()
 
 
 class Member(MemberData):
@@ -85,7 +81,7 @@ class Member(MemberData):
         return False
 
     def pseudonymise(self):
-        self.name = generate_full_name()
+        self.name = pseudonimize_name_of_person()
         self.nickname = ""
         self.address_line_one = "Hollandstraat 66"
         self.address_line_two = "6666 HL Enschede"

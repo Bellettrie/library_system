@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'series',
     'lendings',
     'reservations',
-    'news',
     'config',
     'inventarisation',
     'recode',

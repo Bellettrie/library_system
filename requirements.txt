@@ -1,13 +1,12 @@
 markdown
-django~=3.2.20
+django==4.2.11
 namegenerator
 names
 django-tables2
 flake8
 django-mail-templated
 unidecode
-pyjwt
 django-environ
 django_cron
-importlib-metadata<5.0
-psycopg2-binary==2.9.6
+importlib-metadata==7.0.2
+psycopg2-binary==2.9.9
