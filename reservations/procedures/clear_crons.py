@@ -30,6 +30,7 @@ def set_end_date_if_no_lent_out(now=None):
             res.reservation_end_date = now + timedelta(days=14)
             res.save()
 
+
 def clear_not_member():
     for res in Reservation.objects.all():
         if not res.member.is_currently_member():
