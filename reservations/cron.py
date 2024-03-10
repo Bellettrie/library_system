@@ -9,7 +9,7 @@ from utils.time import get_today
 
 
 class ReservationCancel(CronJobBase):
-    RUN_EVERY_MINS = 24 * 60 # Run every day
+    RUN_EVERY_MINS = 24 * 60  # Run every day
 
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'reservations.cancel'  # a unique code
