@@ -27,7 +27,7 @@ def reserve_finalize(request, work_id, member_id):
         try:
             res = new_reservation(item, member, request.user.member, get_today())
             if not item.is_lent_out():
-                res.reservation_end_date = get_today()+timedelta(days=14)
+                res.reservation_end_date = get_today() + timedelta(days=14)
                 res.save()
             if item.is_lent_out():
                 mail_member('mails/book_just_got_reserved.tpl',
