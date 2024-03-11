@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import PROTECT
 
@@ -11,3 +12,7 @@ class MembershipPeriod(models.Model):
     end_date = models.DateField(null=True, blank=True)
     member_background = models.ForeignKey(MemberBackground, on_delete=PROTECT, null=True)
     membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
+
+    def clean(self):
+        if self.start_date >= self.end_date:
+            raise ValidationError({'end_date': 'Start Date is greater than End Date'})
