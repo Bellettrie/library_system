@@ -25,7 +25,7 @@ def detailed_items(its, member: Member, perms):
         BookCodeColumn(),
         RecodeColumn(),
         AnonColumn("ISBN", lambda row, item, pm: (item.isbn10 or "") + " " + (item.isbn13 or "")),
-        AnonColumn("Pages", lambda row, item, pm: item.pages),
+        AnonColumn("Pages", lambda row, item, pm: (item.pages or "")),
         AnonColumn("Year", lambda row, item, pm: str(item.publication_year)),
         ButtonsColumn([
             LendBookButton(),
