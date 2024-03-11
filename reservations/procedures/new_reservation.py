@@ -12,6 +12,7 @@ from utils.time import get_now
 
 from django.conf import settings
 
+
 @transaction.atomic
 def create_reservation(item, member: Member, edited_member: Member, current_date=None):
     if current_date is None:
