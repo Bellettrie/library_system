@@ -27,14 +27,11 @@ def create_reservation(item, member: Member, edited_member: Member, current_date
     new_reservation.reserved_on = current_date
     new_reservation.reserved_by = edited_member
 
-    if item.is_available_for_lending():
-        new_reservation.reservation_end_date = current_date + timedelta(days=settings.RESERVATION_TIMEOUT_DAYS)
-
     new_reservation.save()
     return new_reservation
 
 
-def assert_member_can_lend_item(item, member, current_date):
+def assert_member_can_reserve(item, member, current_date):
     """
         Check whether an item can be lent by a member.
         :param item: The item to be reserved
@@ -64,7 +61,7 @@ def assert_member_can_lend_item(item, member, current_date):
 
 def can_reserve(item: Item, member: Member, current_date: datetime.date):
     try:
-        assert_member_can_lend_item(item, member, current_date)
+        assert_member_can_reserve(item, member, current_date)
     except ReservationImpossibleException as error:
         return error.__str__()
 
@@ -78,5 +75,5 @@ def new_reservation(item: Item, member: Member, user_member: Member, current_dat
         :param current_date: The date at which the item is reserved
         :except ReservationImpossibleException: If the reservation-checks fail.
     """
-    assert_member_can_lend_item(item, member, current_date)
+    assert_member_can_reserve(item, member, current_date)
     return create_reservation(item, member, user_member, current_date)
