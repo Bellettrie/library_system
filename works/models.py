@@ -256,20 +256,14 @@ class Item(NamedThing, BookCode):
         return self.in_available_state() and not self.is_lent_out()
 
     def is_reserved(self):
-        query = Q(item=self, reservation_end_date__gt=get_now()) | Q(item=self, reservation_end_date__isnull=True)
-
-        reservations = Reservation.objects.filter(query)
+        reservations = Reservation.objects.filter(item=self, reservation_end_date__isnull=True)
         return reservations.count() > 0
 
     def is_available_for_reservation(self):
         return self.in_available_state() and not self.is_reserved()
 
     def is_reserved_for(self, member):
-        end_date_q = Q(item=self, member=member, reservation_end_date__gt=get_now())
-        end_date_unset = Q(item=self, member=member, reservation_end_date__isnull=True)
-        query = end_date_q | end_date_unset
-
-        reservations = Reservation.objects.filter(query)
+        reservations = Reservation.objects.filter(item=self, member=member, reservation_end_date__isnull=True)
         return reservations.count() > 0
 
     def current_lending(self):

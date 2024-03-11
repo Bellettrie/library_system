@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
@@ -25,7 +25,10 @@ def reserve_finalize(request, work_id, member_id):
     item = get_object_or_404(Item, pk=work_id)
     if request.method == 'POST':
         try:
-            new_reservation(item, member, request.user.member, get_today())
+            res = new_reservation(item, member, request.user.member, get_today())
+            if not item.is_lent_out():
+                res.reservation_end_date = get_today()+timedelta(days=14)
+                res.save()
             if item.is_lent_out():
                 mail_member('mails/book_just_got_reserved.tpl',
                             {'member': item.current_lending().member, 'item': item},
