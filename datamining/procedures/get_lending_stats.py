@@ -1,7 +1,7 @@
 from django.db import connection
 
 
-def get_lending_stats(start_date, end_date):
+def get_lending_stats(start_date, end_date) -> dict[str, int]:
     query = """
     SELECT
         works_category.name, count(*)
