@@ -6,6 +6,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from datamining.procedures.filter_members import filter_members
+from datamining.procedures.get_lending_stats import get_lending_stats
 from lendings.models import Lending
 from members.models import Member, Committee, MembershipPeriod, MembershipType, MemberBackground
 from utils.time import get_today
@@ -107,18 +108,6 @@ def show_membership_stats(request):
     dat = request.GET.get('date', get_today().isoformat())
     q = get_member_statistics(dat)
     return render(request, 'datamining/member_stats.html', {'q': q})
-
-
-def get_lending_stats(start_date, end_date):
-    lendings = Lending.objects.filter(Q(start_date__gte=start_date) & Q(start_date__lte=end_date))
-    quadrants = dict()
-
-    for lending in lendings:
-        cat = lending.item.location.category
-        count = quadrants.get(cat, 0)
-        quadrants[cat] = count + 1
-
-    return quadrants
 
 
 @permission_required('works.view_work')
