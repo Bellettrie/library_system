@@ -2,6 +2,7 @@ from django.db import connection
 
 
 def get_lending_stats(start_date, end_date) -> dict[str, int]:
+    # Get the number of lendings which started within a specific period, grouped by the category (SF, Dutch, etc.) within the library
     query = """
     SELECT
         works_category.name, count(*)
