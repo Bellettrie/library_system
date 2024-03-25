@@ -40,14 +40,14 @@ def find_members_by_request(request):
 def show_members(request):
     committees = Committee.objects.all()
     found_members = find_members_by_request(request)
-    r_str = ""
+    member_mails = []
 
     for member in found_members:
         if len(member.email) > 0:
-            r_str += ("; " + member.email)
+            member_mails.append(member.email)
 
     return render(request, 'datamining/member_filtering.html',
-                  {'mails': request.GET.get('mails'), 'member_mail_addresses': r_str, 'dms': request.GET.get('dms'),
+                  {'mails': request.GET.get('mails'), 'member_mail_addresses': "; ".join(member_mails), 'dms': request.GET.get('dms'),
                    'members': found_members, 'committees': committees})
 
 
@@ -106,6 +106,8 @@ def get_member_statistics(day):
 @permission_required('members.view_member')
 def show_membership_stats(request):
     dat = request.GET.get('date', get_today().isoformat())
+    if dat == "":
+        dat = get_today().isoformat()
     q = get_member_statistics(dat)
     return render(request, 'datamining/member_stats.html', {'q': q})
 
