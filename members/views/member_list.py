@@ -26,14 +26,14 @@ def query_members(words, get_previous=False):
     if words is None:
         return []
     if len(words) == 0:
-        m = Member.objects.filter(is_anonymous_user=False)
+        m = Member.objects.filter(is_anonymous_user=False).order_by('id')
         if not get_previous:
             m = m.filter(membershipperiod__in=msps)
         return m
 
     result_set = None
     for word in words:
-        members = Member.objects.filter(Q(name__icontains=word) | Q(nickname__icontains=word))
+        members = Member.objects.filter(Q(name__icontains=word) | Q(nickname__icontains=word)).order_by('id')
         if not get_previous:
             members = members.filter(membershipperiod__in=msps)
         if result_set is None:
