@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Add user for member: {{ member.name }}{% endblock %}
 {% block content %}
+  This this only adds a user to the member it does not give them any special access or make them an opener.
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
