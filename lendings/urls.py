@@ -8,7 +8,7 @@ from .views.finalize import finalize
 from .views.item_based import item_based
 from .views.lending_failed import lending_failed
 from .views.lendings_list import LendingList
-from .views.me import MyLendingList
+from .views.me import MyLendingList, lendings_and_reservations
 from .views.member_based import member_based
 from .views.register_returned import return_item
 
@@ -20,5 +20,5 @@ urlpatterns = [
     path('failed_lending/<int:work_id>/<int:member_id>/<int:reason_id>', lending_failed, name=LENDING_FAILED),
     path('extend/<int:work_id>', extend, name=LENDING_EXTEND),
     path('return/<int:work_id>', return_item, name=LENDING_RETURNBOOK),
-    path('me/', MyLendingList.as_view(), name=LENDING_MY_LENDINGS),
+    path('me/', lendings_and_reservations, name=LENDING_MY_LENDINGS),
 ]
