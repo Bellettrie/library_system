@@ -21,7 +21,7 @@ def change_user(request, member_id):
             instance.member.user = instance
             instance.member.save()
             instance.save()
-            return HttpResponseRedirect(reverse('members.views', args=(instance.member.pk, 0,)))
+            return HttpResponseRedirect(reverse('members.view', args=(instance.member.pk, 0,)))
     else:
         form = PasswordChangeForm(member.user)
-    return render(request, 'users/edit.html', {'form': form, 'member': member, 'user': member.user})
+    return render(request, 'users/edit.html', {'form': form, 'member': member, 'member_user': member.user})
