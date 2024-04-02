@@ -5,6 +5,7 @@ from tables.buttons import ReservationLendButton, ReservationCancelButton
 from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, ButtonsColumn
 from tables.table import Table
 from tables.rows import ReservationRow
+from typing import List
 
 cols = [BookCodeColumn(),
         TitleColumn(),
@@ -29,3 +30,11 @@ def current_reservations():
     for reservation in Reservation.objects.all():
         rows.append(ReservationRow(reservation))
     return {'table': Table(rows, cols)}
+
+
+@register.inclusion_tag('tables/items_table.html')
+def my_reservations(reservations: List[Reservation], perms):
+    rows = []
+    for reservation in reservations:
+        rows.append(ReservationRow(reservation))
+    return {'table': Table(rows, cols), 'perms': perms}
