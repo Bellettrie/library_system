@@ -24,4 +24,4 @@ def delete_user(request, member_id):
 @permission_required('auth.delete_user')
 def delete_user_prompt(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
-    return render(request, 'users/delete.html', {'member': member, 'user': member.user})
+    return render(request, 'users/delete.html', {'member': member, 'member_user': member.user})
