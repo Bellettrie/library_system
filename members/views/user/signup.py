@@ -13,9 +13,9 @@ from django.utils import timezone
 @transaction.atomic
 def signup(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
-    if member.invitation_code_end_date is None or member.invitation_code_end_date < timezone.now():
-        return HttpResponse("Code is no longer valid")
     if not request.user.has_perm('auth.add_user'):
+        if member.invitation_code_end_date is None or member.invitation_code_end_date < timezone.now():
+            return HttpResponse("Code is no longer valid")
         members = Member.objects.filter(pk=member_id, invitation_code=request.GET.get('key', ''))
 
         if len(members) != 1:
