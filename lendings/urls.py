@@ -8,7 +8,7 @@ from .views.finalize import finalize
 from .views.item_based import item_based
 from .views.lending_failed import lending_failed
 from .views.lendings_list import LendingList
-from .views.me import MyLendingList, lendings_and_reservations
+from .views.me import lendings_and_reservations
 from .views.member_based import member_based
 from .views.register_returned import return_item
 
