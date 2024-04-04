@@ -3,7 +3,23 @@
 {% block content %}
     Welcome {{ request.user.member.name }},<br>
     Here you can find the list of all the books you've ever borrowed at Bellettrie. Click <a href="{% url 'members.view' user.member.id 0 %}">here</a> to go to your administrative page.
-    {% include 'pagination.html' %}
-    {% my_lendings object_list perms %}
+    <span class="step-links pagination">
+        {% if lendings.has_previous %}
+            <a href="?page={{ lendings.previous_page_number }}" class="btn btn-outline-primary">Prev</a>
+       {% else %}
+       <a class="btn btn-outline-primary disabled">Prev</a>
+        {% endif %}
+        <span class="current btn btn-light disabled">
+            Page {{ lendings.number }} of {{ lendings.paginator.num_pages }}
+        </span>
+        {% if lendings.has_next %}
+            <a href="?page={{ lendings.next_page_number }}" class="btn btn-outline-primary">Next</a>
+        {% else %}
+         <a class="btn btn-outline-primary disabled">Next</a>
+     {% endif %}
+    </span>
+    {% my_lendings lendings perms %}
+    These are your current book reservations at Bellettrie.
+    {% my_reservations reservations perms %}
 
 {% endblock %}
