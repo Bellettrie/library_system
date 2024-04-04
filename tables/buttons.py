@@ -91,9 +91,11 @@ class FinalizeReservationButton(Button):
         self.member = member
 
     def is_enabled(self, row, perms: PermWrapper):
-        if row.get_item().is_available_for_reservation():
-            return True, None
-        return False, "Item is reserved"
+        if row.get_item().is_reserved():
+            return False, "Item is reserved"
+        if not row.get_item().is_available_for_reservation():
+            return False, "Item is in an unreservable state"
+        return True, None
 
     def is_visible(self, row, perms: PermWrapper):
         if self.member:
