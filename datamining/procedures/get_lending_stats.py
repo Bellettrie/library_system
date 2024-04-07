@@ -14,7 +14,7 @@ def get_lending_stats(start_date, end_date) -> dict[str, int]:
         works_item.location_id = works_location.id
     LEFT JOIN works_category ON
         works_location.category_id = works_category.id
-    WHERE lendings_lending.start_date>=%s AND lendings_lending.end_date<%s
+    WHERE lendings_lending.start_date>=%s AND lendings_lending.start_date<%s
     GROUP BY works_category.id
     ORDER BY works_category.name ASC;"""
     quadrants = dict()
