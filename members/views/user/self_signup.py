@@ -45,7 +45,9 @@ def self_signup(request):
                           {"form": form, "error": "Incorrect form input, student number does not match."})
         if member.user and (member.user.is_staff or member.user.is_superuser):
             return render(request, 'members/self_signup.html',
-                          {"form": form, "error": "Cannot edit superusers this way"})
+                          {"form": form, "error": "Due to the permissions you have, resetting your account this"
+                                                  " way would be a security risk. Please contact the web committee for"
+                                                  " help."})
 
         handle_member_invite(member)
 
