@@ -150,15 +150,6 @@ class WorkDetail(DetailView):
 
 
 @transaction.atomic
-@permission_required('works.change_work')
-def item_lending_history(request, item_id):
-    item = get_object_or_404(Item, pk=item_id)
-    return render(request, 'works/lending_history.html',
-                  {'item': item,
-                   'lendings': Lending.objects.filter(item=item).order_by('-lended_on')})
-
-
-@transaction.atomic
 @permission_required('works.change_item')
 def create_item_state(request, item_id):
     if request.method == 'POST':

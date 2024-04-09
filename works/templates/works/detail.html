@@ -52,13 +52,13 @@
             <td>{{ object.comment }}</td>
         </tr>
     </table>
+    {% if perms.works.change_work %}
+    <a href="{% url 'works.publication.edit' object.pk %}">Edit publication</a><br>
+    {% endif %}
     {% if perms.lendings.add_lending %}
-    <a href="{% url 'works.lending_history' object.pk %}">Lending history</a>
+    <a href="{% url 'lendings.history' object.pk %}">Lending history</a>
     {% endif %}
 
-    {% if perms.works.change_work %}
-    <a href="{% url 'works.publication.edit' object.pk %}">Edit</a>
-    {% endif %}
     <h4>Items for this publication</h4>
 
         {% detailed_items object.get_items request.user.member perms  %}
