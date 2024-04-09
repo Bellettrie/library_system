@@ -10,6 +10,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
+from lendings.models import Lending
 from recode.models import Recode
 from search.queries import BaseSearchQuery, AndOp, AuthorSearchQuery, SeriesSearchQuery, TitleSearchQuery, \
     LocationSearchQuery, BookCodeSearchQuery, search_state
@@ -146,6 +147,15 @@ class WorkList(ListView):
 class WorkDetail(DetailView):
     template_name = 'works/detail.html'
     model = Publication
+
+
+@transaction.atomic
+@permission_required('works.change_work')
+def item_lending_history(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    return render(request, 'works/lending_history.html',
+                  {'item': item,
+                   'lendings': Lending.objects.filter(item=item).order_by('-lended_on')})
 
 
 @transaction.atomic

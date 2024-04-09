@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{ item.publication.title }}{% endblock %}
+{% block content %}
+    <a class="btn btn-primary" href="{% url 'work.view' item.publication.pk %}">Back to Publication</a>
+    <h2>Lending history</h2>
+    <table>
+        <tr>
+            <th>Date lended</th>
+            <th>Member</th>
+            <th>Returned at</th>
+        </tr>
+        {% for lending in lendings %}
+            <tr>
+                <td>{{ lending.lended_on }}</td>
+                <td>{{ lending.lended_by }}</td>
+                <td>{{ lending.handed_in_on }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
