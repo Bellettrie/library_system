@@ -249,7 +249,7 @@ def publication_edit(request, publication_id=None):
             creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
 
             if creators.is_valid():
-                instances = creators.save()
+                instances = creators.save(commit=False)
                 for inst in creators.deleted_objects:
                     inst.delete()
                 for c2w in instances:
@@ -262,7 +262,7 @@ def publication_edit(request, publication_id=None):
             series = SeriesToWorkFomSet(request.POST, request.FILES, instance=instance)
 
             if series.is_valid():
-                instances = series.save()
+                instances = series.save(commit=False)
                 for inst in series.deleted_objects:
                     inst.delete()
                 for i in instances:
@@ -320,7 +320,7 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             instance.save()
             creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
             if creators.is_valid():
-                instances = creators.save()
+                instances = creators.save(commit=False)
                 for inst in creators.deleted_objects:
                     inst.delete()
                 for c2w in instances:
