@@ -13,17 +13,17 @@ from django.utils import timezone
 @transaction.atomic
 def signup(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
-    if not request.user.has_perm('auth.add_user'):
+    invitation_code = request.GET.get('key', '')
+    if invitation_code == "":
+        if not request.user.has_perm('auth.add_user'):
+            raise PermissionDenied
+    else:
+        if member.invitation_code != invitation_code:
+            return HttpResponse("Wrong invite code")
+        if not member.invitation_code_valid:
+            return HttpResponse("Member has no valid invitation")
         if member.invitation_code_end_date is None or member.invitation_code_end_date < timezone.now():
-            return HttpResponse("Code is no longer valid")
-        members = Member.objects.filter(pk=member_id, invitation_code=request.GET.get('key', ''))
-
-        if len(members) != 1:
-            raise PermissionDenied
-        if not members[0].invitation_code_valid:
-            raise PermissionDenied
-        else:
-            print(members[0].invitation_code)
+            return HttpResponse("Invitation code is no longer valid")
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
