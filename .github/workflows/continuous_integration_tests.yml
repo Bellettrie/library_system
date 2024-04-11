@@ -32,7 +32,12 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
     - name: Django Test Migrations
       env:
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        DB_ENGINE: postgres
+        DB_POSTGRESQL_NAME: postgres
+        DB_POSTGRESQL_USER: postgres
+        DB_POSTGRESQL_PASSWORD: postgres
+        DB_POSTGRESQL_HOST: localhost
+        DB_POSTGRESQL_PORT: 5432
       run: |
         python3 manage.py makemigrations --dry-run --check --no-input # Test migrations
     - name: Django Testing project
