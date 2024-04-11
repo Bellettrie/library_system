@@ -1,4 +1,6 @@
 # flake8: noqa
+import logging
+
 from bellettrie_library_system.base_settings import *
 import os
 
@@ -27,34 +29,17 @@ CORS_ORIGIN_WHITELIST = env("CORS_ORIGIN_WHITELIST", default=['https://static.be
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DB_ENG = env("DB_ENGINE", default="sqlite")
-DB = None
-if DB_ENG == "sqlite":
-    DB = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, env("DB_SQLITE_FILE", default='db.sqlite3')),
-    }
-if DB_ENG == "mysql":
-    DB = {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env("DB_MYSQL_NAME"),
-        'USER': env("DB_MYSQL_USER"),
-        'PASSWORD': env("DB_MYSQL_PASSWORD"),
-        'HOST': env("DB_MYSQL_HOST"),
-        'PORT': env("DB_MYSQL_PORT"),
-        'OPTIONS': {'charset': 'utf8mb4'},
-    }
-if DB_ENG == "postgres":
-    print("Postgres")
 
-    DB = {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env("DB_POSTGRESQL_NAME"),
-        'USER': env("DB_POSTGRESQL_USER"),
-        'PASSWORD': env("DB_POSTGRESQL_PASSWORD"),
-        'HOST': env("DB_POSTGRESQL_HOST"),
-        'PORT': env("DB_POSTGRESQL_PORT"),
-    }
+logging.info("Starting using postgresql database: %s", env("DB_POSTGRESQL_HOST"))
+
+DB = {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': env("DB_POSTGRESQL_NAME"),
+    'USER': env("DB_POSTGRESQL_USER"),
+    'PASSWORD': env("DB_POSTGRESQL_PASSWORD"),
+    'HOST': env("DB_POSTGRESQL_HOST"),
+    'PORT': env("DB_POSTGRESQL_PORT"),
+}
 
 DATABASES = {
     'default': DB

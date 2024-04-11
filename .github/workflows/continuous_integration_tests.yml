@@ -37,6 +37,30 @@ jobs:
         python3 manage.py makemigrations --dry-run --check --no-input # Test migrations
     - name: Django Testing project
       env:
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        DB_ENGINE: postgres
+        DB_POSTGRESQL_NAME: postgres
+        DB_POSTGRESQL_USER: postgres
+        DB_POSTGRESQL_PASSWORD: postgres
+        DB_POSTGRESQL_HOST: localhost
+        DB_POSTGRESQL_PORT: 5432
       run: |
         python3 manage.py test # Don't forget to run tests
+
+      # Service containers to run with `container-job`
+      services:
+        # Label used to access the service container
+        postgres:
+          # Docker Hub image
+          image: postgres
+          # Provide the password for postgres
+          env:
+            POSTGRES_PASSWORD: postgres
+          # Set health checks to wait until postgres has started
+          options: >-
+            --health-cmd pg_isready
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+          ports:
+            # Maps tcp port 5432 on service container to the host
+            - 5432:5432

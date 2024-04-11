@@ -1,3 +1,5 @@
+import logging
+
 import markdown
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -55,8 +57,8 @@ def get_open():
     try:
         f = urllib.request.urlopen(settings.IS_OPEN_URL, timeout=120)
         is_open_result = str(f.read()).lower()
-    except urllib.error.URLError:
-        print("BROKEN")
+    except urllib.error.URLError as e:
+        logging.error(e)
         return False
     return "true" in is_open_result
 
