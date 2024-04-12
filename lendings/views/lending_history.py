@@ -10,7 +10,7 @@ class LendingHistory(PermissionRequiredMixin, ListView):
     permission_required = 'lendings.add_lending'
     model = Lending
     template_name = 'lendings/history.html'
-    paginate_by = 50
+    paginate_by = 20
     ordering = 'end_date'
 
     def get_queryset(self, *args, **kwargs):
