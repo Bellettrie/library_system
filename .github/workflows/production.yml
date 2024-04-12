@@ -2,9 +2,7 @@ name: Deploy production
 
 # We deploy production only when the main branch is updated.
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_dispatch:
 
 
 jobs:
@@ -23,14 +21,9 @@ jobs:
         script:  |
           cd /services/prod
           ./backup.sh
-          docker-compose down
-          docker-compose up -d --build
           cd ./src
-          git fetch
-          git checkout $GITHUB_REF
           git reset -- hard
-          git switch -
-          git pull origin $GITHUB_SHA
+          git pull origin ${{ github.sha }}
           cd ..
           docker-compose down
           docker-compose up -d --build
