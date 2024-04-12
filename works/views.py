@@ -233,8 +233,8 @@ def item_history(request, item_id):
 def publication_edit(request, publication_id=None):
     from works.forms import CreatorToWorkFormSet
     from works.forms import SeriesToWorkFomSet
-    creators = None
-    series = None
+    creator_to_works = None
+    series_to_works = None
     publication = None
     if request.method == 'POST':
         if publication_id is not None:
@@ -246,45 +246,45 @@ def publication_edit(request, publication_id=None):
             instance = form.save(commit=False)
             instance.is_translated = instance.original_language is not None
             instance.save()
-            creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
+            creator_to_works = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
 
-            if creators.is_valid():
-                instances = creators.save(commit=False)
-                for inst in creators.deleted_objects:
+            if creator_to_works.is_valid():
+                instances = creator_to_works.save(commit=False)
+                for inst in creator_to_works.deleted_objects:
                     inst.delete()
                 for c2w in instances:
                     c2w.work = instance
                     c2w.save()
             else:
-                for error in creators.errors:
+                for error in creator_to_works.errors:
                     form.add_error(None, str(error))
 
-            series = SeriesToWorkFomSet(request.POST, request.FILES, instance=instance)
+            series_to_works = SeriesToWorkFomSet(request.POST, request.FILES, instance=instance)
 
-            if series.is_valid():
-                instances = series.save(commit=False)
-                for inst in series.deleted_objects:
+            if series_to_works.is_valid():
+                instances = series_to_works.save(commit=False)
+                for inst in series_to_works.deleted_objects:
                     inst.delete()
                 for i in instances:
                     i.work = instance
                     i.save()
             else:
-                for error in series.errors:
+                for error in series_to_works.errors:
                     form.add_error(None, str(error))
             return HttpResponseRedirect(reverse('work.view', args=(instance.pk,)))
     else:
         publication = None
         if publication_id is not None:
             publication = get_object_or_404(Publication, pk=publication_id)
-            creators = CreatorToWorkFormSet(instance=publication)
-            series = SeriesToWorkFomSet(instance=publication)
+            creator_to_works = CreatorToWorkFormSet(instance=publication)
+            series_to_works = SeriesToWorkFomSet(instance=publication)
             form = PublicationCreateForm(instance=publication)
         else:
-            creators = CreatorToWorkFormSet()
-            series = SeriesToWorkFomSet()
+            creator_to_works = CreatorToWorkFormSet()
+            series_to_works = SeriesToWorkFomSet()
             form = PublicationCreateForm()
     return render(request, 'works/publication_edit.html',
-                  {'series': series, 'publication': publication, 'form': form, 'creators': creators})
+                  {'series': series_to_works, 'publication': publication, 'form': form, 'creators': creator_to_works})
 
 
 @transaction.atomic
@@ -298,7 +298,7 @@ def publication_new(request):
 def subwork_edit(request, subwork_id=None, publication_id=None):
     from works.forms import CreatorToWorkFormSet
     from works.forms import SeriesToWorkFomSet
-    creators = None
+    creator_to_works = None
     series = None
     publication = None
     num = 0
@@ -318,16 +318,16 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             instance = form.save(commit=False)
             instance.is_translated = instance.original_language is not None
             instance.save()
-            creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
-            if creators.is_valid():
-                instances = creators.save(commit=False)
-                for inst in creators.deleted_objects:
+            creator_to_works = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
+            if creator_to_works.is_valid():
+                instances = creator_to_works.save(commit=False)
+                for inst in creator_to_works.deleted_objects:
                     inst.delete()
                 for c2w in instances:
                     c2w.work = instance
                     c2w.save()
             else:
-                for error in creators.errors:
+                for error in creator_to_works.errors:
                     form.add_error(None, str(error))
 
             if subwork_id is None:
@@ -346,13 +346,13 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             publication = get_object_or_404(WorkInPublication, pk=subwork_id)
             num = publication.number_in_publication
             disp_num = publication.display_number_in_publication
-            creators = CreatorToWorkFormSet(instance=publication.work)
+            creator_to_works = CreatorToWorkFormSet(instance=publication.work)
             form = SubWorkCreateForm(instance=publication.work)
         else:
-            creators = CreatorToWorkFormSet()
+            creator_to_works = CreatorToWorkFormSet()
             form = SubWorkCreateForm()
     return render(request, 'works/subwork_edit.html',
-                  {'series': series, 'publication': publication, 'form': form, 'creators': creators, 'num': num,
+                  {'series': series, 'publication': publication, 'form': form, 'creators': creator_to_works, 'num': num,
                    'disp_num': disp_num})
 
 
