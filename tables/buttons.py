@@ -198,6 +198,20 @@ class ExtendButton(Button):
         return render_to_string("buttons/extend_button_disabled.html", {"err": err})
 
 
+class LendingHistoryButton(Button):
+    def is_enabled(self, row, perms: PermWrapper):
+        return True, "-"
+
+    def is_visible(self, row, perms: PermWrapper):
+        if "lendings.add_lending" in perms:
+            return row.is_item()
+        return False
+
+    def enabled_render(self, row: LendingRow, perms=None):
+        return render_to_string("buttons/lend_history_button.html",
+                                {"status": row.get_item().get_state(), "item": row.get_item()})
+
+
 class StatusButton(Button):
     def is_visible(self, row, perms):
         return row.is_item()
