@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 
 from lendings.models.lending import Lending
-from works.models import Work
+from works.models import Item
 
 
 class LendingHistory(PermissionRequiredMixin, ListView):
@@ -22,5 +22,5 @@ class LendingHistory(PermissionRequiredMixin, ListView):
         advanced = self.request.GET.get("advanced", False)
         context['advanced'] = advanced
 
-        context['item'] = get_object_or_404(Work, pk=self.kwargs['work_id'])
+        context['item'] = get_object_or_404(Item, pk=self.kwargs['work_id'])
         return context

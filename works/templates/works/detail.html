@@ -55,9 +55,6 @@
     {% if perms.works.change_work %}
     <a href="{% url 'works.publication.edit' object.pk %}">Edit publication</a><br>
     {% endif %}
-    {% if perms.lendings.add_lending %}
-    <a href="{% url 'lendings.history' object.pk %}">Lending history</a>
-    {% endif %}
 
     <h4>Items for this publication</h4>
 

@@ -1,7 +1,7 @@
 from bellettrie_library_system.templatetags.paginator_tag import register
 from members.models import Member
 from tables.buttons import LendBookButton, ReturnBookButton, IsLentOutStatus, StatusButton, StatusChangeButton, \
-    ItemEditButton, FinalizeReservationButton
+    ItemEditButton, FinalizeReservationButton, LendingHistoryButton
 from tables.columns import BookCodeColumn, ButtonsColumn, Column, RecodeColumn
 from tables.table import Table
 from tables.rows import ItemRow, Row
@@ -32,6 +32,7 @@ def detailed_items(its, member: Member, perms):
             ReturnBookButton(),
             FinalizeReservationButton(member),
             IsLentOutStatus(),
+            LendingHistoryButton()
         ], "Lending"),
         ButtonsColumn([
             StatusButton(),
