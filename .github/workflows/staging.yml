@@ -4,11 +4,13 @@ name: Deploy staging
 # Observe that updating staging means resetting the database to a recent backup of the production database.
 # This means that there's no issues with testing migrations on a very recent production DB.
 on:
+  # the action should run when a commit is pushed to the `develop` branch or to a new tag
   push:
     branches:
       - 'develop'
     tags:
     - '*'
+  # The action should also run when someone starts it by hand.
   workflow_dispatch:
     
 
@@ -19,6 +21,7 @@ jobs:
     environment: Deploy
     steps:
     - name: Update the staging environment on the server using SSH
+      # We use a script that allows us to use SSH within github actions, running the script below on the server.
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
