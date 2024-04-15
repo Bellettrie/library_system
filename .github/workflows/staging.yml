@@ -1,6 +1,6 @@
 name: Deploy staging
 
-# We deploy staging if the develop branch is updated, or by hand through the Github Actions (using workflow_dispatch).
+# We deploy staging if the develop branch is updated, by creating a new tag, or by hand through the Github Actions (using workflow_dispatch).
 # Observe that updating staging means resetting the database to a recent backup of the production database.
 # This means that there's no issues with testing migrations on a very recent production DB.
 on:
