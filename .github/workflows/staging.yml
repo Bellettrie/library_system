@@ -26,11 +26,16 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.KEY }}
         port: 22
+        # The script first fetches the latest git sources
+        # it then resets the source folder to the commit from which the pipeline was started
+        # After that it shuts down the staging site (note that it removes the volume for the database as well)
+        # Then it loads a database dump
+        # Finally it starts up the site again, using --build to ensure a new build is made.
         script:  |
           cd /services/staging/src
           git fetch
           git reset --hard ${{ github.sha }}
           cd ..
-          docker-compose down
+          docker-compose down -v
           cp /backups/restore/latest.sql db/startup.sql
           docker-compose up -d --build
