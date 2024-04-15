@@ -1,6 +1,6 @@
 name: Deploy production
 
-# We deploy production only when the main branch is updated.
+# We deploy production only when a manual `Github Actions` workflow is triggered.
 on:
   workflow_dispatch:
 
@@ -18,6 +18,11 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.KEY }}
         port: 22
+        # We run a backup first
+        # then we update our sources from git
+        # Then we reset the source folder to the commit from which the pipeline was run
+        # Then we restart the site. Observe that we do *not* throw away the volume here, 
+        #     unlike with the staging environment.
         script:  |
           cd /services/prod
           ./backup.sh
