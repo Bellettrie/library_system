@@ -2,7 +2,7 @@ from bellettrie_library_system.templatetags.paginator_tag import register
 from members.models import Member
 from reservations.models import Reservation
 from tables.buttons import ReservationLendButton, ReservationCancelButton
-from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, ButtonsColumn
+from tables.columns import TitleColumn, AllAuthorsColumn, BookCodeColumn, ButtonsColumn, ReservationEndDate
 from tables.table import Table
 from tables.rows import ReservationRow
 from typing import List
@@ -10,7 +10,7 @@ from typing import List
 cols = [BookCodeColumn(),
         TitleColumn(),
         AllAuthorsColumn(),
-        AllAuthorsColumn(),
+        ReservationEndDate(),
         ButtonsColumn([ReservationLendButton(),
                        ReservationCancelButton()], "Return")
         ]
