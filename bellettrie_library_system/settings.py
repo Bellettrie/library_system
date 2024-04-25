@@ -33,7 +33,7 @@ CORS_ORIGIN_WHITELIST = env("CORS_ORIGIN_WHITELIST", default=['https://static.be
 logging.info("Starting using postgresql database: %s", env("DB_POSTGRESQL_HOST"))
 
 DB = {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'ENGINE': 'django.db.backends.postgresql_psycopg',
     'NAME': env("DB_POSTGRESQL_NAME"),
     'USER': env("DB_POSTGRESQL_USER"),
     'PASSWORD': env("DB_POSTGRESQL_PASSWORD"),
