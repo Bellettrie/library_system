@@ -13,6 +13,8 @@ class EditForm(ModelForm):
         if not dms_edit:
             self.fields['dms_registered'].widget.attrs['disabled'] = True
         self.fields['is_anonymous_user'].widget = forms.HiddenInput()
+        if len(args) > 1 and args[1]['member'] is not None:
+            self.fields['make_anyway'] = forms.BooleanField()
 
     class Meta:
         model = Member
