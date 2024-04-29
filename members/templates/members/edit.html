@@ -3,7 +3,7 @@
 {% block content %}
     <p style="color:red">{{ error }}</p>
     {% if warning %}
-        <p style="color:red">The user <a href="{% url 'members.view' warning.id 0 %}">{{ warning.name }}</a> has a similar Student #.
+        <p style="color:red">The member <a href="{% url 'members.view' warning.id 0 %}">{{ warning.name }}</a> has a similar Student #.
             You might be making a duplicate member check the <em><b>Make anyway</b></em> checkbox to make a new member anyway.</p>
     {% endif %}
 <form action="#" method="post">
