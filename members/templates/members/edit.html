@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
-{% block title %}Edit Member{% endblock %}
+{% block title %}
+    {% if new %}
+        New Member
+    {% else %}
+        Edit Member
+    {% endif %}
+{% endblock %}
 {% block content %}
     <p style="color:red">{{ error }}</p>
     {% if warning %}
