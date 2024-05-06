@@ -30,7 +30,7 @@ def new(request):
     if request.method == 'POST':
         member = student_number_exists(request.POST['student_number'])
         form = EditForm(can_change, edit_dms, request.POST, {'member': member})
-        if form.is_valid() and request.POST.get('end_date') and (member is None or form.cleaned_data['make_anyway']):
+        if form.is_valid() and request.POST.get('end_date') and (member is None or 'make_anyway' in request.POST):
             if not can_change and 'committees' in form.changed_data:
                 raise ValueError("Wrong")
             instance = form.save()
