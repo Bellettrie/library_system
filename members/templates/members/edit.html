@@ -8,9 +8,19 @@
 {% endblock %}
 {% block content %}
     <p style="color:red">{{ error }}</p>
+    {% if warning %}
+        <p style="color:red">The member <a href="{% url 'members.view' warning.id 0 %}">{{ warning.name }}</a> has a similar Student #.
+            You might be making a duplicate member check the <em><b>Make anyway</b></em> checkbox to make a new member anyway.</p>
+    {% endif %}
 <form action="#" method="post">
     {% csrf_token %}
     <table>
+        {% if warning %}
+            <tr>
+                <th><label style="color:red;font-size:24px;" for="make_anyway">Make anyway?</label></th>
+                <td><input type="checkbox" id="make_anyway" name="make_anyway" value="true"></td>
+            </tr>
+        {% endif %}
         {{ form.as_table }}
         {% if new %}
         {{md_form.as_table}}
