@@ -1,0 +1,4 @@
+0 */2 * * * python /app/manage.py late_mails
+* * * * * python /app/manage.py send_mail
+0 */6 * * * python /app/manage.py clean_mail_log
+0 0 * * * python /app/manage.py reservation_clean

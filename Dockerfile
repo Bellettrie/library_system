@@ -16,7 +16,9 @@ COPY ./mailsender.sh .
 # Ready script for running
 RUN sed -i 's/\r$//g' /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
-RUN chmod +x /app/mailsender.sh
+RUN apt-get update && apt-get install -y cron
+COPY bellettrie_crontab /etc/cron.d/bellettrie_crontab
+RUN chmod 0644 /etc/cron.d/bellettrie_crontab && crontab /etc/cron.d/bellettrie_crontab
 # copy project
 COPY . .
 
