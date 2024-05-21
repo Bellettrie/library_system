@@ -25,6 +25,7 @@ RESERVATION_TIMEOUT_DAYS = 14
 # Application definition
 
 INSTALLED_APPS = [
+    'permissions_auditor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

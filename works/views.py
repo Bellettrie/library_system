@@ -149,8 +149,8 @@ class WorkDetail(DetailView):
     model = Publication
 
 
+@permission_required('works.change_item_state')
 @transaction.atomic
-@permission_required('works.change_item')
 def create_item_state(request, item_id):
     if request.method == 'POST':
         form = ItemStateCreateForm(request.POST)
@@ -164,8 +164,8 @@ def create_item_state(request, item_id):
     return render(request, 'works/history_new.html', {'form': form, 'member': get_object_or_404(Item, pk=item_id)})
 
 
-@transaction.atomic
 @permission_required('works.add_item')
+@transaction.atomic
 def item_new(request, publication_id=None):
     publication = get_object_or_404(Publication, pk=publication_id)
 
@@ -181,8 +181,8 @@ def item_new(request, publication_id=None):
     return render(request, 'works/edit.html', {'form': form, 'publication': publication})
 
 
-@transaction.atomic
 @permission_required('works.change_item')
+@transaction.atomic
 def item_edit(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
     recode_book_code = ''
@@ -219,8 +219,8 @@ def item_edit(request, item_id):
                    'recode_book_code_extension': recode_book_code_extension})
 
 
-@transaction.atomic
 @permission_required('works.change_item')
+@transaction.atomic
 def item_history(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
     return render(request, 'works/history.html',
@@ -228,8 +228,8 @@ def item_history(request, item_id):
                    'history': ItemState.objects.filter(item=item).order_by('-date_time')})
 
 
-@transaction.atomic
 @permission_required('works.change_publication')
+@transaction.atomic
 def publication_edit(request, publication_id=None):
     from works.forms import CreatorToWorkFormSet
     from works.forms import SeriesToWorkFomSet
@@ -287,14 +287,14 @@ def publication_edit(request, publication_id=None):
                   {'series': series_to_works, 'publication': publication, 'form': form, 'creators': creator_to_works})
 
 
-@transaction.atomic
 @permission_required('works.add_publication')
+@transaction.atomic
 def publication_new(request):
     return publication_edit(request, publication_id=None)
 
 
-@transaction.atomic
 @permission_required('works.change_publication')
+@transaction.atomic
 def subwork_edit(request, subwork_id=None, publication_id=None):
     from works.forms import CreatorToWorkFormSet
     from works.forms import SeriesToWorkFomSet
@@ -356,14 +356,14 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
                    'disp_num': disp_num})
 
 
-@transaction.atomic
 @permission_required('works.add_publication')
+@transaction.atomic
 def subwork_new(request, publication_id):
     return subwork_edit(request, publication_id=publication_id)
 
 
-@transaction.atomic
 @permission_required('works.add_publication')
+@transaction.atomic
 def subwork_delete(request, subwork_id):
     publication = get_object_or_404(WorkInPublication, pk=subwork_id)
 

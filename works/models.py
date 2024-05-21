@@ -235,6 +235,10 @@ class Item(NamedThing, BookCode):
     last_seen = models.DateField(null=True, blank=True)
     book_code_extension = models.CharField(max_length=16, blank=True)  # Where in the library is it?
 
+    class Meta:
+        permissions = (
+            ("change_item_state", "Change the state of an item"),
+        )
     def get_recode(self):
         from recode.models import Recode
         recode = Recode.objects.filter(item=self)

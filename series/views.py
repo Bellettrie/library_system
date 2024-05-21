@@ -40,8 +40,8 @@ def view_series(request, pk):
     return render(request, 'series/view.html', {'series': series})
 
 
-@transaction.atomic
 @permission_required('series.change_series')
+@transaction.atomic
 def edit_series(request, pk):
     series = None
     creators = None

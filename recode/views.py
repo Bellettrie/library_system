@@ -26,8 +26,8 @@ class RecodeList(PermissionRequiredMixin, ListView):
         return codes.order_by('item__book_code')
 
 
-@transaction.atomic
 @permission_required('recode.change_recode')
+@transaction.atomic
 def end_recode(request, pk):
     recode = Recode.objects.get(pk=pk)
     item = recode.item
