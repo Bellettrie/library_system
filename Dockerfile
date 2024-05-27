@@ -12,7 +12,6 @@ RUN pip3 install -r requirements_production.txt --no-cache-dir
 COPY . /app 
 # copy entrypoint.sh
 COPY ./entrypoint.sh .
-COPY ./mailsender.sh .
 # Ready script for running
 RUN sed -i 's/\r$//g' /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
