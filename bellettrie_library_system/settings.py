@@ -68,13 +68,6 @@ EMAIL_USE_SSL = env("EMAIL_USE_SSL", default=False)
 OVERRIDE_MAIL_ADDRESS = env("OVERRIDE_MAIL_ADDRESS", default=None)
 EMAIL_BACKEND = env("EMAIL_BACKEND", default='django.core.mail.backends.console.EmailBackend')
 
-CRON_CLASSES = [
-    "mail.cron.SendSingleEmail",
-    "mail.cron.CleanMailLog",
-    "lendings.cron.LateMails",
-    "reservations.cron.ReservationCancel"
-]
-
 HOST = env("MY_HOST_NAME", default="-")
 
 IS_OPEN_URL = env("IS_OPEN_URL", default="https://dragoncounter.bellettrie.utwente.nl/crowds/api/")
