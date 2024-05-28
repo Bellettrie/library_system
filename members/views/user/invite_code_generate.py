@@ -37,4 +37,4 @@ def generate_invite_code(request, member_id):
     # set invite code
     handle_member_invite(member)
 
-    return render(request, 'members/detail.html', {'member': member, 'extra': "Invitation mail sent"})
+    return render(request, 'members/detail_shortened.html', {'member': member, 'extra': "Invitation mail sent"})
