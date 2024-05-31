@@ -11,3 +11,4 @@ django_cron
 importlib-metadata==7.0.2
 gunicorn~=22.0.0
 psycopg[binary]~=3.1.18
+django-permissions-auditor
