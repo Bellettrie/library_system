@@ -239,6 +239,7 @@ class Item(NamedThing, BookCode):
         permissions = (
             ("change_item_state", "Change the state of an item"),
         )
+        
     def get_recode(self):
         from recode.models import Recode
         recode = Recode.objects.filter(item=self)
