@@ -2,10 +2,13 @@ from _datetime import datetime, timedelta
 
 from config.tests import LendingSettingsBase
 from lendings.lendingException import LendingImpossibleException
+from lendings.procedures.register_returned import register_returned
 from lendings.procedures.extend import extend_lending, new_extension
 from lendings.procedures.get_total_fine import get_total_fine_for_days, get_total_fine_for_lending
 from lendings.procedures.new_lending import create_lending, new_lending
+from members.exceptions import AnonymisationException
 from members.models import MembershipPeriod, MemberBackground
+from members.procedures.anonymise import anonymise_or_except, anonymise_member
 from members.tests import MemberSetup
 from reservations.procedures.new_reservation import new_reservation
 from works.models import Location, Category
@@ -176,3 +179,74 @@ class CalculateFine(LendingBase):
                                         membership_type=self.membership_type, member_background=self.member_background)
         lending = new_lending(self.item, self.member, self.member2, datetime.date(datetime(2023, 2, 12)))
         self.assertEqual(get_total_fine_for_lending(lending, lending.end_date + timedelta(days=1)), 50)
+
+
+class AnonymisationFailureTest(LendingBase):
+    def attempt_to_fail_anonymisation(self, str_value):
+        err_str = ""
+        try:
+            anonymise_or_except(self.member, datetime.date(datetime(2020, 2, 12)))
+        except AnonymisationException as err:
+            err_str = str(err)
+        self.assertEqual(err_str, str_value)
+
+    def test_already_anonymised(self):
+        anonymise_member(self.member, False)
+        self.attempt_to_fail_anonymisation("Already anonymised")
+
+    def test_is_blacklisted(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        self.member.is_blacklisted = True
+        self.attempt_to_fail_anonymisation("Is blacklisted")
+
+    def test_is_still_member(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        self.attempt_to_fail_anonymisation("Is currently a member")
+
+    def test_is_active(self):
+        self.attempt_to_fail_anonymisation("Member is still active")
+
+    def test_has_logged_in_member(self):
+        self.member.committees.remove(self.committe1)
+        self.member.update_groups()
+        self.member.user.last_login = datetime.date(datetime(2020, 1, 12))
+        self.member.save()
+        self.attempt_to_fail_anonymisation("Logged in recently;  will be anonymised in 369 days.")
+
+    def test_was_recently_a_member(self):
+        self.member.committees.remove(self.committe1)
+        self.member.update_groups()
+        self.member.save()
+        MembershipPeriod.objects.create(member=self.member, start_date="2019-01-01", end_date="2019-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        self.attempt_to_fail_anonymisation("Was recently a member; can be anonymised in 549 days.")
+
+    def test_still_has_book(self):
+        self.member.committees.remove(self.committe1)
+        self.member.update_groups()
+        self.member.save()
+        MembershipPeriod.objects.create(member=self.member, start_date="2017-01-01", end_date="2017-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_lending(self.item1, self.member, self.member2, datetime.date(datetime(2017, 2, 12)))
+        self.attempt_to_fail_anonymisation("Still has a book lent.")
+
+    def test_recently_returned_book(self):
+        self.member.committees.remove(self.committe1)
+        self.member.update_groups()
+        self.member.save()
+        MembershipPeriod.objects.create(member=self.member, start_date="2017-01-01", end_date="2017-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        lending = new_lending(self.item1, self.member, self.member2, datetime.date(datetime(2017, 2, 12)))
+        register_returned(lending, self.member2, datetime.date(datetime(2020, 1, 12)))
+        self.attempt_to_fail_anonymisation("Recently lent a book")
+
+    def test_still_has_reservation(self):
+        self.member.committees.remove(self.committe1)
+        self.member.update_groups()
+        self.member.save()
+        MembershipPeriod.objects.create(member=self.member, start_date="2017-01-01", end_date="2017-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_reservation(self.item, self.member, self.member2, current_date=datetime.date(datetime(2017, 2, 12)))
+        self.attempt_to_fail_anonymisation("Still has a reservation")
