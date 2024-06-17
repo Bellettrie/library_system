@@ -6,21 +6,14 @@
     <form action="#" method="get">
         <table class="table table-striped"style="max-width: 400px">
             <tr>
-                <th colspan="2" style="text-align: center">Was member during</th>
-            </tr>
-            <tr>
-                <td><label for="m_before">From: </label></td>
-                <td><input id="m_before" class="datepicker" type="text" name="m_before" placeholder="1900-01-01" value="{{ request.GET.m_before }}"></td>
-            </tr>
-            <tr>
-                <td><label for="m_after">To: </label></td>
-                <td><input id="m_after" class="datepicker" type="text" name="m_after" placeholder="2300-12-31" value="{{ request.GET.m_after }}"></td>
+                <td><label for="m_on">Was member on: </label></td>
+                <td><input id="m_on" class="datepicker" type="text" name="m_on" placeholder="{{ today }}" value="{{ request.GET.m_on }}"></td>
             </tr>
            <tr>
                 <td><label for="m_filter_only_blacklisted">Show only the blacklist: </label></td>
                 <td><input id="m_filter_only_blacklisted" type="checkbox" name="m_filter_only_blacklisted"
                            {% if request.GET.m_filter_only_blacklisted %}checked{% endif %}></td>
-            </tr
+            </tr>
             <tr>
                 <td><label for="m_include_honorary">Include honorary members: </label></td>
                 <td><input id="m_include_honorary" type="checkbox" name="m_include_honorary"

@@ -21,16 +21,14 @@ def find_members_by_request(request):
     if request.GET.get('exec'):
         found_committees = request.GET.getlist('committees')
         found_privacy_settings = request.GET.getlist('privacy')
-        before_date = fetch_date(request.GET.get('m_before') or "1900-01-01")
-        after_date = fetch_date(request.GET.get('m_after') or "9999-12-31")
+        on_date = fetch_date(request.GET.get('m_on') or datetime.date.today().strftime("%Y-%m-%d"))
         include_honorary = request.GET.get('m_include_honorary', False)
         filter_only_blacklisted = request.GET.get("m_filter_only_blacklisted", False)
         dms = request.GET.get('dms', False)
 
         return filter_members(found_committees,
                               found_privacy_settings,
-                              before_date,
-                              after_date,
+                              on_date,
                               include_honorary,
                               filter_only_blacklisted, dms)
     return Member.objects.none()
@@ -41,6 +39,7 @@ def show_members(request):
     committees = Committee.objects.all()
     found_members = find_members_by_request(request)
     member_mails = []
+    today = datetime.date.today().strftime("%Y-%m-%d")
 
     for member in found_members:
         if len(member.email) > 0:
@@ -48,7 +47,7 @@ def show_members(request):
 
     return render(request, 'datamining/member_filtering.html',
                   {'mails': request.GET.get('mails'), 'member_mail_addresses': "; ".join(member_mails), 'dms': request.GET.get('dms'),
-                   'members': found_members, 'committees': committees})
+                   'members': found_members, 'committees': committees, 'today': today})
 
 
 def get_member_statistics(day):

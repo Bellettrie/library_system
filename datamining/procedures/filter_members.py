@@ -3,23 +3,20 @@ from django.db.models import Q
 from members.models import Member
 
 
-def filter_members(found_committees, found_privacy_settings, before, after, include_honorary, only_blacklisted, dms):
-    query = None
+def filter_members(found_committees, found_privacy_settings, on, include_honorary, only_blacklisted, dms):
     # membership period checks
-    after_query = Q(membershipperiod__start_date__lte=after)
-    before_query = Q(membershipperiod__end_date__gte=before)
+    after_query = Q(membershipperiod__start_date__lte=on)
+    before_query = Q(membershipperiod__end_date__gte=on)
     before_query_honorary = Q(membershipperiod__end_date__isnull=True)
-    if after:
-        query = after_query
-    if before:
-        combined_before_query_honorary = before_query
-        if include_honorary:
-            combined_before_query_honorary = (before_query | before_query_honorary)
+    query = after_query
+    combined_before_query_honorary = before_query
+    if include_honorary:
+        combined_before_query_honorary = (before_query | before_query_honorary)
 
-        if query is None:
-            query = combined_before_query_honorary
-        else:
-            query = query & combined_before_query_honorary
+    if query is None:
+        query = combined_before_query_honorary
+    else:
+        query = query & combined_before_query_honorary
 
     # simple checks
     if dms:
