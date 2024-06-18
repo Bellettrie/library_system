@@ -2,9 +2,9 @@
 {% load get_list %}
 {% block title %}Filter Members{% endblock %}
 {% block content %}
-    Please use standard iso date formats (ie. 2020-12-31):
+    Please use standard iso date formats (i.e. 2020-12-31):
     <form action="#" method="get">
-        <table class="table table-striped"style="max-width: 400px">
+        <table class="table table-striped" style="max-width: 400px">
             <tr>
                 <td><label for="m_on">Was member on: </label></td>
                 <td><input id="m_on" class="datepicker" type="text" name="m_on" placeholder="{{ today }}" value="{{ request.GET.m_on }}"></td>
@@ -30,7 +30,7 @@
             <tr>
                 <td><label for="committees">Committees</label></td>
                 <td>{% with list=request.GET|get_list:'committees' %}
-                    <select name="committees" id="committees" multiple="true">
+                    <select name="committees" id="committees" multiple="multiple">
                         {% for committee in committees %}
 
                             <option {% if committee.pk|to_string in list %}selected{% endif %}
@@ -44,7 +44,7 @@
             <tr>
                 <td><label for="privacy">Privacy Settings</label></td>
                 <td>{% with list=request.GET|get_list:'privacy' %}
-                    <select name="privacy" id="privacy" multiple="true">
+                    <select name="privacy" id="privacy" multiple="multiple">
                         <option {% if 'activities' in list %}selected{% endif %} value="activities">activities</option>
                         <option  {% if 'publications' in list %}selected{% endif %} value="publications">publications</option>
                         <option  {% if 'reunions' in list %}selected{% endif %}  value="reunions">reunions</option>
