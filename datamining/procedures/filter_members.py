@@ -5,19 +5,15 @@ from members.models import Member
 
 def filter_members(found_committees, found_privacy_settings, on, include_honorary, only_blacklisted, dms):
     # membership period checks
-    after_query = Q(membershipperiod__start_date__lte=on)
-    before_query = Q(membershipperiod__end_date__gte=on)
-    before_query_honorary = Q(membershipperiod__end_date__isnull=True)
-    query = after_query
-    combined_before_query_honorary = before_query
+    after_part = Q(membershipperiod__start_date__lte=on)
+    before_part = Q(membershipperiod__end_date__gte=on)
+    before_part_honorary = Q(membershipperiod__end_date__isnull=True)
+
+    membership_period_filter = after_part & before_part
     if include_honorary:
-        combined_before_query_honorary = (before_query | before_query_honorary)
+        membership_period_filter = after_part & (before_part | before_part_honorary)
 
-    if query is None:
-        query = combined_before_query_honorary
-    else:
-        query = query & combined_before_query_honorary
-
+    query = membership_period_filter
     # simple checks
     if dms:
         query = query & Q(dms_registered=False)
