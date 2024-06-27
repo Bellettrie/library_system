@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
-from datamining.procedures.filter_members import filter_members_by_date, filter_members_by_committees
+from datamining.procedures.filter_members import filter_members_by_date, filter_members_by_committees, filter_members_by_privacy_option, filter_members_missing_dms
 from datamining.procedures.get_lending_stats import get_lending_stats
 from lendings.models import Lending
 from members.models import Member, Committee, MembershipPeriod, MembershipType, MemberBackground
@@ -61,6 +61,30 @@ def show_members_by_group(request):
     return render(request, 'datamining/member_filtering_group.html',
                   {  'groupBased':True,'exec':True,'mails': request.GET.get('mails'), 'member_mail_addresses': "; ".join(member_mails), 'dms': request.GET.get('dms'),
                    'members': found_members, 'committees': committees, 'today': today})
+
+@permission_required('members.view_member')
+def show_members_by_special(request):
+    query = request.GET.get('query')
+    found_members = []
+    if query == "privacy:activities":
+        found_members = filter_members_by_privacy_option("activities")
+    if query == "privacy:publications":
+        found_members = filter_members_by_privacy_option("publications")
+    if query == "privacy:reunions":
+        found_members = filter_members_by_privacy_option("reunions")
+    if query == "dms:non_registered":
+        found_members = filter_members_missing_dms()
+    print(query)
+    member_mails = []
+    today = datetime.date.today().strftime("%Y-%m-%d")
+
+    for member in found_members:
+        if len(member.email) > 0:
+            member_mails.append(member.email)
+
+    return render(request, 'datamining/member_filtering_special.html',
+                  {  'specials':True, 'query':request.GET.get('query'), 'exec':True,'mails': request.GET.get('mails'), 'member_mail_addresses': "; ".join(member_mails), 'dms': request.GET.get('dms'),
+                   'members': found_members, 'today': today})
 
 def get_member_statistics(day):
     members = MembershipPeriod.objects.filter(
