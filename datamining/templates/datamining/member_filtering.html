@@ -1,9 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'datamining/member_filtering_base.html' %}
 {% load get_list %}
-{% block title %}Filter Members{% endblock %}
-{% block content %}
+
+{% block form %}
+        <form action="#" method="get">
+
     Please use standard iso date formats (i.e. 2020-12-31):
-    <form action="#" method="get">
         <table class="table table-striped" style="max-width: 400px">
             <tr>
                 <td><label for="m_on">Was member on: </label></td>
@@ -63,17 +64,6 @@
         </table>
         <input type="submit" name="exec" value="Search" class="btn-primary btn">
     </form>
-    {% if mails %}
-        {{ member_mail_addresses }}
-    {% else %}
-        <table class="table table-striped" style="width: auto;">
-            {% for member in members %}
-                {% include 'members/list_item.html' %}
-            {% empty %}
-                <i> No results</i>
-            {% endfor %}
 
-        </table>
-    {% endif %}
 {% endblock %}
 

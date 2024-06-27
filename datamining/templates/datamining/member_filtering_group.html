@@ -1,0 +1,48 @@
+{% extends 'datamining/member_filtering_base.html' %}
+{% load get_list %}
+
+{% block form %}
+        <form action="#" method="get">
+
+    Please use standard iso date formats (i.e. 2020-12-31):
+        <table class="table table-striped" style="max-width: 400px">
+
+            <tr>
+                <td><label for="committees">Committees</label></td>
+                <td>{% with list=request.GET|get_list:'committees' %}
+                    <select name="committees" id="committees" multiple="multiple">
+                        {% for committee in committees %}
+
+                            <option {% if committee.pk|to_string in list %}selected{% endif %}
+                                    value="{{ committee.pk }}">{{ committee.name }}</option>
+
+                        {% endfor %}
+                    </select>
+                {% endwith %}
+                </td>
+            </tr>
+{#            <tr>#}
+{#                <td><label for="privacy">Privacy Settings</label></td>#}
+{#                <td>{% with list=request.GET|get_list:'privacy' %}#}
+{#                    <select name="privacy" id="privacy" multiple="multiple">#}
+{#                        <option {% if 'activities' in list %}selected{% endif %} value="activities">activities</option>#}
+{#                        <option  {% if 'publications' in list %}selected{% endif %} value="publications">publications</option>#}
+{#                        <option  {% if 'reunions' in list %}selected{% endif %}  value="reunions">reunions</option>#}
+{#                    </select>#}
+{#                {% endwith %}#}
+{#                </td>#}
+{#            </tr>#}
+            <tr>
+                <th colspan="2" style="text-align: center">As mailing list?</th>
+            </tr>
+            <tr>
+                <td><label for="mails">Get mail address list: </label></td>
+                <td><input id="mails" type="checkbox" name="mails"
+                           {% if mails %}checked{% endif %}></td>
+            </tr>
+        </table>
+        <input type="submit" name="exec" value="Search" class="btn-primary btn">
+    </form>
+
+{% endblock %}
+
