@@ -1,0 +1,67 @@
+{% extends 'datamining/member_filtering_base.html' %}
+{% load get_list %}
+
+{% block form %}
+        <form action="#" method="get">
+
+
+            <table>
+
+                <tr><th colspan="2"><b>Privacy Filters</b></th></tr>
+                <tr>
+                    <td>
+                        <label  for="priv_activities">
+                          Wants mails for activities
+                     </label>
+                    </td>
+                    <td>
+                            <input  type="radio" name="query" id="priv_activities" value="privacy:activities" {% if query == "privacy:activities" %}checked{% endif %}>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label  for="priv_publications">
+                              Allows being on photos (ie. for on the website)
+                     </label>
+                    </td>
+                    <td>
+                            <input  type="radio" name="query" id="priv_publications" value="privacy:publications" {% if query == "privacy:publications" %}checked{% endif %}>
+                    </td>
+                </tr>
+                 <tr>
+                    <td>
+                        <label  for="priv_reunions">
+                              Wants mails about Reunions
+                     </label>
+                    </td>
+                    <td>
+                            <input  type="radio" name="query" id="priv_reunions" value="privacy:reunions" {% if query == "privacy:reunions" %}checked{% endif %}>
+                    </td>
+                </tr>
+                <tr><th colspan="2"><b>DMS</b></th></tr>
+                 <tr>
+                    <td>
+                        <label  for="dms_non_registered">
+                              Current members who haven't registered on DMS
+                     </label>
+                    </td>
+                    <td>
+                            <input  type="radio" name="query" id="dms_non_registered" value="dms:non_registered"  {% if query == "dms:non_registered" %}checked{% endif %}>
+                    </td>
+                </tr>
+            <tr>
+                <th colspan="2" style="text-align: center">As mailing list?</th>
+            </tr>
+            <tr>
+                <td><label for="mails">Get mail address list: </label></td>
+                <td><input id="mails" type="checkbox" name="mails"
+                           {% if mails %}checked{% endif %}></td>
+            </tr>
+            </table>
+
+<br>
+        <input type="submit" name="exec" value="Search" class="btn-primary btn">
+    </form>
+
+{% endblock %}
+

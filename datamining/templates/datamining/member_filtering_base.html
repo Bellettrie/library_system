@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Filter Members{% endblock %}
 {% block content %}
-    <div class="card text-center">
+    <div class="card">
   <div class="card-header">
     <ul class="nav nav-tabs card-header-tabs">
       <li class="nav-item">
-        <a class="nav-link {% if dateBased %}active{% endif %}" href="{% url 'datamining.members.date_based' %}">Date Based</a>
+        <a class="nav-link {% if dateBased %}active{% endif %}" href="{% url 'datamining.members.date_based' %}">By Date</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {% if groupBased %}active{% endif %}" href="{% url 'datamining.members.groups' %}">Group Based</a>
+        <a class="nav-link {% if groupBased %}active{% endif %}" href="{% url 'datamining.members.groups' %}">By Committee</a>
       </li>
     <li class="nav-item">
-        <a class="nav-link {% if specials %}active{% endif %}" href="{% url 'datamining.members.special' %}">Special</a>
+        <a class="nav-link {% if specials %}active{% endif %}" href="{% url 'datamining.members.special' %}">Special Queries</a>
       </li>
     </ul>
   </div>
