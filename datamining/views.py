@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
-from datamining.procedures.filter_members import filter_members
+from datamining.procedures.filter_members import filter_members_by_date, filter_members_by_committees
 from datamining.procedures.get_lending_stats import get_lending_stats
 from lendings.models import Lending
 from members.models import Member, Committee, MembershipPeriod, MembershipType, MemberBackground
@@ -17,27 +17,24 @@ def fetch_date(date_str):
     return datetime.date(dt.year, dt.month, dt.day)
 
 
-def find_members_by_request(request):
+def find_members_by_date_request(request):
     if request.GET.get('exec'):
-        found_committees = request.GET.getlist('committees')
-        found_privacy_settings = request.GET.getlist('privacy')
         on_date = fetch_date(request.GET.get('m_on') or datetime.date.today().strftime("%Y-%m-%d"))
         include_honorary = request.GET.get('m_include_honorary', False)
-        filter_only_blacklisted = request.GET.get("m_filter_only_blacklisted", False)
-        dms = request.GET.get('dms', False)
 
-        return filter_members(found_committees,
-                              found_privacy_settings,
-                              on_date,
-                              include_honorary,
-                              filter_only_blacklisted, dms)
+        return filter_members_by_date(on_date,include_honorary)
+    return Member.objects.none()
+def find_members_by_group_request(request):
+    if request.GET.get('exec'):
+        committees = request.GET.get('committees') or []
+
+        return filter_members_by_committees(committees)
     return Member.objects.none()
 
 
 @permission_required('members.view_member')
-def show_members(request):
-    committees = Committee.objects.all()
-    found_members = find_members_by_request(request)
+def show_members_by_date(request):
+    found_members = find_members_by_date_request(request)
     member_mails = []
     today = datetime.date.today().strftime("%Y-%m-%d")
 
@@ -45,10 +42,25 @@ def show_members(request):
         if len(member.email) > 0:
             member_mails.append(member.email)
 
-    return render(request, 'datamining/member_filtering.html',
-                  {'mails': request.GET.get('mails'), 'member_mail_addresses': "; ".join(member_mails), 'dms': request.GET.get('dms'),
-                   'members': found_members, 'committees': committees, 'today': today})
+    return render(request, 'datamining/member_filtering_date.html',
+                  { 'dateBased':True,'exec':True,'mails': request.GET.get('mails'), 'member_mail_addresses': "; ".join(member_mails), 'dms': request.GET.get('dms'),
+                   'members': found_members, 'today': today})
 
+
+@permission_required('members.view_member')
+def show_members_by_group(request):
+    committees = Committee.objects.all()
+    found_members = find_members_by_group_request(request)
+    member_mails = []
+    today = datetime.date.today().strftime("%Y-%m-%d")
+
+    for member in found_members:
+        if len(member.email) > 0:
+            member_mails.append(member.email)
+
+    return render(request, 'datamining/member_filtering_group.html',
+                  {  'groupBased':True,'exec':True,'mails': request.GET.get('mails'), 'member_mail_addresses': "; ".join(member_mails), 'dms': request.GET.get('dms'),
+                   'members': found_members, 'committees': committees, 'today': today})
 
 def get_member_statistics(day):
     members = MembershipPeriod.objects.filter(

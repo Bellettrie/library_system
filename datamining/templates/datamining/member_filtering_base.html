@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Filter Members{% endblock %}
+{% block content %}
+    <div class="card text-center">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs">
+      <li class="nav-item">
+        <a class="nav-link {% if dateBased %}active{% endif %}" href="{% url 'datamining.members.date_based' %}">Date Based</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if groupBased %}active{% endif %}" href="{% url 'datamining.members.groups' %}">Group Based</a>
+      </li>
+    <li class="nav-item">
+        <a class="nav-link {% if specials %}active{% endif %}" href="{% url 'datamining.members.special' %}">Special</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    {% block form %}
+
+    {% endblock %}
+  </div>
+</div>
+    {% if exec %}
+    Found {{ members|length }} members.
+    {% if mails %}
+
+
+        <br>{{ member_mail_addresses }}
+    {% else %}
+        <table class="table table-striped" style="width: auto;">
+            {% for member in members %}
+                {% include 'members/list_item.html' %}
+            {% empty %}
+                <i> No results</i>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endif %}
+
+{% endblock %}
+
