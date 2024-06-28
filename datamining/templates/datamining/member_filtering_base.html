@@ -21,21 +21,28 @@
     {% endblock %}
   </div>
 </div>
+
     {% if exec %}
+      <div class="card">
+  <div class="card-header">
     Found {{ members|length }} members.
+  </div>
+
     {% if mails %}
-
-
-        <br>{{ member_mail_addresses }}
+        <div class="card-body user-select-all">
+            <p class="user-select-all">{{ member_mail_addresses }}</p>
+        </div>
     {% else %}
-        <table class="table table-striped" style="width: auto;">
-            {% for member in members %}
-                {% include 'members/list_item.html' %}
-            {% empty %}
-                <i> No results</i>
-            {% endfor %}
-        </table>
+            <table class="table table-striped" style="width: auto;">
+                {% for member in members %}
+                    {% include 'members/list_item.html' %}
+                {% empty %}
+                    <i> No results</i>
+                {% endfor %}
+            </table>
+
     {% endif %}
+      </div>
 {% endif %}
 
 {% endblock %}
