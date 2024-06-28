@@ -26,7 +26,7 @@ def find_members_by_date_request(request):
     return Member.objects.none()
 def find_members_by_group_request(request):
     if request.GET.get('exec'):
-        committees = request.GET.get('committees') or []
+        committees = request.GET.getlist('committees') or []
 
         return filter_members_by_committees(committees)
     return Member.objects.none()
