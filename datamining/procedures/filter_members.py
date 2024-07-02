@@ -1,3 +1,5 @@
+import logging
+
 from django.db.models import Q
 
 from members.models import Member
@@ -31,32 +33,31 @@ def filter_members_by_date(on, include_honorary):
 
 def filter_members_by_privacy_option(option: str):
     if option == "activities":
-        print("ACT")
-        mmbers = Member.objects.filter(privacy_activities=True, is_anonymous_user=False).all()
-        members = []
-        for member in mmbers:
+        memberList = Member.objects.filter(privacy_activities=True, is_anonymous_user=False).all()
+        result = []
+        for member in memberList:
             # TODO: something with last year?
             if member.is_currently_member():
-                members.append(member)
-        return members
-    if option =="publications":
-        mmbers = Member.objects.filter(privacy_publications=True, is_anonymous_user=False).all()
-        members = []
-        for member in mmbers:
+                result.append(member)
+        return result
+    if option == "publications":
+        memberList = Member.objects.filter(privacy_publications=True, is_anonymous_user=False).all()
+        result = []
+        for member in memberList:
             # TODO: something with last year?
             if member.is_currently_member():
-                members.append(member)
-        return members
-    if option =="reunions":
+                result.append(member)
+        return result
+    if option == "reunions":
         return Member.objects.filter(privacy_reunions=True, is_anonymous_user=False).all()
-    print("ERROR", option)
+    logging.debug("wrong option", option)
     return []
 
 
 def filter_members_missing_dms():
-    mmbers = Member.objects.filter(Q(dms_registered=False) & Q(is_anonymous_user=False)).all()
-    members = []
-    for member in mmbers:
+    memberList = Member.objects.filter(Q(dms_registered=False) & Q(is_anonymous_user=False)).all()
+    result = []
+    for member in memberList:
         if member.membership_type and member.membership_type.needs_union_card:
-            members.append(member)
-    return members
+            result.append(member)
+    return result
