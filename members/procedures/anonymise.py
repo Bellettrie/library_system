@@ -60,9 +60,9 @@ def anonymise_except(member: Member, current_date: datetime.date) -> None:
         raise AnonymisationException("Is currently a member")
     if member.is_active():
         raise AnonymisationException("Member is still active")
-    if member.user is not None and member.user.last_login is not None and (current_date - member.user.last_login).days < 400:
+    if member.user is not None and member.user.last_login is not None and (current_date - member.user.last_login.date()).days < 400:
         raise AnonymisationException("Logged in recently;  will be anonymised in " + str(
-            400 - (current_date - member.user.last_login).days) + " days.")
+            400 - (current_date - member.user.last_login.date()).days) + " days.")
     if (current_date - member.last_end_date()).days < 800:
         raise AnonymisationException("Was recently a member; can be anonymised in " + str(
             800 - (current_date - member.last_end_date()).days) + " days.")

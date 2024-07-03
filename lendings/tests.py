@@ -211,7 +211,7 @@ class AnonymisationFailureTest(LendingBase):
     def test_has_logged_in_member(self):
         self.member.committees.remove(self.committe1)
         self.member.update_groups()
-        self.member.user.last_login = datetime.date(datetime(2020, 1, 12))
+        self.member.user.last_login = datetime(2020, 1, 12)
         self.member.save()
         self.attempt_to_fail_anonymisation("Logged in recently;  will be anonymised in 369 days.")
 
