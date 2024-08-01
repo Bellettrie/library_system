@@ -26,8 +26,12 @@
             <td>{{ member.address_line_three }}</td>
         </tr>
         <tr>
-            <th>E-mail</th>
-            <td>{{ member.email }}</td>
+            <th>Primary e-mail</th>
+            <td>{{ member.primary_email }} {% if member.primary_email_in_use %} &#10004; {% endif %}</td>
+        </tr>
+        <tr>
+            <th>Secondary e-mail</th>
+            <td>{{ member.secondary_email }}{% if member.secondary_email_in_use %} &#10004; {% endif %}</td>
         </tr>
         <tr>
             <th>Phone #</th>

@@ -19,7 +19,10 @@ class MemberLog(MemberData):
         data.address_line_two = member.address_line_two
         data.address_line_three = member.address_line_three
         data.address_line_four = member.address_line_four
-        data.email = member.email
+        data.primary_email = member.primary_email
+        data.secondary_email = member.secondary_email
+        data.primary_email_in_use = member.primary_email_in_use
+        data.secondary_email_in_use = member.secondary_email_in_use
         data.phone = member.phone
         data.student_number = member.student_number
         data.notes = member.notes

@@ -61,6 +61,14 @@ class Member(MemberData):
     def get_periods(self):
         return self.membershipperiod_set.all().order_by('start_date')
 
+    def get_email(self):
+        if self.primary_email_in_use:
+            return self.primary_email
+        elif self.secondary_email_in_use:
+            return self.secondary_email
+        else:
+            return self.primary_email
+
     @property
     def membership_type(self):
         period = self.get_current_membership_period()
@@ -89,7 +97,7 @@ class Member(MemberData):
         self.address_line_four = ""
         self.AddressTest = "a"
         self.phone = "06 666 666 13 13"
-        self.email = "board@bellettrie.utwente.nl"
+        self.primary_email = "board@bellettrie.utwente.nl"
         self.student_number = "s123 456 789"
         self.notes = "free member"
         self.save()

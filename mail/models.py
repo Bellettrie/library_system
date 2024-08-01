@@ -25,7 +25,7 @@ class MailLog(models.Model):
         msg = EmailMessage(subject=self.subject,
                            body=self.contents,
                            from_email="info@bellettrie.utwente.nl",
-                           to=[self.member.email])
+                           to=[self.member.get_email()])
         msg._is_rendered = True
         msg.send()
         self.sent = True

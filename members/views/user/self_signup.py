@@ -34,7 +34,7 @@ def self_signup(request):
 
         # Retrieve member data
         try:
-            member = get_object_or_404(Member, email=member_form_data.email.strip())
+            member = get_object_or_404(Member, primary_email=member_form_data.primary_email.strip())
         except Http404:
             return render(request, 'members/self_signup.html',
                           {"form": form, "error": "Incorrect form input, no such email address."})

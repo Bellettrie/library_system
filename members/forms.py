@@ -21,7 +21,10 @@ class EditForm(ModelForm):
                   'address_line_one',
                   'address_line_two',
                   'address_line_three',
-                  'email',
+                  'primary_email',
+                  'primary_email_in_use',
+                  'secondary_email',
+                  'secondary_email_in_use',
                   'phone',
                   'student_number',
                   'notes',
@@ -38,7 +41,10 @@ class EditForm(ModelForm):
                   'address_line_one': 'Address',
                   'address_line_two': '',
                   'address_line_three': '',
-                  'email': 'E-mail',
+                  'primary_email': 'Primary e-mail',
+                  'primary_email_in_use': 'Primary e-mail in use',
+                  'secondary_email': 'Secondary e-mail',
+                  'secondary_email_in_use': 'Secondary e-mail in use',
                   'phone': 'Phone #',
                   'student_number': 'Student #',
                   'notes': 'Notes',
@@ -76,7 +82,7 @@ class SignupForm(ModelForm):
     class Meta:
         model = Member
         fields = ['student_number',
-                  'email',
+                  'primary_email',
                   ]
         labels = {'student_number': 'Student Number',
-                  'email': 'Email Address'}
+                  'primary_email': 'Email Address'}

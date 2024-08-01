@@ -42,8 +42,8 @@ def show_members_by_date(request):
     today = datetime.date.today().strftime("%Y-%m-%d")
 
     for member in found_members:
-        if len(member.email) > 0:
-            member_mails.append(member.email)
+        if len(member.get_email()) > 0:
+            member_mails.append(member.get_email())
 
     return render(request, 'datamining/member_filtering_date.html',
                   {
@@ -66,8 +66,8 @@ def show_members_by_group(request):
     today = datetime.date.today().strftime("%Y-%m-%d")
 
     for member in found_members:
-        if len(member.email) > 0:
-            member_mails.append(member.email)
+        if len(member.get_email()) > 0:
+            member_mails.append(member.get_email())
 
     return render(request, 'datamining/member_filtering_group.html',
                   {
@@ -100,8 +100,8 @@ def show_members_by_special(request):
     today = datetime.date.today().strftime("%Y-%m-%d")
 
     for member in found_members:
-        if len(member.email) > 0:
-            member_mails.append(member.email)
+        if len(member.get_email()) > 0:
+            member_mails.append(member.get_email())
 
     return render(request, 'datamining/member_filtering_special.html',
                   {'specials': True,
