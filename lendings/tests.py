@@ -75,6 +75,9 @@ class LendingFailureCases(LendingBase):
     def test_already_reserved_someone_else(self):
         MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member3, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_lending(self.item, self.member3, self.member2, current_date=datetime.date(datetime(2020, 2, 12)))
         new_reservation(self.item, self.member2, self.member2, current_date=datetime.date(datetime(2020, 2, 12)))
         self.attempt_to_fail_lending("Item is reserved for another member")
 
@@ -246,7 +249,11 @@ class AnonymisationFailureTest(LendingBase):
         self.member.committees.remove(self.committe1)
         self.member.update_groups()
         self.member.save()
+        # A second member lending the item first is needed here to allow the reservation to be made
         MembershipPeriod.objects.create(member=self.member, start_date="2017-01-01", end_date="2017-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member3, start_date="2017-01-01", end_date="2017-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_lending(self.item, self.member3, self.member2, datetime.date(datetime(2017, 2, 12)))
         new_reservation(self.item, self.member, self.member2, current_date=datetime.date(datetime(2017, 2, 12)))
         self.attempt_to_fail_anonymisation("Still has a reservation")
