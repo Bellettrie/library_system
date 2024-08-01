@@ -7,26 +7,30 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Returning Book</h4>
-                    <p class="card-text">
-                        Title: {{ item.get_title }}<br />
-                        Member: {{ lending.member }}<br />
-                        Return date: {{ today }}
-                    </p>
+                    <table class="card-text" cellspacing="0" cellpadding="2">
+                        <tr><td>Title:</td><td>{{ item.get_title }}</td></tr>
+                        <tr><td>Name:</td><td>{{ lending.member }}</td></tr>
+                        <tr><td>Return Date:</td><td>{{ today }}</td></tr>
+                    </table>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        Due date: {{ lending.end_date }}
-                        {% if late %}
-                            ({{ days_late }} days late)<br />Fine: &euro;{{ fine }}
-                        {% else %}
-                            (on time :))
-                        {% endif %}
+                    <li class="list-group-item card-text">
+                        <table cellspacing="0" cellpadding="2">
+                            {% if late %}
+                                <tr><td>Due date:</td><td>{{ lending.end_date }} ({{ days_late }} days late)</td><tr>
+                                <tr><td>Fine:</td><td> &euro;{{ fine }}</td></tr>
+                            {% else %}
+                                 <tr><td>Due date:</td><td>{{ lending.end_date }}(on time :))</td></tr>
+                            {% endif %}
+                        </table>
                     </li>
                     {% if reserved %}
-                        <li class="list-group-item">
-                            Reservation Pending<br />
-                            Member: {{ reservation.member.name }}<br />
-                            Today: {{ today }}<br /><br />
+                        <li class="list-group-item card-text">
+                            <h6>Reservation Pending</h6>
+                            <table cellspacing="0" cellpadding="2">
+                                <tr><td>Member:</td><td>{{ reservation.member.name }}</td></tr>
+                                <tr><td>Today:</td><td>{{ today }}</td></tr>
+                            </table><br />
                             Please put a sticky note on the book with the member name & date of today, and place the book apart. The member will be notified automatically.
                         </li>
                     {% endif %}
