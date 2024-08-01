@@ -5,7 +5,7 @@ This project (BS) contains the website / Library Management System of Bellettrie
 ## Setup of development environment
 1. Download project from Git.
 2. Install recent python version (3.10 or higher)
-3. run pip install -r requirements.txt in the root of the project. You may want to look into virtual environments.
+3. run `pip install -r requirements.txt` in the root of the project. You may want to look into virtual environments.
 4. Install docker-desktop (or docker + docker-compose).
 5. Start up docker-desktop/your docker server
 6. get a dev database, and add this one to the docker_local folder as `startup.sql`
