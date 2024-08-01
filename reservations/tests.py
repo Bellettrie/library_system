@@ -1,6 +1,7 @@
 from _datetime import datetime
 from config.tests import LendingSettingsBase
 from lendings.procedures.new_lending import create_lending, new_lending
+from lendings.procedures.register_returned import register_returned
 from members.models import MembershipPeriod
 from members.tests import MemberSetup
 from reservations.models import Reservation
@@ -51,9 +52,21 @@ class ReservationFailureCases(ReservationBase):
         self.attempt_to_fail_reservation(
             "Member currently has items that are late. These need to be returned before it can be reserved.")
 
+    def test_item_not_lent_out(self):
+        MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        self.attempt_to_fail_reservation("Cannot reserve books that are in the room.")
+
     def test_too_many_lendings(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_lending(self.item1, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
+        new_lending(self.item2, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
+        new_lending(self.item3, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
+        new_lending(self.item4, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
+        new_lending(self.item5, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
         new_reservation(self.item1, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         new_reservation(self.item2, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         new_reservation(self.item3, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
@@ -64,8 +77,11 @@ class ReservationFailureCases(ReservationBase):
     def test_already_reserved_someone_else(self):
         MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member3, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
+        new_lending(self.item, self.member3, self.member2, current_date=datetime.date(datetime(2020, 2, 12)))
         new_reservation(self.item, self.member2, self.member2, current_date=datetime.date(datetime(2020, 2, 12)))
         self.attempt_to_fail_reservation("Item is reserved for another member")
 
@@ -79,20 +95,30 @@ class ReservationSuccess(ReservationBase):
     def test_reservation(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_lending(self.item, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
         reservation = new_reservation(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         self.assertIsNotNone(reservation)
 
     def test_honorary_member(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date=None,
                                         membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date=None,
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        new_lending(self.item, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
         reservation = new_reservation(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         self.assertIsNotNone(reservation)
 
     def test_lend_from_reservation(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        lending = new_lending(self.item, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
         reservation = new_reservation(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 11)))
         reservation_id = reservation.id
+        register_returned(lending, self.member2, datetime.date(datetime(2020, 2, 12)))
         new_lending(self.item, self.member, self.member2, datetime.date(datetime(2020, 2, 12)))
         try:
             removed_reservation = Reservation.objects.get(id=reservation_id)
