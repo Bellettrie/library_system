@@ -1,24 +1,48 @@
 {% extends 'base.html' %}
-{% block title %}Return book: {{ item.get_title }}{% endblock %}
+{% block title %}{% endblock %}
 {% block content%}
-<div class="card">
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">Returning work: {{ item.get_title }}</li>
-        <li class="list-group-item">Return date {{ lending.end_date }}</li>
-        {% if reserved %}
-            <li class="list-group-item">Book is reserved by {{ reservation.member.name }}; please put a note on the book with the name and the date of today and place the book apart.</li>
-        {% endif %}
-        {% if not item.in_available_state %}
-            <li class="list-group-item">Book is {{ item.get_state }}, please treat it accordingly.</li>
-        {% endif %}
-        {% if late %}
-            <li class="list-group-item">Book is {{ days_late }} days late! <br /> {{ lending.member.name }} needs to pay a &euro;{{ fine }} fine.</li>
-        {% endif %}
-    </ul>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col col-md-12 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Returning Book</h4>
+                    <p class="card-text">
+                        Title: {{ item.get_title }}<br />
+                        Member: {{ lending.member }}<br />
+                        Return date: {{ today }}
+                    </p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        Due date: {{ lending.end_date }}
+                        {% if late %}
+                            ({{ days_late }} days late)<br />Fine: &euro;{{ fine }}
+                        {% else %}
+                            (on time :))
+                        {% endif %}
+                    </li>
+                    {% if reserved %}
+                        <li class="list-group-item">
+                            Reservation Pending<br />
+                            Member: {{ reservation.member.name }}<br />
+                            Today: {{ today }}<br /><br />
+                            Please put a sticky note on the book with the member name & date of today, and place the book apart. The member will be notified automatically.
+                        </li>
+                    {% endif %}
+                    {% if not item.in_available_state %}
+                        <li class="list-group-item">Book is {{ item.get_state }}, please treat it accordingly.</li>
+                    {% endif %}
+                </ul>
+                <div class="card-body">
+                    <form action="#" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Return it" class="btn btn-success" >
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<form action="#" method="post">
-    {% csrf_token %}
-    <input type="submit" value="Return it" class="btn btn-success" >
-</form>
 {% endblock %}

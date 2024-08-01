@@ -26,4 +26,5 @@ def return_item(request, work_id):
                                                          'days_late': late_days.days,
                                                          'fine': lending.calculate_fine(),
                                                          'reserved': len(reservations) > 0,
-                                                         'reservation': reservations.first()})
+                                                         'reservation': reservations.first(),
+                                                         'today': get_today()})
