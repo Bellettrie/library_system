@@ -37,11 +37,17 @@ class ReservationFailureCases(ReservationBase):
         self.assertEqual(err_str, str_value)
 
     def test_no_membership_period(self):
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        create_lending(self.item1, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
         self.attempt_to_fail_reservation("Member currently not a member, cannot reserve")
 
     def test_member_blacklisted(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-01-01", end_date="2020-06-06",
                                         membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        create_lending(self.item1, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
         self.member.is_blacklisted = True
         self.attempt_to_fail_reservation("Member currently blacklisted, cannot reserve")
 
@@ -88,6 +94,9 @@ class ReservationFailureCases(ReservationBase):
     def test_membership_period_starts_again_after(self):
         MembershipPeriod.objects.create(member=self.member, start_date="2020-02-15", end_date="2020-06-20",
                                         membership_type=self.membership_type, member_background=self.member_background)
+        MembershipPeriod.objects.create(member=self.member2, start_date="2020-01-01", end_date="2020-06-06",
+                                        membership_type=self.membership_type, member_background=self.member_background)
+        create_lending(self.item1, self.member2, self.member2, datetime.date(datetime(2020, 2, 12)))
         self.attempt_to_fail_reservation("Member currently not a member, cannot reserve")
 
 
