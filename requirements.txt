@@ -1,5 +1,5 @@
 markdown
-django==4.2.14
+django==4.2.15
 namegenerator
 names
 django-tables2
