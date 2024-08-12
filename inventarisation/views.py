@@ -72,22 +72,19 @@ def inventarisation_form(request, inventarisation_id, page_id):
                     if current_state.inventarisation == inventarisation:
                         prev_state = item.get_prev_state()  # if the current state is part of the inventarisation, we need to get the previous state
                         already_in_current_inventarisation = True  # if the current state is part of the inventarisation, we need to reuse it
-
-                    new_state, description = get_next_state_by_action(item_inventarisation_state, prev_state)
-
-                    if already_in_current_inventarisation:
-                        if item_inventarisation_state != "yes" and item_inventarisation_state != "no":
-                            current_state.delete()
-                        else:
+                    if item_inventarisation_state == "yes" or item_inventarisation_state == "no":
+                        new_state, description = get_next_state_by_action(item_inventarisation_state, prev_state)
+                        if already_in_current_inventarisation:
                             current_state.type = new_state
                             current_state.reason = description
                             current_state.save()
-                    else:
-                        # This one is there just in case the item is already in the inventarisation, but not as its current state
-                        ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
+                        else:
+                            ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
 
-                        ItemState.objects.create(item=item, type=new_state, inventarisation=inventarisation,
+                            ItemState.objects.create(item=item, type=new_state, inventarisation=inventarisation,
                                                  reason=description)
+                    else:
+                        ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()   
                 except Item.DoesNotExist:
                     continue
 
