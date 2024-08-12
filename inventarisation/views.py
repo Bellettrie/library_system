@@ -85,10 +85,10 @@ def inventarisation_form(request, inventarisation_id, page_id):
                             # Otherwise, we remove pre-existing lines that aren't prev, and then create a new one
                             ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
                             ItemState.objects.create(item=item, type=new_state, inventarisation=inventarisation,
-                                                 reason=description)
+                                                        reason=description)
                     else:
                         # If skip is pressed, remove all rows for this item in this
-                        ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()   
+                        ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
                 except Item.DoesNotExist:
                     continue
 
