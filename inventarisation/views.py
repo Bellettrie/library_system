@@ -118,7 +118,7 @@ def get_next_state_by_action(action, prev_state) -> (str, str):
     elif action == "no":
         if prev_state.type == "SOLD":
             new_state = "SOLD"
-        elif prev_state.type == "MISSING":
+        elif prev_state.type == "MISSING" or prev_state.type == "LOST":
             new_state = "LOST"
             description = "Not seen during inventarisation"
         else:
