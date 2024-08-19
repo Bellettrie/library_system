@@ -57,6 +57,7 @@ class MemberSetup:
             address_line_two="6666 HL Enschede",
             address_line_three="Holland",
             primary_email="board@bellettrie.utwente.nl",
+            primary_email_in_use=True,
             phone="06 666 666 13 13",
             student_number="s123 456 789",
             notes="",
@@ -69,6 +70,9 @@ class MemberSetup:
             address_line_two="6666 HL Enschede",
             address_line_three="Holland",
             primary_email="board@bellettrie.utwente.nl",
+            primary_email_in_use=True,
+            secondary_email="webcie@bellettrie.utwente.nl",
+            secondary_email_in_use=True,
             phone="06 666 666 13 13",
             student_number="s123 456 789",
             notes="",
@@ -81,6 +85,9 @@ class MemberSetup:
             address_line_two="6666 HL Enschede",
             address_line_three="Holland",
             primary_email="board@bellettrie.utwente.nl",
+            primary_email_in_use=False,
+            secondary_email="webcie@bellettrie.utwente.nl",
+            secondary_email_in_use=True,
             phone="06 666 666 13 13",
             student_number="s123 456 789",
             notes="",
@@ -138,6 +145,12 @@ class MemberTestCase(MemberSetup, TestCase):
         self.member.update_groups()
         self.member.save()
         self.assertEqual(0, self.member.user.groups.all().__len__())
+
+    def test_not_use_secondary_email(self):
+        self.assertEqual(self.member2.get_email(), "board@bellettrie.utwente.nl")
+
+    def test_use_secondary_email(self):
+        self.assertEqual(self.member3.get_email(), "webcie@bellettrie.utwente.nl")
 
 
 class DmsPurgeTestCase(MemberSetup, TestCase):
