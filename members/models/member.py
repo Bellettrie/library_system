@@ -98,6 +98,9 @@ class Member(MemberData):
         self.AddressTest = "a"
         self.phone = "06 666 666 13 13"
         self.primary_email = "board@bellettrie.utwente.nl"
+        self.primary_email_in_use = True
+        self.secondary_email = ""
+        self.secondary_email_in_use = False
         self.student_number = "s123 456 789"
         self.notes = "free member"
         self.save()
