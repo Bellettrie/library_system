@@ -7,7 +7,7 @@ from tables.buttons import LendBookButton, ReturnBookButton, IsLentOutStatus, No
 from tables.columns import BookCodeColumn, TitleColumn, AllAuthorsColumn, ButtonsColumn
 from tables.rows import ItemRow
 from tables.table import Table
-from works.models import Publication, Item
+from works.models import Publication, Item, SubWork, Work
 
 # from works.views import ItemRow, BookResult
 
@@ -31,12 +31,17 @@ def get_creator_books(creator: Creator, perms):
     while series_len < len(series):
         series_len = len(series)
         series = series | set(Series.objects.filter(part_of_series__in=series))
+    subworks = set(Work.objects.filter(creatortowork__creator=creator))
+
+    item_set = set()
+    for work in Publication.objects.filter(
+            Q(creatortowork__creator=creator) | Q(workinseries__part_of_series__in=series) | Q(workinpublication__work__in=subworks)):
+        for item in work.item_set.all():
+            item_set.add(item)
 
     result = []
-    for work in Publication.objects.filter(
-            Q(creatortowork__creator=creator) | Q(workinseries__part_of_series__in=series)):
-        for item in work.item_set.all():
-            result.append(ItemRow(item))
+    for item in item_set:
+        result.append(ItemRow(item))
     result.sort(key=lambda r: r.get_item().book_code_sortable)
 
     return {"perms": perms, "table": Table(result, cols)}
