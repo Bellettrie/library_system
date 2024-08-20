@@ -4,8 +4,7 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from book_code_generation.models import CodePin, normalize_str, number_shrink_wrap
-from book_code_generation.location_number_creation import CutterCodeRange
+from book_code_generation.models import CodePin, normalize_str, number_shrink_wrap, CutterCodeRange
 from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title
 from creators.models import CreatorLocationNumber
 

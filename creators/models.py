@@ -5,12 +5,10 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
+from book_code_generation.models import CodeRange
 
-class LocationNumber(models.Model):
-    location = models.ForeignKey('works.Location', on_delete=CASCADE, null=True, blank=True)
-    number = models.IntegerField()
-    letter = models.CharField(max_length=16)
-    name = models.CharField(max_length=64, null=True, blank=True)
+
+class LocationNumber(CodeRange):
     auto_name = models.BooleanField(default=True)
 
 

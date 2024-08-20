@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from book_code_generation.location_number_creation import CutterCodeRange
+from book_code_generation.models import CutterCodeRange
 from works.models import Item
 
 

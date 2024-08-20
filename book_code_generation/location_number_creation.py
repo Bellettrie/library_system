@@ -1,7 +1,7 @@
-from django.db import models
+from book_code_generation.models import CodePin, normalize_str, CutterCodeRange
+from creators.models import CreatorLocationNumber
 
-from book_code_generation.models import CodePin, normalize_str, number_shrink_wrap
-from creators.models import LocationNumber, CreatorLocationNumber
+from django.db.models import Q
 
 
 # find the letter and number for an item / author / series, based on name and location.
@@ -41,43 +41,71 @@ def get_numbers_between(start, end):
 
 
 # get the CodePins for a starting letter and a location, based on the fact that some authors should be ignored.
-def get_authors_numbers(location, starting_letter, exclude_list=[]):
-    from works.models import Location
+def get_authors_numbers(location, starting_letter, exclude_list=None):
+    if exclude_list is None:
+        exclude_list = []
+    cutter_codes = CutterCodeRange.objects.order_by('from_affix').all()
 
-    codes = CutterCodeRange.objects.all()
-    lst = []
-    for code in codes:
-        if code.from_affix.startswith(starting_letter):
-            lst.append(CodePin(normalize_str(code.from_affix), number_shrink_wrap(code.number), normalize_str(code.to_affix)))
+    creator_codes = CreatorLocationNumber.\
+        objects.\
+        order_by('name').\
+        filter(
+            ~Q(creator__in=exclude_list),
+            letter=starting_letter,
+            location=location
+        )
 
-    letters = list(LocationNumber.objects.filter(location=location, letter=starting_letter))
-    keys_done = set()
-    my_letters = set()
+    cutter_codes_idx = 0
+    creator_codes_idx = 0
+    result = [CodePin("", 1, "ZZZZZZZZZZZZ")]
+    while True:
+        # If we have read both lists entirely: break out of it
+        if cutter_codes_idx == len(cutter_codes) and creator_codes_idx == len(creator_codes):
+            break
 
-    for c in CreatorLocationNumber.objects.filter(creator__in=exclude_list):
-        for my_letter in letters:
-            if my_letter.pk == c.pk:
-                letters.remove(my_letter)
+        # If we are out of cutter codes, only look through the creator codes
+        if cutter_codes_idx == len(cutter_codes):
+            cc = creator_codes[creator_codes_idx]
+            result[len(result)-1].end = cc.name
+            result.append(CodePin(cc.name, cc.number, "ZZZZZZZZZZZZ"))
+            creator_codes_idx += 1
+            continue
 
-    for letter in letters:
-        l_name = normalize_str(letter.name)
-        to_hit = True
-        for code in lst:
-            if number_shrink_wrap(letter.number) == code.number:
-                if letter.number not in keys_done and code.name < l_name < code.end:
-                    keys_done.add(letter.number)
-                    to_hit = False
-                    code.name = l_name
-        if to_hit:
-            my_letters.add(letter)
-    for item in my_letters:
-        l_name = normalize_str(item.name)
+        # If we are out of creator codes, only look through the cutter codes
+        if creator_codes_idx == len(creator_codes):
+            cc = cutter_codes[cutter_codes_idx]
+            result[len(result)-1].end = cc.from_affix
+            result.append(CodePin(cc.from_affix, cc.number, "ZZZZZZZZZZZZ"))
+            cutter_codes_idx += 1
 
-        if item.number not in letters:
-            lst.append(CodePin(l_name, number_shrink_wrap(item.number)))
-    lst.sort(key=get_key)
-    lst.append(CodePin(starting_letter + "ZZZZZZZZZZZZ", 99999))
-    return lst
+        # Both still have entries
+        creator_code = creator_codes[creator_codes_idx]
+        cutter_code = cutter_codes[cutter_codes_idx]
+
+        # If they are the same, we only use the creator code.
+        # We increment the cutter code as well, to skip it
+        if creator_code.number == cutter_code.number:
+            cc = creator_codes[creator_codes_idx]
+            result[len(result)-1].end = cc.name
+            result.append(CodePin(cc.name, cc.number, "ZZZZZZZZZZZZ"))
+            creator_codes_idx += 1
+            cutter_codes_idx += 1
+            continue
+
+        # If the creator code number is larger than the cutter code number, add the cutter code number
+        if creator_code.number > cutter_code.number:
+            cc = cutter_codes[cutter_codes_idx]
+            result[len(result)-1].end = cc.from_affix
+            result.append(CodePin(cc.from_affix, cc.number, "ZZZZZZZZZZZZ"))
+            cutter_codes_idx += 1
+        else:
+            # if the cutter code number is larger than the creator code number, add the creator code
+            cc = creator_codes[creator_codes_idx]
+            result[len(result)-1].end = cc.name
+            result.append(CodePin(cc.name, cc.number, "ZZZZZZZZZZZZ"))
+            creator_codes_idx += 1
+
+    return result
 
 
 # Get a new number for a certain name and location, with a list of ignored authors.
@@ -95,26 +123,6 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
     print(start.name, start.number, end.name, end.number)
 
     return get_numbers_between(start.number, end.number), start, end
-
-
-class CutterCodeRange(models.Model):
-    from_affix = models.CharField(max_length=16)
-    to_affix = models.CharField(max_length=16)
-    number = models.CharField(max_length=16)
-    generated_affix = models.CharField(max_length=20)
-
-    @staticmethod
-    def get_cutter_number(name: str, location=None):
-        cutters = CutterCodeRange.objects.all().order_by("from_affix")
-
-        result = None
-        for cutter in cutters:
-            if result is None:
-                result = cutter
-            if normalize_str(name) < cutter.from_affix:
-                return result
-            result = cutter
-        return result
 
 
 # Turn string into a number. Used to figure out what percentage of the possible strings are between something.

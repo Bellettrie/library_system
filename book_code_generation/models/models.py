@@ -1,8 +1,7 @@
 from django.db import models
+from django.db.models import CASCADE
 
 # Create your models here.
-
-from creators.models import CreatorLocationNumber, LocationNumber
 
 import re
 import unicodedata
@@ -138,3 +137,32 @@ class FakeItem:
     def __init__(self, publication, location):
         self.publication = publication
         self.location = location
+
+
+class CodeRange(models.Model):
+    class Meta:
+        abstract = True
+    location = models.ForeignKey('works.Location', on_delete=CASCADE, null=True, blank=True)
+    number = models.IntegerField()
+    letter = models.CharField(max_length=16)
+    name = models.CharField(max_length=64, null=True, blank=True)
+
+
+class CutterCodeRange(models.Model):
+    from_affix = models.CharField(max_length=16)
+    to_affix = models.CharField(max_length=16)
+    number = models.CharField(max_length=16)
+    generated_affix = models.CharField(max_length=20)
+
+    @staticmethod
+    def get_cutter_number(name: str, location=None):
+        cutters = CutterCodeRange.objects.all().order_by("from_affix")
+
+        result = None
+        for cutter in cutters:
+            if result is None:
+                result = cutter
+            if normalize_str(name) < cutter.from_affix:
+                return result
+            result = cutter
+        return result
