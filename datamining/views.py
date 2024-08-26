@@ -43,7 +43,7 @@ def show_members_by_date(request):
 
     for member in found_members:
         email = member.get_email()
-        if email is not None and email:
+        if email:
             member_mails.append(email)
 
     return render(request, 'datamining/member_filtering_date.html',
