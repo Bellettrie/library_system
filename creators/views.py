@@ -13,7 +13,7 @@ from book_code_generation.location_number_creation import get_number_for_str, ge
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
 from utils.get_query_words import get_query_words
-from works.models import CreatorToWork, Publication, Location, Item
+from works.models import CreatorToWork, Publication, Location, Item, Work, SubWork
 
 
 # @permission_required('creators.view_creator')
@@ -77,10 +77,7 @@ def edit(request, creator_id=None):
 # @permission_required('creators.view_creator')
 def show(request, creator_id):
     creator = Creator.objects.get(pk=creator_id)
-
-    works = Publication.objects.filter(creatortowork__creator=creator)
-
-    return render(request, 'creators/creator_view.html', {'creator': creator, 'works': works})
+    return render(request, 'creators/creator_view.html', {'creator': creator})
 
 
 @permission_required('creators.delete_creator')
