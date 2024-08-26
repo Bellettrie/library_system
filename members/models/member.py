@@ -66,8 +66,6 @@ class Member(MemberData):
             return self.primary_email
         elif self.secondary_email_in_use:
             return self.secondary_email
-        else:
-            return self.primary_email
 
     @property
     def membership_type(self):
