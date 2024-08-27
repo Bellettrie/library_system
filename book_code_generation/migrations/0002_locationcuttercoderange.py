@@ -27,10 +27,10 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunSQL("""
-        INSERT INTO book_code_generation_locationcuttercoderange 
+        INSERT INTO book_code_generation_locationcuttercoderange
              ("id", "number", "letter", "name", "auto_name","location_id")
-        SELECT 
+        SELECT
             "id", "number", "letter", "name", "auto_name","location_id"
-         FROM creators_locationnumber; 
+         FROM creators_locationnumber;
         """)
     ]

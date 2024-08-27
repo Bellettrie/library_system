@@ -46,14 +46,11 @@ def get_authors_numbers(location, starting_letter, exclude_list=None):
         exclude_list = []
     cutter_codes = CutterCodeRange.objects.order_by('from_affix').all()
 
-    creator_codes = CreatorLocationNumber.\
-        objects.\
-        order_by('name').\
-        filter(
-            ~Q(creator__in=exclude_list),
-            letter=starting_letter,
-            location=location
-        )
+    creator_codes = CreatorLocationNumber.objects.order_by('name').filter(
+        ~Q(creator__in=exclude_list),
+        letter=starting_letter,
+        location=location
+    )
 
     cutter_codes_idx = 0
     creator_codes_idx = 0
@@ -66,7 +63,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=None):
         # If we are out of cutter codes, only look through the creator codes
         if cutter_codes_idx == len(cutter_codes):
             cc = creator_codes[creator_codes_idx]
-            result[len(result)-1].end = cc.name
+            result[len(result) - 1].end = cc.name
             result.append(CodePin(cc.name, cc.number, "ZZZZZZZZZZZZ"))
             creator_codes_idx += 1
             continue
@@ -74,7 +71,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=None):
         # If we are out of creator codes, only look through the cutter codes
         if creator_codes_idx == len(creator_codes):
             cc = cutter_codes[cutter_codes_idx]
-            result[len(result)-1].end = cc.from_affix
+            result[len(result) - 1].end = cc.from_affix
             result.append(CodePin(cc.from_affix, cc.number, "ZZZZZZZZZZZZ"))
             cutter_codes_idx += 1
 
@@ -86,7 +83,7 @@ def get_authors_numbers(location, starting_letter, exclude_list=None):
         # We increment the cutter code as well, to skip it
         if creator_code.number == cutter_code.number:
             cc = creator_codes[creator_codes_idx]
-            result[len(result)-1].end = cc.name
+            result[len(result) - 1].end = cc.name
             result.append(CodePin(cc.name, cc.number, "ZZZZZZZZZZZZ"))
             creator_codes_idx += 1
             cutter_codes_idx += 1
@@ -95,13 +92,13 @@ def get_authors_numbers(location, starting_letter, exclude_list=None):
         # If the creator code number is larger than the cutter code number, add the cutter code number
         if creator_code.number > cutter_code.number:
             cc = cutter_codes[cutter_codes_idx]
-            result[len(result)-1].end = cc.from_affix
+            result[len(result) - 1].end = cc.from_affix
             result.append(CodePin(cc.from_affix, cc.number, "ZZZZZZZZZZZZ"))
             cutter_codes_idx += 1
         else:
             # if the cutter code number is larger than the creator code number, add the creator code
             cc = creator_codes[creator_codes_idx]
-            result[len(result)-1].end = cc.name
+            result[len(result) - 1].end = cc.name
             result.append(CodePin(cc.name, cc.number, "ZZZZZZZZZZZZ"))
             creator_codes_idx += 1
 

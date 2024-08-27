@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT, CASCADE
 
-from book_code_generation.models import CodeRange, CutterCodeRange, LocationCutterCodeRange
+from book_code_generation.models import CutterCodeRange, LocationCutterCodeRange
 
 
 class Creator(models.Model):
@@ -106,7 +106,6 @@ class CreatorRole(models.Model):
 class CreatorLocationNumber(LocationCutterCodeRange):
     # pass
     creator = models.ForeignKey(Creator, on_delete=CASCADE)
-
 
     def save(self, *args, **kwargs):
         self.name = self.creator.get_canonical_name()

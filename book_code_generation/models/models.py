@@ -139,12 +139,7 @@ class FakeItem:
         self.location = location
 
 
-class CodeRange(models.Model):
-    class Meta:
-        abstract = True
-
-
-class LocationCutterCodeRange(CodeRange):
+class LocationCutterCodeRange(models.Model):
     auto_name = models.BooleanField(default=True)
     location = models.ForeignKey('works.Location', on_delete=CASCADE, null=True, blank=True)
     number = models.IntegerField()
