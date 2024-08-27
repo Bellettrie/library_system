@@ -3,8 +3,8 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
-from book_code_generation.models import BookCode, FakeItem
-from creators.models import LocationNumber
+from book_code_generation.models import BookCode, FakeItem, LocationCutterCodeRange
+from creators.models import CreatorLocationNumber
 from works.models import NamedTranslatableThing, Location, GENERATORS
 
 
@@ -36,7 +36,7 @@ class SeriesNode(models.Model):
 class Series(SeriesNode, NamedTranslatableThing, BookCode):
     book_code = models.CharField(max_length=16)  # Where in the library is it?
     location = models.ForeignKey(Location, on_delete=PROTECT, null=True, blank=True)
-    location_code = models.ForeignKey(LocationNumber, on_delete=PROTECT, null=True, blank=True)
+    location_code = models.ForeignKey(LocationCutterCodeRange, on_delete=PROTECT, null=True, blank=True)
 
     def get_authors(self):
         authors = []
