@@ -9,6 +9,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('works', '0002_rename_datetime_itemstate_date_time'),
         ('book_code_generation', '0001_initial'),
+        ('creators', '0002_initial'),
     ]
 
     operations = [
