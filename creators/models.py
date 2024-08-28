@@ -10,6 +10,8 @@ from book_code_generation.models import CutterCodeRange, LocationCutterCodeRange
 
 class LocationNumber(models.Model):
     pass
+
+
 class Creator(models.Model):
     given_names = models.CharField(max_length=255, blank=True)
     name = models.CharField(max_length=255)
