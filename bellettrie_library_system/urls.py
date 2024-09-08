@@ -18,7 +18,6 @@ import logging
 from django.contrib import admin
 from django.urls import path, include
 
-from bellettrie_library_system.views import index
 from public_pages.views import view_page
 from django.shortcuts import redirect
 from django.http import HttpResponse

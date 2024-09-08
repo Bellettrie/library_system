@@ -1,6 +1,6 @@
 {% extends 'hx_modal.html' %}
 
-{% block content %}
+{% block modal_content %}
         <form hx-post="{{ request.path }}" class="modal-content" method="post">
             {% csrf_token %}
             <div class="modal-header">
