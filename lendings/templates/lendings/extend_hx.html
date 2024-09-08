@@ -1,0 +1,23 @@
+{% extends 'hx_modal.html' %}
+
+{% block content %}
+        <form hx-post="{{ request.path }}" class="modal-content" method="post">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title">Extend Item</h5>
+            </div>
+            <div class="modal-body">
+                Extending work: {{ item.publication.title }} <br/>
+                Extending for member: {{ member.name }} <br/>
+                End date {{ date }} <br/>
+                {% if late %}
+                    Book is {{ days_late }} days late! <br/>
+                    {{ member.name }} needs to pay a &euro;{{ fine }} fine.
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <input class="btn btn-primary" type="submit" value="Extend">
+            </div>
+        </form>
+{% endblock %}

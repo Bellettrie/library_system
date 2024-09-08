@@ -1,0 +1,23 @@
+Finished
+{% extends 'hx_modal.html' %}
+
+{% block content %}
+    <div class="modal-header">
+        <h5 class="modal-title">Item extended successfully</h5>
+    </div>
+    <div class="modal-body">
+
+        <a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a> may keep {{ item.publication.title }}
+        until: {{ date }}
+    </div>
+    <script>
+        $('#modal').on( "hidden.bs.modal", function(evt){
+            location.reload();
+        });
+    </script>
+
+    <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Ok</button>
+    </div>
+
+{% endblock %}
