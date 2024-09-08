@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Extending{% endblock %}
 {% block content %}
-    {% block modal_content %}
-        {%  include 'lendings/extend_hx.html' %}
-    {% endblock %}
+        Extending work: {{ item.publication.title }} <br/>
+        Extending for member: {{ member.name }} <br/>
+        End date {{ date }} <br/>
+        <form action="#" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Extend">
+        </form>
 {% endblock %}
 
