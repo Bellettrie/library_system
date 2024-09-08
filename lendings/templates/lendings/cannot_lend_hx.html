@@ -1,7 +1,6 @@
 {% extends 'hx_modal.html' %}
 
 {% block modal_content %}
-
     {% if member %}
         {% if item %}
             Member {{ member.name }} cannot lend {{ item.publication.name }} right now.
@@ -15,7 +14,6 @@
         {% else %}
             Something went wrong while lending.
         {% endif %}
-
     {% endif %}
     <br>
     {{ error }}
