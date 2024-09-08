@@ -17,11 +17,13 @@ from works.models import Item
 
 def hx_extend(request, work_id):
     return extend(request, work_id, hx_enabled=True)
+
+
 @transaction.atomic
 def extend(request, work_id, hx_enabled=False):
-    cannot_extend_template='lendings/cannot_extend.html'
-    extend_finished_template='lendings/extend_finished.html'
-    extend_template='lendings/extend.html'
+    cannot_extend_template = 'lendings/cannot_extend.html'
+    extend_finished_template = 'lendings/extend_finished.html'
+    extend_template = 'lendings/extend.html'
     if hx_enabled:
         cannot_extend_template = 'lendings/cannot_extend_hx.html'
         extend_finished_template = 'lendings/extend_finished_hx.html'
