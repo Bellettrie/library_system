@@ -2,9 +2,7 @@
 {% block title %}Extending item failed!{% endblock %}
 
 {% block content %}
-     Member {{ member.name }} cannot extend {{ item.publication.name }} right now.
-
-    <br>
-    {{ error }}
-
+    {% block modal_content %}
+        {%  include 'lendings/cannot_extend_hx.html' %}
+    {% endblock %}
 {% endblock %}

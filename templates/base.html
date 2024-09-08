@@ -4,7 +4,7 @@
 {% load menu %}
 {% load logo %}
 <head>
-<meta charset="utf-8">
+    <meta charset="utf-8">
     <link rel="apple-touch-icon" sizes="57x57" href="{% static 'icons/apple-icon-57x57.png' %}">
     <link rel="apple-touch-icon" sizes="60x60" href="{% static 'icons/apple-icon-60x60.png' %}">
     <link rel="apple-touch-icon" sizes="72x72" href="{% static 'icons/apple-icon-72x72.png' %}">
@@ -36,7 +36,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     {% get_title %}
-        <script defer src="{% static 'fa/solid.js' %}"></script>
+    <script defer src="{% static 'fa/solid.js' %}"></script>
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
@@ -52,8 +52,11 @@
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <link href="{% static 'datepicker/datepicker.min.css' %}" rel="stylesheet">
     <script src="{% static 'datepicker/datepicker.min.js' %} "></script>
- <style>
-        h2 {text-align: center;}
+    <style>
+        h2 {
+            text-align: center;
+        }
+
         .top-nav {
             padding-top: 20px;
             height: 30px;
@@ -87,13 +90,12 @@
             src: url("{% static 'Present_Roman.ttf' %}");
         }
     </style>
-    {#    <link href="https://fonts.googleapis.com/css2?family=Pangolin&family=Rubik:wght@500&display=swap" rel="stylesheet">#}
+</head>
 <body>
 
 <div id="wrapper" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
-
     <div id="header" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
-{% get_logo %}
+        {% get_logo %}
         <hr>
         <div class="top-nav-left  ">
             {% render_menu 'desktop-top' 'top-left' %}
@@ -130,38 +132,18 @@
 
     {% endif %}
 
-<div id="modal" class="modal fade">
-  <div id="dialog" class="modal-dialog" hx-target="this"></div>
-</div>
-<script>
-    const modal = new bootstrap.Modal(document.getElementById("modal"))
-
-htmx.on("htmx:afterSwap", (e) => {
-  // Response targeting #dialog => show the modal
-  if (e.detail.target.id == "dialog") {
-    modal.show()
-  }
-})
-htmx.on("htmx:beforeSwap", (e) => {
-  // Empty response targeting #dialog => hide the modal
-  if (e.detail.target.id == "dialog" && !e.detail.xhr.response) {
-    modal.hide()
-    e.detail.shouldSwap = false
-  }
-})
-
-</script>
-<!-- Page Content Holder -->
-<article id="content">
-    <h2>{% block title %}Title{% endblock %}</h2>
-    {% block content %}
-    {% endblock %}
-    <br/>
-    <br/>
-</article>
-{% if user.is_anonymous %}
-    <div id="rightBar"></div>
-{% endif %}
+    {% include 'base_hx_dialog.html' %}
+    <!-- Page Content Holder -->
+    <article id="content">
+        <h2>{% block title %}Title{% endblock %}</h2>
+        {% block content %}
+        {% endblock %}
+        <br/>
+        <br/>
+    </article>
+    {% if user.is_anonymous %}
+        <div id="rightBar"></div>
+    {% endif %}
 </div>
 {##}
 {#<!-- jQuery CDN - Slim version (=without AJAX) -->#}
@@ -185,4 +167,5 @@ htmx.on("htmx:beforeSwap", (e) => {
     });
 </script>
 
+</body>
 </html>
