@@ -5,6 +5,7 @@ from lendings.path_names import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, LE
 
 from .views.extend import extend, hx_extend
 from .views.finalize import finalize, finalize_hx
+
 from .views.item_based import item_based
 from .views.lending_failed import lending_failed
 from .views.lending_history import LendingHistory
