@@ -43,6 +43,7 @@
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <link rel="stylesheet" href="{% static 'tree.css' %}">
+    <script src="{% static 'htmx/htmx.min.js.js' %}"></script>
 
     <!-- Font Awesome JS -->
     <!-- Latest compiled and minified CSS -->
@@ -128,6 +129,28 @@
         </nav>
 
     {% endif %}
+
+<div id="modal" class="modal fade">
+  <div id="dialog" class="modal-dialog" hx-target="this"></div>
+</div>
+<script>
+    const modal = new bootstrap.Modal(document.getElementById("modal"))
+
+htmx.on("htmx:afterSwap", (e) => {
+  // Response targeting #dialog => show the modal
+  if (e.detail.target.id == "dialog") {
+    modal.show()
+  }
+})
+htmx.on("htmx:beforeSwap", (e) => {
+  // Empty response targeting #dialog => hide the modal
+  if (e.detail.target.id == "dialog" && !e.detail.xhr.response) {
+    modal.hide()
+    e.detail.shouldSwap = false
+  }
+})
+
+</script>
 <!-- Page Content Holder -->
 <article id="content">
     <h2>{% block title %}Title{% endblock %}</h2>
