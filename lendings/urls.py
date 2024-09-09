@@ -4,7 +4,8 @@ from lendings.path_names import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, LE
     LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK, LENDING_EXTEND, LENDING_FAILED, LENDING_HISTORY
 
 from .views.extend import extend, hx_extend
-from .views.finalize import finalize
+from .views.finalize import finalize, finalize_hx
+
 from .views.item_based import item_based
 from .views.lending_failed import lending_failed
 from .views.lending_history import LendingHistory
@@ -18,6 +19,8 @@ urlpatterns = [
     path('work/<int:work_id>', item_based, name=LENDING_NEW_WORK),
     path('member/<int:member_id>', member_based, name=LENDING_NEW_MEMBER),
     path('finalize/<int:work_id>/<int:member_id>', finalize, name=LENDING_FINALIZE),
+
+    path('finalize/hx/<int:work_id>/<int:member_id>', finalize_hx, name=LENDING_FINALIZE + "_hx"),
     path('failed_lending/<int:work_id>/<int:member_id>/<int:reason_id>', lending_failed, name=LENDING_FAILED),
     path('extend/<int:work_id>', extend, name=LENDING_EXTEND),
     path('extend/hx/<int:work_id>', hx_extend, name=LENDING_EXTEND + "_hx"),

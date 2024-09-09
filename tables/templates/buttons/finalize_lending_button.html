@@ -1,1 +1,1 @@
-<a href="{% url "lendings.finalize" item.pk member.pk %}" class="btn btn-primary btn-sm" role="button">Finalize Lending</a>
+<a data-hx-get="{% url 'lendings.finalize_hx' item.pk member.pk %}" hx-target="#dialog" href="{% url "lendings.finalize" item.pk member.pk %}" class="btn btn-primary btn-sm" role="button">Finalize Lending</a>

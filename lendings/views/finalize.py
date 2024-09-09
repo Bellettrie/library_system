@@ -15,9 +15,21 @@ from utils.time import get_today
 from works.models import Item
 
 
+def finalize_hx(request, work_id, member_id):
+    return finalize(request, work_id, member_id, hx_enabled=True)
+
+
 @transaction.atomic
 @permission_required('lendings.add_lending')
-def finalize(request, work_id, member_id):
+def finalize(request, work_id, member_id, hx_enabled=False):
+    cannot_lend_template = 'lendings/cannot_lend.html'
+    finalize_template = 'lendings/finalize.html'
+    finalized_template = 'lendings/finalized.html'
+    if hx_enabled:
+        cannot_lend_template = 'lendings/cannot_lend_hx.html'
+        finalize_template = 'lendings/finalize_hx.html'
+        finalized_template = 'lendings/finalized_hx.html'
+
     member = get_object_or_404(Member, pk=member_id)
     item = get_object_or_404(Item, pk=work_id)
     lendingsettings = LendingSettings.get_for_type(item.location.category.item_type, member.is_active())
@@ -27,10 +39,10 @@ def finalize(request, work_id, member_id):
     if request.method == 'POST':
         try:
             lending = new_lending(item, member, request.user.member, get_today())
-            return render(request, 'lendings/finalized.html',
+            return render(request, finalized_template,
                           {'member': member, 'item': item, "date": lending.end_date, 'fee': fee})
         except LendingImpossibleException as error:
-            return render(request, 'lendings/cannot_lend.html',
+            return render(request, cannot_lend_template,
                           {'member': member, 'item': item, 'error': error, 'fee': fee})
-    return render(request, 'lendings/finalize.html',
+    return render(request, finalize_template,
                   {'member': member, 'item': item, "date": get_end_date(item, member, get_today()), 'fee': fee})
