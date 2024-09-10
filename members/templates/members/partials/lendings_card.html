@@ -1,7 +1,11 @@
 <div class="card col-sm-12 col-xl-8" style="width: 18rem;">
   <div class="card-body">
+          <h5 class="card-title">Lendings</h5>
+
     {% member_current_lendings member %}
-        <h4>Reservations</h4>
+                      <a href="{% url 'lendings.me' %}">Lending history</a>
+    <hr>
+        <h6>Reservations</h6>
     {% member_current_reservations member %}
   </div>
 </div>

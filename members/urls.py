@@ -37,6 +37,7 @@ urlpatterns = [
 
     path('user/edit/<int:member_id>', members.views.user.edit.change_user, name='members.change_user'),
 
+    path('user/edit/hx/<int:member_id>', members.views.user.edit.change_user_hx, name='members.change_user_hx'),
 
     path('user/delete/<int:member_id>', members.views.user.delete.delete_user_prompt, name='members.remove_user'),
     path('user/delete/hx/<int:member_id>', members.views.user.delete.delete_user_prompt_hx, name='members.remove_user_hx'),
