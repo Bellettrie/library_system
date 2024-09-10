@@ -1,8 +1,7 @@
-
-<div class="card col-sm-12 col-xl-4" >
+<div class="card col-sm-12 col-xl-4">
     <div class="card-body">
-    <h5 class="card-title">Member Info</h5>
-    <p class="card-text">
+        <h5 class="card-title">Member Info</h5>
+        <p class="card-text">
         <table class="table table-striped" style="width: auto;">
             <tr>
                 <th>Name</th>
@@ -39,6 +38,15 @@
                                              class="btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
+                {% if member.user == user %}
+                    <tr>
+                        <th>Change Password</th>
+                        <td><a data-hx-get="{% url 'members.change_user_hx'  member.pk %}"
+                                                 hx-target="#dialog" href="{% url 'members.change_user' member.pk %}"
+                                                 class="btn-sm btn-primary">Change password</a>
+                        </td>
+                    </tr>
+                {% endif %}
             {% else %}
                 <tr>
                     <th>Add user</th>
@@ -63,6 +71,6 @@
         {% if member.should_be_anonymised %}
             <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
         {% endif %}
-    </p>
+        </p>
     </div>
 </div>

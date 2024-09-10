@@ -78,6 +78,15 @@
                                              class="btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
+             {% if member.user == user %}
+                    <tr>
+                        <th>Change Password</th>
+                        <td><a data-hx-get="{% url 'members.change_user_hx'  member.pk %}"
+                                                 hx-target="#dialog" href="{% url 'members.change_user' member.pk %}"
+                                                 class="btn-sm btn-primary">Change password</a>
+                        </td>
+                    </tr>
+                {% endif %}
         {% else %}
             <tr>
                 <th>Add user</th>
