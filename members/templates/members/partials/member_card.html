@@ -1,0 +1,66 @@
+<div class="card col-sm-12 col-lg-5" style="width: 18rem;">
+  <div class="card-body">
+      <table class="table table-striped" style="width: auto;">
+    <tr>
+        <th>Name</th>
+        <td>{{ member.name }}</td>
+    </tr>
+    <tr>
+        <th>Nickname</th>
+        <td>{{ member.nickname }}</td>
+    </tr>
+    <tr>
+    <th>Notes </th>
+        <td>{{member.notes| linebreaksbr}}</td>
+    </tr>
+    <tr>
+        <th>Current Membership Period?</th>
+        <td>{{ member.get_current_membership_period.start_date }}
+            - {{ member.get_current_membership_period.end_date }}
+            {% if not member.get_current_membership_period %}
+            <a data-hx-get="{% url 'members.membership_period_new_hx'  member.pk %}" hx-target="#dialog" href="{% url 'members.membership_period_new' member.pk %}" class="btn-sm btn-primary">New</a></td>
+
+         {% endif %}
+    </tr>
+    <tr>
+        <th>DMS registered?</th>
+        <td>{{ member.dms_registered }}</td>
+    </tr>
+    {% if member.user %}
+        <tr>
+            <th>User</th>
+            <td>{{ member.user }}</td>
+        </tr>
+        <tr>
+            <th>User control</th>
+            <td>
+                <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Change password</a>
+                <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete account</a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <th>Add user</th>
+            <td>
+                <a href="{% url 'members.signup' member.pk %}" class="btn-sm btn-outline-primary">Add new</a>
+                {% if not member.invitation_code_valid %}
+                    <a href="{% url 'members.generate_invite' member.pk %}"
+                       class="btn-sm btn-outline-primary">Invite</a>
+                {% else %}
+                    <a href="{% url 'members.disable_invite' member.pk %}"
+                       class="btn-sm btn-outline-primary">Uninvite</a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endif %}
+</table>
+
+<a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Browse catalog for</a>
+<a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit personal details</a>
+<a href="{% url 'members.view' member.id 1 %}" class="btn btn-outline-primary">Detailed info</a>
+
+{% if member.should_be_anonymised %}
+    <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
+{% endif %}
+  </div>
+</div>

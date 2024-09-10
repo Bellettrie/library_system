@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load member_reservation_table %}
+{% load member_lending_table %}
+{% block title %}{% if member.is_blacklisted %}<p style="color:red;">BLACKLISTED</p>{%endif %}Member: {{ member.name }}{% endblock %}
+{% block content %}
+    <div class="container-fluid" style="width:100%">
+  <div class="row justify-content-md-center">
+    {{ extra }}<br/>
+    {% include 'members/partials/member_card.html' %}
+    {% include 'members/partials/lendings_card.html' %}
+</div>
+</div>
+{% endblock %}

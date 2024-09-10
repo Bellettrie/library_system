@@ -40,5 +40,9 @@ urlpatterns = [
     path('user/deleted/<int:member_id>', members.views.user.delete.delete_user, name='members.delete_user'),
 
     path('membership_period/edit/<int:membership_period_id>', members.views.membership_period_edit.edit_membership_period, name='members.membership_period_edit'),
+    path('membership_period/edit/hx/<int:membership_period_id>',
+         members.views.membership_period_edit.edit_membership_period_hx, name='members.membership_period_edit_hx'),
+
     path('membership_period/new/<int:member_id>', members.views.membership_period_new.new_membership_period, name='members.membership_period_new'),
+    path('membership_period/new/hx/<int:member_id>', members.views.membership_period_new.new_membership_period_hx, name='members.membership_period_new_hx'),
 ]
