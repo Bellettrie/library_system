@@ -4,6 +4,11 @@
 {% block title %}{% if member.is_blacklisted %}<p style="color:red;">BLACKLISTED</p>{% endif %}Member:
     {{ member.name }}{% endblock %}
 {% block content %}
+    <style>
+     .table{
+         font-size: 12px;
+     }
+</style>
     <div class="container-fluid" style="width:100%">
         <div class="row justify-content-md-center">
             {% include 'members/partials/member_full_card.html' %}
