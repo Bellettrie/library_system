@@ -1,6 +1,6 @@
 <div class="card col-sm-12 col-xl-4" >
   <div class="card-body">
-    <h5 class="card-title">Member Details</h5>
+    <h5 class="card-title">{% if member.pk == user.member.pk %}My details{% else %}Details{% endif %}</h5>
     {{ extra }}<br/>
     <table class="table table-striped" style="width: auto;">
         <tr>

@@ -3,7 +3,9 @@
           <h5 class="card-title">Lendings</h5>
 
     {% member_current_lendings member %}
-                      <a href="{% url 'lendings.me' %}">Lending history</a>
+      {% if member.pk == user.member.pk %}
+                      <a href="{% url 'lendings.me' %}">My lending history</a>
+      {% endif %}
     <hr>
         <h6>Reservations</h6>
     {% member_current_reservations member %}
