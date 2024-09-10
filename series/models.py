@@ -58,7 +58,7 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
         str = ""
         if self.part_of_series:
             str = self.part_of_series.get_canonical_title() + " > "
-        return str + self.title
+        return str + (self.title or '<no title>')
 
     def generate_code_full(self, location):
         first_letters = self.title[0:2].lower()
