@@ -15,12 +15,14 @@ from utils.time import get_today, get_now
 
 def new_membership_period_hx(request, member_id):
     return new_membership_period(request, member_id, True)
+
+
 @transaction.atomic
 @permission_required('members.change_member')
 def new_membership_period(request, member_id, hx_enabled=False):
     templ = 'members/membership_edit.html'
     if hx_enabled:
-        templ= 'members/membership_edit_hx.html'
+        templ = 'members/membership_edit_hx.html'
     member = get_object_or_404(Member, pk=member_id)
     if request.method == 'POST':
         form = MembershipPeriodForm(request.POST)
@@ -30,7 +32,7 @@ def new_membership_period(request, member_id, hx_enabled=False):
             instance.save()
             delete_double_periods(member)
             if hx_enabled:
-                return HttpResponse(status=209, headers={"HX-Refresh":"true"})
+                return HttpResponse(status=209, headers={"HX-Refresh": "true"})
             return HttpResponseRedirect(reverse('members.view', args=(member.pk, 0,)))
     else:
         form = MembershipPeriodForm(instance=member, initial={'start_date': get_today(),

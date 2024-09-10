@@ -1,6 +1,6 @@
-<div class="card col-sm-12 col-lg-5" style="width: 18rem;">
+<div class="card col-sm-12 col-xl-4" >
   <div class="card-body">
-
+    <h5 class="card-title">Member Details</h5>
     {{ extra }}<br/>
     <table class="table table-striped" style="width: auto;">
         <tr>
@@ -43,19 +43,25 @@
 	    <th>Notes </th>
             <td>{{member.notes | linebreaksbr}}</td>
 	</tr>
+    {% if member.is_anonymous_user %}
         <tr>
             <th>Anonymous user</th>
-            <td>{{ member.is_anonymous_user }}</td>
+            <td>Yes</td>
         </tr>
+        {% else %}
+        {% if member.should_be_anonymised %}
+        <tr>
+            <th>Anonymous user</th>
+            <td>Pending anonymisation</td>
+        </tr>
+            {% endif %}
+    {% endif %}
         <tr>
             <th>Current Membership Period?</th>
             <td>{{ member.get_current_membership_period.start_date }}
                 - {{ member.get_current_membership_period.end_date }}</td>
         </tr>
-            <tr>
-            <th>Should be anonymised?</th>
-                <td>{% if member.should_be_anonymised %}[YES]{% else %}[NO] {{ member.should_be_anonymised_reason }}{% endif %}</td>
-        </tr>
+
         <tr>
             <th>Currently Member?</th>
             <td>{{ member.is_currently_member }}</td>
@@ -66,16 +72,12 @@
         </tr>
         {% if member.user %}
             <tr>
-                <th>User</th>
-                <td>{{ member.user }}</td>
-            </tr>
-            <tr>
-                <th>User control</th>
-                <td>
-                    <a href="{% url 'members.change_user' member.pk %}" class="btn-sm btn-primary">Change password</a>
-                    <a href="{% url 'members.remove_user' member.pk %}" class="btn-sm btn-danger">Delete account</a>
-                </td>
-            </tr>
+                    <th>User</th>
+                    <td>{{ member.user }} <a data-hx-get="{% url 'members.remove_user_hx'  member.pk %}"
+                                             hx-target="#dialog" href="{% url 'members.remove_user' member.pk %}"
+                                             class="btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
         {% else %}
             <tr>
                 <th>Add user</th>
@@ -115,9 +117,9 @@
     <hr>
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Browse catalog for</a>
 
-    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit personal details</a>
+    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
     {% if member.can_be_deleted %}
-        <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete member</a>
+        <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete</a>
     {% endif %}
     {% if member.should_be_anonymised %}
         <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>

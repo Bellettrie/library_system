@@ -36,8 +36,12 @@ urlpatterns = [
     path('user/new/done', self_signupped, name='members.self_signupped'),
 
     path('user/edit/<int:member_id>', members.views.user.edit.change_user, name='members.change_user'),
+
+
     path('user/delete/<int:member_id>', members.views.user.delete.delete_user_prompt, name='members.remove_user'),
+    path('user/delete/hx/<int:member_id>', members.views.user.delete.delete_user_prompt_hx, name='members.remove_user_hx'),
     path('user/deleted/<int:member_id>', members.views.user.delete.delete_user, name='members.delete_user'),
+    path('user/deleted/hx/<int:member_id>', members.views.user.delete.delete_user_hx, name='members.delete_user_hx'),
 
     path('membership_period/edit/<int:membership_period_id>', members.views.membership_period_edit.edit_membership_period, name='members.membership_period_edit'),
     path('membership_period/edit/hx/<int:membership_period_id>',
