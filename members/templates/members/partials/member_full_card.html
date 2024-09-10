@@ -1,8 +1,6 @@
-{% extends 'base.html' %}
-{% load member_reservation_table %}
-{% load member_lending_table %}
-{% block title %}{% if member.is_blacklisted %}<p style="color:red;">BLACKLISTED</p>{%endif %}Member: {{ member.name }}{% endblock %}
-{% block content %}
+<div class="card col-sm-12 col-lg-5" style="width: 18rem;">
+  <div class="card-body">
+
     {{ extra }}<br/>
     <table class="table table-striped" style="width: auto;">
         <tr>
@@ -109,11 +107,11 @@
                 <td>{{ p.end_date }}</td>
                 <td>{{ p.membership_type }}</td>
                 <td>{{ p.member_background }}</td>
-                <td><a href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
+                <td><a data-hx-get="{% url 'members.membership_period_edit_hx'  p.pk %}" hx-target="#dialog" href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
             </tr>
         {% endfor %}
     </table>
-    <a href="{% url 'members.membership_period_new' member.pk %}">New period</a>
+    <a data-hx-get="{% url 'members.membership_period_new_hx'  member.pk %}" hx-target="#dialog" href="{% url 'members.membership_period_new' member.pk %}">New period</a>
     <hr>
     <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Browse catalog for</a>
 
@@ -125,8 +123,5 @@
         <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
     {% endif %}
 
-    {% member_current_lendings member %}
-        <h4>Reservations</h4>
-        {% member_current_reservations member %}
-
-{% endblock %}
+  </div>
+</div>

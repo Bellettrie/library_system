@@ -15,5 +15,5 @@ def show(request, member_id, full):
     if member.is_anonimysed:
         return render(request, 'members/detail_anonymous.html', {'member': member})
     if full:
-        return render(request, 'members/detail.html', {'member': member})
-    return render(request, 'members/detail_shortened.html', {'member': member})
+        return render(request, 'members/detail_full.html', {'member': member})
+    return render(request, 'members/view.html', {'member': member})
