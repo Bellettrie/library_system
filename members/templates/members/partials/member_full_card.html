@@ -1,8 +1,8 @@
-<div class="card col-sm-12 col-xl-4" >
+<div class="card col-sm-12 col-xl-5" >
   <div class="card-body">
     <h5 class="card-title">{% if member.pk == user.member.pk %}My details{% else %}Details{% endif %}</h5>
     {{ extra }}<br/>
-    <table class="table table-striped" style="width: auto;">
+    <table class="table table-striped table-sm"  style="width: 100%;">
         <tr>
             <th>Name</th>
             <td>{{ member.name }}</td>
@@ -83,7 +83,7 @@
                         <th>Change Password</th>
                         <td><a data-hx-get="{% url 'members.change_user_hx'  member.pk %}"
                                                  hx-target="#dialog" href="{% url 'members.change_user' member.pk %}"
-                                                 class="btn-sm btn-primary">Change password</a>
+                                                 class="btn-sm btn-primary">Change</a>
                         </td>
                     </tr>
                 {% endif %}
@@ -105,12 +105,13 @@
     </table>
     <hr>
     <h4>Membership Periods</h4>
-    <table>
+    <table class="table table-sm table-striped">
         <tr>
             <th>From</th>
             <th>To</th>
             <th>Type</th>
             <th>Background</th>
+            <th></th>
         </tr>
         {% for p in member.get_periods %}
             <tr>
@@ -124,14 +125,14 @@
     </table>
     <a data-hx-get="{% url 'members.membership_period_new_hx'  member.pk %}" hx-target="#dialog" href="{% url 'members.membership_period_new' member.pk %}">New period</a>
     <hr>
-    <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary">Browse catalog for</a>
+    <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-primary">Browse catalog for</a>
 
-    <a href="{% url 'members.edit' member.id %}" class="btn btn-outline-primary">Edit</a>
+    <a href="{% url 'members.edit' member.id %}" class="btn  btn-sm btn-outline-primary">Edit</a>
     {% if member.can_be_deleted %}
-        <a href="{% url 'members.delete' member.id %}" class="btn btn-outline-primary">Delete</a>
+        <a href="{% url 'members.delete' member.id %}" class="btn btn-sm  btn-outline-primary">Delete</a>
     {% endif %}
     {% if member.should_be_anonymised %}
-        <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
+        <a href="{% url 'members.anonymise' member.id %}" class="btn btn-sm  btn-outline-primary">Anonimyse</a>
     {% endif %}
 
   </div>
