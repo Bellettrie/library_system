@@ -10,10 +10,18 @@ from utils.time import get_today
 from works.models import Item
 from lendings.procedures.register_returned import register_returned_with_mail
 
+@permission_required('lendings.return')
+def hx_return_item(request, work_id):
+    return return_item(request, work_id, True)
+
 
 @transaction.atomic
 @permission_required('lendings.return')
-def return_item(request, work_id):
+def return_item(request, work_id, hx_enabled=False):
+    return_book_template = 'lendings/return_book.html'
+    if hx_enabled:
+        return_book_template = 'lendings/return_book_hx.html'
+
     item = get_object_or_404(Item, pk=work_id)
     lending = item.current_lending()
     late_days = get_today() - lending.end_date
@@ -21,7 +29,7 @@ def return_item(request, work_id):
     if request.method == 'POST':
         register_returned_with_mail(lending, request.user.member)
         return HttpResponseRedirect(reverse('members.view', args=(lending.member.pk, 0,)))
-    return render(request, 'lendings/return_book.html', {'item': item, 'lending': lending,
+    return render(request, return_book_template, {'item': item, 'lending': lending,
                                                          'late': lending.end_date < get_today(),
                                                          'days_late': late_days.days,
                                                          'fine': lending.calculate_fine(),
