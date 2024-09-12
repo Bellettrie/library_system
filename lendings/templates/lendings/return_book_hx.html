@@ -1,0 +1,35 @@
+{% extends 'hx_modal.html' %}
+
+{% block modal_content %}
+    <form hx-post="{{ request.path }}" class="modal-content" method="post">
+        {% csrf_token %}
+        <div class="modal-header">
+            <h5 class="modal-title">Returning Book</h5>
+        </div>
+        <div class="modal-body">
+            Returning work: {{ item.get_title }} <br/>
+            From member: {{ lending.member }} <br/>
+            End date {{ today }} <br/>
+            {% if late %}
+                Due date: {{ lending.end_date }} ({{ days_late }} days late) <br/>
+                Fine: &euro;{{ fine }} <br/>
+            {% else %}
+                Due date: {{ lending.end_date }}(on time :)) <br/>
+            {% endif %}
+            {% if reserved %}
+                <br />
+                Reservation Pending <br/>
+                Member: {{ reservation.member.name }} <br/>
+                Today: {{ today }} <br/>
+                <br />
+                Please put a sticky note on the book with the member name & date of today, and place the book apart. The member will be notified automatically. <br/>
+            {% endif %}
+            {% if not item.in_available_state %}
+                Book is {{ item.get_state }}, please treat it accordingly. <br/>
+            {% endif %}
+        </div>
+        <div class="modal-footer">
+            <input type="submit" value="Return" class="btn btn-success">
+        </div>
+    </form>
+{% endblock %}
