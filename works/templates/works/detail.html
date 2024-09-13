@@ -2,83 +2,57 @@
 {% load item_detail_table %}
 {% block title %}{{ object.get_title }}{% endblock %}
 {% block content %}
+    <div class="container-fluid" style="width:100%">
+        <div class="row justify-content-md-center">
+            {% include 'works/partials/work_table.html' %}
+            {% with tbl=object.get_sub_works %}
+                {% with series=object.workinseries_set.all %}
+                    <div class="card col col-sm-12 col-xl-7">
+                        <div class="card-body d-flex flex-column">
+                            {% if series or perms.works.change_work %}
+                                <h6>Series</h6><br>
+                                <div>
+                                    <table class="table table-striped" style="width: auto;">
+                                        {% for series in  series %}
+                                            {% include 'series/part_of_series_name.html' %}
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            {% endif %}
+                            {% if tbl or perms.works.change_work %}
+                                <h6>Subworks</h6><br>
+                                {% with should_edit=1 %}
+                                    {% if tbl %}
+                                        {% include 'works/subwork_table.html' %}
 
-    <table class="table table-striped" style="width: auto;">
-        <tr>
-            <th>Title</th>
-            <td>{{ object.get_title }}</td>
-        </tr>
-        <tr>
-            <th>
-                Language:
-            </th>
-            <td>
-                {{ object.language }}
-            </td>
-        </tr>
-        <tr>
-            {% if object.original_language %}
-                <th>
-                    Original Language
-                </th>
-                <td>
-                    {{ object.original_language }}
-                </td>
-            {% endif %}
-        </tr>
+                                    {% endif %}
+                                {% endwith %}
 
-        <tr>
-            <th>Sub-title</th>
-            <td>{{ object.sub_title }}</td>
-        </tr>
-        {% if object.original_title %}
-            <tr>
-                <th>Original Title</th>
+                            {% endif %}
+                            {% if perms.works.change_work %}
 
-                <td>{{ object.get_original_title }}</td>
-            </tr>
-            <tr>
-                <th>Original Sub-title</th>
-                <td>{{ object.original_subtitle }}</td>
-            </tr>
-        {% endif %}
-        <tr>
-            <th>Authors</th>
-            <td>{% for author in object.get_authors %}{% include 'creators/single_line_description.html' %}
-                {% if not forloop.last %}, {% endif %} {% endfor %}</td>
-        </tr>
-        <tr>
-            <th>Comment</th>
-            <td>{{ object.comment }}</td>
-        </tr>
-    </table>
-    {% if perms.works.change_work %}
-    <a href="{% url 'works.publication.edit' object.pk %}">Edit publication</a><br>
-    {% endif %}
+                                <a class="card-link"
+                                   href="{% url 'work.subwork.new' object.pk %}">Add
+                                    Subwork</a>
+                            {% endif %}
+                        </div>
+                    </div>
 
-    <h4>Items for this publication</h4>
+                {% endwith %}
+            {% endwith %}
+            <div class="card col col-sm-12 col-xl-12">
+                <div class="card-body d-flex flex-column">
 
-        {% detailed_items object.get_items request.user.member perms  %}
-    <h4>Part of series</h4>
-    <table class="table table-striped" style="width: auto;">
-
-        {% for series in  object.workinseries_set.all %}
-            {% include 'series/part_of_series_name.html' %}
-        {% endfor %}
-    </table>
-    {% if perms.works.change_item %}
-
-    <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-primary">add new item</a>
-    {% endif %}
-    <h4>Subworks</h4>
-    {% with tbl=object.get_sub_works %}
-        {% with should_edit=1 %}
-            {% if tbl %}
-                {% include 'works/subwork_table.html' %}
-            {% endif %}
-        {% endwith %}
-    {% endwith %}
-    {% if perms.works.change_work %}
-    <a href="{% url 'work.subwork.new' object.pk %}" class="btn btn-primary">Add new Subwork</a>
-    {% endif %}
+                    <div class="card-title">Items for this publication</div>
+                    <div>
+                        {% detailed_items object.get_items request.user.member perms %}
+                    </div>
+                    {% if perms.works.change_item %}
+                        <a href="{% url 'works.item.new' publication.pk %}" class="align-self-end card-link"
+                           style="margin-top: auto;">Add new Item</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

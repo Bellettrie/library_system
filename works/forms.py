@@ -38,7 +38,8 @@ class ItemCreateForm(ModelForm):
         }
 
 
-NAMED_TRANSLATED_LIST = ['title', 'sub_title', 'article', 'original_title', 'original_subtitle', 'original_article', 'language', 'original_language']
+NAMED_TRANSLATED_LIST = ['title', 'article', 'sub_title', 'language', 'original_title', 'original_article',
+                         'original_subtitle', 'original_language']
 
 
 class PublicationCreateForm(ModelForm):
@@ -81,5 +82,8 @@ class SubWorkCreateForm(ModelForm):
             fields.append(field)
 
 
-CreatorToWorkFormSet = inlineformset_factory(Work, CreatorToWork, can_delete=True, fields=['creator', 'number', 'role'], widgets={'creator': CreatorWidget})
-SeriesToWorkFomSet = inlineformset_factory(Work, WorkInSeries, can_delete=True, fields=['part_of_series', 'number', 'display_number', 'is_primary'], widgets={'part_of_series': SeriesWidget})
+CreatorToWorkFormSet = inlineformset_factory(Work, CreatorToWork, can_delete=True, fields=['creator', 'number', 'role'],
+                                             widgets={'creator': CreatorWidget})
+SeriesToWorkFomSet = inlineformset_factory(Work, WorkInSeries, can_delete=True,
+                                           fields=['part_of_series', 'number', 'display_number', 'is_primary'],
+                                           widgets={'part_of_series': SeriesWidget})
