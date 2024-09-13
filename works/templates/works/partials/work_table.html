@@ -1,0 +1,68 @@
+<div class="card col col-sm-12 col-xl-5">
+    <div class="card-body d-flex flex-column">
+        <div class="card-title">Publication Details</div>
+
+        <div>
+            <table class="table table-striped" style="width: 100%;">
+                <tr>
+                    <th>Title</th>
+
+                    <td>
+                        {% if object.title %}{{ object.get_title }} {% if object.sub_title %}<br/>
+                            <i>-{{ object.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                    </td>
+                </tr>
+                {% if object.language %}
+                    <tr>
+                        <th>
+                            Language:
+                        </th>
+                        <td>
+                            {{ object.language }}
+                        </td>
+                    </tr>
+                {% endif %}
+
+
+                {% if object.original_title or object.original_subtitle %}
+                    <tr>
+                        <th>Original Title</th>
+                        <td>
+                            {% if object.get_original_title %}{{ object.get_original_title }}
+                                {% if object.original_subtitle %}<br/>
+                                    <i>-{{ object.original_subtitle }}</i>{% endif %}{% else %}
+                                <i>No Title</i> {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if object.original_language %}
+                    <tr>
+                        <th>
+                            Original Language:
+                        </th>
+                        <td>
+                            {{ object.original_language }}
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <th>Authors</th>
+                    <td>{% for author in object.get_authors %}{% include 'creators/single_line_description.html' %}<br>
+                    {% endfor %}</td>
+                </tr>
+                {% if object.comment %}
+                    <tr>
+                        <th>Comment</th>
+                        <td>{{ object.comment }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+        {% if perms.works.change_work %}
+            <div class=" d-flex flex-column"></div>
+            <a class="align-self-end card-link" style="margin-top: auto;"
+               href="{% url 'works.publication.edit' object.pk %}">Edit publication</a><br>
+
+        {% endif %}
+    </div>
+</div>
