@@ -3,8 +3,6 @@
     New item for
 {% endif %}{{ publication.title }}{% endblock %}
 {% block content %}
-
-
     <form action="#" method="post">
         {% csrf_token %}
         {{ form.location }} <br/>
@@ -19,15 +17,14 @@
         <label for="book_code_extension">Book Code extension: </label>
 
         {% if not edit %}
-        <hr>
-        Generate book code: ...
-        {% with publication_id=publication.pk %}
-
+            <hr>
+            Generate book code: ...
+            {% with publication_id=publication.pk %}
                 {% with location_id='id_location' %}
                     {% include 'book_code_generation/code_lookup.html' %}
+                {% endwith %}
             {% endwith %}
-        {% endwith %}
-    {% endif %}
+        {% endif %}
         <hr>
 
 
@@ -74,20 +71,21 @@
             <label for="recode_book_code">Book code: </label>
             <hr>
 
-            <input id="recode_book_code_extension" name="recode_book_code_extension" value= {{ recode_book_code_extension }}>
+            <input id="recode_book_code_extension" name="recode_book_code_extension"
+                   value= {{ recode_book_code_extension }}>
             <br/>
             <label for="recode_book_code_extension">Book Code extension: </label>
             <hr>
             {% if edit %}
-        <hr>
-        Generate book code: ...
-        {% with publication_id=publication.pk %}
+                <hr>
+                Generate book code: ...
+                {% with publication_id=publication.pk %}
 
-                {% with location_id='id_location' %}
-                    {% include 'book_code_generation/code_lookup.html' %}
-            {% endwith %}
-        {% endwith %}
-    {% endif %}
+                    {% with location_id='id_location' %}
+                        {% include 'book_code_generation/code_lookup.html' %}
+                    {% endwith %}
+                {% endwith %}
+            {% endif %}
         {% endif %}
         <input type="submit" value="OK">
     </form>

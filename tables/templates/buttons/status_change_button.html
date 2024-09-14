@@ -1,1 +1,1 @@
-<a href="{% url "works.item_state.create" item.pk %}" class="btn btn-primary btn-sm" role="button">Change Status</a>
+<a  hx-get="{% url 'works.item_state.create_hx' item.pk %}" hx-target="#dialog"  href="{% url "works.item_state.create" item.pk %}" class="btn btn-primary btn-sm" role="button">Change Status</a>

@@ -1,0 +1,12 @@
+<div class="card col col-sm-12 col-xl-12">
+    <div class="card-body d-flex flex-column">
+        <div class="card-title">Items for this publication</div>
+        <div>
+            {% detailed_items object.get_items request.user.member perms %}
+        </div>
+        {% if perms.works.change_item %}
+            <a href="{% url 'works.item.new' publication.pk %}" class="align-self-end card-link"
+               style="margin-top: auto;">Add new Item</a>
+        {% endif %}
+    </div>
+</div>
