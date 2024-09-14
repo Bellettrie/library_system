@@ -11,7 +11,7 @@
     <tr>
         {% for column in table.columns %}
             {% autoescape off %}
-            <td>{% render_square column row perms %}</td>
+            <td class="text-nowrap">{% render_square column row perms %}</td>
             {% endautoescape %}
         {% endfor %}
     </tr>
