@@ -54,7 +54,7 @@ class LendBookButton(Button):
 
     def is_visible(self, row, perms: PermWrapper):
         if "lendings.add_lending" in perms:
-            return row.is_item()
+            return row.is_item() and not row.get_item().is_lent_out()
         return False
 
     def enabled_render(self, row, perms=None):
@@ -120,7 +120,7 @@ class ReturnBookButton(Button):
 
     def is_visible(self, row, perms: PermWrapper):
         if "lendings.add_lending" in perms:
-            return row.is_item()
+            return row.is_item() and row.get_item().is_lent_out()
         return False
 
     def enabled_render(self, row, perms=None):
