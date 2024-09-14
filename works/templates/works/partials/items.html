@@ -1,5 +1,5 @@
-<div class="card col col-sm-12 col-xl-12">
-    <div class="card-body d-flex flex-column">
+<div class="card col col-12 col-xl-12">
+    <div class="card-body d-flex flex-column" style="overflow:auto;">
         <div class="card-title">Items for this publication</div>
         <div>
             {% detailed_items object.get_items request.user.member perms %}
