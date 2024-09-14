@@ -1,7 +1,7 @@
 from django.urls import path
 
-from works.views import WorkList, create_item_state, item_edit, publication_edit, publication_new, item_new, \
-    item_history
+from works.views import WorkList, create_item_state, create_item_state_hx, item_edit, publication_edit, publication_new, item_new, \
+    item_history, item_history_hx
 from . import views
 
 urlpatterns = [
@@ -11,7 +11,10 @@ urlpatterns = [
     path('item/new/<slug:publication_id>', item_new, name='works.item.new'),
 
     path('itemhistory/<slug:item_id>', item_history, name='works.item.states'),
+    path('itemhistory/hx/<slug:item_id>', item_history_hx, name='works.item.states_hx'),
+
     path('itemhistory/new/<slug:item_id>', create_item_state, name='works.item_state.create'),
+    path('itemhistory/new/hx/<slug:item_id>', create_item_state_hx, name='works.item_state.create_hx'),
 
     path('publication/edit/<slug:publication_id>', publication_edit, name='works.publication.edit'),
     path('publication/new', publication_new, name='works.publication.new'),

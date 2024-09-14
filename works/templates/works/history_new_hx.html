@@ -1,0 +1,12 @@
+{% extends 'hx_modal_form.html' %}
+
+{% block modal_title %}Change Item State{% endblock %}
+{% block modal_content %}
+    <table>
+        {{ form.as_table }}
+    </table>
+{% endblock %}
+{% block modal_footer %}
+    <input class="btn btn-success" type="submit" value="Save">
+{% endblock %}
+

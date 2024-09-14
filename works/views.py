@@ -3,7 +3,7 @@ import re
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
@@ -149,19 +149,30 @@ class WorkDetail(DetailView):
     model = Publication
 
 
+def create_item_state_hx(request, item_id):
+    return create_item_state(request, item_id, True)
+
+
 @transaction.atomic
 @permission_required('works.change_item')
-def create_item_state(request, item_id):
+def create_item_state(request, item_id, hx_enabled=False):
+    templ = 'works/history_new.html'
+    if hx_enabled:
+        templ = 'works/history_new_hx.html'
+
     if request.method == 'POST':
         form = ItemStateCreateForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.item = get_object_or_404(Item, pk=item_id)
             instance.save()
+            if hx_enabled:
+                return HttpResponse(status=209, headers={"HX-Refresh": "true"})
             return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
     else:
         form = ItemStateCreateForm()
-    return render(request, 'works/history_new.html', {'form': form, 'member': get_object_or_404(Item, pk=item_id)})
+
+    return render(request, templ, {'form': form, 'item': get_object_or_404(Item, pk=item_id)})
 
 
 @transaction.atomic
@@ -178,7 +189,7 @@ def item_new(request, publication_id=None):
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm()
-    return render(request, 'works/edit.html', {'form': form, 'publication': publication})
+    return render(request, 'works/item_edit.html', {'form': form, 'publication': publication})
 
 
 @transaction.atomic
@@ -213,17 +224,24 @@ def item_edit(request, item_id):
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
-    return render(request, 'works/edit.html',
+    return render(request, 'works/item_edit.html',
                   {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode,
                    'recode_book_code': recode_book_code,
                    'recode_book_code_extension': recode_book_code_extension})
 
 
+def item_history_hx(request, item_id):
+    return item_history(request, item_id, True)
+
+
 @transaction.atomic
 @permission_required('works.change_item')
-def item_history(request, item_id):
+def item_history(request, item_id, hx_enabled=False):
     item = get_object_or_404(Item, pk=item_id)
-    return render(request, 'works/history.html',
+    templ = 'works/history.html'
+    if hx_enabled:
+        templ = 'works/history_hx.html'
+    return render(request, templ,
                   {'item': item,
                    'history': ItemState.objects.filter(item=item).order_by('-date_time')})
 

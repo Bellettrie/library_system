@@ -1,1 +1,1 @@
-<a href="{% url "works.item.states" item.pk %}" >{{ status }}</a>
+<a hx-get="{% url "works.item.states_hx" item.pk %}" hx-target="#dialog" href="{% url "works.item.states" item.pk %}" >{{ status }}</a>

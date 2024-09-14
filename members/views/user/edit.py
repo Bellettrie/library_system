@@ -15,7 +15,7 @@ def change_user_hx(request, member_id):
 @transaction.atomic
 @permission_required('auth.change_user')
 def change_user(request, member_id, hx_enabled=False):
-    templ = 'users/edit.html'
+    templ = 'users/item_edit.html'
     if hx_enabled:
         templ = 'users/edit_hx.html'
     member = get_object_or_404(Member, pk=member_id)
