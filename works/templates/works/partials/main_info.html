@@ -1,4 +1,4 @@
-<div class="card col col-12 col-xl-5">
+<div class="card col col-12 {% if tbl or perms.works.change_work %}col-xl-5{% endif %}">
     <div class="card-body d-flex flex-column">
         <div class="card-title">Publication Details</div>
 
@@ -54,6 +54,15 @@
                     <tr>
                         <th>Comment</th>
                         <td>{{ object.comment }}</td>
+                    </tr>
+                {% endif %}
+                {% if series %}
+                    <tr>
+                        <th>Series</th>
+                        <td>  {% for series in  series %}
+
+                            {% include 'series/part_of_series_name.html' %}{% if not forloop.last %}<br>{% endif %}
+                        {% endfor %}</td>
                     </tr>
                 {% endif %}
             </table>

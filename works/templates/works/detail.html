@@ -4,9 +4,15 @@
 {% block content %}
     <div class="container-fluid" style="width:100%">
         <div class="row justify-content-md-center">
-            {% include 'works/partials/work_table.html' %}
-            {% include 'works/partials/sidebar.html' %}
-            {% include 'works/partials/items.html' %}
+            {% with series=object.workinseries_set.all %}
+                {% with tbl=object.get_sub_works %}
+
+                    {% include 'works/partials/main_info.html' %}
+
+                    {% include 'works/partials/subworks.html' %}
+                    {% include 'works/partials/items.html' %}
+                {% endwith %}
+            {% endwith %}
         </div>
     </div>
 {% endblock %}
