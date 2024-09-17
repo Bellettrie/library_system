@@ -122,7 +122,7 @@ def get_works(request):
 
 class WorkList(ListView):
     model = Work
-    template_name = 'works/list.html'
+    template_name = 'works/publication_list.html'
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
@@ -145,7 +145,7 @@ class WorkList(ListView):
 
 
 class WorkDetail(DetailView):
-    template_name = 'works/detail.html'
+    template_name = 'works/publication_view.html'
     model = Publication
 
 
@@ -156,9 +156,9 @@ def create_item_state_hx(request, item_id):
 @transaction.atomic
 @permission_required('works.change_item')
 def create_item_state(request, item_id, hx_enabled=False):
-    templ = 'works/history_new.html'
+    templ = 'works/item_state_edit.html'
     if hx_enabled:
-        templ = 'works/history_new_hx.html'
+        templ = 'works/item_state_edit_hx.html'
 
     if request.method == 'POST':
         form = ItemStateCreateForm(request.POST)
@@ -238,9 +238,9 @@ def item_history_hx(request, item_id):
 @permission_required('works.change_item')
 def item_history(request, item_id, hx_enabled=False):
     item = get_object_or_404(Item, pk=item_id)
-    templ = 'works/history.html'
+    templ = 'works/item_state.html'
     if hx_enabled:
-        templ = 'works/history_hx.html'
+        templ = 'works/item_state_hx.html'
     return render(request, templ,
                   {'item': item,
                    'history': ItemState.objects.filter(item=item).order_by('-date_time')})
