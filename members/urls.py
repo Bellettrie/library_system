@@ -17,10 +17,12 @@ from members.views.user.edit import change_user
 from .views.user.delete import delete_user, delete_user_prompt
 from .views.membership_period_edit import edit_membership_period
 from .views.membership_period_new import new_membership_period
+from .views.auth.by_committee import webcie
 
 urlpatterns = [
     path('', MemberList.as_view(), name=MEMBERS_LIST),
     path('anon', AnonMemberList.as_view(), name='members.list.anon'),
+    path('auth/by_comittee/webcie', members.views.auth.by_committee.webcie, name='members.view.by_committee'),
 
     path('<int:member_id>/<int:full>', members.views.member_show.show, name=MEMBERS_VIEW),
     path('edit/<int:member_id>', members.views.member_edit.edit, name=MEMBERS_EDIT),
