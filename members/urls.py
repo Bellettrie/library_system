@@ -22,7 +22,7 @@ from .views.auth.by_committee import webcie
 urlpatterns = [
     path('', MemberList.as_view(), name=MEMBERS_LIST),
     path('anon', AnonMemberList.as_view(), name='members.list.anon'),
-    path('auth/by_comittee/webcie', members.views.auth.by_committee.webcie, name='members.view.by_committee'),
+    path('auth/by_committee/webcie', members.views.auth.by_committee.webcie, name='members.view.by_committee'),
 
     path('<int:member_id>/<int:full>', members.views.member_show.show, name=MEMBERS_VIEW),
     path('edit/<int:member_id>', members.views.member_edit.edit, name=MEMBERS_EDIT),
