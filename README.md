@@ -8,7 +8,8 @@ This project (BS) contains the website / Library Management System of Bellettrie
 3. run `pip install -r requirements.txt` in the root of the project. You may want to look into virtual environments.
 4. Install docker-desktop (or docker + docker-compose).
 5. Start up docker-desktop/your docker server
-6. get a dev database, and add this one to the docker_local folder as `startup.sql`
+6. get a dev database, and add this one to the docker_local folder as `startup.sql`. <br> 
+If you are a member of Bellettrie, and are a member of the web committee you can download a dev database dump from [here](https://bellettrie.utwente.nl/dev/). Note that if you are not a member of said committee, you may end up in a redirect loop, since you lack permissions to download the files.
 7. Run `docker-compose up` in the docker_local folder. 
 8. Run `python manage.py migrate` for good measure
 9. Run `python manage.py runserver`.
