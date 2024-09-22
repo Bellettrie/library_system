@@ -66,10 +66,11 @@ class Task(models.Model):
         self.task_object.exec()
         self.register_finished()
 
+
 class CleanupOldHandledTasks:
     def __init__(self, days):
         self.days = days
 
     def exec(self):
-        too_old_moment = now() -timedelta(days=self.days)
+        too_old_moment = now() - timedelta(days=self.days)
         Task.objects.filter(handled=True, next_datetime__lte=too_old_moment).delete()

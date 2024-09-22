@@ -31,7 +31,6 @@ class MailLog:
         msg.send()
 
 
-
 @transaction.atomic
 def mail_member(template_string: str, context: dict, member: Member, now=None):
     if now is None:
@@ -40,5 +39,6 @@ def mail_member(template_string: str, context: dict, member: Member, now=None):
     if not member.is_anonymous_user:
         m = EmailMessage(template_string, context, "info@bellettrie.utwente.nl", render=True)
 
-        t = Task(task_name="send_mail", task_object=MailLog(member=member, contents=m.body, subject=m.subject, date=now))
+        t = Task(task_name="send_mail",
+                 task_object=MailLog(member=member, contents=m.body, subject=m.subject, date=now))
         t.save()
