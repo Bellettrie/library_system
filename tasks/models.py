@@ -33,12 +33,15 @@ class Task(models.Model):
 
     def __init__(self, *args, task_object=None, **kwargs):
         super().__init__(*args, **kwargs)
+
         if task_object is not None:
+            # If a class is provided, we encode the class to json and use that as the text-representation
             obj_json = jsonpickle.encode(task_object)
             obj_json_data = json.dumps(obj_json, indent=4)
             self.object_as_json = obj_json_data
             self.task_object = task_object
         else:
+            # If no class is provided, we use the textual JSON to get a class.
             task_obj = jsonpickle.decode(self.object_as_json)
             self.task_object = jsonpickle.loads(task_obj)
 
