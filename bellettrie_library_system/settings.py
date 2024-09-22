@@ -75,6 +75,9 @@ CRON_CLASSES = [
     "reservations.cron.ReservationCancel"
 ]
 
+TASK_POLL_FREQUENCY = env("TASK_CLEANUP_AGE", default=60)
+TASK_CLEANUP_AGE = env("TASK_CLEANUP_AGE", default=30)
+
 HOST = env("MY_HOST_NAME", default="-")
 
 IS_OPEN_URL = env("IS_OPEN_URL", default="https://dragoncounter.bellettrie.utwente.nl/crowds/api/")
