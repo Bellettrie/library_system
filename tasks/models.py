@@ -6,6 +6,7 @@ from typing import Protocol, runtime_checkable
 import jsonpickle
 
 from django.db import models, transaction
+from django.utils import timezone
 from django.utils.timezone import now
 
 
@@ -23,7 +24,7 @@ class Task(models.Model):
     object_as_json = models.TextField()
 
     handled = models.BooleanField(default=False)
-    next_datetime = models.DateTimeField(auto_now_add=True)
+    next_datetime = models.DateTimeField(default=timezone.now)
     every = models.IntegerField(default=0,
                                 verbose_name="frequency (in minutes) of execution of task")  # Every how many minutes?
 

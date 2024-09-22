@@ -8,12 +8,12 @@ from tasks.models import Task, CleanupOldHandledTasks
 
 
 def add_default_tasks(*args):
-    Task.objects.create(task_name="reservation_cancel",task_object=ReservationCancel(),every=120)
-    Task.objects.create(task_name="lendings_late_mails",task_object=LateMails(),every=120)
-    Task.objects.create(task_name="tasks_cleanup_old",task_object=CleanupOldHandledTasks(30),every=1440)
+    Task.objects.create(task_name="reservation_cancel", task_object=ReservationCancel(), every=120)
+    Task.objects.create(task_name="lendings_late_mails", task_object=LateMails(), every=120)
+    Task.objects.create(task_name="tasks_cleanup_old", task_object=CleanupOldHandledTasks(30), every=1440)
+
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('tasks', '0001_initial'),
     ]
