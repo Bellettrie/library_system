@@ -8,13 +8,8 @@ from reservations.procedures.clear_crons import clear_old_reservations, clear_un
 from utils.time import get_today
 
 
-class ReservationCancel(CronJobBase):
-    RUN_EVERY_MINS = 24 * 60  # Run every day
-
-    schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
-    code = 'reservations.cancel'  # a unique code
-
-    def do(self):
+class ReservationCancel:
+    def exec(self):
         clear_old_reservations()
         clear_unavailable()
         clear_not_member()

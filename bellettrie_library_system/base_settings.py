@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'datamining',
     'search',
     'tables',
+    'tasks',
     'django_cron',
 ]
 
