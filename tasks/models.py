@@ -41,6 +41,8 @@ class Task(models.Model):
             self.object_as_json = obj_json_data
             self.task_object = task_object
         else:
+            if self.object_as_json == "":
+                return
             # If no class is provided, we use the textual JSON to get a class.
             task_obj = jsonpickle.decode(self.object_as_json)
             self.task_object = jsonpickle.loads(task_obj)
@@ -62,3 +64,11 @@ class Task(models.Model):
     def handle(self):
         self.task_object.exec()
         self.register_finished()
+
+class CleanupOldHandledTasks:
+    def __init__(self, days):
+        self.days = days
+
+    def exec(self):
+        too_old_moment = now() -timedelta(days=self.days)
+        Task.objects.filter(handled=True, next_datetime__lte=too_old_moment).delete()
