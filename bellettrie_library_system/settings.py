@@ -70,9 +70,6 @@ EMAIL_BACKEND = env("EMAIL_BACKEND", default='django.core.mail.backends.console.
 
 CRON_CLASSES = [
     "mail.cron.SendSingleEmail",
-    "mail.cron.CleanMailLog",
-    "lendings.cron.LateMails",
-    "reservations.cron.ReservationCancel"
 ]
 
 TASK_POLL_FREQUENCY = env("TASK_CLEANUP_AGE", default=60)
