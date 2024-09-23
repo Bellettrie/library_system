@@ -18,6 +18,7 @@ class FakeTask:
 class TaskTestCase(TestCase):
     def setUp(self):
         Task.objects.all().delete()
+        FakeTask.executed = 0
 
     def test_picks_up_single_shot_task(self):
         t = FakeTask()
