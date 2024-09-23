@@ -84,7 +84,6 @@ class Task(models.Model):
         if current_datetime is None:
             current_datetime = timezone.now()
         tasks = Task.objects.filter(done=False, next_datetime__lt=current_datetime).order_by('next_datetime')[:count]
-        print("handling tasks", len(tasks))
         for task in tasks:
             task.handle(current_datetime)
 
