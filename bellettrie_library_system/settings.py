@@ -72,8 +72,7 @@ CRON_CLASSES = [
     "mail.cron.SendSingleEmail",
 ]
 
-TASK_POLL_FREQUENCY = env("TASK_CLEANUP_AGE", default=60)
-TASK_CLEANUP_AGE = env("TASK_CLEANUP_AGE", default=30)
+TASK_POLL_FREQUENCY = env("TASK_POLL_FREQUENCY", default=10) # Seconds
 
 HOST = env("MY_HOST_NAME", default="-")
 
