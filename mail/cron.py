@@ -16,5 +16,3 @@ class SendSingleEmail(CronJobBase):
         for mail in MailLog.objects.filter(sent=False):
             mail.send()
             return
-
-

@@ -13,7 +13,8 @@ from django.utils.timezone import now
 # Create your models here.
 @runtime_checkable
 class RunnableTask(Protocol):
-    def exec(self): ...
+    def exec(self):
+        pass
 
     def __init_subclass__(cls, **kwargs):
         raise TypeError
