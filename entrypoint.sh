@@ -13,10 +13,11 @@ then
 fi
 
 # Make sure the application starts in a consistent state
-rm -rf /statictarget/*
-python manage.py collectstatic
-python manage.py migrate
-
+if [[ -z "${UPDATE_STATICS}" ]]; then
+  rm -rf /statictarget/*
+  python manage.py collectstatic
+  python manage.py migrate
+fi
 # Run the entrypoint command (for starting the app, it should be gunicorn ...)
 # This is set by the docker-compose file for the running app.
 exec "$@"
