@@ -50,7 +50,6 @@ class TaskTestCase(TestCase):
         self.assertEqual(c, 1)
         self.assertEqual(FakeTask.executed, 3)
 
-
     def test_done_tasks_are_not_done_again(self):
         t = FakeTask()
         Task.objects.create(task_name="fake_task", task_object=t, done=True)
@@ -70,7 +69,6 @@ class TaskTestCase(TestCase):
         t_res = Task.objects.filter(task_name="fake_task").first()
         self.assertLess(tt.next_datetime, t_res.next_datetime)
         self.assertAlmostEqual(tt.next_datetime, t_res.next_datetime, delta=timedelta(minutes=1, seconds=1))
-
 
     def test_skips_recurring_task_in_future(self):
         t = FakeTask()
