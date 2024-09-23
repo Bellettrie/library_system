@@ -39,7 +39,8 @@ class Task(models.Model):
 
     def __str__(self):
         return "{name}[{id}] freq: {repeats_every_minutes} handled {done}".format(id=self.id, name=self.task_name,
-                                                                     repeats_every_minutes=self.repeats_every_minutes, done=self.done)
+                                                                                  repeats_every_minutes=self.repeats_every_minutes,
+                                                                                  done=self.done)
 
     def __init__(self, *args, task_object=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -68,7 +69,6 @@ class Task(models.Model):
         else:
             self.done = True
             self.save(update_fields=['done'])
-
 
     def is_recurring(self):
         return self.repeats_every_minutes > 0
