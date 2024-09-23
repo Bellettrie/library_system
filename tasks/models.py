@@ -55,9 +55,11 @@ class Task(models.Model):
     def register_finished(self):
         if self.is_recurring():
             self.next_datetime = now() + timedelta(minutes=self.every)
+            self.save(update_fields=['next_datetime'])
         else:
             self.handled = True
-        self.save()
+            self.save(update_fields=['handled'])
+
 
     def is_recurring(self):
         return self.every > 0
@@ -66,6 +68,15 @@ class Task(models.Model):
     def handle(self):
         self.task_object.exec()
         self.register_finished()
+
+    @staticmethod
+    def handle_next_tasks(count, current_datetime=None):
+        if current_datetime is None:
+            current_datetime = timezone.now()
+        tasks = Task.objects.filter(handled=False, next_datetime__lt=current_datetime).order_by('next_datetime')[:count]
+        print("handling tasks", len(tasks))
+        for task in tasks:
+            task.handle()
 
 
 class CleanupOldHandledTasks:

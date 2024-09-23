@@ -18,8 +18,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("Polling every ", settings.TASK_POLL_FREQUENCY)
         while True:
-            tasks = Task.objects.filter(handled=False, next_datetime__lt=now())[:5]
-            print("handling tasks", len(tasks))
-            for task in tasks:
-                task.handle()
+            Task.handle_next_tasks(5)
             time.sleep(settings.TASK_POLL_FREQUENCY)
