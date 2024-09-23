@@ -81,7 +81,8 @@ class TaskTestCase(TestCase):
 
     def test_cleanup_old_tasks(self):
         t = FakeTask()
-        Task.objects.create(task_name="fake_task", task_object=t, done=True, next_datetime=timezone.now() - timedelta(days=31))
+        Task.objects.create(task_name="fake_task", task_object=t, done=True,
+                            next_datetime=timezone.now() - timedelta(days=31))
         Task.objects.create(task_name="fake_task", task_object=t, done=False,
                             next_datetime=timezone.now() - timedelta(days=31))
         Task.objects.create(task_name="fake_second_task", task_object=t, done=True)
@@ -95,8 +96,8 @@ class TaskTestCase(TestCase):
 
     def test_doesnt_clean_up_recurring_tasks(self):
         t = FakeTask()
-        Task.objects.create(task_name="fake_task", task_object=t, repeats_every_minutes=1, next_datetime=timezone.now() - timedelta(days=31))
-
+        Task.objects.create(task_name="fake_task", task_object=t, repeats_every_minutes=1,
+                            next_datetime=timezone.now() - timedelta(days=31))
 
         CleanupOldHandledTasks(30).exec()
         self.assertEqual(len(Task.objects.all()), 1)
