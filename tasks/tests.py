@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
-from tasks.models import Task
+from tasks.models import Task, CleanupOldHandledTasks
 
 
 # Used to verify that tasks are actually executed
@@ -78,3 +78,29 @@ class TaskTestCase(TestCase):
         c = Task.handle_next_tasks(1, current_datetime=timezone.now() - timedelta(minutes=1))
         self.assertEqual(c, 0)
         self.assertEqual(FakeTask.executed, 0)
+
+    def test_cleanup_old_tasks(self):
+        t = FakeTask()
+        Task.objects.create(task_name="fake_task", task_object=t, done=True, next_datetime=timezone.now() - timedelta(days=31))
+        Task.objects.create(task_name="fake_task", task_object=t, done=False,
+                            next_datetime=timezone.now() - timedelta(days=31))
+        Task.objects.create(task_name="fake_second_task", task_object=t, done=True)
+
+        CleanupOldHandledTasks(30).exec()
+        self.assertEqual(len(Task.objects.all()), 2)
+
+        c = Task.handle_next_tasks(2)
+        self.assertEqual(c, 1)
+        self.assertEqual(FakeTask.executed, 1)
+
+    def test_doesnt_clean_up_recurring_tasks(self):
+        t = FakeTask()
+        Task.objects.create(task_name="fake_task", task_object=t, repeats_every_minutes=1, next_datetime=timezone.now() - timedelta(days=31))
+
+
+        CleanupOldHandledTasks(30).exec()
+        self.assertEqual(len(Task.objects.all()), 1)
+
+        c = Task.handle_next_tasks(1)
+        self.assertEqual(c, 1)
+        self.assertEqual(FakeTask.executed, 1)
