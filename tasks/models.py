@@ -24,14 +24,22 @@ class Task(models.Model):
     task_name = models.CharField(max_length=100)
     object_as_json = models.TextField()
 
-    handled = models.BooleanField(default=False)
+    # The next_datetime is used to schedule tasks in the future.
+    # This is mostly used for scheduled tasks, but could also be used for firing single-fire tasks in the future
     next_datetime = models.DateTimeField(default=timezone.now)
-    every = models.IntegerField(default=0,
-                                verbose_name="frequency (in minutes) of execution of task")  # Every how many minutes?
+
+    # The done field is used to mark single_fire tasks as being finished
+    # Tasks that are done should eventually be cleaned up, which is used by the CleanupOldHandledTasks task
+    done = models.BooleanField(default=False)
+
+    # The repeats_every_minutes field is used to mark a task as recurring
+    # If it's set to zero, it means the task is a single-fire task.
+    repeats_every_minutes = models.IntegerField(default=0,
+                                                verbose_name="frequency (in minutes) of execution of task")  # Every how many minutes?
 
     def __str__(self):
-        return "{name}[{id}] freq: {every} handled {handled}".format(id=self.id, name=self.task_name,
-                                                                     every=self.every, handled=self.handled)
+        return "{name}[{id}] freq: {repeats_every_minutes} handled {done}".format(id=self.id, name=self.task_name,
+                                                                     repeats_every_minutes=self.repeats_every_minutes, done=self.done)
 
     def __init__(self, *args, task_object=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -49,40 +57,44 @@ class Task(models.Model):
             task_obj = jsonpickle.decode(self.object_as_json)
             self.task_object = jsonpickle.loads(task_obj)
 
+        # If the input object is not a runnable task, then we do not want to store it in the database.
         if not isinstance(self.task_object, RunnableTask):
             raise TypeError
 
-    def register_finished(self):
+    def register_finished(self, current_datetime):
         if self.is_recurring():
-            self.next_datetime = now() + timedelta(minutes=self.every)
+            self.next_datetime = now() + timedelta(minutes=self.repeats_every_minutes)
             self.save(update_fields=['next_datetime'])
         else:
-            self.handled = True
-            self.save(update_fields=['handled'])
+            self.done = True
+            self.save(update_fields=['done'])
 
 
     def is_recurring(self):
-        return self.every > 0
+        return self.repeats_every_minutes > 0
 
     @transaction.atomic()
-    def handle(self):
+    def handle(self, current_datetime):
         self.task_object.exec()
-        self.register_finished()
+        self.register_finished(current_datetime)
 
+    # handle_next_tasks polls the next couple of tasks that could be executed and executes them
     @staticmethod
     def handle_next_tasks(count, current_datetime=None):
         if current_datetime is None:
             current_datetime = timezone.now()
-        tasks = Task.objects.filter(handled=False, next_datetime__lt=current_datetime).order_by('next_datetime')[:count]
+        tasks = Task.objects.filter(done=False, next_datetime__lt=current_datetime).order_by('next_datetime')[:count]
         print("handling tasks", len(tasks))
         for task in tasks:
-            task.handle()
+            task.handle(current_datetime)
 
 
 class CleanupOldHandledTasks:
     def __init__(self, days):
         self.days = days
 
-    def exec(self):
-        too_old_moment = now() - timedelta(days=self.days)
-        Task.objects.filter(handled=True, next_datetime__lte=too_old_moment).delete()
+    def exec(self, current_datetime=None):
+        if current_datetime is None:
+            current_datetime = timezone.now()
+        too_old_moment = current_datetime - timedelta(days=self.days)
+        Task.objects.filter(done=True, next_datetime__lte=too_old_moment).delete()

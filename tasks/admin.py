@@ -10,8 +10,8 @@ class TaskAdmin(admin.ModelAdmin):
         model = Task
 
     ordering = ('-next_datetime',)
-    list_display = ('id', 'task_name', 'every', 'next_datetime', 'handled')
-    list_filter = ('task_name', 'handled')
+    list_display = ('id', 'task_name', 'repeats_every_minutes', 'next_datetime', 'done')
+    list_filter = ('task_name', 'done')
 
 
 admin.site.register(Task, TaskAdmin)
