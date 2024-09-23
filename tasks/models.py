@@ -88,6 +88,8 @@ class Task(models.Model):
         for task in tasks:
             task.handle(current_datetime)
 
+        return len(tasks)
+
 
 class CleanupOldHandledTasks:
     def __init__(self, days):
