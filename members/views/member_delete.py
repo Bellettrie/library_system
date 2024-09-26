@@ -4,8 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from members.models import Member, MembershipPeriod
-from mail.models import MailLog
+from members.models import Member
 from members.procedures.anonymise import anonymise_member
 
 

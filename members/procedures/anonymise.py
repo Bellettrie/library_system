@@ -16,7 +16,6 @@ def set_member_reference_to_anonymous(filter_list, field, anonymous_members, dry
 
 def anonymise_member(member: Member, dry_run=True):
     anonymous_members = list(Member.objects.filter(is_anonymous_user=True))
-    from mail.models import MailLog
     from lendings.models import Lending
     set_member_reference_to_anonymous(Lending.objects.filter(member=member), 'member', anonymous_members, dry_run)
     set_member_reference_to_anonymous(Lending.objects.filter(lended_by=member), 'lended_by', anonymous_members, dry_run)
@@ -27,7 +26,6 @@ def anonymise_member(member: Member, dry_run=True):
     set_member_reference_to_anonymous(Reservation.objects.filter(member=member), 'member', anonymous_members, dry_run)
     set_member_reference_to_anonymous(Reservation.objects.filter(reserved_by=member), 'reserved_by', anonymous_members,
                                       dry_run)
-    set_member_reference_to_anonymous(MailLog.objects.filter(member=member), 'member', anonymous_members, dry_run)
     set_member_reference_to_anonymous(MembershipPeriod.objects.filter(member=member), 'member', anonymous_members,
                                       dry_run)
     if not dry_run:
