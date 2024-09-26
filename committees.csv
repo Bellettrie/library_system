@@ -58,10 +58,6 @@ add_reservation,0,1,1,0,0,0,0,0,0,1,1
 change_reservation,0,1,1,0,0,0,0,0,0,1,1
 delete_reservation,0,1,1,0,0,0,0,0,0,1,1
 view_reservation,0,1,1,0,0,0,0,0,0,1,1
-add_maillog,0,0,0,0,0,0,0,0,0,0,0
-change_maillog,0,0,0,0,0,0,0,0,0,0,0
-delete_maillog,0,0,0,0,0,0,0,0,0,0,0
-view_maillog,0,0,0,0,0,0,0,0,0,0,0
 add_committee,0,1,1,0,0,0,0,0,0,0,0
 change_committee,0,1,1,0,0,0,0,0,0,0,0
 delete_committee,0,1,1,0,0,0,0,0,0,0,0

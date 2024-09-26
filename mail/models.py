@@ -1,10 +1,4 @@
-import logging
-
-from django import conf
-from django.db import models, transaction
-
-# Create your models here.
-from django.db.models import PROTECT
+from django.db import  transaction
 
 from members.models import Member
 from mail_templated import EmailMessage
@@ -12,23 +6,6 @@ from django.conf import settings
 
 from tasks.models import Task
 from utils.time import get_now
-
-
-class MailLog(models.Model):
-    member = models.ForeignKey(Member, on_delete=PROTECT)
-    contents = models.TextField()
-    subject = models.CharField(max_length=255)
-    date = models.DateTimeField(auto_now=True)
-    sent = models.BooleanField(default=True)
-
-    @transaction.atomic
-    def send(self):
-        msg = EmailMessage(subject=self.subject,
-                           body=self.contents,
-                           from_email="info@bellettrie.utwente.nl",
-                           to=[self.member.get_email()])
-        msg._is_rendered = True
-        msg.send()
 
 
 class MailTask:

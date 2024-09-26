@@ -1,13 +1,7 @@
-import json
 import time
-from json import JSONEncoder
 
-import jsonpickle
 from django.core.management import BaseCommand
-from django.utils.timezone import now
 
-from mail.models import MailLog, mail_member
-from members.models import Member
 from tasks.models import Task
 from django.conf import settings
 
