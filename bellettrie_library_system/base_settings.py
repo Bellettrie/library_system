@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'search',
     'tables',
     'tasks',
-    'django_cron',
 ]
 
 MIDDLEWARE = [

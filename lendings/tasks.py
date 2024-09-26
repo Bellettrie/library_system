@@ -1,5 +1,3 @@
-from django_cron import CronJobBase, Schedule
-
 from lendings.procedures.mail_late import late_mails
 
 
