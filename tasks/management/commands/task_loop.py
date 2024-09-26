@@ -1,3 +1,4 @@
+import logging
 import time
 
 from django.core.management import BaseCommand
@@ -13,6 +14,7 @@ class Command(BaseCommand):
         print("Polling every ", settings.TASK_POLL_FREQUENCY)
         while True:
             handled = Task.handle_next_tasks(5)
-            print("handled tasks", handled)
+            if handled > 0:
+                logging.info("handled tasks", handled)
 
             time.sleep(settings.TASK_POLL_FREQUENCY)
