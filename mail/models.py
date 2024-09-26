@@ -1,4 +1,4 @@
-from django.db import  transaction
+from django.db import transaction
 
 from members.models import Member
 from mail_templated import EmailMessage
