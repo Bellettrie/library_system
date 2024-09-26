@@ -68,10 +68,6 @@ EMAIL_USE_SSL = env("EMAIL_USE_SSL", default=False)
 OVERRIDE_MAIL_ADDRESS = env("OVERRIDE_MAIL_ADDRESS", default=None)
 EMAIL_BACKEND = env("EMAIL_BACKEND", default='django.core.mail.backends.console.EmailBackend')
 
-CRON_CLASSES = [
-    "mail.cron.SendSingleEmail",
-]
-
 TASK_POLL_FREQUENCY = env("TASK_POLL_FREQUENCY", default=10) # Seconds
 
 HOST = env("MY_HOST_NAME", default="-")
