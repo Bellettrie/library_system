@@ -11,11 +11,13 @@
     --main-text-color: #000000;
     --sidebar-bg-color: #3d3e42;
     --sidebar-color: #aaaaaa;
-    --sidebar-color-active: #ffffff;
+    --sidebar-color-active: #FBFFFE;
 
-    --belle-red: #dc1e0a;
-    --belle-red-text: #171717;
 
+    --belle-red: #c14d00;
+    --belle-red-stripe: #c14d00;
+    --belle-red-text: #001514;
+    --belle-red-shadow-text: #ffffff;
 
     --header-bg: #f7ec55;
     --header-color: #525252;
@@ -189,7 +191,7 @@ body {
     z-index: 2;
     text-align: center;
     /*border-bottom:3px solid var(--belle-red);*/
-    box-shadow: 0px 2px 3px var(--belle-red);
+    box-shadow: 0px 2px 3px var(--belle-red-stripe);
 }
 
 #header.isAnonymous {
