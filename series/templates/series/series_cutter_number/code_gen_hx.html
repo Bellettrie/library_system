@@ -1,0 +1,36 @@
+{% extends 'hx_modal_form.html' %}
+
+{% block modal_title %}New Book Code{% endblock %}
+{% block modal_content %}
+    <script>
+    function set(){
+        document.getElementById("book_code").value="{{ recommended_code }}"
+    }
+    </script>
+    {% if series.book_code %}
+        <div class="form-group">
+            <label for="book_code">Book Code</label>
+            <input type="text" class="form-control" name="book_code" id="book_code" aria-describedby="bookcodehelp"
+                   value="{{ series.book_code }}">
+        </div>
+             <div class="Recommended code">
+            <label for="book_code">Set to Recommended Code</label>
+            <input type="button" class="form-control" aria-describedby="bookcodehelp"
+                   value=" << {{ recommended_code }} >>" onclick="set();">
+        </div>
+    {% else %}
+        <div class="form-group">
+            <label for="book_code">Book Code</label>
+            <input type="text" class="form-control" name="book_code" id="book_code" aria-describedby="bookcodehelp"
+                   value="{{ recommended_code }}">
+            <small id="bookcodehelp" class="form-text text-muted">Please verify and complete the code</small>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block modal_footer %}
+    {% if not series.location_code %}
+    <a class="card-link" hx-get="{% url 'series.cutter.gen_code_hx' series.pk %}" hx-target="#dialog" hx-swap="innerHTML" href="{% url 'series.cutter.gen_code' series.pk %}">Custom Cutter Number</a>
+    {% endif %}
+    <input class="btn btn-success" type="submit" value="Save">
+{% endblock %}
+

@@ -10,6 +10,9 @@ from creators.models import CreatorLocationNumber
 def generate_code_from_author(item):
     pub = item.publication
     auth = pub.get_authors()
+    if hasattr(pub, 'location_code') and pub.location_code is not None:
+        return item.location.category.code + "-" + pub.location_code.letter + "-" + str(
+            pub.location_code.number) + "-", True
     if len(auth) > 0:
         author = auth[0].creator
 
@@ -25,10 +28,7 @@ def generate_code_from_author(item):
                 if len(cl) == 1:
                     code = my_author.name[0] + "-" + str(cl[0].number)
         return item.location.category.code + "-" + code + "-", False
-    else:
-        prim_ser = item.publication
-        if hasattr(prim_ser, 'location_code') and prim_ser.location_code is not None:
-            return item.location.category.code + "-" + prim_ser.location_code.letter + "-" + str(prim_ser.location_code.number) + "-", True
+    return "", True
 
 
 # Generate a code for a translated item.

@@ -28,20 +28,11 @@ def get_book_code(request, publication_id, location_id):
     return HttpResponse(code)
 
 
-@permission_required('works.change_work')
-def get_book_code_series(request, series_id, location_id):
-    publication = None
-    if int(series_id) >= 0:
-        publication = get_object_or_404(Series, pk=series_id)
-    else:
-        return HttpResponse("First save the series, then edit the series.")
-    location = get_object_or_404(Location, pk=location_id)
-    title = request.GET.get('title')
-    if title:
-        publication.title = title
-    code = publication.generate_code_full(location)
+def get_book_code_series(series):
+    location = series.location
+    code = series.generate_code_full(location)
 
-    return HttpResponse(code)
+    return code
 
 
 @permission_required('works.change_work')
@@ -80,7 +71,8 @@ def show_letter_list(request):
         numbers = get_authors_numbers(location, atoz)
         prev = numbers[0]
         for number in numbers:
-            if prev.name > number.name and prev.number < number.number:
+            print(int(prev.number), int(number.number))
+            if prev.name > number.name and int(prev.number) < int(number.number):
                 out_of_order.add(number)
             prev = number
 

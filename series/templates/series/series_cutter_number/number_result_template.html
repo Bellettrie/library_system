@@ -1,0 +1,6 @@
+<label for="book_code">Cutter Number</label>
+<input type="number" class="form-control" name="cutter_number" id="cutter_number" aria-describedby="bookcodehelp"
+       placeholder="Insert Cutter number here" value="{{ number }}" >
+<input type="hidden" name="cutter_letter" id="cutter_letter"
+       placeholder="Insert Cutter number here" value="{{ letter }}" >
+<small id="bookcodehelp" class="form-text text-muted">{% if beg %}Verify this number. Must be between {{ beg }} and {{ end }} (including).{% else %}Use generate to fill this field.{% endif %}</small>

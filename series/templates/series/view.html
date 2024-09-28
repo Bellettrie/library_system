@@ -4,7 +4,6 @@
 {% block title %}{% include 'series/part_of_series_name.html' %}{% endblock %}
 {% block content %}
     <table class="table table-striped">
-
         {% with publication=series %}
             <tr>
                 <th>Name</th>
@@ -43,47 +42,57 @@
                         {% if not forloop.last %}<br/>{% endif %}{% endfor %}
                 </td>
             </tr>
+
         {% endwith %}
+
+
+        {% if series.number %}
+            <tr>
+                <th>Part of series</th>
+                <td>
+                    {% with also_show_number=True %}
+                        {% include 'series/part_of_series_name.html' %}<br>
+                    {% endwith %}
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            <th>Location</th>
+            <td>{{ series.location }}</td>
+        </tr>
+        {% if series.location_code %}
+            <tr>
+                <th>Location Code</th>
+                <td>{{ series.location_code.letter }}-{{ series.location_code.number }}
+                    {% if perms.series.change_series %}
+                        <a class="btn btn-danger btn-sm" hx-get="{% url 'series.cutter.del_code_hx' series.pk %}"
+                           hx-target="#dialog" href="{% url 'series.cutter.del_code' series.pk %}">Delete</a>
+                    {% endif %}
+                    <br>
+                    <small>{{ series.location_code.name }}</small>
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            <th>Book Code</th>
+            <td>{{ series.book_code }}
+                {% if perms.series.change_series %}
+                    <a class="btn btn-primary btn-sm" hx-get="{% url 'series.gen_code_hx' series.pk %}"
+                       hx-target="#dialog" href="{% url 'series.gen_code' series.pk %}">Edit</a>
+                {% endif %}
+            </td>
         </tr>
 
-     {% if series.number %}
- <tr>
-    <th>Position in super-series</th>
-    <td>
-             {% if series.display_number %}{{ series.display_number }}{% endif %}
-        {% if series.number %}({{ series.number }}){% else %}<i>No Number</i>{% endif %}
-    </td>
-</tr>
-
-
-        {% endif %}
     </table>
     {% if perms.series.change_series %}<a class="btn btn-primary" href="{% url 'series.edit' series.pk %}">Edit</a>
     {% endif %}
     {% if perms.series.delete_series %}<a class="btn btn-danger" href="{% url 'series.delete' series.pk %}">Delete</a>
     {% endif %}
-<br><br>
-<h4>Books in series</h4>
-
-<div>
-  <ul class="treez">
+    <br><br>
+    <h4>Books in series</h4>
+    <div>
+        <ul class="treez">
             {% include 'series/tree/series.html' %}
-  </ul>
-</div>
-
-
-    {% if  series.location_code %}
-    <h4>Numbering</h4>
-        This series has it's own book code for one or more locations.<br><br>
-        <table class="table-striped">
-        <tr><th>Location</th><th>Used Name</th><th>Letter</th><th>Number</th></tr>
-            <tr>
-                <td>{{ series.location }}</td>
-                <td>{{ series.location_code.name }}</td>
-                <td>{{ series.location_code.letter }}</td>
-                <td>{{ series.location_code.number }}</td>
-
-            </tr>
-        </table>
-    {% endif %}
+        </ul>
+    </div>
 {% endblock %}

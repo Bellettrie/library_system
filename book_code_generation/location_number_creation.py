@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 from book_code_generation.models import CodePin, normalize_str, number_shrink_wrap
 from creators.models import LocationNumber, CreatorLocationNumber
@@ -40,21 +41,38 @@ def get_numbers_between(start, end):
     return [start]
 
 
+def float_conv(number: str):
+    return float("0." + str(number))
+
+
+def number_between(number: str, minimum: str, maximum: str):
+    number_fl = float_conv(number)
+    minimum_fl = float_conv(minimum)
+    maximum_fl = float_conv(maximum)
+    return minimum_fl <= number_fl <= maximum_fl
+
+
 # get the CodePins for a starting letter and a location, based on the fact that some authors should be ignored.
-def get_authors_numbers(location, starting_letter, exclude_list=[]):
+def get_authors_numbers(location, starting_letter, exclude_creator_list=None, exclude_locationnumber_in=None):
+    if exclude_creator_list is None:
+        exclude_creator_list = []
+    if exclude_locationnumber_in is None:
+        exclude_locationnumber_in = []
     from works.models import Location
 
     codes = CutterCodeRange.objects.all()
     lst = []
     for code in codes:
         if code.from_affix.startswith(starting_letter):
-            lst.append(CodePin(normalize_str(code.from_affix), number_shrink_wrap(code.number), normalize_str(code.to_affix)))
+            lst.append(
+                CodePin(normalize_str(code.from_affix), number_shrink_wrap(code.number), normalize_str(code.to_affix)))
 
-    letters = list(LocationNumber.objects.filter(location=location, letter=starting_letter))
+    letters = list(LocationNumber.objects.filter(location=location, letter=starting_letter).exclude(
+        pk__in=exclude_locationnumber_in))
     keys_done = set()
     my_letters = set()
 
-    for c in CreatorLocationNumber.objects.filter(creator__in=exclude_list):
+    for c in CreatorLocationNumber.objects.filter(creator__in=exclude_creator_list):
         for my_letter in letters:
             if my_letter.pk == c.pk:
                 letters.remove(my_letter)
@@ -81,8 +99,12 @@ def get_authors_numbers(location, starting_letter, exclude_list=[]):
 
 
 # Get a new number for a certain name and location, with a list of ignored authors.
-def get_new_number_for_location(location, name: str, exclude_list=[]):
-    lst = get_authors_numbers(location, name[0], exclude_list)
+def get_new_number_for_location(location, name: str, exclude_creator_list=None, exclude_location_list=None):
+    if exclude_creator_list is None:
+        exclude_creator_list = []
+    if exclude_location_list is None:
+        exclude_location_list = []
+    lst = get_authors_numbers(location, name[0], exclude_creator_list, exclude_location_list)
 
     start = lst[0]
     end = start
@@ -92,7 +114,6 @@ def get_new_number_for_location(location, name: str, exclude_list=[]):
             end = codepin
             break
         start = codepin
-    print(start.name, start.number, end.name, end.number)
 
     return get_numbers_between(start.number, end.number), start, end
 
@@ -134,10 +155,14 @@ def get_number_for_str(string: str):
 
 # Return a number for a name, location, exclude_list
 # Returns first letter of name, minimum number, recommended number, maximum number
-def generate_author_number(name, location, exclude_list=[], include_one=False):
+def generate_author_number(name, location, exclude_list=None, exclude_location_list=None, include_one=False):
+    if exclude_list is None:
+        exclude_list = []
+    if exclude_location_list is None:
+        exclude_location_list = []
     if name is None or len(name) == 0:
         return None
-    numbers, lower_bound, upper_bound = get_new_number_for_location(location, name, exclude_list)
+    numbers, lower_bound, upper_bound = get_new_number_for_location(location, name, exclude_list, exclude_location_list)
 
     lower_num = get_number_for_str(lower_bound.name)
     upper_num = get_number_for_str(upper_bound.name)
@@ -151,5 +176,4 @@ def generate_author_number(name, location, exclude_list=[], include_one=False):
     num = floor(diff * len(numbers))
     if not include_one and len(numbers) > 1:
         num = max(1, num)
-
     return name[0], numbers[0], numbers[max(0, min(len(numbers) - 1, int(num)))], numbers[len(numbers) - 1]

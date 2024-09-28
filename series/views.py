@@ -1,14 +1,17 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 
 # Create your views here.
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
-from creators.models import Creator
+from book_code_generation.location_number_creation import get_new_number_for_location, generate_author_number, \
+    number_between
+from book_code_generation.views import get_book_code_series
+from creators.models import Creator, LocationNumber
 from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
 from series.models import Series, SeriesNode
 from utils.get_query_words import get_query_words
@@ -98,9 +101,11 @@ def delete_series(request, pk):
     series = Series.objects.filter(pk=pk)
     z = SeriesNode.objects.filter(part_of_series=series.first())
     if len(z) > 0:
-        return render(request, 'are-you-sure.html', {'what': "To delete " + (series.first().title or "<No name> ") + ", it has to have no sub-series."})
+        return render(request, 'are-you-sure.html', {
+            'what': "To delete " + (series.first().title or "<No name> ") + ", it has to have no sub-series."})
     if not request.GET.get('confirm'):
-        return render(request, 'are-you-sure.html', {'what': "delete series with name " + (series.first().title or "<No name> ")})
+        return render(request, 'are-you-sure.html',
+                      {'what': "delete series with name " + (series.first().title or "<No name> ")})
     series.delete()
 
     return redirect('homepage')
@@ -141,3 +146,92 @@ class SeriesList(ListView):
         if result is None:
             return []
         return list(result)
+
+
+def new_codegen(request, pk, hx_enabled=False):
+    templ = 'series/series_cutter_number/code_gen.html'
+    if hx_enabled:
+        templ = 'series/series_cutter_number/code_gen_hx.html'
+    series = get_object_or_404(Series, pk=pk)
+
+    if request.method == 'POST':
+        bk = request.POST.get("book_code")
+        if bk is not None:
+            series.book_code = bk
+            series.save()
+            if hx_enabled:
+                return HttpResponse(status=209, headers={"HX-Refresh": "true"})
+            else:
+                return HttpResponseRedirect(reverse('series.views', args=(pk,)))
+    return render(request, templ,
+                  {"series": series, "recommended_code": get_book_code_series(series)})
+
+
+def location_code_set_form(request, pk, hx_enabled=False):
+    templ = 'series/series_cutter_number/cutter_gen_form.html'
+    if hx_enabled:
+        templ = 'series/series_cutter_number/cutter_gen_form_hx.html'
+    series = get_object_or_404(Series, pk=pk)
+    if series.location_code:
+        return render(request, templ, {"series": series, "error": "Already has a location code."})
+    if request.method == "POST":
+        prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.title, pk=series.pk)).upper()
+        letter = request.POST.get("cutter_letter")
+        number = request.POST.get("cutter_number")
+        if letter is None or letter == "ZZZZ":
+            return render(request, templ, {"series": series,
+                                           "error": "No letter in query, please press generate button before editing"})
+        if not number or number == "0":
+            return render(request, templ,
+                          {"series": series, "letter": letter, "number": number, "error": "Invalid number."})
+        required_letter, beg, _, end = generate_author_number(prefix, series.location)
+        if not number_between(number, beg, end):
+            return render(request, templ,
+                          {"series": series, "letter": letter, "number": number,
+                           "error": "Number {num} is not valid; not between {beg} and {end} (including).".format(
+                               num=number, beg=beg, end=end)})
+
+        if required_letter != letter:
+            return render(request, templ,
+                          {"series": series, "letter": letter, "number": number,
+                           "error": "Wrong letter for code, press generate again."})
+
+        series.location_code = LocationNumber.objects.create(location=series.location, number=number, letter=letter,
+                                                             name=prefix)
+
+        series.save()
+        if hx_enabled:
+            return HttpResponseRedirect(reverse('series.gen_code_hx', args=(pk,)))
+        else:
+            return HttpResponseRedirect(reverse('series.gen_code', args=(pk,)))
+
+    return render(request, templ, {"series": series, "letter": "ZZZZ"})
+
+
+def location_code_set_gen(request, pk):
+    series = get_object_or_404(Series, pk=pk)
+    prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.title, pk=series.pk)).upper()
+    lst = []
+    if series.location_code:
+        lst = [series.location_code.pk]
+    letter, beg, val, end = generate_author_number(prefix, series.location, exclude_location_list=lst)
+    return render(request, 'series/series_cutter_number/number_result_template.html',
+                  {"letter": letter, "number": val, "beg": beg, "end": end})
+
+
+def location_code_delete_form(request, pk, hx_enabled=False):
+    templ = 'series/series_cutter_number/cutter_delete.html'
+    if hx_enabled:
+        templ = 'series/series_cutter_number/cutter_delete_hx.html'
+    series = get_object_or_404(Series, pk=pk)
+    if request.POST:
+        lc = series.location_code
+        series.location_code = None
+        series.save()
+        lc.delete()
+        if hx_enabled:
+            return HttpResponse(status=209, headers={"HX-Refresh": "true"})
+        else:
+            return HttpResponseRedirect(reverse('series.views', args=(pk,)))
+    return render(request, templ,
+                  {"series": series})
