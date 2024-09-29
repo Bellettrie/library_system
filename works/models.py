@@ -187,7 +187,7 @@ class Publication(Work):
 
         from series.models import Series, WorkInSeries
         series_list = WorkInSeries.objects.filter(work=self, is_primary=True)
-        if len(series_list) > 0:
+        if len(series_list) > 0 and series_list[0].part_of_series.book_code != "":
             if series_list[0].number is None:
                 return series_list[0].part_of_series.book_code + first_letters
 
