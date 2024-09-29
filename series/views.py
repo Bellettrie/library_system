@@ -210,7 +210,8 @@ def location_code_set_gen(request, pk):
     if series.location_code:
         lst = [series.location_code.pk]
     letter, beg, val, end = generate_author_number(prefix, series.location, exclude_location_list=lst)
-    return render(request, 'series/series_cutter_number/number_result_template.html',
+    return render(request,
+                  'book_code_generation/number_result_template.html',
                   {"letter": letter, "number": val, "beg": beg, "end": end})
 
 
