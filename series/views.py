@@ -14,6 +14,7 @@ from book_code_generation.views import get_book_code_series
 from creators.models import Creator, LocationNumber
 from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
 from series.models import Series, SeriesNode
+from series.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
 from works.views import word_to_regex
 
@@ -78,6 +79,11 @@ def edit_series(request, pk):
                 for c2w in instances:
                     c2w.series = instance
                     c2w.save()
+
+            if series is not None:
+                from search.models import SeriesWordMatch
+                SeriesWordMatch.series_rename(series)
+
             return HttpResponseRedirect(reverse('series.views', args=(instance.pk,)))
     else:
         if pk is not None:
@@ -148,8 +154,8 @@ class SeriesList(ListView):
         return list(result)
 
 
+@permission_required('series.change_series')
 def new_codegen(request, pk, hx_enabled=False):
-
     templ = 'series/series_cutter_number/code_gen.html'
     if hx_enabled:
         templ = 'series/series_cutter_number/code_gen_hx.html'
@@ -168,6 +174,7 @@ def new_codegen(request, pk, hx_enabled=False):
                   {"series": series, "recommended_code": get_book_code_series(series)})
 
 
+@permission_required('series.change_series')
 def location_code_set_form(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/cutter_gen_form.html'
     if hx_enabled:
@@ -179,36 +186,22 @@ def location_code_set_form(request, pk, hx_enabled=False):
         prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.title, pk=series.pk)).upper()
         letter = request.POST.get("cutter_letter")
         number = request.POST.get("cutter_number")
-        if letter is None or letter == "ZZZZ":
-            return render(request, templ, {"series": series,
-                                           "error": "No letter in query, please press generate button before editing"})
-        if not number or number == "0":
-            return render(request, templ,
-                          {"series": series, "letter": letter, "number": number, "error": "Invalid number."})
-        required_letter, beg, _, end = generate_author_number(prefix, series.location)
-        if not number_between(number, beg, end):
-            return render(request, templ,
-                          {"series": series, "letter": letter, "number": number,
-                           "error": "Number {num} is not valid; not between {beg} and {end} (including).".format(
-                               num=number, beg=beg, end=end)})
 
-        if required_letter != letter:
-            return render(request, templ,
-                          {"series": series, "letter": letter, "number": number,
-                           "error": "Wrong letter for code, press generate again."})
+        try:
+            validate_cutter_range(series, prefix, letter, number)
+        except   InvalidCutterRangeError as e:
+            return render(request, templ, {"series": series, "error": e.message, "letter": letter, "number": number})
 
         series.location_code = LocationNumber.objects.create(location=series.location, number=number, letter=letter,
                                                              name=prefix)
 
         series.save()
-        if hx_enabled:
-            return HttpResponseRedirect(reverse('series.gen_code_hx', args=(pk,)))
-        else:
-            return HttpResponseRedirect(reverse('series.gen_code', args=(pk,)))
+        return HttpResponseRedirect(reverse('series.gen_code', args=(pk,)))
 
     return render(request, templ, {"series": series, "letter": "ZZZZ"})
 
 
+@permission_required('series.change_series')
 def location_code_set_gen(request, pk):
     series = get_object_or_404(Series, pk=pk)
     prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.title, pk=series.pk)).upper()
@@ -220,6 +213,7 @@ def location_code_set_gen(request, pk):
                   {"letter": letter, "number": val, "beg": beg, "end": end})
 
 
+@permission_required('series.change_series')
 def location_code_delete_form(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/cutter_delete.html'
     if hx_enabled:
