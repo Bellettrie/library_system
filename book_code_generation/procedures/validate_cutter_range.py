@@ -3,7 +3,6 @@ from book_code_generation.location_number_creation import generate_author_number
 
 class InvalidCutterRangeError(Exception):
     def __init__(self, message):
-        # Call the base class constructor with the parameters it needs
         super().__init__(message)
         self.message = message
 
