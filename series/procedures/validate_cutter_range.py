@@ -22,7 +22,6 @@ def validate_cutter_range(series, custom_name, letter, number):
         raise InvalidCutterRangeError("Invalid number.")
 
     required_letter, beg, _, end = generate_author_number(custom_name, series.location)
-    print(series, custom_name, letter, number, beg, end)
     if not number_between(number, beg, end):
         raise InvalidCutterRangeError(
             "Number {num} is not valid; not between {beg} and {end} (including).".format(
