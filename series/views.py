@@ -196,9 +196,11 @@ def location_code_set_form(request, pk, hx_enabled=False):
                                                              name=prefix)
 
         series.save()
+        if hx_enabled:
+            return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         return HttpResponseRedirect(reverse('series.gen_code', args=(pk,)))
 
-    return render(request, templ, {"series": series, "letter": "ZZZZ"})
+    return render(request, templ, {"series": series, "letter": "UNKNOWN"})
 
 
 @permission_required('series.change_series')

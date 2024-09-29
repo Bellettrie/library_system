@@ -78,7 +78,7 @@
             <td>{{ series.book_code }}
                 {% if perms.series.change_series %}
                     <a class="btn btn-primary btn-sm" hx-get="{% url 'series.gen_code' series.pk %}"
-                       hx-target="#dialog" href="{% url 'series.gen_code' series.pk %}">Edit</a>
+                       hx-target="#dialog" href="{% url 'series.gen_code' series.pk %}">{% if series.book_code %}Edit{% else %}New{% endif %}</a>
                 {% endif %}
             </td>
         </tr>

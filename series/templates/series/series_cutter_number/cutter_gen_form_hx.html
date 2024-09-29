@@ -15,12 +15,11 @@
             the custom code </small>
 
     </div>
-    <div class="form-group">
-        <label for="input_string">Generate</label>
-        <input type="button" class="form-control" hx-post="{% url 'series.cutter.gen_code_gen' series.pk %}"
-               hx-target="#cutter" hx-include="[prefix='prefix']" value="generate">
-    </div>
-    <div class="form-group" id="cutter">
+        <div class="form-group">
+            <input type="button" class="form-control" hx-post="{% url 'series.cutter.gen_code_gen' series.pk %}"
+                   hx-target="#cutter" hx-include="[prefix='prefix']" value="Generate">
+        </div>
+    <div id="cutter">
         {% include 'series/series_cutter_number/number_result_template.html' %}
     </div>
 {% endblock %}

@@ -16,7 +16,7 @@ def validate_cutter_range(series, custom_name, letter, number):
 
     The system has a hard demand that the text string is consistent with the numbers chosen, but does not demand that the custom_name is in any way related to the series.
     """
-    if letter is None or letter == "ZZZZ":
+    if letter is None or letter == "UNKNOWN":
         raise InvalidCutterRangeError("Letter not set; don't forget to press 'generate'.")
     if not number or number == "0":
         raise InvalidCutterRangeError("Invalid number.")
