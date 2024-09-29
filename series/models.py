@@ -68,9 +68,11 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
         first_letters = self.title[0:2].lower()
 
         if self.location_code is not None:
+            # If the series is bound to a specific location letter+number, we use these to generate a code for the series
             return self.location.category.code + "-" + self.location_code.letter + "-" + str(
                 self.location_code.number) + "-"
 
+        # If the series is part of a series and this superseries has a bookcode, base the code on the superseries.
         if self.part_of_series and self.part_of_series.book_code:
             pos = self.part_of_series.book_code
             if self.number is None:
@@ -81,6 +83,8 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
             else:
                 return pos + str(self.number)
 
+        # Finally, try to generate a code, which will be based on the rules of the category
+        # For instance, this could be by author, or by title.
         generator = GENERATORS[location.sig_gen]
         val, should_not_add = generator(FakeItem(self, location))
         if should_not_add:
