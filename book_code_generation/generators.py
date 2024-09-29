@@ -9,9 +9,6 @@ from creators.models import CreatorLocationNumber
 # Generate a book_code for an item (or series).
 def generate_code_from_author(item):
     pub = item.publication
-    if hasattr(pub, 'location_code') and pub.location_code is not None:
-        return item.location.category.code + "-" + pub.location_code.letter + "-" + str(
-            pub.location_code.number) + "-", True
     auth = pub.get_authors()
     if len(auth) > 0:
         author = auth[0].creator
