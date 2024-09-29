@@ -60,7 +60,7 @@
             <th>Location</th>
             <td>{{ series.location }}</td>
         </tr>
-        {% if series.location_code %}
+        {% if series.location_code and perms.series.change_series%}
             <tr>
                 <th>Location Code</th>
                 <td>{{ series.location_code.letter }}-{{ series.location_code.number }}
