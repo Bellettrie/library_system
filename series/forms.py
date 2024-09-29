@@ -2,7 +2,6 @@ from django.forms import Widget
 from django.template import loader
 
 from creators.forms import CreatorWidget
-from creators.models import Creator
 
 from django.conf import settings
 

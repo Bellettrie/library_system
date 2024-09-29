@@ -3,7 +3,6 @@
 {% block content %}
     <form method="post" action="#">
         {% csrf_token %}
-        It's recommended to first create/edit the series, and to then generate the book-code using the edit-button on the series-page.
         <table>
             {{ form.as_table }}
         </table>
