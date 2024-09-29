@@ -2,6 +2,10 @@
 
 {% block modal_title %}Set Location Code{% endblock %}
 {% block modal_content %}
+        Here you can overwrite the book-code range for the series, so the books of the series get placed at a location that may be more logical.<br>
+        This is intended for rare exceptions (such as Star Trek), so series without clear authors can get a location.<br>
+        For the most part, you want to first set the author of the series, and then generate the bookcode of the series directly.
+        <hr>
     {% if error %}
         <div class="alert-warning">
             {{ error }}
