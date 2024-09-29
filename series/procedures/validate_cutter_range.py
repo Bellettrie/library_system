@@ -30,6 +30,6 @@ def validate_cutter_range(series, custom_name, letter, number):
         )
 
     if required_letter != letter:
-        raise  InvalidCutterRangeError(
+        raise InvalidCutterRangeError(
             "Wrong letter for code, press generate again.")
     return None

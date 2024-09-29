@@ -189,7 +189,7 @@ def location_code_set_form(request, pk, hx_enabled=False):
 
         try:
             validate_cutter_range(series, prefix, letter, number)
-        except   InvalidCutterRangeError as e:
+        except InvalidCutterRangeError as e:
             return render(request, templ, {"series": series, "error": e.message, "letter": letter, "number": number})
 
         series.location_code = LocationNumber.objects.create(location=series.location, number=number, letter=letter,
