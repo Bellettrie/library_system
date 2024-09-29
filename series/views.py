@@ -8,13 +8,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
-from book_code_generation.location_number_creation import get_new_number_for_location, generate_author_number, \
-    number_between
+from book_code_generation.location_number_creation import generate_author_number
 from book_code_generation.views import get_book_code_series
 from creators.models import Creator, LocationNumber
 from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
 from series.models import Series, SeriesNode
-from series.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
+from book_code_generation.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
 from works.views import word_to_regex
 
@@ -188,7 +187,7 @@ def location_code_set_form(request, pk, hx_enabled=False):
         number = request.POST.get("cutter_number")
 
         try:
-            validate_cutter_range(series, prefix, letter, number)
+            validate_cutter_range(series.location, prefix, letter, number)
         except InvalidCutterRangeError as e:
             return render(request, templ, {"series": series, "error": e.message, "letter": letter, "number": number})
 
