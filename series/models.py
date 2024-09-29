@@ -60,6 +60,10 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
             str = self.part_of_series.get_canonical_title() + " > "
         return str + (self.title or '<no title>')
 
+    def part_of_series_update(self):
+        from search.models import SeriesWordMatch
+        SeriesWordMatch.series_rename(self)
+
     def generate_code_full(self, location):
         first_letters = self.title[0:2].lower()
 

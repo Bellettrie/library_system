@@ -12,19 +12,17 @@ def generate_code_from_author(item):
     auth = pub.get_authors()
     if len(auth) > 0:
         author = auth[0].creator
+        author_alias = author
 
-        code = "?" + CutterCodeRange.get_cutter_number(author.name).generated_affix + "?"
-        cl = CreatorLocationNumber.objects.filter(creator=author, location=item.location)
+        while author_alias is not None:
+            cl = CreatorLocationNumber.objects.filter(creator=author_alias, location=item.location)
+            if len(cl) == 1:
+                code = author_alias.name[0] + "-" + str(cl[0].number)
+                return item.location.category.code + "-" + code + "-", False
 
-        if len(cl) == 1:
-            code = author.name[0] + "-" + str(cl[0].number)
-        else:
-            if author.is_alias_of is not None and author.is_alias_of != author:
-                my_author = author.is_alias_of
-                cl = CreatorLocationNumber.objects.filter(creator=my_author, location=item.location)
-                if len(cl) == 1:
-                    code = my_author.name[0] + "-" + str(cl[0].number)
-        return item.location.category.code + "-" + code + "-", False
+            author_alias = author_alias.is_alias_of
+            if author_alias == author:
+                break
     return "Lacks info to generate code", True
 
 
@@ -35,16 +33,20 @@ def generate_code_from_author_translated(item):
     if pub.is_translated:
         prefix = "V"
     auth = item.publication.get_authors()
+
     if len(auth) > 0:
         author = auth[0].creator
+        author_alias = author
 
-        code = CutterCodeRange.get_cutter_number(author.name).generated_affix
-        cl = CreatorLocationNumber.objects.filter(creator=author, location=item.location)
+        while author_alias is not None:
+            cl = CreatorLocationNumber.objects.filter(creator=author_alias, location=item.location)
+            if len(cl) == 1:
+                code = author_alias.name[0] + "-" + str(cl[0].number)
+                return prefix + "-" + code + "-", False
 
-        if len(cl) == 1:
-            code = author.name[0] + "-" + str(cl[0].number)
-
-        return prefix + "-" + code + "-", False
+            author_alias = author_alias.is_alias_of
+            if author_alias == author:
+                break
     return "Lacks info to generate code", True
 
 
