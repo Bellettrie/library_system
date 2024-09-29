@@ -29,7 +29,7 @@
 {% endblock %}
 {% block modal_footer %}
     {% if not series.location_code %}
-    <a class="card-link" hx-get="{% url 'series.cutter.gen_code_hx' series.pk %}" hx-target="#dialog" hx-swap="innerHTML" href="{% url 'series.cutter.gen_code' series.pk %}">Custom Cutter Number</a>
+    <a class="card-link" hx-get="{% url 'series.cutter.gen_code' series.pk %}" hx-target="#dialog" hx-swap="innerHTML" href="{% url 'series.cutter.gen_code' series.pk %}">Custom Cutter Number</a>
     {% endif %}
     <input class="btn btn-success" type="submit" value="Save">
 {% endblock %}

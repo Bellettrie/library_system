@@ -13,13 +13,8 @@ urlpatterns = [
 
     path('new', new_series, name='series.new'),
 
-    path('code-gen/<slug:pk>', new_codegen, name='series.gen_code'),
-    path('code-gen/hx/<slug:pk>', hx_wrap(new_codegen), name='series.gen_code_hx'),
-
-    path('code-gen/cutter-delete/<slug:pk>', location_code_delete_form, name='series.cutter.del_code'),
-    path('code-gen/cutter-delete/hx/<slug:pk>', hx_wrap(location_code_delete_form), name='series.cutter.del_code_hx'),
-
-    path('code-gen/cutter/<slug:pk>', location_code_set_form, name='series.cutter.gen_code'),
-    path('code-gen/cutter/hx/<slug:pk>', hx_wrap(location_code_set_form), name='series.cutter.gen_code_hx'),
-    path('code-gen/cutter/<slug:pk>/generate', location_code_set_gen, name='series.cutter.gen_code_hx_gen'),
+    path('code-gen/<slug:pk>', hx_wrap(new_codegen), name='series.gen_code'),
+    path('code-gen/cutter-delete/<slug:pk>', hx_wrap(location_code_delete_form), name='series.cutter.del_code'),
+    path('code-gen/cutter/<slug:pk>', hx_wrap(location_code_set_form), name='series.cutter.gen_code'),
+    path('code-gen/cutter/<slug:pk>/generate', location_code_set_gen, name='series.cutter.gen_code_gen'),
 ]

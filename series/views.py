@@ -149,6 +149,7 @@ class SeriesList(ListView):
 
 
 def new_codegen(request, pk, hx_enabled=False):
+
     templ = 'series/series_cutter_number/code_gen.html'
     if hx_enabled:
         templ = 'series/series_cutter_number/code_gen_hx.html'

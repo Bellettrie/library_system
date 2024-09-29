@@ -65,7 +65,7 @@
                 <th>Location Code</th>
                 <td>{{ series.location_code.letter }}-{{ series.location_code.number }}
                     {% if perms.series.change_series %}
-                        <a class="btn btn-danger btn-sm" hx-get="{% url 'series.cutter.del_code_hx' series.pk %}"
+                        <a class="btn btn-danger btn-sm" hx-get="{% url 'series.cutter.del_code' series.pk %}"
                            hx-target="#dialog" href="{% url 'series.cutter.del_code' series.pk %}">Delete</a>
                     {% endif %}
                     <br>
@@ -77,7 +77,7 @@
             <th>Book Code</th>
             <td>{{ series.book_code }}
                 {% if perms.series.change_series %}
-                    <a class="btn btn-primary btn-sm" hx-get="{% url 'series.gen_code_hx' series.pk %}"
+                    <a class="btn btn-primary btn-sm" hx-get="{% url 'series.gen_code' series.pk %}"
                        hx-target="#dialog" href="{% url 'series.gen_code' series.pk %}">Edit</a>
                 {% endif %}
             </td>

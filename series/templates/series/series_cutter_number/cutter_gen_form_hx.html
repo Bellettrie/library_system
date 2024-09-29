@@ -17,7 +17,7 @@
     </div>
     <div class="form-group">
         <label for="input_string">Generate</label>
-        <input type="button" class="form-control" hx-post="{% url 'series.cutter.gen_code_hx_gen' series.pk %}"
+        <input type="button" class="form-control" hx-post="{% url 'series.cutter.gen_code_gen' series.pk %}"
                hx-target="#cutter" hx-include="[prefix='prefix']" value="generate">
     </div>
     <div class="form-group" id="cutter">
