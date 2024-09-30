@@ -6,10 +6,11 @@ from creators.models import CreatorLocationNumber, LocationNumber
 
 
 class CutterCodeResult:
-    def __init__(self, name: str, number: int, end='ZZZZZZZZZ', author=None):
+    def __init__(self, name: str, number: int, end='ZZZZZZZZZ', is_from_cutter_table=False):
         self.name = name
         self.number = number
         self.end = end
+        self.is_from_cutter_table = is_from_cutter_table
 
     def __str__(self):
         return self.name + "::" + str(self.number)

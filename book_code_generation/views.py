@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.http import  HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
 from django.shortcuts import get_object_or_404, render
@@ -11,7 +11,6 @@ from book_code_generation.models import CutterCodeRange
 from book_code_generation.helpers import normalize_str
 from book_code_generation.procedures.location_number_generation import generate_location_number, get_code_pins
 from creators.models import Creator
-from series.models import Series
 from works.models import Publication, Location
 
 
@@ -74,6 +73,7 @@ def show_letter_list(request):
                    'misses': out_of_order})
 
 
+@permission_required('works.change_work')
 def view_cutter_numbers(request):
     return render(request, 'book_code_generation/cutter_numbers_list.html',
                   {'cutters': CutterCodeRange.objects.all().order_by('from_affix')})

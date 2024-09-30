@@ -1,14 +1,6 @@
-from django.contrib.auth.models import Group
-
 from django.core.management.base import BaseCommand
 
-
 from datamining.views import get_member_statistics
-
-
-
-def number_shrinking(num):
-    return int(str(float("0." + num)).split(".")[1])
 
 
 class Command(BaseCommand):
