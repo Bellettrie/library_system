@@ -52,7 +52,7 @@ class Member(MemberData):
 
     def get_current_membership_period(self, current_date: datetime.date = None):
         current_date = current_date or get_today()
-        for period in MembershipPeriod.objects.filter(member=self):
+        for period in MembershipPeriod.objects.filter(member_id=self.id):
             if (period.start_date is None or period.start_date <= current_date) and (
                     period.end_date is None or current_date <= period.end_date):
                 return period
@@ -75,7 +75,7 @@ class Member(MemberData):
 
     def has_reservations(self):
         from reservations.models import Reservation
-        return len(Reservation.objects.filter(member=self)) > 0
+        return len(Reservation.objects.filter(member_id=self.id)) > 0
 
     def is_currently_member(self, current_date=None):
         return self.get_current_membership_period(current_date) is not None
@@ -135,10 +135,10 @@ class Member(MemberData):
 
     def can_be_deleted(self):
         from lendings.models import Lending
-        if len(Lending.objects.filter(Q(lended_by=self) | Q(handed_in_by=self) | Q(member=self))) > 0:
+        if len(Lending.objects.filter(Q(lended_by_id=self.id) | Q(handed_in_by_id=self.id) | Q(member_id=self.id))) > 0:
             return False
         from reservations.models import Reservation
-        if len(Reservation.objects.filter(Q(member=self) | Q(reserved_by=self))) > 0:
+        if len(Reservation.objects.filter(Q(member_id=self.id) | Q(reserved_by_id=self.id))) > 0:
             return False
         return True
 
