@@ -31,6 +31,10 @@ def generate_location_number(name, location, exclude_list=None, exclude_location
     num = floor(diff * len(numbers))
     if not include_one and len(numbers) > 1:
         num = max(1, num)
+
+    # If the lower side is from the cutter table, we could replace that one with the new code.
+    if lower_bound.is_from_cutter_table:
+        return name[0], lower_bound.number, lower_bound.number, numbers[len(numbers) - 1]
     return name[0], numbers[0], numbers[max(0, min(len(numbers) - 1, int(num)))], numbers[len(numbers) - 1]
 
 
@@ -51,7 +55,6 @@ def get_new_number_for_location(location, name: str, exclude_creator_list=None, 
             end = codepin
             break
         start = codepin
-
     return get_numbers_between(start.number, end.number), start, end
 
 
@@ -71,9 +74,11 @@ def get_code_pins(location, starting_letter, exclude_creator_list=None, exclude_
     lst = []
     for code in codes:
         if code.from_affix.startswith(starting_letter):
+            # Add a result to the list; store make it replaceable by the new code if-and-only-if it's not the first one.
+            not_first_element = len(lst) > 0
             lst.append(
                 CutterCodeResult(normalize_str(code.from_affix), normalize_number(code.number),
-                                 normalize_str(code.to_affix)))
+                                 normalize_str(code.to_affix), not_first_element))
 
     letters = list(LocationNumber.objects.filter(location=location, letter=starting_letter).exclude(
         pk__in=exclude_locationnumber_in))
