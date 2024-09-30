@@ -5,8 +5,10 @@
 {% block content %}
     <form method="post" action="#">
         {% csrf_token %}
-        Here you can overwrite the book-code range for the series, so the books of the series get placed at a location that may be more logical.<br>
-        This is intended for rare exceptions (such as Star Trek), so series without clear authors can get a location.<hr>
+        Here you can overwrite the book-code range for the series, so the books of the series get placed at a location
+        that may be more logical.<br>
+        This is intended for rare exceptions (such as Star Trek), so series without clear authors can get a location.
+        <hr>
         {% if error %}
             <div class="alert-warning">
                 {{ error }}
@@ -16,10 +18,9 @@
             <label for="input_string">Input</label>
             <input type="text" class="form-control" name="prefix" id="prefix" aria-describedby="bookcodehelp"
                    value="{{ series.title }} - {{ series.pk }}" required>
-            <small id="bookcodehelp" class="form-text text-muted">Overwrite this text to define what text is used to
-                create
-                the custom code </small>
-
+            <small id="bookcodehelp" class="form-text text-muted">
+                Overwrite this text to define what text is used to create the custom code
+            </small>
         </div>
         <div class="form-group">
             <input type="button" class="form-control" hx-post="{% url 'series.cutter.gen_code_gen' series.pk %}"
