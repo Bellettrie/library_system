@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import PROTECT
 
-from book_code_generation.models import BookCode, FakeItem
+from book_code_generation.models import FakeItem, BookCode
 from creators.models import LocationNumber
 from works.models import NamedTranslatableThing, Location, GENERATORS
 

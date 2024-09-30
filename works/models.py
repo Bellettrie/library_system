@@ -4,8 +4,7 @@ from django.db import models
 from django.db.models import PROTECT, CASCADE, Q
 from django.shortcuts import get_object_or_404
 
-from book_code_generation.models import BookCode, FakeItem
-from book_code_generation.location_number_creation import CutterCodeRange
+from book_code_generation.models import FakeItem, CutterCodeRange, BookCode
 from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, \
     generate_code_abc, generate_code_from_title, generate_code_abc_translated
 from creators.models import Creator, CreatorRole
