@@ -1,15 +1,15 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.db.models import Q
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.http import  HttpResponse, HttpResponseRedirect
 
 # Create your views here.
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from book_code_generation.forms import EditForm
-from book_code_generation.models import normalize_str
-from book_code_generation.location_number_creation import get_authors_numbers, CutterCodeRange, generate_author_number
+from book_code_generation.models import CutterCodeRange
+from book_code_generation.helpers import normalize_str
+from book_code_generation.procedures.location_number_generation import generate_location_number, get_code_pins
 from creators.models import Creator
 from series.models import Series
 from works.models import Publication, Location
@@ -39,22 +39,18 @@ def get_creator_number(request, creator_id, location_id):
     location = get_object_or_404(Location, pk=location_id)
 
     name = request.GET.get('name')
-    min_code = None
-    max_code = None
-    code = None
-    char = None
     try:
         creator = Creator.objects.get(id=creator_id)
         if not name:
             name = normalize_str(creator.name + " " + creator.given_names)
 
-        char, min_code, code, max_code = generate_author_number(normalize_str(name), location, exclude_list=[creator])
+        char, min_code, code, max_code = generate_location_number(normalize_str(name), location, exclude_list=[creator])
+        return HttpResponse(char + " :: " + str(min_code) + " < <b>" + str(code) + "</b> < " + str(max_code))
     except Creator.DoesNotExist:
         if not name:
             return HttpResponse("NONE")
-        char, min_code, code, max_code = generate_author_number(normalize_str(name), location, exclude_list=[])
-
-    return HttpResponse(char + " :: " + str(min_code) + " < <b>" + str(code) + "</b> < " + str(max_code))
+        char, min_code, code, max_code = generate_location_number(normalize_str(name), location, exclude_list=[])
+        return HttpResponse(char + " :: " + str(min_code) + " < <b>" + str(code) + "</b> < " + str(max_code))
 
 
 @permission_required('works.change_work')
@@ -66,7 +62,7 @@ def show_letter_list(request):
     numbers = []
     out_of_order = set()
     if location and atoz:
-        numbers = get_authors_numbers(location, atoz)
+        numbers = get_code_pins(location, atoz)
         prev = numbers[0]
         for number in numbers:
             if prev.name > number.name and int(prev.number) < int(number.number):
