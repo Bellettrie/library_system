@@ -153,6 +153,7 @@ class SeriesList(ListView):
         return list(result)
 
 
+@transaction.atomic
 @permission_required('series.change_series')
 def new_codegen(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/code_gen.html'
@@ -173,6 +174,7 @@ def new_codegen(request, pk, hx_enabled=False):
                   {"series": series, "recommended_code": get_book_code_series(series)})
 
 
+@transaction.atomic
 @permission_required('series.change_series')
 def location_code_set_form(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/cutter_gen_form.html'
@@ -215,6 +217,7 @@ def location_code_set_gen(request, pk):
                   {"letter": letter, "number": val, "beg": beg, "end": end})
 
 
+@transaction.atomic
 @permission_required('series.change_series')
 def location_code_delete_form(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/cutter_delete.html'
