@@ -1,4 +1,5 @@
-from book_code_generation.location_number_creation import generate_author_number, number_between
+from book_code_generation.math import number_between
+from book_code_generation.procedures.location_number_generation import generate_location_number
 
 
 class InvalidCutterRangeError(Exception):
@@ -19,7 +20,7 @@ def validate_cutter_range(location, name, letter, number):
     if not number or number == "0":
         raise InvalidCutterRangeError("Invalid number.")
 
-    required_letter, beg, _, end = generate_author_number(name, location)
+    required_letter, beg, _, end = generate_location_number(name, location)
     if not number_between(number, beg, end):
         raise InvalidCutterRangeError(
             "Number {num} is not valid; not between {beg} and {end} (including).".format(

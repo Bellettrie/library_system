@@ -4,8 +4,8 @@ import mysql.connector
 
 from django.core.management.base import BaseCommand
 
-from book_code_generation.models import CodePin, normalize_str, number_shrink_wrap
-from book_code_generation.location_number_creation import CutterCodeRange
+from book_code_generation.models import CutterCodeResult, CutterCodeRange
+from book_code_generation.helpers import normalize_str, normalize_number
 from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, generate_code_from_title
 from creators.models import CreatorLocationNumber
 
@@ -26,11 +26,11 @@ class Command(BaseCommand):
                 lst = []
                 for code in codes:
                     if code.from_affix.startswith(letter):
-                        lst.append(CodePin(normalize_str(code.from_affix), number_shrink_wrap(code.number)))
+                        lst.append(CutterCodeResult(normalize_str(code.from_affix), normalize_number(code.number)))
 
                 letters = list(CreatorLocationNumber.objects.filter(location=location, letter=letter))
                 for item in letters:
-                    lst.append(CodePin(normalize_str(item.creator.name + " " + item.creator.given_names), item.number))
+                    lst.append(CutterCodeResult(normalize_str(item.creator.name + " " + item.creator.given_names), item.number))
                 lst.sort(key=get_key)
                 prev = None
                 num = 0

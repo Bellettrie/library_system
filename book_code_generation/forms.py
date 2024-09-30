@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from book_code_generation.location_number_creation import CutterCodeRange
+from book_code_generation.models import CutterCodeRange
 
 
 class EditForm(ModelForm):
