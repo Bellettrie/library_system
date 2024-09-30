@@ -6,16 +6,6 @@
         <table>
             {{ form.as_table }}
         </table>
-        <h4> Show code</h4>
-        {% with publication_id=series.pk %}
-            {% with title_id='id_title' %}
-                {% with for_series=True %}
-                    {% with location_id='id_location' %}
-                        {% include 'book_code_generation/code_lookup.html' %}
-                    {% endwith %}
-                {% endwith %}
-            {% endwith %}
-        {% endwith %}
         <h4>Creators</h4>
         <table>
             {{ creators.as_table }}

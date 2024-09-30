@@ -1,0 +1,14 @@
+<div class="form-group">
+    <label for="cutter_letter">Cutter Letter</label>
+    <input type="text" class="form-control" name="cutter_letter" id="cutter_letter"
+           placeholder="Insert Cutter number here" value="{{ letter }}" readonly="readonly" >
+    <small id="cutter_letter_help" class="form-text text-muted">Update this field by regenerating the location
+        code.</small>
+</div>
+<div class="form-group">
+    <label for="cutter_number">Cutter Number</label>
+    <input type="number" class="form-control" name="cutter_number" id="cutter_number" aria-describedby="bookcodehelp"
+           placeholder="Insert Cutter number here" value="{{ number }}">
+    <small id="bookcodehelp" class="form-text text-muted">{% if beg %}Verify this number. Must be between {{ beg }} and
+        {{ end }} (including).{% else %}Use generate to fill this field.{% endif %}</small>
+</div>

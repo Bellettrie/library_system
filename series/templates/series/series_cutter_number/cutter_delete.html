@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+    Remove Location Code
+{% endblock %}
+{% block content %}
+    <form method="post" action="#">
+        {% csrf_token %}
+        Are you sure you want to remove this location code?
+
+        <input class="btn btn-danger" type="submit" value="Delete">
+
+    </form>
+{% endblock %}

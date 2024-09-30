@@ -180,9 +180,9 @@ class SeriesWordMatch(WordMatch):
 
         serieses = [series]
         for s in serieses:
-            for pub in Publication.objects.filter(workinseries__part_of_series=s):
+            for pub in Publication.objects.filter(workinseries__part_of_series_id=s.pk):
                 WordMatch.create_all_for(pub, words)
-            for ss in Series.objects.filter(part_of_series=s):
+            for ss in Series.objects.filter(part_of_series_id=s.pk):
                 serieses.append(ss)
 
 

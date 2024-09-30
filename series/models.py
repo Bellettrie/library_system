@@ -60,9 +60,19 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
             str = self.part_of_series.get_canonical_title() + " > "
         return str + (self.title or '<no title>')
 
+    def part_of_series_update(self):
+        from search.models import SeriesWordMatch
+        SeriesWordMatch.series_rename(self)
+
     def generate_code_full(self, location):
         first_letters = self.title[0:2].lower()
 
+        if self.location_code is not None:
+            # If the series is bound to a specific location letter+number, we use these to generate a code for the series
+            return self.location.category.code + "-" + self.location_code.letter + "-" + str(
+                self.location_code.number) + "-"
+
+        # If the series is part of a series and this superseries has a bookcode, base the code on the superseries.
         if self.part_of_series and self.part_of_series.book_code:
             pos = self.part_of_series.book_code
             if self.number is None:
@@ -73,6 +83,8 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
             else:
                 return pos + str(self.number)
 
+        # Finally, try to generate a code, which will be based on the rules of the category
+        # For instance, this could be by author, or by title.
         generator = GENERATORS[location.sig_gen]
         val, should_not_add = generator(FakeItem(self, location))
         if should_not_add:
@@ -80,22 +92,11 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
         else:
             return val + first_letters
 
-    def generate_code_prefix(self, location):
-        if self.part_of_series and self.part_of_series.book_code:
-            return self.part_of_series.book_code
-        generator = GENERATORS[location.sig_gen]
-        return generator(FakeItem(self, location))
-
     def get_all_items(self):
         pass
 
-    def part_of_series_update(self):
-        from search.models import SeriesWordMatch
-        SeriesWordMatch.series_rename(self)
-
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.part_of_series_update()
 
 
 class WorkInSeries(SeriesNode):
@@ -109,7 +110,9 @@ class WorkInSeries(SeriesNode):
         if self.is_primary and len(WorkInSeries.objects.filter(work=self.work, is_primary=True)) > required_length:
             raise RuntimeError("Cannot Save")
         super().save(*args, **kwargs)
-        self.part_of_series.part_of_series_update()
+
+        from search.models import SeriesWordMatch
+        SeriesWordMatch.series_rename(self.part_of_series)
 
     def get_authors(self):
         return self.part_of_series.get_authors()
@@ -122,7 +125,9 @@ class CreatorToSeries(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.series.part_of_series_update()
+
+        from search.models import SeriesWordMatch
+        SeriesWordMatch.series_rename(self.series)
 
     class Meta:
         unique_together = ("creator", "series", "number")
