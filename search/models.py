@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 from django.db.models import CASCADE
 
-from book_code_generation.models import normalize_str
+from book_code_generation.helpers import normalize_str
 from creators.models import Creator
 from series.models import Series
 from works.models import Publication, SubWork

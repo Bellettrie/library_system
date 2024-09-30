@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
-from book_code_generation.location_number_creation import generate_author_number
+from book_code_generation.procedures.location_number_generation import generate_location_number
 from book_code_generation.views import get_book_code_series
 from creators.models import Creator, LocationNumber
 from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
@@ -211,7 +211,7 @@ def location_code_set_gen(request, pk):
     lst = []
     if series.location_code:
         lst = [series.location_code.pk]
-    letter, beg, val, end = generate_author_number(prefix, series.location, exclude_location_list=lst)
+    letter, beg, val, end = generate_location_number(prefix, series.location, exclude_location_list=lst)
     return render(request,
                   'book_code_generation/number_result_template.html',
                   {"letter": letter, "number": val, "beg": beg, "end": end})
