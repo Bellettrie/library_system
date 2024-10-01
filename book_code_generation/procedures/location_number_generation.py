@@ -16,46 +16,49 @@ def generate_location_number(name, location, exclude_list=None, exclude_location
         return None
 
     # We get the candidate numbers for the code generation, as well as the codes that will surround the new code.
-    numbers, lower_bound, upper_bound = get_new_number_for_location(location, name, exclude_list, exclude_location_list)
+    location_numbers = get_location_numbers(location, name[0], exclude_list, exclude_location_list)
 
+    # We get the location_numbers just before and after the name
+    start, end = get_location_number_bounds(location_numbers, name)
+
+    # If the lower side is from the cutter table, we could replace that one with the new code.
+    possible_results = get_numbers_between(start.number, end.number),
+
+    if start.is_from_cutter_table:
+        return name[0], start.number, start.number, possible_results[len(possible_results) - 1]
+
+    result = get_recommended_result(name, start, end, possible_results, include_one)
+    return name[0], possible_results[0], result, possible_results[len(possible_results) - 1]
+
+
+def get_recommended_result(name, start, end, possible_results, include_one):
     # We calculate how far inbetween these two it should be (based on alphabetical distance).
-    lower_num = get_number_for_str(lower_bound.name)
-    upper_num = get_number_for_str(upper_bound.name)
+    lower_num = get_number_for_str(start.name)
+    upper_num = get_number_for_str(end.name)
     mid_num = get_number_for_str(normalize_str(name))
     if (upper_num - lower_num) == 0:
         diff = 0
     else:
         diff = (mid_num - lower_num) / (upper_num - lower_num)
-
     from math import floor
-    num = floor(diff * len(numbers))
-    if not include_one and len(numbers) > 1:
+    num = floor(diff * len(possible_results))
+    if not include_one and len(possible_results) > 1:
         num = max(1, num)
-
-    # If the lower side is from the cutter table, we could replace that one with the new code.
-    if lower_bound.is_from_cutter_table:
-        return name[0], lower_bound.number, lower_bound.number, numbers[len(numbers) - 1]
-    return name[0], numbers[0], numbers[max(0, min(len(numbers) - 1, int(num)))], numbers[len(numbers) - 1]
+    result_id = max(0, min(len(possible_results) - 1, int(num)))
+    return possible_results[result_id]
 
 
-# Get a new number for a certain name and location, with a list of ignored authors.
-# It also returns the lowest and highest possible option.
-def get_new_number_for_location(location, name: str, exclude_creator_list=None, exclude_location_list=None):
-    if exclude_creator_list is None:
-        exclude_creator_list = []
-    if exclude_location_list is None:
-        exclude_location_list = []
-    lst = get_code_pins(location, name[0], exclude_creator_list, exclude_location_list)
-
-    start = lst[0]
+# For a list of cutter-numbers, returns which ones are just above and below the result.
+def get_location_number_bounds(cutter_code_results, name: str):
+    start = cutter_code_results[0]
     end = start
 
-    for codepin in lst:
-        if codepin.name > normalize_str(name):
-            end = codepin
+    for cutter_code_result in cutter_code_results:
+        if cutter_code_result.name > normalize_str(name):
+            end = cutter_code_result
             break
-        start = codepin
-    return get_numbers_between(start.number, end.number), start, end
+        start = cutter_code_result
+    return start, end
 
 
 # get the CodePins for a starting letter and a location, based on the fact that some authors should be ignored.
@@ -64,7 +67,7 @@ def get_new_number_for_location(location, name: str, exclude_creator_list=None, 
 # Then we check which numbers are already given to authors & series in the same category, and what name belongs to those.
 # For the author and series codes, we can tell the code to ignore some, because we want to be able to regenerate the same code for the same author/series.
 # If there is overlap between the "standard cutter codes" and the "author/series codes", we remove the "standard cutter codes" where they overlap
-def get_code_pins(location, starting_letter, exclude_creator_list=None, exclude_locationnumber_in=None):
+def get_location_numbers(location, starting_letter, exclude_creator_list=None, exclude_locationnumber_in=None):
     if exclude_creator_list is None:
         exclude_creator_list = []
     if exclude_locationnumber_in is None:
