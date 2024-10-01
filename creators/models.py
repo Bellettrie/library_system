@@ -88,7 +88,7 @@ class Creator(models.Model):
         non_automa = 0
         code = None
         try:
-            code = CreatorLocationNumber.objects.get(creator_id=self.id, location=location)
+            code = CreatorLocationNumber.objects.get(creator_id=self.id, location_id=location.id)
         except CreatorLocationNumber.DoesNotExist:
             pass
         for item in author_item_dict.get(self, []):
