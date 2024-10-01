@@ -27,22 +27,24 @@ def generate_location_number(name, location, exclude_list=None, exclude_location
     if start.is_from_cutter_table:
         return name[0], start.number, start.number, possible_results[len(possible_results) - 1]
 
-    result = get_recommended_result(name, start, end, possible_results, include_one)
+    result = get_recommended_result(normalize_str(name), start.name, end.name, possible_results, include_one)
     return name[0], possible_results[0], result, possible_results[len(possible_results) - 1]
 
 
-def get_recommended_result(name, start, end, possible_results, include_one):
+def get_recommended_result(name, start, end, possible_results, also_keep_first_result):
     # We calculate how far inbetween these two it should be (based on alphabetical distance).
-    lower_num = get_number_for_str(start.name)
-    upper_num = get_number_for_str(end.name)
-    mid_num = get_number_for_str(normalize_str(name))
+    lower_num = get_number_for_str(start)
+    upper_num = get_number_for_str(end)
+    mid_num = get_number_for_str(name)
+
     if (upper_num - lower_num) == 0:
         diff = 0
     else:
         diff = (mid_num - lower_num) / (upper_num - lower_num)
     from math import floor
     num = floor(diff * len(possible_results))
-    if not include_one and len(possible_results) > 1:
+
+    if not also_keep_first_result and len(possible_results) > 1:
         num = max(1, num)
     result_id = max(0, min(len(possible_results) - 1, int(num)))
     return possible_results[result_id]
@@ -51,14 +53,11 @@ def get_recommended_result(name, start, end, possible_results, include_one):
 # For a list of cutter-numbers, returns which ones are just above and below the result.
 def get_location_number_bounds(cutter_code_results, name: str):
     start = cutter_code_results[0]
-    end = start
-
     for cutter_code_result in cutter_code_results:
         if cutter_code_result.name > normalize_str(name):
-            end = cutter_code_result
-            break
+            return start, cutter_code_result
         start = cutter_code_result
-    return start, end
+    return start, start
 
 
 # get the CodePins for a starting letter and a location, based on the fact that some authors should be ignored.
@@ -73,47 +72,40 @@ def get_location_numbers(location, starting_letter, exclude_creator_list=None, e
     if exclude_locationnumber_in is None:
         exclude_locationnumber_in = []
 
-    codes = CutterCodeRange.objects.all()
-    lst = []
+    codes = CutterCodeRange.objects.all().order_by('number')
+    base_code_range = []
     for code in codes:
         if code.from_affix.startswith(starting_letter):
             # Add a result to the list; store make it replaceable by the new code if-and-only-if it's not the first one.
-            not_first_element = len(lst) > 0
-            lst.append(
+            not_first_element = len(base_code_range) > 0
+            base_code_range.append(
                 CutterCodeResult(normalize_str(code.from_affix), normalize_number(code.number),
-                                 normalize_str(code.to_affix), not_first_element))
+                                 not_first_element))
 
-    letters = list(LocationNumber.objects.filter(location=location, letter=starting_letter).exclude(
-        pk__in=exclude_locationnumber_in))
-    keys_done = set()
-    my_letters = set()
+    location_numbers = list(LocationNumber.objects.filter(location=location, letter=starting_letter).exclude(
+        pk__in=exclude_locationnumber_in).order_by('number'))
 
     for c in CreatorLocationNumber.objects.filter(creator__in=exclude_creator_list):
-        for my_letter in letters:
-            if my_letter.pk == c.pk:
-                letters.remove(my_letter)
+        for my_loc in location_numbers:
+            if my_loc.pk == c.pk:
+                location_numbers.remove(my_loc)
 
-    for letter in letters:
-        l_name = normalize_str(letter.name)
-        to_hit = True
-        for code in lst:
-            if normalize_number(letter.number) == code.number:
-                if letter.number not in keys_done and code.name < l_name < code.end:
-                    keys_done.add(letter.number)
-                    to_hit = False
-                    code.name = l_name
-        if to_hit:
-            my_letters.add(letter)
-    for item in my_letters:
-        l_name = normalize_str(item.name)
+    results = []
+    for location_number in location_numbers:
+        for code in base_code_range:
+            if normalize_number(location_number.number) == code.number:
+                base_code_range.remove(code)
+        res = CutterCodeResult(normalize_str(location_number.name),
+                               normalize_number(location_number.number),
+                               False)
+        results.append(res)
 
-        if item.number not in letters:
-            lst.append(CutterCodeResult(l_name, normalize_number(item.number)))
+    for code in base_code_range:
+        results.append(code)
 
-    # find the letter and number for an item / author / series, based on name and location.
     def get_key(obj):
         return obj.number
+    results.sort(key=get_key)
 
-    lst.sort(key=get_key)
-    lst.append(CutterCodeResult(starting_letter + "ZZZZZZZZZZZZ", 99999))
-    return lst
+    results.append(CutterCodeResult(starting_letter + "ZZZZZZZZZZZZ", 99999))
+    return results
