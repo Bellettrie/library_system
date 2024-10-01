@@ -37,7 +37,7 @@ class Creator(models.Model):
     def get_all_items(self):
         result = []
         from works.models import Item, Publication
-        creators = set(Creator.objects.filter(is_alias_of=self))
+        creators = set(Creator.objects.filter(is_alias_of_id=self.id))
         creators.add(self)
         if self.is_alias_of:
             creators.add(self.is_alias_of)
@@ -49,7 +49,7 @@ class Creator(models.Model):
     def get_all_publications(self):
         result = []
         from works.models import Item, Publication
-        creators = set(Creator.objects.filter(is_alias_of=self))
+        creators = set(Creator.objects.filter(is_alias_of_id=self.id))
         creators.add(self)
         if self.is_alias_of:
             creators.add(self.is_alias_of)
@@ -71,7 +71,7 @@ class Creator(models.Model):
     def get_all_series(self):
 
         from series.models import Series
-        result = set(Series.objects.filter(creatortoseries__creator=self))
+        result = set(Series.objects.filter(creatortoseries__creator_id=self.id))
         result_len = 0
         while result_len < len(result):
             result_len = len(result)
@@ -88,7 +88,7 @@ class Creator(models.Model):
         non_automa = 0
         code = None
         try:
-            code = CreatorLocationNumber.objects.get(creator=self, location=location)
+            code = CreatorLocationNumber.objects.get(creator_id=self.id, location_id=location.id)
         except CreatorLocationNumber.DoesNotExist:
             pass
         for item in author_item_dict.get(self, []):

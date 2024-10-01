@@ -116,11 +116,11 @@ class Work(NamedTranslatableThing):
     def get_authors(self):
         from series.models import WorkInSeries
 
-        links = CreatorToWork.objects.filter(work=self)
+        links = CreatorToWork.objects.filter(work_id=self.id)
         authors = []
         for link in links:
             authors.append(link)
-        for serie in WorkInSeries.objects.filter(work=self, is_primary=True):
+        for serie in WorkInSeries.objects.filter(work_id=self.id, is_primary=True):
             authors = serie.get_authors() + authors
         author_set = list()
         for author in authors:
@@ -136,7 +136,7 @@ class Work(NamedTranslatableThing):
     def get_own_authors(self):
         from series.models import WorkInSeries
 
-        links = CreatorToWork.objects.filter(work=self)
+        links = CreatorToWork.objects.filter(work_id=self.id)
         authors = []
         for link in links:
             authors.append(link)
@@ -158,7 +158,7 @@ class Publication(Work):
         return len(self.workinpublication_set) == 0
 
     def get_items(self):
-        return Item.objects.filter(publication=self)
+        return Item.objects.filter(publication_id=self.id)
 
     def get_lend_item(self):
         for item in self.get_items():
@@ -173,7 +173,7 @@ class Publication(Work):
 
     def get_primary_series_or_none(self):
         from series.models import Series, WorkInSeries
-        series_list = WorkInSeries.objects.filter(work=self, is_primary=True)
+        series_list = WorkInSeries.objects.filter(work_id=self.id, is_primary=True)
         if len(series_list) > 0:
             return series_list[0]
         else:
@@ -186,7 +186,7 @@ class Publication(Work):
         first_letters = self.title[0:2].lower()
 
         from series.models import Series, WorkInSeries
-        series_list = WorkInSeries.objects.filter(work=self, is_primary=True)
+        series_list = WorkInSeries.objects.filter(work_id=self.id, is_primary=True)
         if len(series_list) > 0 and series_list[0].part_of_series.book_code != "":
             if series_list[0].number is None:
                 return series_list[0].part_of_series.book_code + first_letters
@@ -205,14 +205,14 @@ class Publication(Work):
 
     def generate_code_prefix(self, location):
         from series.models import Series, WorkInSeries
-        series_list = WorkInSeries.objects.filter(work=self, is_primary=True)
+        series_list = WorkInSeries.objects.filter(work_id=self.id, is_primary=True)
         if len(series_list) > 0 and len(series_list[0].part_of_series.book_code.split("-")) > 1:
             return series_list[0].part_of_series.book_code
         generator = GENERATORS[location.sig_gen]
         return generator(FakeItem(self, location))
 
     def get_sub_works(self):
-        return WorkInPublication.objects.filter(publication=self).order_by('number_in_publication')
+        return WorkInPublication.objects.filter(publication_id=self.id).order_by('number_in_publication')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -237,7 +237,7 @@ class Item(NamedThing, BookCode):
 
     def get_recode(self):
         from recode.models import Recode
-        recode = Recode.objects.filter(item=self)
+        recode = Recode.objects.filter(item_id=self.id)
         if len(recode) == 1:
             return recode[0]
         else:
@@ -250,24 +250,24 @@ class Item(NamedThing, BookCode):
         return self.get_state().type in available_states
 
     def is_lent_out(self):
-        return Lending.objects.filter(item=self, handed_in=False).count() > 0
+        return Lending.objects.filter(item_id=self.id, handed_in=False).count() > 0
 
     def is_available_for_lending(self):
         return self.in_available_state() and not self.is_lent_out()
 
     def is_reserved(self):
-        reservations = Reservation.objects.filter(item=self)
+        reservations = Reservation.objects.filter(item_id=self.id)
         return reservations.count() > 0
 
     def is_available_for_reservation(self):
         return self.in_available_state() and not self.is_reserved()
 
     def is_reserved_for(self, member):
-        reservations = Reservation.objects.filter(item=self, member=member)
+        reservations = Reservation.objects.filter(item_id=self.id, member=member)
         return reservations.count() > 0
 
     def current_lending(self):
-        return get_object_or_404(Lending, item=self, handed_in=False)
+        return get_object_or_404(Lending, item_id=self.id, handed_in=False)
 
     def get_title(self):
         return self.title or self.publication.title
@@ -294,28 +294,28 @@ class Item(NamedThing, BookCode):
         return self.publication.original_language
 
     def get_state(self):
-        states = ItemState.objects.filter(item=self).order_by("-date_time")
+        states = ItemState.objects.filter(item_id=self.id).order_by("-date_time")
         if len(states) == 0:
-            return ItemState(item=self, date_time=get_now(), type="AVAILABLE")
+            return ItemState(item_id=self.id, date_time=get_now(), type="AVAILABLE")
         return states[0]
 
     def get_prev_state(self):
-        states = ItemState.objects.filter(item=self).order_by("-date_time")
+        states = ItemState.objects.filter(item_id=self.id).order_by("-date_time")
         if len(states) <= 1:
-            return ItemState(item=self, date_time=get_now(), type="AVAILABLE")
+            return ItemState(item_id=self.id, date_time=get_now(), type="AVAILABLE")
         return states[1]
 
     def get_most_recent_state_not_this_inventarisation(self, inventarisation: Inventarisation):
-        states = ItemState.objects.filter(item=self).exclude(inventarisation=inventarisation).order_by("-date_time")
+        states = ItemState.objects.filter(item_id=self.id).exclude(inventarisation=inventarisation).order_by("-date_time")
         if len(states) == 0:
-            return ItemState(item=self, date_time=get_now(), type="AVAILABLE")
+            return ItemState(item_id=self.id, date_time=get_now(), type="AVAILABLE")
         return states[0]
 
     def is_seen(self, reason):
         state = self.get_state()
         if state.type != "AVAILABLE":
             if state.type not in not_switch_to_available:
-                ItemState.objects.create(item=self, type="AVAILABLE",
+                ItemState.objects.create(item_id=self.id, type="AVAILABLE",
                                          reason="Automatically switched because of reason: " + reason)
 
     def generate_code_full(self):

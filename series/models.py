@@ -18,7 +18,7 @@ class SeriesNode(models.Model):
     old_id = models.IntegerField(null=True, blank=True)
 
     def things_underneath(self):
-        return SeriesNode.objects.filter(part_of_series=self).order_by('number')
+        return SeriesNode.objects.filter(part_of_series_id=self.id).order_by('number')
 
     def is_series(self):
         try:
@@ -40,7 +40,7 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
 
     def get_authors(self):
         authors = []
-        for author in CreatorToSeries.objects.filter(series=self):
+        for author in CreatorToSeries.objects.filter(series_id=self.id):
             authors.append(author)
         if self.part_of_series is None:
             return authors
@@ -50,7 +50,7 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
 
     def get_own_authors(self):
         authors = []
-        for author in CreatorToSeries.objects.filter(series=self):
+        for author in CreatorToSeries.objects.filter(series_id=self.id):
             authors.append(author)
         return authors
 
