@@ -32,7 +32,6 @@ def normalize_str(strs):
     return normal.decode('ASCII')
 
 
-# Minimize number to a string: 370 --> 37.
 def normalize_number(num):
     """
     Normalize the number. Due to dirty type magics this works both on integers, and strings.
