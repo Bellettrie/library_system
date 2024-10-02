@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from book_code_generation.models import CutterCodeResult, CutterCodeRange
 from book_code_generation.procedures.location_number_generation import get_location_number_bounds, \
-    get_recommended_result, get_location_numbers
+    get_recommended_result, get_location_numbers, generate_location_number
 from creators.models import Creator, CreatorLocationNumber, LocationNumber
 from works.models import Location, Category, ItemType
 
@@ -85,29 +85,53 @@ class TestLocationNumberGeneration(TestCase):
         self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
 
 
-def test_get_location_numbers_location_codes_override_existing_ones_creator_exclude(self):
-    c = Creator.objects.create(name="AALBORG")
-    CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
-    c = Creator.objects.create(name="AANRECHT")
-    CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=12, letter="A")
+    def test_get_location_numbers_location_codes_override_existing_ones_creator_exclude(self):
+        c = Creator.objects.create(name="AALBORG")
+        CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
+        c = Creator.objects.create(name="AANRECHT")
+        CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=12, letter="A")
 
-    nums = get_location_numbers(self.loc1, "A", [c], [])
-    self.assertEqual(len(nums), 4)
-    self.assertEqual(nums[0].name, "A")
-    self.assertTrue(nums[1].name.startswith("AALBORG"))
-    self.assertTrue(nums[2].name.startswith("AAM"))
-    self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
+        nums = get_location_numbers(self.loc1, "A", [c], [])
+        self.assertEqual(len(nums), 4)
+        self.assertEqual(nums[0].name, "A")
+        self.assertTrue(nums[1].name.startswith("AALBORG"))
+        self.assertTrue(nums[2].name.startswith("AAM"))
+        self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
 
 
-def test_get_location_numbers_location_codes_override_existing_ones_location_number_exclude(self):
-    c = Creator.objects.create(name="AALBORG")
-    l1 = CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
-    c = Creator.objects.create(name="AANRECHT")
-    l2 = CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=12, letter="A")
+    def test_get_location_numbers_location_codes_override_existing_ones_location_number_exclude(self):
+        c = Creator.objects.create(name="AALBORG")
+        l1 = CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
+        c = Creator.objects.create(name="AANRECHT")
+        l2 = CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=12, letter="A")
 
-    nums = get_location_numbers(self.loc1, "A", [], [l1.pk, l2.pk])
-    self.assertEqual(len(nums), 4)
-    self.assertEqual(nums[0].name, "A")
-    self.assertTrue(nums[1].name.startswith("AAL"))
-    self.assertTrue(nums[2].name.startswith("AAM"))
-    self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
+        nums = get_location_numbers(self.loc1, "A", [], [l1.pk, l2.pk])
+        self.assertEqual(len(nums), 4)
+        self.assertEqual(nums[0].name, "A")
+        self.assertTrue(nums[1].name.startswith("AAL"))
+        self.assertTrue(nums[2].name.startswith("AAM"))
+        self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
+
+    def test_generate_location_number_recommends_boundary_if_still_default(self):
+        let, lowest, recommended, highest = generate_location_number("AALBORG", self.loc1)
+        self.assertEqual(let, "A")
+        self.assertEqual(lowest, "11")
+        self.assertEqual(recommended, "11")
+        self.assertEqual(highest, "119")
+
+    def test_generate_location_number_recommends_above_boundary_if_boundary_already_location_specific(self):
+        c = Creator.objects.create(name="AALBORG")
+        CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
+        let, lowest, recommended, highest = generate_location_number("AALBORGG", self.loc1)
+        self.assertEqual(let, "A")
+        self.assertEqual(lowest, "111")
+        # Note the 112, because we don't accept 1-ending ones by default
+        self.assertEqual(recommended, "112")
+        self.assertEqual(highest, "119")
+
+        let, lowest, recommended, highest = generate_location_number("AALBORGG", self.loc1, also_keep_first_result=True)
+        self.assertEqual(let, "A")
+        self.assertEqual(lowest, "111")
+        # Note the 112, because we don't accept 1-ending ones by default
+        self.assertEqual(recommended, "111")
+        self.assertEqual(highest, "119")

@@ -1,4 +1,6 @@
 # Which numbers to consider as candidates for a book-code?
+from book_code_generation.helpers import normalize_number
+
 MAGIC_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
