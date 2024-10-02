@@ -3,7 +3,7 @@ from django.test import TestCase
 from book_code_generation.models import CutterCodeResult, CutterCodeRange
 from book_code_generation.procedures.location_number_generation import get_location_number_bounds, \
     get_recommended_result, get_location_numbers
-from creators.models import Creator, CreatorLocationNumber
+from creators.models import Creator, CreatorLocationNumber, LocationNumber
 from works.models import Location, Category, ItemType
 
 
@@ -53,7 +53,7 @@ class TestLocationNumberGeneration(TestCase):
         CutterCodeRange.objects.create(from_affix="B", to_affix="BAART", number=10, generated_affix="B-10")
         CutterCodeRange.objects.create(from_affix="BAART", to_affix="BACK", number=11, generated_affix="B-11")
         CutterCodeRange.objects.create(from_affix="BACK", to_affix="BAD", number=12, generated_affix="B-12")
-        CutterCodeRange.objects.create(from_affix="BAD", to_affix="BAF", number=12, generated_affix="B-13")
+        CutterCodeRange.objects.create(from_affix="BAD", to_affix="BAF", number=13, generated_affix="B-13")
         typ = ItemType.objects.create()
         cat = Category.objects.create(name="A", code="A", item_type=typ)
         TestLocationNumberGeneration.l = Location.objects.create(name="LOC", old_id=1, category=cat)
@@ -76,11 +76,9 @@ class TestLocationNumberGeneration(TestCase):
 
     def test_get_location_numbers_location_codes_override_existing_ones(self):
         c = Creator.objects.create(name="AALBORG")
-        CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, name="ABBA", number=11,
-                                             letter="A")
+        CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=11, letter="A")
         c = Creator.objects.create(name="AANRECHT")
-        CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, name="ABBA", number=12,
-                                             letter="A")
+        CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=12, letter="A")
 
         nums = get_location_numbers(TestLocationNumberGeneration.l, "A", [], [])
         self.assertEqual(len(nums), 4)
@@ -89,9 +87,30 @@ class TestLocationNumberGeneration(TestCase):
         self.assertTrue(nums[2].name.startswith("AANRECHT"))
         self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
 
-        nums = get_location_numbers(TestLocationNumberGeneration.l, "A", [c], [])
-        self.assertEqual(len(nums), 4)
-        self.assertEqual(nums[0].name, "A")
-        self.assertTrue(nums[1].name.startswith("AALBORG"))
-        self.assertTrue(nums[2].name.startswith("AAM"))
-        self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
+
+def test_get_location_numbers_location_codes_override_existing_ones_creator_exclude(self):
+    c = Creator.objects.create(name="AALBORG")
+    CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=11, letter="A")
+    c = Creator.objects.create(name="AANRECHT")
+    CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=12, letter="A")
+
+    nums = get_location_numbers(TestLocationNumberGeneration.l, "A", [c], [])
+    self.assertEqual(len(nums), 4)
+    self.assertEqual(nums[0].name, "A")
+    self.assertTrue(nums[1].name.startswith("AALBORG"))
+    self.assertTrue(nums[2].name.startswith("AAM"))
+    self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
+
+
+def test_get_location_numbers_location_codes_override_existing_ones_location_number_exclude(self):
+    c = Creator.objects.create(name="AALBORG")
+    CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=11, letter="A")
+    c = Creator.objects.create(name="AANRECHT")
+    CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=12, letter="A")
+
+    nums = get_location_numbers(TestLocationNumberGeneration.l, "A", [], [l1.pk, l2.pk])
+    self.assertEqual(len(nums), 4)
+    self.assertEqual(nums[0].name, "A")
+    self.assertTrue(nums[1].name.startswith("AAL"))
+    self.assertTrue(nums[2].name.startswith("AAM"))
+    self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
