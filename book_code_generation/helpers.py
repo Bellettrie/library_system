@@ -93,8 +93,6 @@ def standardize_code(cc: str):
     return return_value
 
 
-# What numbers are between two numbers:
-# Ie. 37, 38 -> [371, 372, 373, 374, 375,376, 377, 378]
 def get_numbers_between(start, end):
     """
     Get a list of probable candidate numbers between two numbers. Observe that if start != end, there's infinitely many candidates.
@@ -102,6 +100,8 @@ def get_numbers_between(start, end):
     :param start: The number just below the range
     :param end:  The number just above the range
     :return: A list of candidate numbers
+
+    Example: Ie. 37, 38 -> [371, 372, 373, 374, 375,376, 377, 378]
     """
 
     magic_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -129,10 +129,12 @@ def get_numbers_between(start, end):
 
 
 def float_conv(number: str):
+    """ Converts a book-code-number (as string or int) to a float. Mostly used for comparisons"""
     return float("0." + str(number))
 
 
 def number_between(number: str, minimum: str, maximum: str):
+    """ Returns whether the first argument is inbetween the second and third ones, using book code number maths."""
     number_fl = float_conv(number)
     minimum_fl = float_conv(minimum)
     maximum_fl = float_conv(maximum)
