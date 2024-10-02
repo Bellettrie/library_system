@@ -1,19 +1,16 @@
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect
-
 # Create your views here.
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
-from book_code_generation.helpers import normalize_str
-from book_code_generation.math import get_number_for_str
+from book_code_generation.helpers import normalize_str, get_number_for_str
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
 from utils.get_query_words import get_query_words
-from works.models import CreatorToWork, Publication, Location, Item, Work, SubWork
+from works.models import CreatorToWork, Location
 
 
 # @permission_required('creators.view_creator')

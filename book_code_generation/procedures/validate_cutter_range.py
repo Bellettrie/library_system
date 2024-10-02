@@ -1,4 +1,4 @@
-from book_code_generation.math import number_between
+from book_code_generation.helpers import number_between
 from book_code_generation.procedures.location_number_generation import generate_location_number
 
 

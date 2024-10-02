@@ -1,6 +1,5 @@
-from book_code_generation.math import get_numbers_between, get_number_for_str
 from book_code_generation.models import CutterCodeResult, CutterCodeRange
-from book_code_generation.helpers import normalize_str, normalize_number
+from book_code_generation.helpers import normalize_str, normalize_number, get_numbers_between, get_number_for_str
 from creators.models import LocationNumber, CreatorLocationNumber
 
 
