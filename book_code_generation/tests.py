@@ -84,7 +84,6 @@ class TestLocationNumberGeneration(TestCase):
         self.assertTrue(nums[2].name.startswith("AANRECHT"))
         self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
 
-
     def test_get_location_numbers_location_codes_override_existing_ones_creator_exclude(self):
         c = Creator.objects.create(name="AALBORG")
         CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
@@ -97,7 +96,6 @@ class TestLocationNumberGeneration(TestCase):
         self.assertTrue(nums[1].name.startswith("AALBORG"))
         self.assertTrue(nums[2].name.startswith("AAM"))
         self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
-
 
     def test_get_location_numbers_location_codes_override_existing_ones_location_number_exclude(self):
         c = Creator.objects.create(name="AALBORG")

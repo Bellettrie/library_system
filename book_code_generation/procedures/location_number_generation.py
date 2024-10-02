@@ -7,7 +7,8 @@ from creators.models import LocationNumber, CreatorLocationNumber
 # Return a number for a name, location, exclude_list.
 # Example: this generates something like 371 when generating for 'Tolkien', on location SF (so codes would become SF-T-371-...)
 # Returns first letter of name, minimum number, recommended number, maximum number
-def generate_location_number(name, location, exclude_list=None, exclude_location_list=None, also_keep_first_result=False):
+def generate_location_number(name, location, exclude_list=None, exclude_location_list=None,
+                             also_keep_first_result=False):
     if exclude_list is None:
         exclude_list = []
     if exclude_location_list is None:
@@ -25,10 +26,12 @@ def generate_location_number(name, location, exclude_list=None, exclude_location
     possible_results = get_numbers_between(start.number, end.number)
 
     if start.is_from_cutter_table:
-        return name[0], normalize_number(start.number), normalize_number(start.number), normalize_number(possible_results[len(possible_results) - 1])
+        return name[0], normalize_number(start.number), normalize_number(start.number), normalize_number(
+            possible_results[len(possible_results) - 1])
 
     result = get_recommended_result(normalize_str(name), start.name, end.name, possible_results, also_keep_first_result)
-    return name[0], normalize_number(possible_results[0]), normalize_number(result), normalize_number(possible_results[len(possible_results) - 1])
+    return name[0], normalize_number(possible_results[0]), normalize_number(result), normalize_number(
+        possible_results[len(possible_results) - 1])
 
 
 def get_recommended_result(name, start, end, possible_results, also_keep_first_result):
@@ -71,7 +74,6 @@ def get_location_numbers(location, starting_letter, exclude_creator_list=None, e
         exclude_creator_list = []
     if exclude_locationnumber_id_in is None:
         exclude_locationnumber_id_in = []
-
 
     # process the location aspecific codes
     codes = CutterCodeRange.objects.all().order_by('number')
