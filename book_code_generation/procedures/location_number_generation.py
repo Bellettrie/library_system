@@ -7,7 +7,7 @@ from creators.models import LocationNumber, CreatorLocationNumber
 # Return a number for a name, location, exclude_list.
 # Example: this generates something like 371 when generating for 'Tolkien', on location SF (so codes would become SF-T-371-...)
 # Returns first letter of name, minimum number, recommended number, maximum number
-def generate_location_number(name, location, exclude_list=None, exclude_location_list=None, include_one=False):
+def generate_location_number(name, location, exclude_list=None, exclude_location_list=None, also_keep_first_result=False):
     if exclude_list is None:
         exclude_list = []
     if exclude_location_list is None:
@@ -22,13 +22,13 @@ def generate_location_number(name, location, exclude_list=None, exclude_location
     start, end = get_location_number_bounds(location_numbers, name)
 
     # If the lower side is from the cutter table, we could replace that one with the new code.
-    possible_results = get_numbers_between(start.number, end.number),
+    possible_results = get_numbers_between(start.number, end.number)
 
     if start.is_from_cutter_table:
-        return name[0], start.number, start.number, possible_results[len(possible_results) - 1]
+        return name[0], normalize_number(start.number), normalize_number(start.number), normalize_number(possible_results[len(possible_results) - 1])
 
-    result = get_recommended_result(normalize_str(name), start.name, end.name, possible_results, include_one)
-    return name[0], possible_results[0], result, possible_results[len(possible_results) - 1]
+    result = get_recommended_result(normalize_str(name), start.name, end.name, possible_results, also_keep_first_result)
+    return name[0], normalize_number(possible_results[0]), normalize_number(result), normalize_number(possible_results[len(possible_results) - 1])
 
 
 def get_recommended_result(name, start, end, possible_results, also_keep_first_result):
@@ -72,6 +72,8 @@ def get_location_numbers(location, starting_letter, exclude_creator_list=None, e
     if exclude_locationnumber_id_in is None:
         exclude_locationnumber_id_in = []
 
+
+    # process the location aspecific codes
     codes = CutterCodeRange.objects.all().order_by('number')
     base_code_range = []
     for code in codes:
@@ -82,30 +84,34 @@ def get_location_numbers(location, starting_letter, exclude_creator_list=None, e
                 CutterCodeResult(normalize_str(code.from_affix), normalize_number(code.number),
                                  not_first_element))
 
+    # Get the numbers for this location, with this letter, which are not excluded by the input variables
     location_numbers = list(LocationNumber.objects.filter(location=location, letter=starting_letter).exclude(
         pk__in=exclude_locationnumber_id_in).order_by('number'))
 
+    # Exclude based on author (used for regenerating the number for an author that already has one)
     for c in CreatorLocationNumber.objects.filter(creator__in=exclude_creator_list):
         for my_loc in location_numbers:
             if my_loc.pk == c.pk:
                 location_numbers.remove(my_loc)
 
+    # First add the results based on the specific codes
     results = []
     for location_number in location_numbers:
         for code in base_code_range:
+            # If there is overlap, we remove the base_code from the potential results
             if normalize_number(location_number.number) == code.number:
                 base_code_range.remove(code)
+
         res = CutterCodeResult(normalize_str(location_number.name),
                                normalize_number(location_number.number),
                                False)
         results.append(res)
 
+    # Add the base codes to the result
     for code in base_code_range:
         results.append(code)
 
-    def get_key(obj):
-        return obj.number
-    results.sort(key=get_key)
+    results.sort(key=lambda obj: obj.number)
 
     results.append(CutterCodeResult(starting_letter + "ZZZZZZZZZZZZ", 99999))
     return results
