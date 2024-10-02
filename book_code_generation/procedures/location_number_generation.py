@@ -4,11 +4,17 @@ from book_code_generation.helpers import normalize_str, normalize_number
 from creators.models import LocationNumber, CreatorLocationNumber
 
 
-# Return a number for a name, location, exclude_list.
-# Example: this generates something like 371 when generating for 'Tolkien', on location SF (so codes would become SF-T-371-...)
-# Returns first letter of name, minimum number, recommended number, maximum number
 def generate_location_number(name, location, exclude_list=None, exclude_location_list=None,
                              also_keep_first_result=False):
+    """
+    get_location_number returns the letter, lowest possible code number, recommended code number and highest possible code number for a name & location
+    :param name: The name for which a number should be selected
+    :param location: The location for which a number should be selected
+    :param exclude_list: List of creators that should be excluded from generation
+    :param exclude_location_list: List of creator_locations that should be excluded from generation
+    :param also_keep_first_result: Whether to skip the first result
+    :return:
+    """
     if exclude_list is None:
         exclude_list = []
     if exclude_location_list is None:
@@ -22,9 +28,9 @@ def generate_location_number(name, location, exclude_list=None, exclude_location
     # We get the location_numbers just before and after the name
     start, end = get_location_number_bounds(location_numbers, name)
 
-    # If the lower side is from the cutter table, we could replace that one with the new code.
     possible_results = get_numbers_between(start.number, end.number)
 
+    # If the lower side is from the cutter table, we could replace that one with the new code.
     if start.is_from_cutter_table:
         return name[0], normalize_number(start.number), normalize_number(start.number), normalize_number(
             possible_results[len(possible_results) - 1])
@@ -35,7 +41,13 @@ def generate_location_number(name, location, exclude_list=None, exclude_location
 
 
 def get_recommended_result(name, start, end, possible_results, also_keep_first_result):
-    # We calculate how far inbetween these two it should be (based on alphabetical distance).
+    """ get_recommended_result gives a single recommended location number for a name, based on the names of the locations just before/after, and a list of candidate numbers.
+    :param name The name for which a number is selected
+    :param start The name belonging to the number just before it
+    :param end The name belonging to the number after it
+    :param possible_results The list of candidate numbers
+    :param also_keep_first_result If True, it will not skip the first element in possible_results
+    """
     lower_num = get_number_for_str(start)
     upper_num = get_number_for_str(end)
     mid_num = get_number_for_str(name)
@@ -53,8 +65,13 @@ def get_recommended_result(name, start, end, possible_results, also_keep_first_r
     return possible_results[result_id]
 
 
-# For a list of cutter-numbers, returns which ones are just above and below the result.
 def get_location_number_bounds(cutter_code_results, name: str):
+    """
+    get_location_number_bounds gives the cutter-numbers just above and below the name
+    :param cutter_code_results: A list of cutter_code_results
+    :param name:  The name for which to look for the ones just above/below.
+    :return:
+    """
     start = cutter_code_results[0]
     for cutter_code_result in cutter_code_results:
         if cutter_code_result.name > normalize_str(name):
@@ -63,13 +80,20 @@ def get_location_number_bounds(cutter_code_results, name: str):
     return start, start
 
 
-# get the CodePins for a starting letter and a location, based on the fact that some authors should be ignored.
-# This is based on a two-phase system:
-# First we take the "standard cutter codes" as they are defined by our table (as per the code tables)
-# Then we check which numbers are already given to authors & series in the same category, and what name belongs to those.
-# For the author and series codes, we can tell the code to ignore some, because we want to be able to regenerate the same code for the same author/series.
-# If there is overlap between the "standard cutter codes" and the "author/series codes", we remove the "standard cutter codes" where they overlap
 def get_location_numbers(location, starting_letter, exclude_creator_list=None, exclude_locationnumber_id_in=None):
+    """
+    get_location_numbers returns the CutterCodeRanges for a starting letter and a location, based on the fact that some authors should be ignored.
+    This is based on a two-phase system:
+    First we take the "standard cutter codes" as they are defined by our table (as per the code tables)
+    Then we check which numbers are already given to authors & series in the same category, and what name belongs to those.
+    For the author and series codes, we can tell the code to ignore some, because we want to be able to regenerate the same code for the same author/series.
+    If there is overlap between the "standard cutter codes" and the "author/series codes", we remove the "standard cutter codes" where they overlap
+    :param location: The location for which to get the CutterCodeRanges
+    :param starting_letter: The starting-letter for which we're looking for the codes
+    :param exclude_creator_list: Which creators should be excluded from the search
+    :param exclude_locationnumber_id_in: Which LocationNumbers should be excluded from the search
+    :return: A list of CutterCodeRange, ordered by number
+    """
     if exclude_creator_list is None:
         exclude_creator_list = []
     if exclude_locationnumber_id_in is None:

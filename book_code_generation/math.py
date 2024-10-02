@@ -1,12 +1,16 @@
-# Which numbers to consider as candidates for a book-code?
-from book_code_generation.helpers import normalize_number
-
-MAGIC_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-
 # What numbers are between two numbers:
 # Ie. 37, 38 -> [371, 372, 373, 374, 375,376, 377, 378]
 def get_numbers_between(start, end):
+    """
+    Get a list of probable candidate numbers between two numbers. Observe that if start != end, there's infinitely many candidates.
+    If start == end, return start.
+    :param start: The number just below the range
+    :param end:  The number just above the range
+    :return: A list of candidate numbers
+    """
+
+    magic_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
     start_float = float("0." + str(start))
     end_float = float("0." + str(end))
     runs = 0
@@ -19,7 +23,7 @@ def get_numbers_between(start, end):
         start_int = int(start_float)
         runner = start_int
         while runner < end_float:
-            for number in MAGIC_NUMBERS:
+            for number in magic_numbers:
                 target = runner * 10 + number
                 if round(start_float * 1000) / 100 < target < round(end_float * 1000) / 100:
                     numbers.append(target)

@@ -25,7 +25,7 @@ def split_ligatures(s):
 
 
 def normalize_str(strs):
-    """Normalizes string in such a way that when sorted it's in the order we want. It destroys accents and merges IJ. Only works for western-like names"""
+    """ Normalizes string in such a way that when sorted it's in the order we want. It destroys accents and merges IJ. Only works for western-like names"""
     strs = split_ligatures(strs).upper().replace("IJ", "Y").replace("ø".upper(), "O")
     data = strs
     normal = unicodedata.normalize('NFKD', data).encode('ASCII', 'ignore')
@@ -34,11 +34,19 @@ def normalize_str(strs):
 
 # Minimize number to a string: 370 --> 37.
 def normalize_number(num):
+    """
+    Normalize the number. Due to dirty type magics this works both on integers, and strings.
+    *Example*: 370 --> 37
+    """
     return str(float('0.' + str(num)))[2:]
 
 
-# Get 37 from SF-T-37-lr1
 def get_number_for_code(code: str):
+    """
+    Get the number from a book_code
+    :param code: A book_code
+    :return: Eg. 37 from SF-T-37-lr1
+    """
     code_parts = code.split("-")
     if len(code_parts) > 2:
         try:
@@ -52,9 +60,12 @@ def get_number_for_code(code: str):
                 pass
 
 
-# Turn code with strange numbers into standardized numbers:
-# SF-T-370-lr1 ==> SF-T-37-lr1
+
 def standardize_code(cc: str):
+    """
+    Turn code with strange numbers into standardized numbers:
+    SF-T-370-lr1 ==> SF-T-37-lr1
+    """
     if len(cc) > 0 and cc[0] == "V":
         cc = "N" + cc[1:]
     code = cc.replace(" ", "").replace(".", "")
