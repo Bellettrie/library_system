@@ -43,9 +43,6 @@ class TestLocationNumberGenerationHelpers(TestCase):
 
 
 class TestLocationNumberGeneration(TestCase):
-    l = None
-    l2 = None
-
     def setUp(self):
         CutterCodeRange.objects.create(from_affix="A", to_affix="AAL", number=10, generated_affix="A-10")
         CutterCodeRange.objects.create(from_affix="AAL", to_affix="AAM", number=11, generated_affix="A-11")
@@ -56,17 +53,17 @@ class TestLocationNumberGeneration(TestCase):
         CutterCodeRange.objects.create(from_affix="BAD", to_affix="BAF", number=13, generated_affix="B-13")
         typ = ItemType.objects.create()
         cat = Category.objects.create(name="A", code="A", item_type=typ)
-        TestLocationNumberGeneration.l = Location.objects.create(name="LOC", old_id=1, category=cat)
-        TestLocationNumberGeneration.l2 = Location.objects.create(name="LOC2", old_id=2, category=cat)
+        self.loc1 = Location.objects.create(name="LOC", old_id=1, category=cat)
+        self.loc2 = Location.objects.create(name="LOC2", old_id=2, category=cat)
 
     def test_get_location_numbers_results_all_cutter_code_range_for__letter(self):
-        nums = get_location_numbers(TestLocationNumberGeneration.l, "A", [], [])
+        nums = get_location_numbers(self.loc1, "A", [], [])
         self.assertEqual(len(nums), 4)
         self.assertEqual(nums[0].name, "A")
         self.assertEqual(nums[1].name, "AAL")
         self.assertEqual(nums[2].name, "AAM")
         self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
-        nums = get_location_numbers(TestLocationNumberGeneration.l, "B", [], [])
+        nums = get_location_numbers(self.loc1, "B", [], [])
         self.assertEqual(len(nums), 5)
         self.assertEqual(nums[0].name, "B")
         self.assertEqual(nums[1].name, "BAART")
@@ -76,11 +73,11 @@ class TestLocationNumberGeneration(TestCase):
 
     def test_get_location_numbers_location_codes_override_existing_ones(self):
         c = Creator.objects.create(name="AALBORG")
-        CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=11, letter="A")
+        CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
         c = Creator.objects.create(name="AANRECHT")
-        CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=12, letter="A")
+        CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=12, letter="A")
 
-        nums = get_location_numbers(TestLocationNumberGeneration.l, "A", [], [])
+        nums = get_location_numbers(self.loc1, "A", [], [])
         self.assertEqual(len(nums), 4)
         self.assertEqual(nums[0].name, "A")
         self.assertTrue(nums[1].name.startswith("AALBORG"))
@@ -90,11 +87,11 @@ class TestLocationNumberGeneration(TestCase):
 
 def test_get_location_numbers_location_codes_override_existing_ones_creator_exclude(self):
     c = Creator.objects.create(name="AALBORG")
-    CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=11, letter="A")
+    CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
     c = Creator.objects.create(name="AANRECHT")
-    CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=12, letter="A")
+    CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=12, letter="A")
 
-    nums = get_location_numbers(TestLocationNumberGeneration.l, "A", [c], [])
+    nums = get_location_numbers(self.loc1, "A", [c], [])
     self.assertEqual(len(nums), 4)
     self.assertEqual(nums[0].name, "A")
     self.assertTrue(nums[1].name.startswith("AALBORG"))
@@ -104,11 +101,11 @@ def test_get_location_numbers_location_codes_override_existing_ones_creator_excl
 
 def test_get_location_numbers_location_codes_override_existing_ones_location_number_exclude(self):
     c = Creator.objects.create(name="AALBORG")
-    CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=11, letter="A")
+    l1 = CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
     c = Creator.objects.create(name="AANRECHT")
-    CreatorLocationNumber.objects.create(creator=c, location=TestLocationNumberGeneration.l, number=12, letter="A")
+    l2 = CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=12, letter="A")
 
-    nums = get_location_numbers(TestLocationNumberGeneration.l, "A", [], [l1.pk, l2.pk])
+    nums = get_location_numbers(self.loc1, "A", [], [l1.pk, l2.pk])
     self.assertEqual(len(nums), 4)
     self.assertEqual(nums[0].name, "A")
     self.assertTrue(nums[1].name.startswith("AAL"))
