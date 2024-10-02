@@ -66,11 +66,11 @@ def get_location_number_bounds(cutter_code_results, name: str):
 # Then we check which numbers are already given to authors & series in the same category, and what name belongs to those.
 # For the author and series codes, we can tell the code to ignore some, because we want to be able to regenerate the same code for the same author/series.
 # If there is overlap between the "standard cutter codes" and the "author/series codes", we remove the "standard cutter codes" where they overlap
-def get_location_numbers(location, starting_letter, exclude_creator_list=None, exclude_locationnumber_in=None):
+def get_location_numbers(location, starting_letter, exclude_creator_list=None, exclude_locationnumber_id_in=None):
     if exclude_creator_list is None:
         exclude_creator_list = []
-    if exclude_locationnumber_in is None:
-        exclude_locationnumber_in = []
+    if exclude_locationnumber_id_in is None:
+        exclude_locationnumber_id_in = []
 
     codes = CutterCodeRange.objects.all().order_by('number')
     base_code_range = []
@@ -83,7 +83,7 @@ def get_location_numbers(location, starting_letter, exclude_creator_list=None, e
                                  not_first_element))
 
     location_numbers = list(LocationNumber.objects.filter(location=location, letter=starting_letter).exclude(
-        pk__in=exclude_locationnumber_in).order_by('number'))
+        pk__in=exclude_locationnumber_id_in).order_by('number'))
 
     for c in CreatorLocationNumber.objects.filter(creator__in=exclude_creator_list):
         for my_loc in location_numbers:
