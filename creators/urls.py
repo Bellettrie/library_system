@@ -10,5 +10,4 @@ urlpatterns = [
     path('delete/<int:creator_id>', views.delete, name='creator.delete'),
     path('edit/<int:creator_id>', views.edit, name='creator.edit'),
     path('new/', views.edit, name='creator.new'),
-    path('collisions/', views.collisions, name='creator.collides'),
 ]

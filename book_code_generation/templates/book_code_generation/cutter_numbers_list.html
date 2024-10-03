@@ -4,8 +4,6 @@
 {% load creator_books %}
 {% block title %}List of Cutter Numbers{% endblock %}
 {% block content %}
-    Don't use this page without help, it can cause serious problems.
-    <a href="{% url 'book_code.cutter_new' %}" class="btn btn-primary">New</a>
     <table>
         <tr>
             <th>From</th>
@@ -19,7 +17,6 @@
                 <td> {{ cutter.to_affix }}</td>
                 <td> {{ cutter.number }}</td>
                 <td>{{ cutter.location }}</td>
-                <td><a href="{% url 'book_code.cutter_edit' cutter.pk %}">EDIT</a> / Delete</td>
             </tr>
         {% endfor %}
     </table>
