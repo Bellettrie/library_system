@@ -54,8 +54,10 @@ def edit(request, creator_id=None):
                         if request.POST.get("allow_change"):
                             force_relabel(c2w, ld[0], ld[1])
                         else:
-                            form.add_error(None, "To change the location number of one of the locations, items have to be relabeled. Set the checkbox to allow this.")
-                            return render(request, 'creators/edit.html', {'form': form, 'creator': creator, 'locations': locations})
+                            form.add_error(None,
+                                           "To change the location number of one of the locations, items have to be relabeled. Set the checkbox to allow this.")
+                            return render(request, 'creators/edit.html',
+                                          {'form': form, 'creator': creator, 'locations': locations})
 
                 c2w.creator = instance
                 c2w.save()
@@ -81,7 +83,8 @@ def show(request, creator_id):
 def delete(request, creator_id):
     creator = Creator.objects.get(pk=creator_id)
     if not request.GET.get('confirm'):
-        return render(request, 'are-you-sure.html', {'what': "delete creator with name " + (creator.get_name() or "<No name> ")})
+        return render(request, 'are-you-sure.html',
+                      {'what': "delete creator with name " + (creator.get_name() or "<No name> ")})
     CreatorToWork.objects.filter(creator=creator).delete()
     creator.delete()
 
