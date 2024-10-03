@@ -25,22 +25,29 @@ def generate_location_number(name: str, location: Location, exclude_list: List[C
     if name is None or len(name) == 0:
         return "Name cannot be empty", "", "", ""
 
+    normalized_name = normalize_str(name)
+    first_letter = normalized_name[0]
+
     # We get the candidate numbers for the code generation, as well as the codes that will surround the new code.
-    location_numbers = get_location_numbers(location, name[0], exclude_list, exclude_location_list)
+    location_numbers = get_location_numbers(location, first_letter, exclude_list, exclude_location_list)
 
     # We get the location_numbers just before and after the name
-    start, end = get_location_number_bounds(location_numbers, name)
+    start, end = get_location_number_bounds(location_numbers, normalized_name)
 
     possible_results = get_numbers_between(start.number, end.number)
 
+    lowest_result = normalize_number(possible_results[0])
+    highest_result = normalize_number(possible_results[len(possible_results) - 1])
+
     # If the lower side is from the cutter table, we could replace that one with the new code.
     if start.is_from_cutter_table:
-        return name[0], normalize_number(start.number), normalize_number(start.number), normalize_number(
-            possible_results[len(possible_results) - 1])
+        lowest_result = normalize_number(start.number)
+        recommended_result = lowest_result
+    else:
+        recommended_result = normalize_number(get_recommended_result(normalized_name, start.name, end.name, possible_results,
+                                                    also_keep_first_result))
 
-    result = get_recommended_result(normalize_str(name), start.name, end.name, possible_results, also_keep_first_result)
-    return name[0], normalize_number(possible_results[0]), normalize_number(result), normalize_number(
-        possible_results[len(possible_results) - 1])
+    return first_letter, lowest_result, recommended_result, highest_result
 
 
 def get_recommended_result(name: str, start: str, end: str, possible_results: List[str],
@@ -79,7 +86,7 @@ def get_location_number_bounds(cutter_code_results: List[CutterCodeResult], name
     """
     start = cutter_code_results[0]
     for cutter_code_result in cutter_code_results:
-        if cutter_code_result.name > normalize_str(name):
+        if cutter_code_result.name > name:
             return start, cutter_code_result
         start = cutter_code_result
     return start, start
