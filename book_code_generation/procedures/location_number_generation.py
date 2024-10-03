@@ -1,10 +1,14 @@
+from typing import List, Tuple
+
 from book_code_generation.models import CutterCodeResult, CutterCodeRange
 from book_code_generation.helpers import normalize_str, normalize_number, get_numbers_between, get_number_for_str
-from creators.models import LocationNumber, CreatorLocationNumber
+from creators.models import LocationNumber, CreatorLocationNumber, Creator
+from works.models import Location
 
 
-def generate_location_number(name, location, exclude_list=None, exclude_location_list=None,
-                             also_keep_first_result=False):
+def generate_location_number(name: str, location: Location, exclude_list: List[Creator] = None,
+                             exclude_location_list: List[LocationNumber] = None,
+                             also_keep_first_result: bool = False) -> Tuple[str, str, str, str]:
     """
     get_location_number returns the letter, lowest possible code number, recommended code number and highest possible code number for a name & location
     :param name: The name for which a number should be selected
@@ -12,14 +16,14 @@ def generate_location_number(name, location, exclude_list=None, exclude_location
     :param exclude_list: List of creators that should be excluded from generation
     :param exclude_location_list: List of creator_locations that should be excluded from generation
     :param also_keep_first_result: Whether to skip the first result
-    :return:
+    :return: The starting letter of the name, lowest possible code number, recommended code number and highest possible code number for a name.
     """
     if exclude_list is None:
         exclude_list = []
     if exclude_location_list is None:
         exclude_location_list = []
     if name is None or len(name) == 0:
-        return None
+        return "Name cannot be empty", "", "", ""
 
     # We get the candidate numbers for the code generation, as well as the codes that will surround the new code.
     location_numbers = get_location_numbers(location, name[0], exclude_list, exclude_location_list)
@@ -39,7 +43,8 @@ def generate_location_number(name, location, exclude_list=None, exclude_location
         possible_results[len(possible_results) - 1])
 
 
-def get_recommended_result(name, start, end, possible_results, also_keep_first_result):
+def get_recommended_result(name: str, start: str, end: str, possible_results: List[str],
+                           also_keep_first_result: bool = False) -> str:
     """ get_recommended_result gives a single recommended location number for a name, based on the names of the locations just before/after, and a list of candidate numbers.
     :param name The name for which a number is selected
     :param start The name belonging to the number just before it
@@ -64,7 +69,8 @@ def get_recommended_result(name, start, end, possible_results, also_keep_first_r
     return possible_results[result_id]
 
 
-def get_location_number_bounds(cutter_code_results, name: str):
+def get_location_number_bounds(cutter_code_results: List[CutterCodeResult], name: str) -> Tuple[
+    CutterCodeResult, CutterCodeResult]:
     """
     get_location_number_bounds gives the cutter-numbers just above and below the name
     :param cutter_code_results: A list of cutter_code_results
@@ -79,7 +85,10 @@ def get_location_number_bounds(cutter_code_results, name: str):
     return start, start
 
 
-def get_location_numbers(location, starting_letter, exclude_creator_list=None, exclude_locationnumber_id_in=None):
+def get_location_numbers(location: Location,
+                         starting_letter: str,
+                         exclude_creator_list: List[Creator] = None,
+                         exclude_locationnumber_id_in: List[LocationNumber] = None) -> List[CutterCodeResult]:
     """
     get_location_numbers returns the CutterCodeRanges for a starting letter and a location, based on the fact that some authors should be ignored.
     This is based on a two-phase system:
