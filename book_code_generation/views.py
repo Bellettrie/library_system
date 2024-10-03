@@ -71,37 +71,3 @@ def show_letter_list(request):
     return render(request, 'book_code_generation/code_list.html',
                   {'locations': locations, 'location': location, 'letters': letters, 'atoz': atoz, 'entries': numbers,
                    'misses': out_of_order})
-
-
-@permission_required('works.change_work')
-def view_cutter_numbers(request):
-    return render(request, 'book_code_generation/cutter_numbers_list.html',
-                  {'cutters': CutterCodeRange.objects.all().order_by('from_affix')})
-
-
-@transaction.atomic
-@permission_required('works.change_work')
-def edit(request, cutter_id):
-    cutter_code = get_object_or_404(CutterCodeRange, pk=cutter_id)
-    if request.method == 'POST':
-
-        form = EditForm(request.POST, instance=cutter_code)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('book_code.code_list'))
-    else:
-        form = EditForm(instance=cutter_code)
-    return render(request, 'book_code_generation/cutter_numbers_edit.html', {'form': form, 'member': cutter_code})
-
-
-@transaction.atomic
-@permission_required('works.change_work')
-def new(request):
-    if request.method == 'POST':
-        form = EditForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('book_code.code_list'))
-    else:
-        form = EditForm()
-    return render(request, 'book_code_generation/cutter_numbers_edit.html', {'form': form})

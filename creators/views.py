@@ -124,28 +124,3 @@ def sort_key(obj):
             return get_number_for_str(name2)
 
     return aa
-
-
-@permission_required('creators.change_creator')
-def collisions(request):
-    location = request.GET.get('location')
-    locations = Location.objects.all()
-    data = []
-    totals = [0, 0, 0, 0]
-    commit = request.GET.get('commit')
-    marked_authors = set()
-
-    if location:
-        location = int(location)
-        creator_location_numbers = dict()
-
-        for cln in CreatorLocationNumber.objects.filter(location__pk=location):
-            cln_list = creator_location_numbers.get((cln.letter, cln.number), [])
-            cln_list.append(cln)
-            creator_location_numbers[(cln.letter, cln.number)] = cln_list
-        for cln in creator_location_numbers.keys():
-            if len(creator_location_numbers[cln]) > 1:
-                data.append((cln, creator_location_numbers[cln]))
-    if commit:
-        totals[0] = "Newly coded " + str(totals[0])
-    return render(request, 'creators/location_collisions.html', {'locations': locations, 'location': location, 'data': data, 'totals': totals, 'marked': marked_authors})
