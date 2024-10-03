@@ -136,7 +136,7 @@ def get_location_numbers(location, starting_letter, exclude_creator_list=None, e
     for code in base_code_range:
         results.append(code)
 
-    results.sort(key=lambda obj: obj.number)
+    results.sort(key=lambda obj: (obj.number, obj.name))
 
     results.append(CutterCodeResult(starting_letter + "ZZZZZZZZZZZZ", 99999))
     return results
