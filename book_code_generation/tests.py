@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from book_code_generation.helpers import normalize_str, normalize_number
 from book_code_generation.models import CutterCodeResult, CutterCodeRange
 from book_code_generation.procedures.location_number_generation import get_location_number_bounds, \
     get_recommended_result, get_location_numbers, generate_location_number
@@ -16,30 +17,32 @@ class TestLocationNumberGenerationHelpers(TestCase):
         self.assertEqual(s, cutter_code_results[0])
         self.assertEqual(e, cutter_code_results[0])
 
-        s, e = get_location_number_bounds(cutter_code_results, "Harry")
+        s, e = get_location_number_bounds(cutter_code_results, normalize_str("Harry"))
+
         self.assertEqual(s, cutter_code_results[0])
         self.assertEqual(e, cutter_code_results[1])
 
-        s, e = get_location_number_bounds(cutter_code_results, "Pingu")
+        s, e = get_location_number_bounds(cutter_code_results, normalize_str("Pingu"))
         self.assertEqual(s, cutter_code_results[1])
         self.assertEqual(e, cutter_code_results[2])
 
-        s, e = get_location_number_bounds(cutter_code_results, "Santa")
+        s, e = get_location_number_bounds(cutter_code_results, normalize_str("Santa"))
         self.assertEqual(s, cutter_code_results[2])
         self.assertEqual(e, cutter_code_results[2])
 
     def test_get_recommended_result(self):
         numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        num = get_recommended_result("B", "A", "Z", numbers, False)
-        self.assertEqual(num, 2)
-        num = get_recommended_result("B", "A", "Z", numbers, True)
-        self.assertEqual(num, 1)
-        num = get_recommended_result("P", "A", "Z", numbers, False)
-        self.assertEqual(num, 6)
-        num = get_recommended_result("Y", "A", "Z", numbers, False)
-        self.assertEqual(num, 9)
-        num = get_recommended_result("A", "A", "A", [1], False)
-        self.assertEqual(num, 1)
+        num = get_recommended_result("B", "A", "Z", list(map(normalize_number, numbers)), False)
+        self.assertEqual(num, "2")
+        num = get_recommended_result("B", "A", "Z", list(map(normalize_number, numbers)), True)
+        self.assertEqual(num, "1")
+        num = get_recommended_result("P", "A", "Z", list(map(normalize_number, numbers)), False)
+        self.assertEqual(num, "6")
+        num = get_recommended_result("Y", "A", "Z", list(map(normalize_number, numbers)), False)
+        self.assertEqual(num, "9")
+        num = get_recommended_result("A", "A", "A", list(map(normalize_number, [1])), False)
+        self.assertEqual(num, "1")
+
 
 
 class TestLocationNumberGeneration(TestCase):
