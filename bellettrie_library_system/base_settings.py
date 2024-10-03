@@ -161,7 +161,7 @@ def GET_MENU():
     new_creator = MenuItem('New Author', reverse('creator.new'), 'creators.add_creator', 'sidebar', [], anonymous=None, icon='fa fa-book')
     inventarisation = MenuItem('Inventarisations', reverse('inventarisation.list'), 'inventarisation.view_inventarisation', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
     recode_list = MenuItem('Recode list', reverse('recode.list'), 'recode.view_recode', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
-    codes = MenuItem('Book Codes', reverse('book_code.code_list'), 'creators.change_creator', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
+    codes = MenuItem('Book Codes', reverse('book_code.code_list'), 'works.change_work', 'sidebar', [], anonymous=None, icon='fa fa-clipboard-list')
 
     my_menu.append(
         MenuItem('Catalog Management', reverse('logout'), None, 'sidebar', [new_work, new_series, new_creator, inventarisation, recode_list, codes], only_subitems=True, icon='fa fa-book'))
