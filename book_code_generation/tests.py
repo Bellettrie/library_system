@@ -74,6 +74,20 @@ class TestLocationNumberGeneration(TestCase):
         self.assertEqual(nums[3].name, "BAD")
         self.assertEqual(nums[4].name, "BZZZZZZZZZZZZ")
 
+    def test_get_location_numbers_edge_case_author_removal_out_of_order(self):
+        # If a creator gets removed from a location again, then a cutter number from "the book" may become part of the list again.
+        # This may, in rare cases, cause the alphabetic order to be disrupted.
+        # We expect the system to skip the "book" cutter numbers to prevent alphabetic errors in such cases
+        c = Creator.objects.create(name="AALAAF")
+        CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=109, letter="A")
+        nums = get_location_numbers(self.loc1, "A", [], [])
+
+        self.assertEqual(len(nums), 4)
+        self.assertEqual(nums[0].name, "A")
+        self.assertTrue(nums[1].name.startswith("AALAAF"))
+        self.assertEqual(nums[2].name, "AAM")
+        self.assertEqual(nums[3].name, "AZZZZZZZZZZZZ")
+
     def test_get_location_numbers_location_codes_override_existing_ones(self):
         c = Creator.objects.create(name="AALBORG")
         CreatorLocationNumber.objects.create(creator=c, location=self.loc1, number=11, letter="A")
