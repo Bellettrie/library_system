@@ -44,7 +44,6 @@ class TestLocationNumberGenerationHelpers(TestCase):
         self.assertEqual(num, "1")
 
 
-
 class TestLocationNumberGeneration(TestCase):
     def setUp(self):
         CutterCodeRange.objects.create(from_affix="A", to_affix="AAL", number=10, generated_affix="A-10")
