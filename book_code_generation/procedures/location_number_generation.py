@@ -77,8 +77,10 @@ def get_recommended_result(name: str, start: str, end: str, possible_results: Li
     return possible_results[result_id]
 
 
-def get_location_number_bounds(cutter_code_results: List[CutterCodeResult], name: str) -> Tuple[
-    CutterCodeResult, CutterCodeResult]:
+def get_location_number_bounds(cutter_code_results: List[CutterCodeResult], name: str) \
+        -> Tuple[
+            CutterCodeResult, CutterCodeResult
+        ]:
     """
     get_location_number_bounds gives the cutter-numbers just above and below the name
     :param cutter_code_results: A list of cutter_code_results
