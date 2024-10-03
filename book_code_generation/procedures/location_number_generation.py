@@ -77,19 +77,18 @@ def get_recommended_result(name: str, start: str, end: str, possible_results: Li
     return possible_results[result_id]
 
 
-def get_location_number_bounds(cutter_code_results: List[CutterCodeResult], name: str) \
-        -> Tuple[CutterCodeResult, CutterCodeResult]:
+def get_location_number_bounds(codes: List[CutterCodeResult], name: str) -> Tuple[CutterCodeResult, CutterCodeResult]:
     """
     get_location_number_bounds gives the cutter-numbers just above and below the name
-    :param cutter_code_results: A list of cutter_code_results
+    :param codes: A list of cutter_code_results
     :param name:  The name for which to look for the ones just above/below.
     :return:
     """
-    start = cutter_code_results[0]
-    for cutter_code_result in cutter_code_results:
-        if cutter_code_result.name > name:
-            return start, cutter_code_result
-        start = cutter_code_result
+    start = codes[0]
+    for code in codes:
+        if code.name > name:
+            return start, code
+        start = code
     return start, start
 
 
