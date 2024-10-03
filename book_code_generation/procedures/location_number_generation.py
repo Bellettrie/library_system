@@ -44,8 +44,9 @@ def generate_location_number(name: str, location: Location, exclude_list: List[C
         lowest_result = normalize_number(start.number)
         recommended_result = lowest_result
     else:
-        recommended_result = normalize_number(get_recommended_result(normalized_name, start.name, end.name, possible_results,
-                                                    also_keep_first_result))
+        recommended_result = normalize_number(
+            get_recommended_result(normalized_name, start.name, end.name, possible_results,
+                                   also_keep_first_result))
 
     return first_letter, lowest_result, recommended_result, highest_result
 
@@ -153,6 +154,13 @@ def get_location_numbers(location: Location,
         results.append(code)
 
     results.sort(key=lambda obj: (obj.number, obj.name))
+
+    # Remove codes from cutter table if they are out of order.
+    prev = None
+    for r in results:
+        if prev is not None and r.name < prev.name and r.is_from_cutter_table:
+            results.remove(r)
+        prev = r
 
     results.append(CutterCodeResult(starting_letter + "ZZZZZZZZZZZZ", 99999))
     return results
