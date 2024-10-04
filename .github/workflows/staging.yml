@@ -38,7 +38,7 @@ jobs:
           git fetch
           git reset --hard ${{ github.sha }}
           cd ..
-          if [ -z "" ]; then   
+          if [ -z "${{ github.event.release.name }}" ]; then   
           echo "VERSION='${{ github.sha }}'" > "version.env" 
           else 
           echo "VERSION='${{ github.event.release.name }}'" > "version.env"
