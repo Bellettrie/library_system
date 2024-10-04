@@ -38,6 +38,7 @@ jobs:
           git fetch
           git reset --hard ${{ github.sha }}
           cd ..
+          echo "VERSION='${{ github.event.release.name }}'" > "version.env"
           docker-compose down -v
           cp /backups/restore/latest.sql db/startup.sql
           docker-compose up -d --build
