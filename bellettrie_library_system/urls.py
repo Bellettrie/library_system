@@ -32,7 +32,7 @@ def redirect_view(_):
 def ok(_):
     logger = logging.getLogger(__name__)
     logger.debug(settings.HOST)
-    return HttpResponse("OK from " + settings.HOST + " running version"+ settings.VERSION)
+    return HttpResponse("OK from " + settings.HOST + " running version "+ settings.VERSION)
 
 
 urlpatterns = [
