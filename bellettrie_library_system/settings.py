@@ -13,6 +13,7 @@ WSGI_APPLICATION = 'bellettrie_library_system.wsgi.application'
 ALLOWED_HOSTS = ["*"]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+VERSION = env("VERSION", default="UNKNOWN VERSION")
 LIBRARY_NAME = env("LIBRARY_NAME", default="Bellettrie")
 LIBRARY_IMAGE_URL = env("LIBRARY_IMAGE_URL", default="images/wurm.png")
 LIBRARY_DESCRIPTION = env("LIBRARY_DESCRIPTION",
