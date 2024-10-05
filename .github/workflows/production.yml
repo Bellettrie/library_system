@@ -30,6 +30,6 @@ jobs:
           git fetch
           git reset --hard ${{ github.sha }}
           cd ..
-          echo "VERSION='${{ github.event.release.name }}'" > "version.env"
+          echo "VERSION='${{ github.sha  }}'" > "version.env"           
           docker-compose down
           docker-compose up -d --build
