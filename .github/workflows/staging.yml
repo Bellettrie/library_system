@@ -37,8 +37,12 @@ jobs:
           cd /services/staging/src
           git fetch
           git reset --hard ${{ github.sha }}
-          cd ..   
-          echo "VERSION='${{ env.GITHUB_REF }}'" > "version.env" 
+          cd ..
+          if [ -z "${{ github.event.release.tag_name }}" ]; then   
+          echo "VERSION='${{ github.sha  }}"'" > "version.env" 
+          else 
+          echo "VERSION='${{ github.event.release.tag_name }}'" > "version.env"
+          fi
           
           docker-compose down -v
           cp /backups/restore/latest.sql db/startup.sql
