@@ -38,7 +38,7 @@ jobs:
           git fetch
           git reset --hard ${{ github.sha }}
           cd ..   
-          echo "VERSION='${{ env.GITHUB_REF#refs/tags/ }}'" > "version.env" 
+          echo "VERSION='${{ env.GITHUB_REF }}'" > "version.env" 
           
           docker-compose down -v
           cp /backups/restore/latest.sql db/startup.sql
