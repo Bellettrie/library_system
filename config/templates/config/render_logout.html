@@ -1,6 +1,6 @@
 {% load menu %}
 <style>
-    .fakeURL {
+    .renderLogoutfakeURL {
         display: inline-block;
         vertical-align: top;
         line-height: 0px;
@@ -15,7 +15,7 @@
         color: grey;
     }
 
-    .formstyle {
+    .renderLogoutformstyle {
         display: inline-block;
         vertical-align: top;
         margin-top: -40px;
@@ -25,9 +25,9 @@
 
 
 {% if mode == 'desktop-top' %}
-    <form method="post" action="{% url 'logout' %}" class="formstyle">
+    <form method="post" action="{% url 'logout' %}" class="renderLogoutformstyle">
         {% csrf_token %}
-        <input class="btn btn-outline fakeURL" type="submit" value="{{ menu.title }}"
+        <input class="btn btn-outline renderLogoutfakeURL" type="submit" value="{{ menu.title }}"
                style="">
     </form>
 {% endif %}
@@ -35,7 +35,7 @@
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <li class="treeview hiddenDesktop">
-            <input class="btn btn-link" type="submit" class="" value="{{ menu.title }}">
+            <input class="btn btn-link" type="submit"  value="{{ menu.title }}">
         </li>
     </form>
 {% endif %}
