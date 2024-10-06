@@ -1,0 +1,41 @@
+{% load menu %}
+<style>
+    .fakeURL {
+        display: inline-block;
+        vertical-align: top;
+        line-height: 0px;
+        whitespace: no-wrap;
+        font-family: 'Rubik', sans-serif;
+        margin-left: .1vw;
+        border-left: .1vw solid black;
+        padding-left: .1vw;
+        margin-top: 25px;
+        height: 30px;
+        font-size: 1vw;
+        color: grey;
+    }
+
+    .formstyle {
+        display: inline-block;
+        vertical-align: top;
+        margin-top: -40px;
+    }
+
+</style>
+
+
+{% if mode == 'desktop-top' %}
+    <form method="post" action="{% url 'logout' %}" class="formstyle">
+        {% csrf_token %}
+        <input class="btn btn-outline fakeURL" type="submit" value="{{ menu.title }}"
+               style="">
+    </form>
+{% endif %}
+{% if mode == 'mobile-only' %}
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <li class="treeview hiddenDesktop">
+            <input class="btn btn-link" type="submit" class="" value="{{ menu.title }}">
+        </li>
+    </form>
+{% endif %}

@@ -15,6 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from django.urls import reverse
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 RESERVATION_TIMEOUT_DAYS = 14
@@ -143,7 +144,7 @@ def GET_MENU():
     my_menu.append(MenuItem('Contact', reverse('named_page', args=('basic', 'contact',)), None, 'top-right', [], icon='fa fa-info'))
 
     my_menu.append(MenuItem('Login', reverse('login'), None, 'top-right', [], anonymous=True, icon='fa fa-sign-in-alt'))
-    my_menu.append(MenuItem('Logout', reverse('logout'), None, 'top-right', [], anonymous=False, icon='fa fa-sign-out-alt'))
+    my_menu.append(MenuItem('Logout', reverse('logout'), None, 'top-right', [], anonymous=False, icon='fa fa-sign-out-alt', is_logout=True))
 
     my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'sidebar', [], anonymous=False, icon='fa fa-book'))
     my_menu.append(MenuItem('Members', reverse('members.list'), 'members.view_member', 'sidebar', [], anonymous=None, icon='fa fa-user'))

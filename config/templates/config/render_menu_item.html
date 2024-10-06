@@ -1,11 +1,20 @@
 {% load menu %}
 {% if mode == 'desktop-top' %}
-    <a href="{{ menu.url }}" class="vertical hiddenMobile">{{ menu.title }}</a>
+    {% if menu.is_logout %}
+{% include 'config/render_logout.html' %}
+    {% else %}
+        <a href="{{ menu.url }}" class="vertical hiddenMobile">{{ menu.title }}</a>
+    {% endif %}
 {% endif %}
 {% if mode == 'mobile-only' %}
-    <li class="treeview hiddenDesktop"><a href="{{ menu.url }}">
-        <i class="{{ menu.icon }}"></i><span>{{ menu.title }}</span>
-    </a></li>
+    <li class="treeview hiddenDesktop">
+        {% if menu.is_logout %}
+        {% include 'config/render_logout.html' %}
+        {% else %}
+            <a href="{{ menu.url }}">
+                <i class="{{ menu.icon }}"></i><span>{{ menu.title }}</span>
+            </a>
+        {% endif %}</li>
 {% endif %}
 
 {% if mode == 'sidebar-item' %}
