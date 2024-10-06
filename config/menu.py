@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.urls import reverse
 
 
+
+
 class MenuItem:
-    def __init__(self, title, url, permission, location, sub_items, anonymous=None, only_subitems=False, icon=None):
+    def __init__(self, title, url, permission, location, sub_items, anonymous=None, only_subitems=False, icon=None, is_logout=False):
         self.title = title
         self.url = url
         self.permission = permission
@@ -12,6 +14,7 @@ class MenuItem:
         self.anonymous = anonymous
         self.only_subitems = only_subitems
         self.icon = icon
+        self.is_logout = is_logout
 
     def permits(self, request):
         return (self.permission is None or request.user.has_perm(self.permission)) and (self.anonymous is None or request.user.is_anonymous == self.anonymous) and (
@@ -19,6 +22,7 @@ class MenuItem:
 
     def rendered_sub_items(self, request):
         lst = []
+
         for item in self.sub_items:
             if item.permits(request):
                 lst.append(item)
