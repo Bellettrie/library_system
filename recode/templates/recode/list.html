@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {#{% load books_table %}#}
 {% block title %}Recode List{% endblock %}
+{% block ux_framework %}
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+{% endblock %}
 {% block content %}
 
     {% include 'pagination.html' %}
@@ -8,7 +11,7 @@
     {{ request.GET.location }}
     {% get_locations request.GET.location %}
     <hr>
-    <table>
+    <table class="tw-table-auto tw-border-separate">
         <tr>
             <th>Old Code</th>
             <th>New Code</th>
@@ -22,7 +25,7 @@
             {% with item=recode.item %}
                 <tr>
                     <td>{{ item.display_code }}</td>
-                    <td>{% if recode %}{{ recode.book_code }} : {{ recode.book_code_extension }}{% endif %}</td>
+                    <td>{% if recode %}{{ recode.book_code }} {% if  recode.book_code_extension  %}[{{ recode.book_code_extension }}]{% endif %}{% endif %}</td>
                     <td>{{ item.get_isbn10 }};{{ item.get_isbn13 }}</td>
 
                     <td><a href="{% url 'work.view' item.publication.pk %}">{{ item.get_title }}</a></td>
@@ -38,7 +41,7 @@
                         {% if item.is_lent_out %}[LENT]
                         {% endif %}</td>
                     {% if perms.recode.change_recode %}
-                        <td><a href="{% url 'recode.end' recode.pk %}" class="btn btn-primary btn-sm">Finish
+                        <td><a href="{% url 'recode.end' recode.pk %}" class="tw-btn tw-btn-primary tw-btn-sm">Finish
                             Recode</a>
                         </td>
                     {% endif %}
