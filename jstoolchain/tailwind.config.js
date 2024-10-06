@@ -4,7 +4,7 @@ module.exports = {
     theme: {
         extend: {},
     },
-    prefix: 'tw-',
+
     plugins: [require("@tailwindcss/typography"), require(getDaisyUI())],
 
     daisyui: {

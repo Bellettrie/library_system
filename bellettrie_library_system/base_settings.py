@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_components',
     'mail_templated',
     'works',
     'members',
@@ -49,7 +50,12 @@ INSTALLED_APPS = [
     'tables',
     'tasks',
 ]
-
+COMPONENTS = {
+    "dirs": [
+         ...,
+         os.path.join(BASE_DIR, "templates/components"),
+     ],
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

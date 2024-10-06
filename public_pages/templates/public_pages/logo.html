@@ -1,19 +1,20 @@
 {% load static %}
-        <a href="{% url 'homepage' %}" class="logo-part" style=" text-align: center;width:100%; "><img {% if debug %}class="rotate4"{% endif %}
-                src="{% static logo %}"
-
-                style="height:75px;     font-family: 'Pangolin'; "/> {{ name }}
-        </a>
-
+<div class="all-initial">
+<a href="{% url 'homepage' %}" class="logo-partz" style="text-align: center;height:100%; justify-content: center;"><img
+        {% if debug %}class="rotate4"{% endif %}
+        src="{% static logo %}"
+        style="height:75px;     font-family: 'Pangolin'; "/> {{ name }}
+</a>
+</div>
 <style>
 
 
-.rotate4{ /*upside down*/
-    -webkit-transform:rotate(180deg);
-    -moz-transform:rotate(180deg);
-    -o-transform:rotate(180deg);
-    -ms-transform:rotate(180deg);
-    transform:rotate(180deg);
-}
+    .rotate4 { /*upside down*/
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
 
 </style>
