@@ -1,34 +1,30 @@
 {% load menu %}
 <style>
     .renderLogoutfakeURL {
-        display: inline-block;
-        vertical-align: top;
-        line-height: 0px;
-        whitespace: no-wrap;
         font-family: 'Rubik', sans-serif;
-        margin-left: .1vw;
-        border-left: .1vw solid black;
-        padding-left: .1vw;
-        margin-top: 25px;
-        height: 30px;
         font-size: 1vw;
         color: grey;
+        padding: 0;
+        border: 0;
+        margin-top: -.8vw;
     }
 
     .renderLogoutformstyle {
-        display: inline-block;
-        vertical-align: top;
-        margin-top: -40px;
+        display: inline;
+        padding-left: .1vw;
+        font-family: 'Rubik', sans-serif;
+        font-size: 1vw;
+        color: grey;
     }
 
 </style>
 
 
 {% if mode == 'desktop-top' %}
-    <form method="post" action="{% url 'logout' %}" class="renderLogoutformstyle">
+    <a class="vertical align-top"> </a>
+    <form method="post" action="{% url 'logout' %}" class="form-inline renderLogoutformstyle align-top">
         {% csrf_token %}
-        <input class="btn btn-outline renderLogoutfakeURL" type="submit" value="{{ menu.title }}"
-               style="">
+        <input class="btn btn-outline renderLogoutfakeURL" type="submit" value="{{ menu.title }}">
     </form>
 {% endif %}
 {% if mode == 'mobile-only' %}
