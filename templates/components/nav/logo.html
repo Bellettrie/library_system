@@ -1,0 +1,19 @@
+{% load static %}
+
+<img src="{% static "images/wurm.png" %}" class="object-cover max-w-10"
+     {% if debug %}class="rotate4"{% endif %}
+>
+<a class="logo-partz  ">{{ name }}</a>
+
+<style>
+
+
+    .rotate4 { /*upside down*/
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+
+</style>

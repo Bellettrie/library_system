@@ -1,4 +1,5 @@
 {% load static %}
+{% load component_tags %}
 <div class="navbar bg-base-100" style="width:100%" id="myheader">
     <div class="dropdown">
         <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -17,7 +18,7 @@
         </div>
         <ul
                 tabindex="0"
-                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 p-2 shadow  flex grow">
             <li><a>Item 1</a></li>
             <li>
                 <a>Parent</a>
@@ -48,8 +49,7 @@
         </ul>
     </div>
     <div class="navbar-center ">
-        <img src="{% static "images/wurm.png" %}" class="object-cover max-w-10">
-        <a class="btn btn-ghost text-xl ">Bellettrie</a>
+        {% component 'nav-logo' %}{% endcomponent %}
     </div>
 
     <div class="navbar-end hidden lg:flex">
@@ -66,7 +66,7 @@
             </li>
             <li><a>Item 3</a></li>
         </ul>
-        <a class="btn">Log in</a>
+        {% component 'loginButton' %}{% endcomponent %}
     </div>
 </div>
 

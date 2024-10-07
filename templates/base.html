@@ -54,8 +54,9 @@
     <!-- Font Awesome JS -->
     <!-- Latest compiled and minified CSS -->
     <script src="{% static 'jquery.js' %} "></script>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
 {#    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">#}
+
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
 
 {#    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>#}
 
@@ -144,7 +145,7 @@
     {% include 'base_hx_dialog.html' %}
     <!-- Page Content Holder -->
     <article id="content">
-        <h2>{% block title %}Title{% endblock %}</h2>
+        <h1 class="text-4xl flex justify-center items-center">{% block title %}Title{% endblock %}</h1>
         {% block content %}
         {% endblock %}
         <br/>

@@ -13,3 +13,13 @@ class Navbar(component.Component):
 
     # class Media:
     #     css = "todo/todo.css"
+
+@component.register("nav-logo")
+class Logo(component.Component):
+    template_name = "components/nav/logo.html"
+
+    def get_context_data(self):
+        return {"name": settings.LIBRARY_NAME}
+
+    # class Media:
+    #     css = "todo/todo.css"

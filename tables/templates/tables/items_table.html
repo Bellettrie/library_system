@@ -1,19 +1,31 @@
 {% load render_square %}
 {# Takes a table #}
 
-<table class="table table-striped">
-<tr>
-{% for column in table.columns %}
-    <th>{{ column.get_header }}</th>
-{% endfor %}
-</tr>
-{% for row in table.rows %}
-    <tr>
-        {% for column in table.columns %}
-            {% autoescape off %}
-            <td class="text-nowrap">{% render_square column row perms %}</td>
-            {% endautoescape %}
+<div class="overflow-x-auto shadow-xl mb-4">
+    <table class="table table-auto table-sm table-pin-rows  border rounded-sm">
+        <thead>
+        <tr>
+            {% for column in table.columns %}
+                <th>{{ column.get_header }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in table.rows %}
+            <tr class="odd:bg-gray-100">
+
+                {% for column in table.columns %}
+                    {% autoescape off %}
+                        <td class="text-nowrap">{% render_square column row perms %}</td>
+                    {% endautoescape %}
+                {% endfor %}
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="100%" >No results found</td>
+            </tr>
         {% endfor %}
-    </tr>
-{% endfor %}
-</table>
+        </tbody>
+
+    </table>
+</div>

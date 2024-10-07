@@ -1,4 +1,4 @@
-{{ author.role.name|escape }}<a href="{% url 'creator.view' author.creator.pk|escape %}">
+{{ author.role.name|escape }}<a class="text-blue-600 dark:text-blue-500 hover:underline" href="{% url 'creator.view' author.creator.pk|escape %}">
     {{ author.creator.given_names|escape }}
     <i>{{ author.creator.name|escape }}</i>
 </a>

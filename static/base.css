@@ -214,7 +214,7 @@ body {
 }
 .logo-partz{
     font-family: logoFont;
-    font-size:40px;
+    font-size:30px;
 }
 
 @media (max-width: 900px) {

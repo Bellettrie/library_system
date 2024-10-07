@@ -1,17 +1,14 @@
-<div class="pagination">
- <span class="step-links">
-   {% if page_obj.has_previous %}
-       <a href="?{% url_replace page=page_obj.previous_page_number %}" class="btn btn-outline-primary">Prev</a>
-       {% else %}
-       <a class="btn btn-outline-primary disabled">Prev</a>
-   {% endif %}
-     <span class="current btn btn-light disabled">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-   </span>
-     {% if page_obj.has_next %}
-         <a href="?{% url_replace page=page_obj.next_page_number %}" class="btn btn-outline-primary">Next</a>
-         {% else %}
-         <a class="btn btn-outline-primary disabled">Next</a>
-     {% endif %}
-  </span>
+<div class="join flex justify-center items-center rounded-none">
+    {% if page_obj.has_previous %}
+        <a href="?{% url_replace page=page_obj.previous_page_number %}" class="join-item btn">«</a>
+    {% else %}
+        <a class="join-item btn disabled">«</a>
+    {% endif %}
+    <button class="join-item btn">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</button>
+
+    {% if page_obj.has_next %}
+        <a href="?{% url_replace page=page_obj.next_page_number %}" class="join-item btn">»</a>
+    {% else %}
+        <a class="join-item btn disabled">»</a>
+    {% endif %}
 </div>
