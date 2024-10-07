@@ -1,9 +1,9 @@
 {% load menu %}
 {% if mode == 'desktop-top' %}
     {% if menu.is_logout %}
-{% include 'config/render_logout.html' %}
+        {% include 'config/render_logout.html' %}
     {% else %}
-        <a href="{{ menu.url }}" class="vertical hiddenMobile">{{ menu.title }}</a>
+        <a href="{{ menu.url }}" class="vertical hiddenMobile align-top">{{ menu.title }}</a>
     {% endif %}
 {% endif %}
 {% if mode == 'mobile-only' %}

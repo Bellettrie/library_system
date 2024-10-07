@@ -97,14 +97,14 @@
     <div id="header" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
         {% get_logo %}
         <hr>
-        <div class="top-nav-left  ">
+        <div class="top-nav-left">
             {% render_menu 'desktop-top' 'top-left' %}
 
 
         </div>
         <div class="top-nav hiddenMobile">
             {% render_menu 'desktop-top' 'top-right' %}
-            <a class="vertical"> </a>
+            <a class="vertical align-top"> </a>
         </div>
     </div>
     <!-- Sidebar Holder -->
