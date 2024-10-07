@@ -3,24 +3,24 @@
 {#{% load books_table %}#}
 {% block title %}Book Search{% endblock %}
 {% block content %}
-    <div class="card bg-base-100 w-96 shadow-xl rounded-none">
-        <div class="card-body ">
-
-            {% if advanced %}
-                {% include 'works/work_search_field_advanced.html' %}
-                <a href="{% url 'works.list' %}" class="btn">Simple Search</a>
-            {% else %}
-                {% include 'works/work_search_field_simple.html' %}
-{#                <a href="?advanced=True" class="btn">Advanced Search</a>#}
-            {% endif %}
+    <div class="xl:flex mb-4">
+        <div class="card bg-base-100 xl:w-1/4  shadow-xl rounded-none">
+            <div class="card-body ">
+                {% if advanced %}
+                    {% include 'works/work_search_field_advanced.html' %}
+                    <a href="{% url 'works.list' %}" class="btn">Simple Search</a>
+                {% else %}
+                    {% include 'works/work_search_field_simple.html' %}
+                    {#                <a href="?advanced=True" class="btn">Advanced Search</a>#}
+                {% endif %}
+            </div>
         </div>
+
+        {% autoescape off %}
+            {% works_table object_list perms %}
+        {% endautoescape %}
     </div>
-    <br>
-    <hr>
-    {% autoescape off %}
-        {% works_table object_list perms %}
-    {% endautoescape %}
-    {% include 'pagination.html' %}
+        {% include 'pagination.html' %}
 
     <h3>How to use Search</h3>
     The search function tries to match the search query to words in the title of books, series, as well as the names of

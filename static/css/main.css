@@ -3438,10 +3438,6 @@ details.collapse summary::-webkit-details-marker {
   width: 1.25rem;
 }
 
-.w-96 {
-  width: 24rem;
-}
-
 .w-full {
   width: 100%;
 }
@@ -3579,6 +3575,12 @@ details.collapse summary::-webkit-details-marker {
   color: rgb(59 130 246 / var(--tw-text-opacity));
 }
 
+@media (min-width: 768px) {
+  .md\:block {
+    display: block;
+  }
+}
+
 @media (min-width: 1024px) {
   .lg\:block {
     display: block;
@@ -3590,5 +3592,13 @@ details.collapse summary::-webkit-details-marker {
 
   .lg\:hidden {
     display: none;
+  }
+
+  .lg\:w-1\/4 {
+    width: 25%;
+  }
+
+  .lg\:w-3\/4 {
+    width: 75%;
   }
 }
