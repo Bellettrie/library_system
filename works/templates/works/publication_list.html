@@ -13,8 +13,15 @@
     {% include 'pagination.html' %}
     <hr>
     {% autoescape off %}
-        {% works_table object_list perms %}
+        {% if object_list %}
+            <h3>Search results</h3>
+            {% works_table object_list perms %}
+        {% else %}
+            <h3>Recently added titles</h3>
+            {% works_table recent_works perms %}
+        {% endif %}
     {% endautoescape %}
+    
 
     <h3>How to use Search</h3>
     The search function tries to match the search query to words in the title of books, series, as well as the names of

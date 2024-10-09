@@ -119,6 +119,11 @@ def get_works(request):
     results += get_works_for_publication(words, words_author, words_series, words_title, states, categories, book_code)
     return results
 
+def get_recent_works(number_of_works=10):
+    """
+    Get the most recent works in the library
+    """
+    return [item.publication for item in Item.objects.all().order_by('-bought_date')[:number_of_works]]
 
 class WorkList(ListView):
     model = Work
@@ -128,6 +133,9 @@ class WorkList(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
+
+        context['recent_works'] = get_recent_works()
+
         advanced = self.request.GET.get("advanced", False)
         context['advanced'] = advanced
 
