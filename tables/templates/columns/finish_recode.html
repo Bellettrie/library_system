@@ -1,1 +1,1 @@
-Recode to: {{ recode.book_code}} {{ extension}} {% if perms.works.change_item %}<a href="{% url "recode.end" recode.pk %}" class="btn btn-primary btn-sm">Finish recode</a>{% endif %}
+Recode to: {{ recode.book_code}} {% if recode.book_code_extension %}[{{ recode.book_code_extension}}]{% endif %} {% if perms.works.change_item %}<a hx-get="{% url 'recode.end_hx' recode.pk %}" hx-target="#dialog" href="{% url "recode.end" recode.pk %}" class="btn btn-primary btn-sm">Finish recode</a>{% endif %}

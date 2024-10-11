@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import transaction
-from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse
@@ -28,17 +29,28 @@ class RecodeList(PermissionRequiredMixin, ListView):
 
 @transaction.atomic
 @permission_required('recode.change_recode')
-def end_recode(request, pk):
-    recode = Recode.objects.get(pk=pk)
-    item = recode.item
-    item.book_code = recode.book_code
-    item.book_code_extension = recode.book_code_extension
-    item.save()
-    recode.delete()
+def end_recode_hx(request, pk):
+    return end_recode(request, pk, True)
 
-    alt = reverse('recode.list')
-    a = request.GET.get('next')
-    if a:
-        return redirect(a)
-    else:
-        return redirect(alt)
+
+@transaction.atomic
+@permission_required('recode.change_recode')
+def end_recode(request, pk, hx_enabled=False):
+    templ = 'recode/end_recode.html'
+    if hx_enabled:
+        templ = 'recode/end_recode_hx.html'
+
+    recode = get_object_or_404(Recode, pk=pk)
+    if request.method == 'POST':
+        item = recode.item
+        item.book_code = recode.book_code
+        item.book_code_extension = recode.book_code_extension
+        item.save()
+        recode.delete()
+
+        alt = reverse('recode.list')
+        if hx_enabled:
+            return HttpResponse(status=209, headers={"HX-Refresh": "true"})
+        else:
+            return redirect(alt)
+    return render(request, templ, {'recode': recode})
