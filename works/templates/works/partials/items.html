@@ -2,7 +2,24 @@
     <div class="card-body d-flex flex-column" style="overflow:auto;">
         <div class="card-title">Items for this publication</div>
         <div>
-            {% detailed_items object.get_items request.user.member perms %}
+            {% component "item_table" publication.item_set.all %}
+                {% fill "table_head" %}
+                    <th>Book Code</th>
+                    <th>ISBN</th>
+                    <th>Page Count</th>
+                    <th>Year of Publication</th>
+                    <th></th>
+                    <th>Status</th>
+                {% endfill %}
+                {% fill "table_row" %}
+                    <td>{{ item.book_code }}</td>
+                    <td>{% if item.isbn13 %} {{ item.isbn13 }} {% else %}{{ item.isbn10 }} {% endif %}</td>
+                    <td>{{ item.pages }}</td>
+                    <td>{{ item.publication_year }}</td>
+                    <td>{% if item.is_lent_out %} {{ item.current_lending }} {% endif %}</td>
+                    <td>{{ item.get_state }}</td>
+                {% endfill %}
+            {% endcomponent %}
         </div>
         {% if perms.works.change_item %}
             <a href="{% url 'works.item.new' publication.pk %}" class="align-self-end card-link"
