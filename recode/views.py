@@ -29,16 +29,10 @@ class RecodeList(PermissionRequiredMixin, ListView):
 
 @transaction.atomic
 @permission_required('recode.change_recode')
-def end_recode_hx(request, pk):
-    return end_recode(request, pk, True)
-
-
-@transaction.atomic
-@permission_required('recode.change_recode')
-def end_recode(request, pk, hx_enabled=False):
-    templ = 'recode/end_recode.html'
+def recode_finish(request, pk, hx_enabled=False):
+    templ = 'recode/recode_finish.html'
     if hx_enabled:
-        templ = 'recode/end_recode_hx.html'
+        templ = 'recode/recode_finish_hx.html'
 
     recode = get_object_or_404(Recode, pk=pk)
     if request.method == 'POST':

@@ -38,8 +38,8 @@
                         {% if item.is_lent_out %}[LENT]
                         {% endif %}</td>
                     {% if perms.recode.change_recode %}
-                        <td><a hx-get="{% url 'recode.end_hx' recode.pk %}" hx-target="#dialog"
-                               href="{% url 'recode.end' recode.pk %}" class="btn btn-primary btn-sm">Finish Recode</a>
+                        <td><a hx-get="{% url 'recode.finish' recode.pk %}" hx-target="#dialog"
+                               href="{% url 'recode.finish' recode.pk %}" class="btn btn-primary btn-sm">Finish Recode</a>
                         </td>
                     {% endif %}
 
