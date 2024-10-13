@@ -85,6 +85,8 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
 
         # Finally, try to generate a code, which will be based on the rules of the category
         # For instance, this could be by author, or by title.
+        if not location:
+            return None
         generator = GENERATORS[location.sig_gen]
         val, should_not_add = generator(FakeItem(self, location))
         if should_not_add:

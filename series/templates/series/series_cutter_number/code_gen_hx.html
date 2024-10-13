@@ -16,7 +16,8 @@
              <div class="Recommended code">
             <label for="book_code">Set to Recommended Code</label>
             <input type="button" class="form-control" aria-describedby="bookcodehelp"
-                   value=" << {{ recommended_code }} >>" onclick="set();">
+                   value="{% if recommended_code %} << {{ recommended_code }} >> {% endif %}" onclick="set();"
+                    {% if not recommended_code %} disabled {% endif %}>
         </div>
     {% else %}
         <div class="form-group">
