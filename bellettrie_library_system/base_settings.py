@@ -133,7 +133,8 @@ def GET_MENU():
     from config.menu import MenuItem
 
     my_menu = []
-    my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top-left', [], icon='fa fa-book'))
+    my_menu.append(MenuItem('Home', reverse('homepage'), None, 'top-left', [], icon='fa fa-home'))
+    my_menu.append(MenuItem('Our Collection', reverse('works.list'), None, 'top-left', [], icon='fa fa-book'))
     my_menu.append(MenuItem('Become a member', reverse('named_page', args=('basic', 'member',)), None, 'top-left', [], icon='fa fa-user'))
     my_menu.append(MenuItem('Board / Committees', reverse('named_page', args=('basic', 'committees',)), None, 'top-left', [], icon='fa fa-users'))
     my_menu.append(MenuItem('Konnichiwa', reverse('named_page', args=('konnichiwa', 'home',)), None, 'top-left', [], icon=''))
