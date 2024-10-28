@@ -90,23 +90,13 @@
             src: url("{% static 'Present_Roman.ttf' %}");
         }
     </style>
+    {% component_css_dependencies %}
 </head>
 <body>
 
 <div id="wrapper" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
-    <div id="header" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
-        {% get_logo %}
-        <hr>
-        <div class="top-nav-left">
-            {% render_menu 'desktop-top' 'top-left' %}
-
-
-        </div>
-        <div class="top-nav hiddenMobile">
-            {% render_menu 'desktop-top' 'top-right' %}
-            <a class="vertical align-top"> </a>
-        </div>
-    </div>
+    {% component 'top_nav' %}
+    {% endcomponent %}
     <!-- Sidebar Holder -->
     {% if not user.is_anonymous %}
         {% if not user.is_anonymous and user.member %}
@@ -165,6 +155,6 @@
         });
     });
 </script>
-
+    {% component_js_dependencies %}
 </body>
 </html>
