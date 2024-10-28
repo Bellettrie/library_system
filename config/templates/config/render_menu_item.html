@@ -22,7 +22,7 @@
         {% if has_sub_items %}
 
             <li class="active">
-                <a href="#{{ menu.get_title_shortened }}" data-toggle="collapse" aria-expanded="false"
+                <a href="#{{ menu.get_title_shortened }}" data-bs-toggle="collapse" aria-expanded="false"
                    class="dropdown-toggle"><i class="{{ menu.icon }}"></i>{{ menu.title }}</a>
                 <ul class="collapse list-unstyled" id="{{ menu.get_title_shortened }}">
                     {% for sub_item in sub_items %}
