@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Recode {% if recode.item.get_title %} of {{ recode.item.get_title }}{% endif %}{% endblock %}
+{% block content%}
+
+    From {{ recode.item.book_code }} {% if recode.item.book_code_extension %}[{{  recode.item.book_code_extension}}]{% endif %}
+
+    to {{ recode.book_code }} {% if recode.book_code_extension %}[{{  recode.book_code_extension}}]{% endif %}
+    <form method="post" action="#">
+        {% csrf_token %}
+        <input class="btn btn-success" type="submit" value="Save">
+    </form>
+{% endblock %}
