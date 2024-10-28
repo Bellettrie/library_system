@@ -1,0 +1,23 @@
+<div id="header" class="{% if user.is_anonymous %}isAnonymous{% endif %}">
+
+
+    <div class="top-nav-left">
+        {#            {% render_menu 'desktop-top' 'top-left' %}#}
+        {#        {% slot "left_menu" %}#}
+        {#            HELLO#}
+        {#        {% endslot %}#}
+        {% for item in left_menu %}
+            {% component "top-item" item.url item.title item.is_logout / %}
+        {% endfor %}
+    </div>
+    {% component "logo" logo_debug logo_name logo_image %} {% endcomponent %}
+
+    <div class="top-nav hiddenMobile">
+        {% slot "right_menu" %}
+            {% for item in right_menu %}
+                {% component "top-item" item.url item.title item.is_logout / %}
+            {% endfor %}
+        {% endslot %}
+        <a class="vertical align-top"> </a>
+    </div>
+</div>
