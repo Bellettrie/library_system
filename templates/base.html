@@ -11,21 +11,54 @@
 <body>
 {% include 'base_hx_dialog.html' %}
 
-<div class="h-screen flex flex-col">
+<div class="min-h-screen flex flex-col">
     {% component 'top_nav' %}
         {% fill 'left_menu' %}
             {% component 'top-item' 'Book Search' "works.list" / %}
             {% component 'top-item' 'Our Activities' "works.list" / %}
-        {% endfill %}
-        {% fill 'right_menu' %}
             {% if  user.is_anonymous %}
-                {% component 'top-item' 'Join Us' "works.list" / %}
-                {% component 'top-item' 'About' "works.list" / %}
+                {% component 'top-item' 'Join Us' "named_page" "basic" "about" / %}
+                {% component 'top-item' 'About' "named_page" "basic" "about" / %}
                 {% component "top-item" "Login" "login" / %}
             {% else %}
-                {% component 'top-item' 'Become Active' "works.list" / %}
-                {% component 'top-item' 'About' "works.list" / %}
+                {% component 'top-item' 'Become Active' "named_page" "basic" "about" / %}
+                {% component 'top-item' 'About' "named_page" "basic" "about" / %}
             {% endif %}
+        {% endfill %}
+        {% fill 'center_menu' %}
+            {% component "logo" logo_debug logo_name logo_image %} {% endcomponent %}
+        {% endfill %}
+        {% fill 'right_menu' %}
+            <form method="get" action="{% url 'works.list' %}">
+                <div class="form-control join join-horizontal">
+                    <input name="q" id="q" type="text" placeholder="Search"
+                           class="input input-bordered w-24 md:w-auto join-item"/>
+                    <button class="btn join-item rounded-r-full">Search</button>
+                    <button class="btn join-item rounded-r-full">...</button>
+                </div>
+            </form>
+
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                    <div class="w-10 rounded-full">
+                        <img
+                                alt="Tailwind CSS Navbar component"
+                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
+                    </div>
+                </div>
+                <ul
+                        tabindex="0"
+                        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                    <li>
+                        <a class="justify-between">
+                            Profile
+                            <span class="badge">New</span>
+                        </a>
+                    </li>
+                    <li><a>Settings</a></li>
+                    <li><a>Logout</a></li>
+                </ul>
+            </div>
 
         {% endfill %}
     {% endcomponent %}
@@ -33,12 +66,10 @@
     <!-- Page Content Holder -->
 
 
-    <!-- Hero -->
     <section class="container mx-auto mt-12 mb-4 flex-1">
         {% block content %}{% endblock %}
     </section>
     <footer class="h-50 flex-none">test</footer>
-    <script src="https://cdn.tailwindcss.com"></script>
     {% component_js_dependencies %}
 </div>
 </body>
