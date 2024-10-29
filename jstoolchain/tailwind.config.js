@@ -1,7 +1,11 @@
 module.exports = {
     content: ["../**/*.html"],
     // darkMode: 'class',
-    // theme: {
+    theme: {
+        colors: {
+            belleyellow: "#f7ec55",
+        }
+    },
     //     extend: {},
     // },
     darkMode: 'true',

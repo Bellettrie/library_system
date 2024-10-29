@@ -15,7 +15,6 @@ class TopNav(Component):
         left_items = []
         right_items = []
         for it in GET_MENU():
-            print(it.location)
             if it.location == "top-left":
                 left_items.append(it)
             if it.location == "top-right":
@@ -70,7 +69,7 @@ class TopMenuItem(Component):
     def get_context_data(self, text, my_url, *args):
         # skip absolute urls
         if not (my_url.startswith("/") or my_url.startswith("https://")):
-            my_url = reverse(my_url, *args)
+            my_url = reverse(my_url, args=args)
 
         return {
             "my_url": my_url,
