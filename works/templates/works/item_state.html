@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_bootstrap.html' %}
 {% block title %}{{ item.publication.title }}{% endblock %}
 {% block content %}
     <a class="btn btn-primary" href="{% url 'work.view' item.publication.pk %}">Back to Publication</a>

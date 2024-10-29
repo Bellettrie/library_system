@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_bootstrap.html' %}
 {% block title %}Lent!{% endblock %}
 {%block content %}
 <a href="{% url 'members.view' member.id 0 %}">{{member.name}}</a> may keep {{ item.publication.title }} until: {{ date }}
