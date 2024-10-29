@@ -43,11 +43,14 @@ class Logo(Component):
 
     template: types.django_html = """
     {% load static %}
-    <a href="{% url 'homepage' %}" class="logo-part" style=" text-align: center;width:100%; "><img {% if debug %}class="rotate4"{% endif %}
-                src="{% static logo %}"
-
-                style="height:75px;     font-family: 'Pangolin'; "/> {{ name }}
-        </a>
+      <div class="flex-1">
+    <a class="btn btn-ghost text-xl" href="{% url 'homepage' %}">
+        <img {% if debug %}class="rotate4"{% endif %}
+            src="{% static logo %}"
+            style="height:75px;     font-family: 'Pangolin'; "/>
+        {{ name }}
+    </a>
+    </div>
     """
     css: types.css = """    
 .rotate4{ /*upside down*/
@@ -66,17 +69,16 @@ class TopMenuItem(Component):
     # This component takes one parameter, a date string to show in the template
     def get_context_data(self, text, my_url, *args):
         # skip absolute urls
-        print(my_url)
         if not (my_url.startswith("/") or my_url.startswith("https://")):
             my_url = reverse(my_url, *args)
-        print("U", my_url)
+
         return {
             "my_url": my_url,
             "text": text,
         }
 
     template: types.django_html = """
-            <a href="{{ my_url }}" class="vertical hiddenMobile align-top">{{ text }}</a>    
+            <li><a href="{{ my_url }}" >{{ text }}</a></li>    
     """
 
 

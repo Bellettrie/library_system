@@ -7,49 +7,11 @@
     {% include 'base_header.html' %}
     {% get_title %}
     {% component_css_dependencies %}
-
-    <style>
-        h2 {
-            text-align: center;
-        }
-
-        .top-nav {
-            padding-top: 20px;
-            height: 30px;
-            margin-top: 35px;
-            right: 30px;
-            top: 0px;
-            position: absolute;
-        }
-
-        .top-nav-left {
-            padding-top: 20px;
-            height: 30px;
-            margin-top: 35px;
-            left: 30px;
-            top: 0px;
-            position: absolute;
-        }
-
-        .vertical {
-            font-family: 'Rubik', sans-serif;;
-            margin-left: .1vw;
-            border-left: .1vw solid black;
-            padding-left: .1vw;
-            margin-top: 25px;
-            height: 30px;
-            font-size: 1vw;
-        }
-
-        @font-face {
-            font-family: logoFont;
-            src: url("{% static 'Present_Roman.ttf' %}");
-        }
-    </style>
 </head>
 <body>
+{% include 'base_hx_dialog.html' %}
 
-<div id="wrapper" >
+<div class="h-screen flex flex-col">
     {% component 'top_nav' %}
         {% fill 'left_menu' %}
             {% component 'top-item' 'Book Search' "works.list" / %}
@@ -63,62 +25,21 @@
             {% else %}
                 {% component 'top-item' 'Become Active' "works.list" / %}
                 {% component 'top-item' 'About' "works.list" / %}
-                {% component "top-item-logout" "Logout" / %}
             {% endif %}
 
         {% endfill %}
     {% endcomponent %}
-    <!-- Sidebar Holder -->
-    {% if not user.is_anonymous %}
-        {% if not user.is_anonymous and user.member %}
-            <div id="sidebar-header" class="collapsed loggedin">
-                <a href="{% url 'members.view' user.member.pk 0 %}">{{ user.member.name }}</a>
-            </div>
-        {% else %}
-        {% endif %}
-        <button id="toggle-sidebar"><</button>
-        <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %}">
-            {% include 'nav.html' %}
-        </nav>
-    {% else %}
-        <button id="toggle-sidebar"><</button>
-        <nav id="sidebar" class="collapsed {% if user.is_anonymous %}ontop{% endif %} grayedOut">
-            {% include 'nav.html' %}
-        </nav>
-    {% endif %}
 
-    {% include 'base_hx_dialog.html' %}
     <!-- Page Content Holder -->
-    <article id="content">
-        <h2>{% block title %}Title{% endblock %}</h2>
-        {% block content %}
-        {% endblock %}
-        <br/>
-        <br/>
-    </article>
-    {% if user.is_anonymous %}
-        <div id="rightBar"></div>
-    {% endif %}
+
+
+    <!-- Hero -->
+    <section class="container mx-auto mt-12 mb-4 flex-1">
+        {% block content %}{% endblock %}
+    </section>
+    <footer class="h-50 flex-none">test</footer>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% component_js_dependencies %}
 </div>
-
-<script>
-    const sidebar = document.querySelector('#sidebar');
-    const sidebarH = document.querySelector('#sidebar-header');
-    const toggleSidebar = document.querySelector('#toggle-sidebar');
-
-    toggleSidebar.onclick = () => {
-        sidebar.classList.toggle('collapsed');
-        sidebarH.classList.toggle('collapsed');
-        toggleSidebar.innerText = sidebar.classList.contains('collapsed') ? '>' : '<';
-    };
-</script>
-<script>
-    $(function () {
-        $(".datepicker").datepicker({
-            format: 'yyyy-mm-dd'
-        });
-    });
-</script>
-{% component_js_dependencies %}
 </body>
 </html>
