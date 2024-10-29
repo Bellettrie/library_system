@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {% block title %}{% if series.pk %}Edit {% include 'series/part_of_series_name.html' %}{% else %}New Series{% endif %}{% endblock %}
 {% block content %}
     <form method="post" action="#">

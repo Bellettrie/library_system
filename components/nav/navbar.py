@@ -1,4 +1,5 @@
 # In a file called [project root]/components/calendar/calendar.py
+from django.urls import reverse
 from django_components import Component, register, types
 
 from bellettrie_library_system import settings
@@ -23,9 +24,10 @@ class TopNav(Component):
             "logo_debug": settings.UPSIDE_DOWN,
             "logo_name": settings.LIBRARY_NAME,
             "logo_image": settings.LIBRARY_IMAGE_URL,
-            "left_menu": left_items,
-            "right_menu": right_items,
         }
+
+    class Media:
+        css = "nav/navbar.css"
 
 
 @register("logo")
@@ -62,26 +64,41 @@ class Logo(Component):
 class TopMenuItem(Component):
 
     # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, url, text, is_logout):
+    def get_context_data(self, text, my_url, *args):
+        # skip absolute urls
+        print(my_url)
+        if not (my_url.startswith("/") or my_url.startswith("https://")):
+            my_url = reverse(my_url, *args)
+        print("U", my_url)
         return {
-            "url`": url,
+            "my_url": my_url,
             "text": text,
-            "is_logout": is_logout,
         }
 
     template: types.django_html = """
-        {% if is_logout %}
-            <a class="vertical align-top"> </a>
-            <form method="post" action="{% url 'logout' %}" class="form-inline renderLogoutformstyle align-top">
-                {% csrf_token %}
-                <input class="btn btn-outline renderLogoutfakeURL" type="submit" value="{{ menu.title }}">
-            </form>
-        {% else %}
-            <a href="{{ url }}" class="vertical hiddenMobile align-top">{{ text }}</a>
-        {% endif %}
+            <a href="{{ my_url }}" class="vertical hiddenMobile align-top">{{ text }}</a>    
+    """
+
+
+@register("top-item-logout")
+class TopLogoutItem(Component):
+
+    # This component takes one parameter, a date string to show in the template
+    def get_context_data(self, text, *args):
+        return {
+            "link_url`": "logout",
+            "text": text,
+        }
+
+    template: types.django_html = """
+     <a class="vertical align-top"> </a>
+    <form method="post" action="{% url 'logout' %}" class="form-inline renderLogoutformstyle align-top">
+        {% csrf_token %}
+        <input class="btn btn-outline renderLogoutfakeURL" type="submit" value="{{ text }}">
+    </form>    
     """
     css: types.css = """
-        .renderLogoutfakeURL {
+       .renderLogoutfakeURL {
         font-family: 'Rubik', sans-serif;
         font-size: 1vw;
         color: grey;
