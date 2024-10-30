@@ -51,7 +51,7 @@ class Logo(Component):
     </a>
     </div>
     """
-    css: types.css = """    
+    css: types.css = """ 
 .rotate4{ /*upside down*/
     -webkit-transform:rotate(180deg);
     -moz-transform:rotate(180deg);
@@ -77,7 +77,7 @@ class TopMenuItem(Component):
         }
 
     template: types.django_html = """
-            <li><a href="{{ my_url }}" >{{ text }}</a></li>    
+            <li><a href="{{ my_url }}" >{{ text }}</a></li>
     """
 
 

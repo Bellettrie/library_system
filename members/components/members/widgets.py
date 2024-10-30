@@ -10,8 +10,7 @@ from bellettrie_library_system.base_settings import GET_MENU
 class SearchInput(Component):
 
     # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, query =""):
-
+    def get_context_data(self, query=""):
         return {
             "query": query,
         }
@@ -26,18 +25,14 @@ class SearchInput(Component):
               </div>
                 <input id="q" type="text" name="q" value="{{ query }}" class="input input-bordered w-full max-w-xs">
         </label>
-        
-        
-         <label class="form-control center">
-             <div class="label">
-    <span class="label-text">Also Former Members?</span>
-              </div>
-    <input type="checkbox" id="previous" name="previous"{% if  request.GET.previous %}  checked="checked" {% endif %} class="checkbox checkbox-md" />
-  </label>
+    <label class="form-control center">
+        <div class="label">
+            <span class="label-text">Also Former Members?</span>
+        </div>
+        <input type="checkbox" id="previous" name="previous"{% if  request.GET.previous %}  checked="checked" {% endif %} class="checkbox checkbox-md" />
+    </label>
  <input type="submit" value="Search" class="btn btn-accent gap-2 w-full ">
-    
-</form>    
+</form>
 </div>
 </div>
-    """
-
+"""
