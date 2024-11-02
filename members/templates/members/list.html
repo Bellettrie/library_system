@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}Member Search{% endblock %}
 {% block content %}
-    <div class="xl:flex xl:items-start mb-4">
-        {% component 'members.search_input' / %}
+    <div class=" mb-4">
+        {% component 'members.search_input' request.GET.q / %}
         <div class="">
             {% include 'pagination.html' %}
             <table class="table table-striped" style="width: auto;">
