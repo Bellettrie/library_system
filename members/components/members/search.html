@@ -1,0 +1,15 @@
+<form action="/members" method="get">
+    <div class="join">
+        <input type="text" placeholder="Who are you looking for?" value="{{ query }}" name="q"
+               class="input input-bordered join-item"/>
+        <select class="select  join-item" id="previous" name="previous" >
+
+            <option value="">Current Members</option>
+            <option value="true" {% if request.GET.previous %}selected{% endif %}>Also Past Members</option>
+
+        </select>
+        <button class="btn btn-primary join-item">
+            Search
+        </button>
+    </div>
+</form>

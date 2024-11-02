@@ -43,7 +43,7 @@ class Logo(Component):
     template: types.django_html = """
     {% load static %}
       <div class="flex-1">
-    <a class="btn btn-ghost text-xl" href="{% url 'homepage' %}">
+    <a class="btn btn-ghost transition-none no-animation text-xl" href="{% url 'homepage' %}">
         <img {% if debug %}class="rotate4"{% endif %}
             src="{% static logo %}"
             style="height:75px;     font-family: 'Pangolin'; "/>
