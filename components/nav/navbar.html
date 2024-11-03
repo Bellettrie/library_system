@@ -1,6 +1,6 @@
-<div class="navbar bg-belleyellow flex flex-row w-full">
+<div class="navbar bg-belleyellow flex flex-row w-full shadow-md shadow-bellered">
     <div class="dropdown">
-        <label tabindex="0" class="btn btn-ghost lg:hidden">
+        <label tabindex="0" class="btn btn-ghost 2xl:hidden">
             <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5"
@@ -18,28 +18,23 @@
         </label>
         <ul
                 tabindex="0"
-                class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box"
         >
             {% slot "left_menu" %}{% endslot %}
             {% slot "right_menu" %}{% endslot %}
         </ul>
     </div>
-    <div class="navbar-start hidden lg:flex lg:ml-10">
-
+    <div class="navbar-start hidden 2xl:flex 2xl:ml-10">
         <ul class="menu menu-horizontal px-1">
             {% slot "left_menu" %}{% endslot %}
         </ul>
-
-        {#        <a class="btn btn-ghost normal-case text-xl">Logo Heading</a>#}
     </div>
-    <div class="navbar-center">
+    <div class="navbar-center flex-1 2xl:flex-none ">
         {% slot "center_menu" %}{% endslot %}
     </div>
-    <div class="navbar-end hidden lg:flex mr-10 gap-5">
+    <div class="navbar-end hidden min-[940px]:flex min-[940px]:mr-10 gap-5">
         <ul class="menu menu-horizontal px-1">
             {% slot "right_menu" %}{% endslot %}
         </ul>
     </div>
-
-
 </div>
