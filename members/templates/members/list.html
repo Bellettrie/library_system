@@ -1,20 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}Member Search{% endblock %}
 {% block content %}
-    <div class=" mb-4">
-        {% component 'members.search_input' request.GET.q / %}
-        <div class="">
-            {% include 'pagination.html' %}
-            <table class="table table-striped" style="width: auto;">
-                {% for member in object_list %}
-                    {% include 'members/list_item.html' %}
+    {% component 'members.search_input' request.GET.q / %}
+    <div class="justify-center w-full flex-vertical">
+
+        {% component "widget/widget_base" %}
+
+            {% fill "title" %}
+                {% include 'pagination.html' %}
+            {% endfill %}
+            {% fill "content" %}
+                <table class="table table-striped" style="width: auto;">
+                    {% for member in object_list %}
+                        {% include 'members/list_item.html' %}
                     {% empty %}
-                    <i> No results</i>
-                {% endfor %}
-            </table>
+                        <i> No results</i>
+                    {% endfor %}
+                </table>
 
 
-            <a href="{% url 'members.new' %}" class="btn btn-outline-primary">New member</a>
-        </div>
+
+            {% endfill %}
+        {% endcomponent %}
+
     </div>
 {% endblock %}

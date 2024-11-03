@@ -1,14 +1,23 @@
-<form action="/members" method="get">
-    <div class="join">
-        <input type="text" placeholder="Who are you looking for?" value="{{ query }}" name="q"
-               class="input input-bordered join-item"/>
-        <select class="select input-bordered join-item" id="previous" name="previous">
-            <option disabled>Which Members?</option>
-            <option value="" {% if not request.GET.previous %}selected{% endif %}>Only Current</option>
-            <option value="true" {% if request.GET.previous %}selected{% endif %}>Also Previous</option>
-        </select>
-        <button class="btn btn-primary join-item">
-            Search
-        </button>
-    </div>
-</form>
+{% component "widget/widget_base" %}
+    {% fill "title" %}
+        Members
+    {% endfill %}
+    {% fill "content" %}
+        <form action="/members" method="get" class="flex-1">
+            <div class="join">
+                <input type="text" placeholder="Who are you looking for?" value="{{ query }}" name="q"
+                       class="input input-bordered join-item"/>
+                <select class="select input-bordered join-item" id="previous" name="previous">
+                    <option disabled>Which Members?</option>
+                    <option value="" {% if not request.GET.previous %}selected{% endif %}>Only Current</option>
+                    <option value="true" {% if request.GET.previous %}selected{% endif %}>Also Previous</option>
+                </select>
+                <button class="btn btn-primary join-item">
+                    Search
+                </button>
+            </div>
+        </form>
+        <a href="{% url 'members.new' %}" class="btn btn-outline-primary flex-1">New member</a>
+
+    {% endfill %}
+{% endcomponent %}
