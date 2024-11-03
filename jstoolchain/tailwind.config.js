@@ -1,9 +1,11 @@
 module.exports = {
-    content: ["../**/*.html", ".../**/*.py"],
+    content: ["../**/*.html"],
     // darkMode: 'class',
     theme: {
-        colors: {
-            belleyellow: "#f7ec55",
+        extend: {
+            colors: {
+                belleyellow: "#f7ec55",
+            }
         }
     },
     //     extend: {},

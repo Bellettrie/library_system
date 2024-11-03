@@ -11,7 +11,7 @@
 <body>
 {% include 'base_hx_dialog.html' %}
 
-<div class="min-h-screen flex flex-col w-full">
+<div class="min-h-screen flex flex-col w-full ">
     {% component 'top_nav' %}
         {% fill 'left_menu' %}
             {% component 'top-item' 'Book Search' "works.list" / %}
@@ -66,26 +66,34 @@
     <!-- Page Content Holder -->
 
 
-    <section class="container mx-auto mt-12 mb-4 w-full">
+    <section class="container flex-1 mx-auto mt-12 mb-4 w-full">
         {% block content %}{% endblock %}
-    </section>
-    <div class="drawer drawer-end absolute bottom-0 right-0 h-16 w-16">
-        <input id="my-drawer-4" type="checkbox" class="drawer-toggle "/>
-        <div class="drawer-content">
-            <!-- Page content here -->
-            <label for="my-drawer-4" class="drawer-button btn btn-primary">?</label>
-        </div>
-        <div class="drawer-side">
-            <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
-            <div class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-                <!-- Sidebar content here -->
-                <li><a>Sidebar Item 1</a></li>
-                <li><a>Sidebar Item 2</a></li>
+        <div class="drawer drawer-end fixed bottom-0 right-0 h-16 w-16">
+            <input id="my-drawer-4" type="checkbox" class="drawer-toggle "/>
+            <div class="drawer-content">
+                <!-- Page content here -->
+                <label for="my-drawer-4" class="drawer-button btn btn-primary">?</label>
+            </div>
+            <div class="drawer-side">
+                <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
+                <div class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+                    <!-- Sidebar content here -->
+                    <li><a>Sidebar Item 1</a></li>
+                    <li><a>Sidebar Item 2</a></li>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <footer class="h-50 flex-none">test</footer>
+    <footer class="footer bg-neutral text-neutral-content p-10">
+        <nav>
+            <h6 class="footer-title">About</h6>
+            <a class="link link-hover">Contact</a>
+            <a class="link link-hover">Privacy Policy</a>
+
+        </nav>
+    </footer>
+    {#    <footer class="h-50 flex-none">test</footer>#}
     {% component_js_dependencies %}
 
 </div>
