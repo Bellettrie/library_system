@@ -69,8 +69,25 @@
     <section class="container mx-auto mt-12 mb-4 flex-1">
         {% block content %}{% endblock %}
     </section>
+
+    <div class="drawer drawer-end absolute bottom-0 right-0 h-16 w-16">
+        <input id="my-drawer-4" type="checkbox" class="drawer-toggle "/>
+        <div class="drawer-content">
+            <!-- Page content here -->
+            <label for="my-drawer-4" class="drawer-button btn btn-primary">?</label>
+        </div>
+        <div class="drawer-side">
+            <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
+            <div class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+                <!-- Sidebar content here -->
+                <li><a>Sidebar Item 1</a></li>
+                <li><a>Sidebar Item 2</a></li>
+            </div>
+        </div>
+    </div>
     <footer class="h-50 flex-none">test</footer>
     {% component_js_dependencies %}
+
 </div>
 </body>
 </html>

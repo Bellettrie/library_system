@@ -40,17 +40,7 @@ class Logo(Component):
             "logo": logo,
         }
 
-    template: types.django_html = """
-    {% load static %}
-      <div class="flex-1">
-    <a class="btn btn-ghost transition-none no-animation text-xl" href="{% url 'homepage' %}">
-        <img {% if debug %}class="rotate4"{% endif %}
-            src="{% static logo %}"
-            style="height:75px;     font-family: 'Pangolin'; "/>
-        {{ name }}
-    </a>
-    </div>
-    """
+    template_name = "nav/logo.html"
     css: types.css = """ 
 .rotate4{ /*upside down*/
     -webkit-transform:rotate(180deg);
@@ -59,6 +49,7 @@ class Logo(Component):
     -ms-transform:rotate(180deg);
     transform:rotate(180deg);
 }
+
 """
 
 
