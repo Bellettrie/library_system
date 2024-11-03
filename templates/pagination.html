@@ -1,17 +1,17 @@
-<div class="pagination w-full">
- <span class="step-links">
+<div class="pagination w-full bg-primary-50">
+ <span class="join">
    {% if page_obj.has_previous %}
-       <a href="?{% url_replace page=page_obj.previous_page_number %}" class="btn btn-outline-primary">Prev</a>
+       <a href="?{% url_replace page=page_obj.previous_page_number %}" class="btn btn-outline-primary join-item">Prev</a>
        {% else %}
-       <a class="btn btn-outline-primary disabled">Prev</a>
+       <a class="btn btn-outline-primary disabled join-item">Prev</a>
    {% endif %}
-     <span class="current btn btn-light disabled">
+     <span class="current btn btn-light disabled join-item">
             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
    </span>
      {% if page_obj.has_next %}
-         <a href="?{% url_replace page=page_obj.next_page_number %}" class="btn btn-outline-primary">Next</a>
+         <a href="?{% url_replace page=page_obj.next_page_number %}" class="btn btn-outline-primary join-item">Next</a>
          {% else %}
-         <a class="btn btn-outline-primary disabled">Next</a>
+         <a class="btn btn-outline-primary disabled join-item">Next</a>
      {% endif %}
   </span>
 </div>
