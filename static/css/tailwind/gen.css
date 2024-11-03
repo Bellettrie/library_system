@@ -4152,6 +4152,11 @@ html:has(.drawer-toggle:checked) {
   margin-right: auto;
 }
 
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -4316,6 +4321,10 @@ html:has(.drawer-toggle:checked) {
   align-items: center;
 }
 
+.justify-center {
+  justify-content: center;
+}
+
 .justify-between {
   justify-content: space-between;
 }
@@ -4326,6 +4335,19 @@ html:has(.drawer-toggle:checked) {
 
 .gap-5 {
   gap: 1.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-10 {
+  gap: 2.5rem;
+}
+
+.gap-x-10 {
+  -moz-column-gap: 2.5rem;
+       column-gap: 2.5rem;
 }
 
 .text-nowrap {
@@ -4628,6 +4650,11 @@ html:has(.drawer-toggle:checked) {
   }
 }
 
+.hover\:gap-x-10:hover {
+  -moz-column-gap: 2.5rem;
+       column-gap: 2.5rem;
+}
+
 @media (min-width: 640px) {
   .sm\:w-full {
     width: 100%;
@@ -4650,6 +4677,16 @@ html:has(.drawer-toggle:checked) {
 
 @media (min-width: 800px) {
   .min-\[800px\]\:flex {
+    display: flex;
+  }
+}
+
+@media (min-width: 900px) {
+  .min-\[900px\]\:mr-10 {
+    margin-right: 2.5rem;
+  }
+
+  .min-\[900px\]\:flex {
     display: flex;
   }
 }
@@ -4698,6 +4735,14 @@ html:has(.drawer-toggle:checked) {
   .xl\:hidden {
     display: none;
   }
+
+  .xl\:flex-none {
+    flex: none;
+  }
+
+  .xl\:justify-center {
+    justify-content: center;
+  }
 }
 
 @media (min-width: 1536px) {
@@ -4715,5 +4760,9 @@ html:has(.drawer-toggle:checked) {
 
   .\32xl\:flex-none {
     flex: none;
+  }
+
+  .\32xl\:justify-center {
+    justify-content: center;
   }
 }
