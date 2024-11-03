@@ -11,7 +11,7 @@
 <body>
 {% include 'base_hx_dialog.html' %}
 
-<div class="min-h-screen flex flex-col">
+<div class="min-h-screen flex flex-col w-full">
     {% component 'top_nav' %}
         {% fill 'left_menu' %}
             {% component 'top-item' 'Book Search' "works.list" / %}
@@ -66,10 +66,9 @@
     <!-- Page Content Holder -->
 
 
-    <section class="container mx-auto mt-12 mb-4 flex-1">
+    <section class="container mx-auto mt-12 mb-4 w-full">
         {% block content %}{% endblock %}
     </section>
-
     <div class="drawer drawer-end absolute bottom-0 right-0 h-16 w-16">
         <input id="my-drawer-4" type="checkbox" class="drawer-toggle "/>
         <div class="drawer-content">
@@ -85,6 +84,7 @@
             </div>
         </div>
     </div>
+
     <footer class="h-50 flex-none">test</footer>
     {% component_js_dependencies %}
 
