@@ -5,6 +5,7 @@ module.exports = {
         extend: {
             colors: {
                 belleyellow: "#f7ec55",
+                bellered: "#c14d00",
             }
         }
     },
