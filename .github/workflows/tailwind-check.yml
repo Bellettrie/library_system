@@ -14,7 +14,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd jstoolchain
-        npm install --pure-lockfile
+        npm ci
     - name: Check tailwind compile
       run: |
         cd jstoolchain/
