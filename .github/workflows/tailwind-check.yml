@@ -1,0 +1,25 @@
+name: Tailwind Check
+
+on: 
+  pull_request:
+      branches: 
+        - main
+jobs:
+  build:
+
+    runs-on: node:latest-alpine
+    strategy:
+      max-parallel: 4    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        apk install make
+        cd jstoolchain
+        npm install
+    - name: Check tailwind compile
+      run: |
+        make tailwind-compile
+        git status
+        git diff-index HEAD --quiet -- ./static
+
