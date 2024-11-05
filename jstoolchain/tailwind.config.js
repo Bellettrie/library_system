@@ -1,6 +1,7 @@
 module.exports = {
     content: ["../**/*.html",
-    "!../**/node_modules"],
+    "!../**/node_modules",
+    "!../venv/"],
     // darkMode: 'class',
     theme: {
         extend: {
