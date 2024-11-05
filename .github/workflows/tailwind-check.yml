@@ -7,14 +7,12 @@ on:
 jobs:
   build:
 
-    runs-on: node:latest-alpine
-    strategy:
-      max-parallel: 4    
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
-        apk install make
+        apt install make npm
         cd jstoolchain
         npm install
     - name: Check tailwind compile
