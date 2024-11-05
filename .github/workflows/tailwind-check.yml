@@ -17,7 +17,9 @@ jobs:
         npm install
     - name: Check tailwind compile
       run: |
-        make tailwind-compile
+        cd jstoolchain/
+        npx tailwindcss -c tailwind.config.js -o ../static/css/tailwind/gen.css
+        cd ..
         git status
         git diff-index HEAD --quiet -- ./static
 
