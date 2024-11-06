@@ -41,7 +41,7 @@ class Logo(Component):
         }
 
     template_name = "nav/logo.html"
-    css: types.css = """ 
+    css: types.css = """
 .rotate4{ /*upside down*/
     -webkit-transform:rotate(180deg);
     -moz-transform:rotate(180deg);
@@ -87,7 +87,7 @@ class TopLogoutItem(Component):
     <form method="post" action="{% url 'logout' %}" class="form-inline renderLogoutformstyle align-top">
         {% csrf_token %}
         <input class="btn btn-outline renderLogoutfakeURL" type="submit" value="{{ text }}">
-    </form>    
+    </form>
     """
     css: types.css = """
        .renderLogoutfakeURL {
