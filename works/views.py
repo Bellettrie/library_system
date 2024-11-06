@@ -34,6 +34,7 @@ def sort_works(work: Work):
     return work.old_id
 
 
+
 def sorter(dictt):
     return lambda a: -dictt[a]
 
@@ -61,6 +62,7 @@ def get_works_for_publication(words_for_q, words_for_author=[], words_for_series
         query = merge_queries(query, LocationSearchQuery(categories))
     if len(book_code) > 0:
         query = merge_queries(query, BookCodeSearchQuery(book_code))
+
     inbetween_list = []
     if query is not None:
         result_set = query.exec()
@@ -88,8 +90,11 @@ def get_works_by_book_code(word):
     word = word_to_regex(word)
     if len(word) == 0:
         return []
-    items = Item.objects.filter(Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word)).prefetch_related(
-        "publication")
+    
+    items = Item.objects.filter(
+        Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word),
+        hidden=False
+    ).prefetch_related("publication")
     results = []
     for item in items:
         results.append(item.publication)

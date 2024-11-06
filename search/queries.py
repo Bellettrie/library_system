@@ -3,6 +3,14 @@ from django.db.models import Q
 from search.models import get_words_in_str
 from works.models import Publication, Category
 
+# decorator that removes publications that are hidden
+def remove_hidden(func):
+    def wrapper(*args, **kwargs):
+        res = func(*args, **kwargs)
+        return res.filter(hidden=False)
+    return wrapper
+
+
 
 class SearchOp:
     def exec(self):
@@ -13,6 +21,7 @@ class BaseSearchQuery(SearchOp):
     def __init__(self, sentence):
         self.words = get_words_in_str(sentence)
 
+    @remove_hidden
     def exec(self):
         if len(self.words) == 0:
             return Publication.objects.none()
@@ -33,6 +42,7 @@ class AuthorSearchQuery(SearchOp):
     def __init__(self, sentence):
         self.words = get_words_in_str(sentence)
 
+    @remove_hidden
     def exec(self):
         if len(self.words) == 0:
             return Publication.objects.none()
@@ -54,6 +64,7 @@ class SeriesSearchQuery(SearchOp):
     def __init__(self, sentence):
         self.words = get_words_in_str(sentence)
 
+    @remove_hidden
     def exec(self):
         if len(self.words) == 0:
             return Publication.objects.none()
@@ -75,6 +86,7 @@ class TitleSearchQuery(SearchOp):
     def __init__(self, sentence):
         self.words = get_words_in_str(sentence)
 
+    @remove_hidden
     def exec(self):
         if len(self.words) == 0:
             return Publication.objects.none()
@@ -125,6 +137,7 @@ class BookCodeSearchQuery(SearchOp):
     def __init__(self, states: str):
         self.states = states
 
+    @remove_hidden
     def exec(self):
         res = None
         word = self.states
@@ -146,6 +159,7 @@ class LocationSearchQuery(SearchOp):
     def __init__(self, categories: [Category]):
         self.categories = categories
 
+    @remove_hidden
     def exec(self):
         return Publication.objects.filter(item__location__category__in=self.categories)
 
@@ -155,6 +169,7 @@ class OrOp(SearchOp):
         self.left = left
         self.right = right
 
+    @remove_hidden
     def exec(self):
         return self.left.exec() | self.right.exec()
 
@@ -164,5 +179,6 @@ class AndOp(SearchOp):
         self.left = left
         self.right = right
 
+    @remove_hidden
     def exec(self):
         return self.left.exec() & self.right.exec()
