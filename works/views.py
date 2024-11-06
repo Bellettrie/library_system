@@ -93,7 +93,7 @@ def get_works_by_book_code(word):
     
     items = Item.objects.filter(
         Q(book_code__iregex=word) | Q(book_code_sortable__iregex=word),
-        hidden=False
+        publication__hidden=False
     ).prefetch_related("publication")
     results = []
     for item in items:
