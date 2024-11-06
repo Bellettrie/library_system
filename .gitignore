@@ -10,4 +10,4 @@ root/*
 bellettrie_library_system/.env
 static/images/logo.png
 docker_local/*.sql
-jstoolchain/node_modules
+styles/config/node_modules

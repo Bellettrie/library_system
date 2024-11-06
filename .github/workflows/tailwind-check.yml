@@ -17,8 +17,8 @@ jobs:
         npm ci
     - name: Check tailwind compile
       run: |
-        cd jstoolchain/
-        npx tailwindcss -c tailwind.config.js -o ../static/css/tailwind/gen.css
+        cd styles/config/
+        npm run compile
         cd ..
         git status
         git diff && echo 0

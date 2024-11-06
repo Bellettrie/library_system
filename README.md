@@ -22,14 +22,14 @@ flake8 . --ignore F401,E501,W503 --count --show-source --statistics --max-line-l
 
 
 ## Using Tailwind
-Install npm (or yarn if you know how), and install the dependencies in the jstoolchain folder. 
-Also run `npm install npx` to be able to run the tailwind program thingy from the command line.
+Install npm (or yarn if you know how), and install the dependencies in the /styles/static folder. 
 
 
-Enter the jstooljain folder and run the following command for local dev:
-` npx tailwindcss -c tailwind.config.js -o ../static/css/tailwind/gen.css --watch`
 
-Omit the `--watch` to only build. 
+Enter the /styles/static folder and run the following command for local dev:
+`npm watch`
+
+Run `npm compile` to merely compile 
 
 
 Note that tailwind's tooling reads the source of all our templates to see which tags are actually in use. 
