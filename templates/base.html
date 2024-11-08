@@ -13,18 +13,18 @@
 
 <div class="min-h-screen flex flex-col w-full ">
     {% component 'top_nav' %}
-        {% fill 'left_menu' %}
-            {% component 'top-item' 'Book Search' "works.list" / %}
-            {% component 'top-item' 'Our Activities' "works.list" / %}
-            {% if  user.is_anonymous %}
-                {% component 'top-item' 'Join Us' "named_page" "basic" "about" / %}
-                {% component 'top-item' 'About' "named_page" "basic" "about" / %}
-                {% component "top-item" "Login" "login" / %}
-            {% else %}
-                {% component 'top-item' 'Become Active' "named_page" "basic" "about" / %}
-                {% component 'top-item' 'About' "named_page" "basic" "about" / %}
-            {% endif %}
-        {% endfill %}
+        {#        {% fill 'menu_buttons' %}#}
+        {#            {% component 'top-item' 'Book Search' "works.list" location="top" / %}#}
+        {#            {% component 'top-item' 'Our Activities' "works.list"  location="top" / %}#}
+        {#            {% if  user.is_anonymous %}#}
+        {#                {% component 'top-item' 'Join Us' "named_page" "basic" "about"   location="top" / %}#}
+        {#                {% component 'top-item' 'About' "named_page" "basic" "about"  location="top" /%}#}
+        {#                {% component "top-item" "Login" "login"  location="top" /%}#}
+        {#            {% else %}#}
+        {#                {% component 'top-item' 'Become Active' "named_page" "basic" "about"  location="top" /%}#}
+        {#                {% component 'top-item' 'About' "named_page" "basic" "about"  location="top" / %}#}
+        {#            {% endif %}#}
+        {#        {% endfill %}#}
         {% fill 'center_menu' %}
             {% component "logo" logo_debug logo_name logo_image %} {% endcomponent %}
         {% endfill %}
@@ -66,29 +66,33 @@
     <!-- Page Content Holder -->
 
 
-    <section class="container flex-1 mx-auto mt-12 mb-4 w-full">
-        {% block content %}{% endblock %}
-        <div class="drawer drawer-end fixed bottom-0 right-0 h-16 w-16">
-            <input id="my-drawer-4" type="checkbox" class="drawer-toggle "/>
-            <div class="drawer-content">
-                <!-- Page content here -->
-                <label for="my-drawer-4" class="drawer-button btn btn-primary">?</label>
-            </div>
-            <div class="drawer-side">
-                <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
-                <div class="menu bg-base-200 w-80 p-4 min-h-full">
-                    <h1 class="font-bold text-xl">Help</h1>
-                    <!-- Sidebar content here -->
-                    <p class="min-h-full">
-                    On this page you can look up members. <br>
-                        If you cannot find someone, check the spelling of their name, and also
+    <div class="container flex">
+        {% component "side_bar" / %}
 
-                    </p>
+        <section class="container flex-1 mx-auto mt-12 mb-4 ">
+
+            {% block content %}{% endblock %}
+            <div class="drawer drawer-end fixed bottom-0 right-0 h-16 w-16">
+                <input id="my-drawer-4" type="checkbox" class="drawer-toggle "/>
+                <div class="drawer-content">
+                    <!-- Page content here -->
+                    <label for="my-drawer-4" class="drawer-button btn btn-primary">?</label>
+                </div>
+                <div class="drawer-side">
+                    <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
+                    <div class="menu bg-base-200 w-80 p-4 min-h-full">
+                        <h1 class="font-bold text-xl">Help</h1>
+                        <!-- Sidebar content here -->
+                        <p class="min-h-full">
+                            On this page you can look up members. <br>
+                            If you cannot find someone, check the spelling of their name, and also
+
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
+        </section>
+    </div>
     <footer class="footer bg-neutral text-neutral-content p-10">
         <nav>
             <h6 class="footer-title">About</h6>

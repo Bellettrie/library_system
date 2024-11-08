@@ -143,23 +143,23 @@ def GET_MENU():
 
     my_menu = []
 
-    my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top-left', [], icon='fa fa-book'))
-    my_menu.append(MenuItem('Become a member', reverse('named_page', args=('basic', 'member',)), None, 'top-left', [], icon='fa fa-user'))
-    my_menu.append(MenuItem('Board / Committees', reverse('named_page', args=('basic', 'committees',)), None, 'top-left', [], icon='fa fa-users'))
-    my_menu.append(MenuItem('Konnichiwa', reverse('named_page', args=('konnichiwa', 'home',)), None, 'top-left', [], icon=''))
+    my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top', [], icon='fa fa-book'))
+    my_menu.append(MenuItem('Become a member', reverse('named_page', args=('basic', 'member',)), None, 'top', [], icon='fa fa-user'))
+    my_menu.append(MenuItem('Board / Committees', reverse('named_page', args=('basic', 'committees',)), None, 'top', [], icon='fa fa-users'))
+    my_menu.append(MenuItem('Konnichiwa', reverse('named_page', args=('konnichiwa', 'home',)), None, 'top', [], icon=''))
 
-    # my_menu.append(MenuItem('Corona', reverse('named_page', args=('basic', 'corona',)), None, 'top-right', [], icon='fa fa-exclamation-circle'))
+    # my_menu.append(MenuItem('Corona', reverse('named_page', args=('basic', 'corona',)), None, 'sidebar', [], icon='fa fa-exclamation-circle'))
     my_menu.append(
-        MenuItem('About', reverse('named_page', args=('basic', 'about',)), None, 'top-right', [], icon='fa fa-user'))
-    my_menu.append(MenuItem('Contact', reverse('named_page', args=('basic', 'contact',)), None, 'top-right', [],
+        MenuItem('About', reverse('named_page', args=('basic', 'about',)), None, 'mobile', [], icon='fa fa-user'))
+    my_menu.append(MenuItem('Contact', reverse('named_page', args=('basic', 'contact',)), None, 'mobile', [],
                             icon='fa fa-info'))
 
-    my_menu.append(MenuItem('Login', reverse('login'), None, 'top-right', [], anonymous=True, icon='fa fa-sign-in-alt'))
+    my_menu.append(MenuItem('Login', reverse('login'), None, 'mobile', [], anonymous=True, icon='fa fa-sign-in-alt'))
     my_menu.append(
-        MenuItem('Logout', reverse('logout'), None, 'top-right', [], anonymous=False, icon='fa fa-sign-out-alt',
+        MenuItem('Logout', reverse('logout'), None, 'mobile', [], anonymous=False, icon='fa fa-sign-out-alt',
                  is_logout=True))
 
-    my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'sidebar', [], anonymous=False, icon='fa fa-book'))
+    my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'mobile', [], anonymous=False, icon='fa fa-book'))
     my_menu.append(MenuItem('Members', reverse('members.list'), 'members.view_member', 'sidebar', [], anonymous=None,
                             icon='fa fa-user'))
     my_menu.append(
@@ -195,10 +195,10 @@ def GET_MENU():
     codes = MenuItem('Book Codes', reverse('book_code.code_list'), 'works.change_work', 'sidebar', [], anonymous=None,
                      icon='fa fa-clipboard-list')
 
-    my_menu.append(
-        MenuItem('Catalog Management', reverse('logout'), None, 'sidebar',
-                 [new_work, new_series, new_creator, inventarisation, recode_list, codes], only_subitems=True,
-                 icon='fa fa-book'))
+    # my_menu.append(
+    #     MenuItem('Catalog Management', reverse('logout'), None, 'sidebar',
+    #              [new_work, new_series, new_creator, inventarisation, recode_list, codes], only_subitems=True,
+    #              icon='fa fa-book'))
     anon_members = MenuItem('Anonymous users', reverse('members.list.anon'), 'members.change_member', 'sidebar', [],
                             anonymous=None, icon='fa fa-clipboard-list')
     member_stats = MenuItem('Member Statistics', reverse('datamining.membership_stats'), 'members.change_member',
@@ -208,11 +208,11 @@ def GET_MENU():
 
     members_list = MenuItem('Member Filter', reverse('datamining.members'), 'members.change_member', 'sidebar', [],
                             anonymous=None, icon='fa fa-clipboard-list')
-    my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar',
-                            [members_list, anon_members, member_stats, lending_stats], only_subitems=True,
-                            icon='fa fa-book'))
-    my_menu.append(MenuItem('Docs', reverse('named_page', args=("docs", "home",)), None, 'sidebar', [], anonymous=False,
-                            icon='fa fa-book'))
+    # my_menu.append(MenuItem('Datamining', reverse('logout'), None, 'sidebar',
+    #                         [members_list, anon_members, member_stats, lending_stats], only_subitems=True,
+    #                         icon='fa fa-book'))
+    # my_menu.append(MenuItem('Docs', reverse('named_page', args=("docs", "home",)), None, 'sidebar', [], anonymous=False,
+    #                         icon='fa fa-book'))
 
     return my_menu
 
