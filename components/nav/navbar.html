@@ -1,4 +1,4 @@
-<div class="navbar bg-belleyellow flex flex-row w-full shadow-md shadow-bellered">
+<div class="navbar bg-belleyellow flex flex-row w-full shadow-md shadow-bellered z-[2] height-10v">
     <div class="dropdown">
         <label tabindex="0" class="btn btn-ghost xl:hidden">
             <svg
@@ -17,22 +17,27 @@
             </svg>
         </label>
         <ulgit p
-                tabindex="0"
-                class="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box"
+               tabindex="0"
+               class="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box"
         >
-            {% slot "left_menu" %}{% endslot %}
-            {% slot "right_menu" %}{% endslot %}
+            {% for but in mobile_items %}
+                {% component 'top-item' but.title but.url location="mob" / %}
+            {% endfor %}
+            {% slot "sidebar" %}{% endslot %}
         </ulgit>
     </div>
+
     <div class="navbar-start hidden xl:flex xl:ml-10">
         <ul class="menu menu-horizontal px-1">
-            {% slot "left_menu" %}{% endslot %}
+            {% for but in menu_buttons %}
+                {% component 'top-item' but.title but.url location="top" / %}
+            {% endfor %}
         </ul>
     </div>
-    <div class="navbar-center justify-center min-[900px]:justify-left xl:justify-center flex-1 xl:flex-none">
+    <div class="navbar-center justify-center  xl:justify-center flex-1 xl:flex-none">
         {% slot "center_menu" %}{% endslot %}
     </div>
-    <div class="navbar-end hidden min-[900px]:flex min-[900px]:mr-10 gap-5">
+    <div class="navbar-end hidden xl:flex xl:ml-10 gap-5">
         <ul class="menu menu-horizontal px-1">
             {% slot "right_menu" %}{% endslot %}
         </ul>
