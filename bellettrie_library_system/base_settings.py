@@ -170,16 +170,16 @@ def GET_MENU():
                  anonymous=None, icon='fa fa-bookmark'))
     holiday_item = MenuItem('Holidays', reverse('holiday.list'), 'config.view_holiday', 'sidebar', [], anonymous=None,
                             icon='fa fa-plane')
-    my_menu.append(
-        MenuItem('Settings', reverse('logout'), None, 'sidebar', [holiday_item], only_subitems=True, icon='fa fa-cogs'))
+    # my_menu.append(
+    #     MenuItem('Settings', reverse('logout'), None, 'sidebar', [holiday_item], only_subitems=True, icon='fa fa-cogs'))
 
     uploads = MenuItem('Uploads', reverse('list_uploads'), 'public_pages.change_publicpage', 'sidebar', [],
                        anonymous=None, icon='fa fa-upload')
     web_management = MenuItem('List Web Pages', reverse('list_pages'), 'public_pages.view_publicpage', 'sidebar', [],
                               anonymous=None, icon='fa fa-newspaper')
-    my_menu.append(
-        MenuItem('Web Management', reverse('logout'), None, 'sidebar', [web_management, uploads], only_subitems=True,
-                 icon='fa fa-globe'))
+    # my_menu.append(
+    #     MenuItem('Web Management', reverse('logout'), None, 'sidebar', [web_management, uploads], only_subitems=True,
+    #              icon='fa fa-globe'))
 
     new_work = MenuItem('New Work', reverse('works.publication.new'), 'works.add_publication', 'sidebar', [],
                         anonymous=None, icon='fa fa-book')

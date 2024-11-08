@@ -20,7 +20,7 @@ class NavItem(Component):
     # This component takes one parameter, a date string to show in the template
     def get_context_data(self, text, my_url, *args, location="aaa", perm=None, **kwargs):
         # skip absolute urls
-        if not (my_url =="" or my_url.startswith("/") or my_url.startswith("https://")):
+        if not (my_url == "" or my_url.startswith("/") or my_url.startswith("https://")):
             my_url = reverse(my_url, args=args)
         return {
             "my_url": my_url,
@@ -43,13 +43,17 @@ class TopNav(Component):
     template_name = "nav/navbar.html"
 
     # This component takes one parameter, a date string to show in the template
-    def get_context_data(self):
+    def get_context_data(self, perms=None):
+        if perms is None:
+            perms = []
+
         left_items = []
         mobile_items = []
         for it in GET_MENU():
             if it.location == "top":
-                left_items.append(it)
-                mobile_items.append(it)
+                if (not it.permission) or (perms and it.permission in perms):
+                    left_items.append(it)
+                    mobile_items.append(it)
 
         return {
             "menu_buttons": left_items,
