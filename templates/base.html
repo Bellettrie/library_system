@@ -12,7 +12,7 @@
 {% include 'base_hx_dialog.html' %}
 
 <div class="min-h-screen flex flex-col w-full ">
-    {% component 'top_nav' %}
+    {% component 'top_nav' perms=perms %}
         {#        {% fill 'menu_buttons' %}#}
         {#            {% component 'top-item' 'Book Search' "works.list" location="top" / %}#}
         {#            {% component 'top-item' 'Our Activities' "works.list"  location="top" / %}#}
@@ -66,10 +66,10 @@
     <!-- Page Content Holder -->
 
 
-    <div class="container flex">
-        {% component "side_bar" / %}
+    <div class="flex  w-full">
+        {% component "side_bar" perms=perms / %}
 
-        <section class="container flex-1 mx-auto mt-12 mb-4 ">
+        <section class="container flex-1 justify-center mx-auto mt-12 mb-4 ">
 
             {% block content %}{% endblock %}
             <div class="drawer drawer-end fixed bottom-0 right-0 h-16 w-16">
