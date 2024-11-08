@@ -66,32 +66,35 @@
     <!-- Page Content Holder -->
 
 
-    <div class="flex  w-full">
-        {% component "side_bar" perms=perms / %}
+    <div class="flex justify-center flex-1">
+        <div class="flex flex-row w-full">
+            {% component "side_bar" perms=perms / %}
 
-        <section class="container flex-1 justify-center mx-auto mt-12 mb-4 ">
+            <section class="container flex-1  mx-auto mt-12 mb-4 ">
 
-            {% block content %}{% endblock %}
-            <div class="drawer drawer-end fixed bottom-0 right-0 h-16 w-16">
-                <input id="my-drawer-4" type="checkbox" class="drawer-toggle "/>
-                <div class="drawer-content">
-                    <!-- Page content here -->
-                    <label for="my-drawer-4" class="drawer-button btn btn-primary">?</label>
-                </div>
-                <div class="drawer-side">
-                    <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
-                    <div class="menu bg-base-200 w-80 p-4 min-h-full">
-                        <h1 class="font-bold text-xl">Help</h1>
-                        <!-- Sidebar content here -->
-                        <p class="min-h-full">
-                            On this page you can look up members. <br>
-                            If you cannot find someone, check the spelling of their name, and also
+                {% block content %}{% endblock %}
+                <div class="drawer drawer-end fixed bottom-0 right-0 h-16 w-16">
+                    <input id="my-drawer-4" type="checkbox" class="drawer-toggle "/>
+                    <div class="drawer-content">
+                        <!-- Page content here -->
+                        <label for="my-drawer-4" class="drawer-button btn btn-primary">?</label>
+                    </div>
+                    <div class="drawer-side">
+                        <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
+                        <div class="menu bg-base-200 w-80 p-4 min-h-full">
+                            <h1 class="font-bold text-xl">Help</h1>
+                            <!-- Sidebar content here -->
+                            <p class="min-h-full">
+                                On this page you can look up members. <br>
+                                If you cannot find someone, check the spelling of their name, and also
 
-                        </p>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
+
     </div>
     <footer class="footer bg-neutral text-neutral-content p-10">
         <nav>

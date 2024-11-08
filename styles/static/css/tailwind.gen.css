@@ -4608,6 +4608,11 @@ html:has(.drawer-open.drawer-open) {
   min-height: 100vh;
 }
 
+.min-h-fit {
+  min-height: -moz-fit-content;
+  min-height: fit-content;
+}
+
 .w-10 {
   width: 2.5rem;
 }
