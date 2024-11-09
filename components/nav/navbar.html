@@ -27,17 +27,17 @@
         </ulgit>
     </div>
 
-    <div class="navbar-start hidden xl:flex xl:ml-10">
+    <div class="navbar-start hidden xl:flex xl:ml-5">
         <ul class="menu menu-horizontal px-1">
             {% for but in menu_buttons %}
                 {% component 'top-item' but.title but.url location="top" / %}
             {% endfor %}
         </ul>
     </div>
-    <div class="navbar-center justify-center  xl:justify-center flex-1 xl:flex-none">
+    <div class="navbar-center justify-center flex-1 xl:flex-none">
         {% slot "center_menu" %}{% endslot %}
     </div>
-    <div class="navbar-end hidden xl:flex xl:mr-10 gap-5">
+    <div class="navbar-end hidden xl:flex xl:mr-5 gap-5">
         <ul class="menu menu-horizontal px-1">
             {% slot "right_menu" %}{% endslot %}
         </ul>

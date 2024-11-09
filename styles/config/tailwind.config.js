@@ -1,10 +1,15 @@
 module.exports = {
     content: ["../../**/*.html",
-    "!node_modules",
-    "!../../venv/"],
+        "!node_modules",
+        "!../../venv/"],
     // darkMode: 'class',
     theme: {
+
         extend: {
+            screens: {
+
+                "xl": '1500px',
+            },
             colors: {
                 belleyellow: "#f7ec55",
                 bellered: "#c14d00",
