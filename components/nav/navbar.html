@@ -1,31 +1,17 @@
-<div class="navbar bg-belleyellow flex flex-row w-full shadow-md shadow-bellered z-[2] height-10v">
-    <div class="dropdown">
-        <label tabindex="0" class="btn btn-ghost xl:hidden">
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-            >
-                <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h8m-8 6h16"
-                />
-            </svg>
-        </label>
-        <ulgit p
-               tabindex="0"
-               class="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow bg-base-100 rounded-box"
-        >
-            {% for but in mobile_items %}
-                {% component 'top-item' but.title but.url location="mob" / %}
-            {% endfor %}
-            {% slot "sidebar" %}{% endslot %}
-        </ulgit>
-    </div>
+<div class="navbar bg-belleyellow flex flex-row w-full shadow-md shadow-bellered z-[7] height-20">
+    <label for="my-drawer-2" aria-label="open sidebar" class="btn btn-square btn-ghost xl:hidden">
+        <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                class="inline-block h-6 w-6 stroke-current">
+            <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </label>
 
     <div class="navbar-start hidden xl:flex xl:ml-5">
         <ul class="menu menu-horizontal px-1">
