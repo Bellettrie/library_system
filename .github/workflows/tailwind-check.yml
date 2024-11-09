@@ -22,5 +22,5 @@ jobs:
         cd ..
         git status
         git diff && echo 0
-        git diff-index HEAD --quiet -- ./static
+        git diff-index HEAD --quiet -- ./styles
 
