@@ -55,23 +55,33 @@
     <!-- Page Content Holder -->
 
 
-    <div class="flex justify-center flex-1">
-        <div class="flex flex-row w-full">
-            {% component "side_bar" perms=perms / %}
+    <div class="grow flex flex-row w-full">
 
-            <section class="container flex-1 mx-auto px-5  mt-12 mb-4 ">
-
-                {% block content %}{% endblock %}
-            </section>
-        </div>
+        {% component "side_bar" perms=perms / %}
+        <section class="container  grow  mx-auto px-5  mt-12 mb-2 ">
+            {% block content %}{% endblock %}
+        </section>
 
     </div>
-    <footer class="footer bg-neutral text-neutral-content p-10 ">
-        <nav >
-            <h6 class="footer-title">About</h6>
+    <footer class="footer flex-none w-full bg-neutral text-neutral-content p-10 ">
+        <nav>
+            <h6 class="footer-title">Our Organisation</h6>
+            <a class="link link-hover">About</a>
             <a class="link link-hover">Contact</a>
-            <a class="link link-hover">Privacy Policy</a>
+            <a class="link link-hover">Volunteering</a>
+            <a class="link link-hover">Open Source</a>
 
+        </nav>
+        <nav>
+            <h6 class="footer-title">Follow Us</h6>
+            <a class="link link-hover">Instagram</a>
+            <a class="link link-hover">Hyves</a>
+        </nav>
+        <nav>
+            <h6 class="footer-title">Legal</h6>
+            <a class="link link-hover">Terms of use</a>
+            <a class="link link-hover">Privacy policy</a>
+            <a class="link link-hover">Cookie policy</a>
         </nav>
     </footer>
     {#    <footer class="h-50 flex-none">test</footer>#}

@@ -18,7 +18,7 @@ def get_top_menu():
 class NavItem(Component):
 
     # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, text, my_url, *args, location="aaa", perm=None, **kwargs):
+    def get_context_data(self, text, my_url, *args, location="aaa", perm=None, extra_classes="", **kwargs):
         # skip absolute urls
         if not (my_url == "" or my_url.startswith("/") or my_url.startswith("https://")):
             my_url = reverse(my_url, args=args)
@@ -26,7 +26,8 @@ class NavItem(Component):
             "my_url": my_url,
             "text": text,
             "location": location,
-            "perm": perm
+            "perm": perm,
+            "extra_classes": extra_classes,
         }
 
     def get_template_name(self, context: Context) -> Optional[str]:
