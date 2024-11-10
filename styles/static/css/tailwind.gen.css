@@ -3671,6 +3671,11 @@ html:has(.drawer-open.drawer-open) {
   min-height: 100vh;
 }
 
+.min-h-fit {
+  min-height: -moz-fit-content;
+  min-height: fit-content;
+}
+
 .w-10 {
   width: 2.5rem;
 }
@@ -3714,6 +3719,11 @@ html:has(.drawer-open.drawer-open) {
 
 .w-0 {
   width: 0px;
+}
+
+.min-w-fit {
+  min-width: -moz-fit-content;
+  min-width: fit-content;
 }
 
 .flex-1 {
@@ -3876,6 +3886,10 @@ html:has(.drawer-open.drawer-open) {
   padding-bottom: 1.5rem;
 }
 
+.pt-20 {
+  padding-top: 5rem;
+}
+
 .align-top {
   vertical-align: top;
 }
@@ -3888,6 +3902,11 @@ html:has(.drawer-open.drawer-open) {
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .font-bold {
@@ -4105,6 +4124,10 @@ html:has(.drawer-open.drawer-open) {
 }
 
 @media (min-width: 640px) {
+  .sm\:block {
+    display: block;
+  }
+
   .sm\:hidden {
     display: none;
   }
@@ -4125,6 +4148,11 @@ html:has(.drawer-open.drawer-open) {
   .sm\:gap-0 {
     gap: 0px;
   }
+
+  .sm\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -4143,6 +4171,16 @@ html:has(.drawer-open.drawer-open) {
   .md\:w-fit {
     width: -moz-fit-content;
     width: fit-content;
+  }
+
+  .md\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .md\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 }
 
@@ -4212,5 +4250,9 @@ html:has(.drawer-open.drawer-open) {
 
   .xl\:items-stretch {
     align-items: stretch;
+  }
+
+  .xl\:pt-0 {
+    padding-top: 0px;
   }
 }
