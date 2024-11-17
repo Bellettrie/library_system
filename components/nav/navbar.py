@@ -39,8 +39,8 @@ class NavItem(Component):
         return "nav/items/sidebar.html"
 
 
-@register("top_nav")
-class TopNav(Component):
+@register("nav.navbar.Navbar")
+class Navbar(Component):
     template_name = "nav/navbar.html"
 
     # This component takes one parameter, a date string to show in the template
