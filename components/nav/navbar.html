@@ -21,11 +21,40 @@
         </ul>
     </div>
     <div class="navbar-center justify-center flex-1 xl:flex-none">
-        {% slot "center_menu" %}{% endslot %}
+        {% component "logo" logo_debug logo_name logo_image %} {% endcomponent %}
     </div>
     <div class="navbar-end hidden xl:flex xl:mr-5 gap-5">
         <ul class="menu menu-horizontal px-1">
-            {% slot "right_menu" %}{% endslot %}
+            <form method="get" action="{% url 'works.list' %}">
+                <div class="form-control join join-horizontal">
+                    <input name="q" id="q" type="text" placeholder="Search"
+                           class="input input-bordered w-24 md:w-auto join-item input-md"/>
+                    <button class="btn join-item rounded-r-full btn-md">Search</button>
+                    <a href="{% url 'works.list' %}?advanced=True" class="btn join-item rounded-r-full btn-md">...</a>
+                </div>
+            </form>
+
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar btn-md">
+                    <div class="w-10 rounded-full">
+                        <img
+                                alt="Tailwind CSS Navbar component"
+                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
+                    </div>
+                </div>
+                <ul tabindex="0"
+                    class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                    <li>
+                        <a class="justify-between">
+                            Profile
+                            <span class="badge">New</span>
+                        </a>
+                    </li>
+                    <li><a>Settings</a></li>
+                    <li><a>Logout</a></li>
+                </ul>
+            </div>
         </ul>
     </div>
 </div>
+

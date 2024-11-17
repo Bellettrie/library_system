@@ -139,6 +139,7 @@ LOGOUT_REDIRECT_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/'
 
 
+# This one is still in use by the old bootstrap pages.
 def GET_MENU():
     from config.menu import MenuItem
 
