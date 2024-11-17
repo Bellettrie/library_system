@@ -10,46 +10,25 @@
     {% get_title %}
     {% component_css_dependencies %}
 </head>
+
 <body>
 
 {% include 'base_hx_dialog.html' %}
 
-
 <div class="min-h-screen flex flex-col w-full ">
-    {% menu_data 'top' perms as top_menu %}
-    {% component 'top_nav' top_menu / %}
-
+    {% menu_data 'top' perms as top_menu_items %}
+    {% component 'nav.navbar.Navbar' top_menu_items / %}
 
     <div class="grow flex flex-row w-full">
-        {% menu_data 'sidebar' perms as sidebar_menu %}
-        {% component "side_bar" sidebar_menu / %}
+        {% menu_data 'sidebar' perms as sidebar_menu_items %}
+        {% component "nav.sidebar.Sidebar" sidebar_menu_items / %}
 
         <section class="container  grow  mx-auto px-5  mt-12 mb-2 ">
             {% block content %}{% endblock %}
         </section>
-
     </div>
-    <footer class="footer flex-none w-full bg-neutral text-neutral-content p-10 ">
-        <nav>
-            <h6 class="footer-title">Our Organisation</h6>
-            <a class="link link-hover">About</a>
-            <a class="link link-hover">Contact</a>
-            <a class="link link-hover">Volunteering</a>
-            <a class="link link-hover">Open Source</a>
 
-        </nav>
-        <nav>
-            <h6 class="footer-title">Follow Us</h6>
-            <a class="link link-hover">Instagram</a>
-            <a class="link link-hover">Hyves</a>
-        </nav>
-        <nav>
-            <h6 class="footer-title">Legal</h6>
-            <a class="link link-hover">Terms of use</a>
-            <a class="link link-hover">Privacy policy</a>
-            <a class="link link-hover">Cookie policy</a>
-        </nav>
-    </footer>
+    {% component 'footer.Footer' / %}
     {% component_js_dependencies %}
 </div>
 </body>
