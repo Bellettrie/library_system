@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 {% load static %}
 {% load menu %}
 {% load logo %}
@@ -11,8 +12,10 @@
 <body>
 {% include 'base_hx_dialog.html' %}
 
+
 <div class="min-h-screen flex flex-col w-full ">
-    {% component 'top_nav' perms=perms %}
+    {% menu_data 'top' perms as top_menu%}
+    {% component 'top_nav' top_menu%}
 
         {% fill 'center_menu' %}
             {% component "logo" logo_debug logo_name logo_image %} {% endcomponent %}
@@ -56,10 +59,12 @@
 
 
     <div class="grow flex flex-row w-full">
+        {% menu_data 'sidebar' perms as sidebar_menu%}
+        {% component "side_bar" sidebar_menu / %}
 
-        {% component "side_bar" perms=perms / %}
         <section class="container  grow  mx-auto px-5  mt-12 mb-2 ">
             {% block content %}{% endblock %}
+
         </section>
 
     </div>

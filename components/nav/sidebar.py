@@ -20,19 +20,12 @@ class Sidebar(Component):
     template_name = "nav/sidebar.html"
 
     # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, perms=None):
-        if perms is None:
-            perms = []
-        side_items = []
-
-        for it in GET_MENU():
-            if it.location == "sidebar":
-                if (not it.permission) or (perms and it.permission in perms):
-                    side_items.append(it)
+    def get_context_data(self, menu=None):
+        if menu is None:
+            menu = []
 
         return {
-
-            "items": side_items,
+            "items": menu,
             "logo_debug": settings.UPSIDE_DOWN,
             "logo_name": settings.LIBRARY_NAME,
             "logo_image": settings.LIBRARY_IMAGE_URL,

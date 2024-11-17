@@ -44,21 +44,13 @@ class TopNav(Component):
     template_name = "nav/navbar.html"
 
     # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, perms=None):
-        if perms is None:
-            perms = []
+    def get_context_data(self, menu=None):
+        if menu is None:
+            menu = []
 
-        left_items = []
-        mobile_items = []
-        for it in GET_MENU():
-            if it.location == "top":
-                if (not it.permission) or (perms and it.permission in perms):
-                    left_items.append(it)
-                    mobile_items.append(it)
 
         return {
-            "menu_buttons": left_items,
-            "mobile_items": mobile_items,
+            "menu_buttons": menu,
             "logo_debug": settings.UPSIDE_DOWN,
             "logo_name": settings.LIBRARY_NAME,
             "logo_image": settings.LIBRARY_IMAGE_URL,
