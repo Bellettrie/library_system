@@ -4,67 +4,28 @@
 {% load static %}
 {% load menu %}
 {% load logo %}
+
 <head>
     {% include 'base_header.html' %}
     {% get_title %}
     {% component_css_dependencies %}
 </head>
 <body>
+
 {% include 'base_hx_dialog.html' %}
 
 
 <div class="min-h-screen flex flex-col w-full ">
-    {% menu_data 'top' perms as top_menu%}
-    {% component 'top_nav' top_menu%}
-
-        {% fill 'center_menu' %}
-            {% component "logo" logo_debug logo_name logo_image %} {% endcomponent %}
-        {% endfill %}
-        {% fill 'right_menu' %}
-            <form method="get" action="{% url 'works.list' %}">
-                <div class="form-control join join-horizontal">
-                    <input name="q" id="q" type="text" placeholder="Search"
-                           class="input input-bordered w-24 md:w-auto join-item input-md"/>
-                    <button class="btn join-item rounded-r-full btn-md">Search</button>
-                    <a href="{% url 'works.list' %}?advanced=True" class="btn join-item rounded-r-full btn-md">...</a>
-                </div>
-            </form>
-
-            <div class="dropdown dropdown-end">
-                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar btn-md">
-                    <div class="w-10 rounded-full">
-                        <img
-                                alt="Tailwind CSS Navbar component"
-                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
-                    </div>
-                </div>
-                <ul
-                        tabindex="0"
-                        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                    <li>
-                        <a class="justify-between">
-                            Profile
-                            <span class="badge">New</span>
-                        </a>
-                    </li>
-                    <li><a>Settings</a></li>
-                    <li><a>Logout</a></li>
-                </ul>
-            </div>
-
-        {% endfill %}
-    {% endcomponent %}
-
-    <!-- Page Content Holder -->
+    {% menu_data 'top' perms as top_menu %}
+    {% component 'top_nav' top_menu / %}
 
 
     <div class="grow flex flex-row w-full">
-        {% menu_data 'sidebar' perms as sidebar_menu%}
+        {% menu_data 'sidebar' perms as sidebar_menu %}
         {% component "side_bar" sidebar_menu / %}
 
         <section class="container  grow  mx-auto px-5  mt-12 mb-2 ">
             {% block content %}{% endblock %}
-
         </section>
 
     </div>
@@ -89,9 +50,7 @@
             <a class="link link-hover">Cookie policy</a>
         </nav>
     </footer>
-    {#    <footer class="h-50 flex-none">test</footer>#}
     {% component_js_dependencies %}
-
 </div>
 </body>
 </html>
