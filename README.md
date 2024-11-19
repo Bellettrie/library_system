@@ -22,12 +22,12 @@ flake8 . --ignore F401,E501,W503 --count --show-source --statistics --max-line-l
 
 
 ## Using Tailwind
-Install npm (or yarn if you know how), and install the dependencies in the /styles/static folder. 
+Install npm (or yarn if you know how), and install the dependencies in the /styles/static folder. Use `npm ci`
 
 
 
-Enter the /styles/static folder and run the following command for local dev:
-`npm watch`
+Enter the /styles/config folder and run the following command for local dev:
+`npm run watch`
 
 Run `npm compile` to merely compile 
 
