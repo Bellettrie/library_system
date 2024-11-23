@@ -7,8 +7,8 @@ module.exports = {
 
         extend: {
             screens: {
-
-                "xl": '1500px',
+                "lg": '1300px',
+                "xl": '1600px',
             },
             colors: {
                 belleyellow: "#f7ec55",

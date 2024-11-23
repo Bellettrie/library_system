@@ -1,0 +1,30 @@
+<div class="grow max-w-screen bg-base-100 card">
+    <div class=" card-body" style="overflow: auto;">
+        <h5 class="card-title">Membership Periods</h5>
+        <p class="card-text">
+
+        <table class="table table-sm table-striped">
+            <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Type</th>
+                <th>Background</th>
+                <th></th>
+            </tr>
+            {% for p in member.get_periods %}
+                <tr>
+                    <td>{{ p.start_date }}</td>
+                    <td>{{ p.end_date }}</td>
+                    <td>{{ p.membership_type }}</td>
+                    <td>{{ p.member_background }}</td>
+                    <td><a data-hx-get="{% url 'members.membership_period_edit_hx'  p.pk %}" hx-target="#dialog"
+                           href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+        <a data-hx-get="{% url 'members.membership_period_new_hx'  member.pk %}" hx-target="#dialog"
+           href="{% url 'members.membership_period_new' member.pk %}">New period</a>
+        <hr>
+
+    </div>
+</div>
