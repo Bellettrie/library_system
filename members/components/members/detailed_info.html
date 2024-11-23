@@ -1,7 +1,8 @@
-<div class="card col-sm-12 col-xl-5">
-    <div class="card-body" style="overflow: auto;">
+<div class="bg-base-100 card">
+    <div class=" card-body" style="overflow: auto;">
         <h5 class="card-title">{% if member.pk == user.member.pk %}My info{% else %}Member Info{% endif %}</h5>
         <p class="card-text">
+            {{ extra }}<br/>
         <table class="table table-striped table-sm" style="width: 100%;">
             <tr>
                 <th>Name</th>
@@ -12,19 +13,59 @@
                 <td>{{ member.nickname }}</td>
             </tr>
             <tr>
-                <th>Notes</th>
-                <td>{{ member.notes| linebreaksbr }}</td>
+                <th>Adress</th>
+                <td>{{ member.address_line_one }}</td>
             </tr>
+            <tr>
+                <th></th>
+                <td>{{ member.address_line_two }}</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td>{{ member.address_line_three }}</td>
+            </tr>
+            <tr>
+                <th>Primary e-mail</th>
+                <td>{{ member.primary_email }} {% if member.primary_email_in_use %} &#10004; {% endif %}</td>
+            </tr>
+            <tr>
+                <th>Secondary e-mail</th>
+                <td>{{ member.secondary_email }}{% if member.secondary_email_in_use %} &#10004; {% endif %}</td>
+            </tr>
+            <tr>
+                <th>Phone #</th>
+                <td>{{ member.phone }}</td>
+            </tr>
+            <tr>
+                <th>Student #</th>
+                <td>{{ member.student_number }}</td>
+            </tr>
+            <tr>
+                <th>Notes</th>
+                <td>{{ member.notes | linebreaksbr }}</td>
+            </tr>
+            {% if member.is_anonymous_user %}
+                <tr>
+                    <th>Anonymous user</th>
+                    <td>Yes</td>
+                </tr>
+            {% else %}
+                {% if member.should_be_anonymised %}
+                    <tr>
+                        <th>Anonymous user</th>
+                        <td>Pending anonymisation</td>
+                    </tr>
+                {% endif %}
+            {% endif %}
             <tr>
                 <th>Current Membership Period?</th>
                 <td>{{ member.get_current_membership_period.start_date }}
-                    - {{ member.get_current_membership_period.end_date }}
-                    {% if not member.get_current_membership_period %}
-                        <a data-hx-get="{% url 'members.membership_period_new_hx'  member.pk %}" hx-target="#dialog"
-                           href="{% url 'members.membership_period_new' member.pk %}" class="btn-sm btn-primary">New</a>
-                        </td>
+                    - {{ member.get_current_membership_period.end_date }}</td>
+            </tr>
 
-                    {% endif %}
+            <tr>
+                <th>Currently Member?</th>
+                <td>{{ member.is_currently_member }}</td>
             </tr>
             <tr>
                 <th>DMS registered?</th>
@@ -42,8 +83,8 @@
                     <tr>
                         <th>Change Password</th>
                         <td><a data-hx-get="{% url 'members.change_user_hx'  member.pk %}"
-                                                 hx-target="#dialog" href="{% url 'members.change_user' member.pk %}"
-                                                 class="btn-sm btn-primary">Change</a>
+                               hx-target="#dialog" href="{% url 'members.change_user' member.pk %}"
+                               class="btn-sm btn-primary">Change</a>
                         </td>
                     </tr>
                 {% endif %}
@@ -63,14 +104,14 @@
                 </tr>
             {% endif %}
         </table>
-
         <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-primary">Browse catalog for</a>
-        <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-        <a href="{% url 'members.view' member.id 1 %}" class="btn btn-sm btn-outline-primary">More details</a>
 
-        {% if member.should_be_anonymised %}
-            <a href="{% url 'members.anonymise' member.id %}" class="btn btn-sm btn-outline-primary">Anonimyse</a>
+        <a href="{% url 'members.edit' member.id %}" class="btn  btn-sm btn-outline-primary">Edit</a>
+        {% if member.can_be_deleted %}
+            <a href="{% url 'members.delete' member.id %}" class="btn btn-sm  btn-outline-primary">Delete</a>
         {% endif %}
-        </p>
+        {% if member.should_be_anonymised %}
+            <a href="{% url 'members.anonymise' member.id %}" class="btn btn-sm  btn-outline-primary">Anonimyse</a>
+        {% endif %}
     </div>
 </div>

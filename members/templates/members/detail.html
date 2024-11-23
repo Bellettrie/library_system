@@ -1,4 +1,4 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% load member_reservation_table %}
 {% load member_lending_table %}
 {% block title %}{% if member.is_blacklisted %}<p style="color:red;">BLACKLISTED</p>{% endif %}Member:
@@ -9,8 +9,7 @@
             font-size: 12px;
         }
     </style>
-    <div class="container-fluid" style="width:100%">
-        <div class="row justify-content-md-center">
+        <div class="max-w-full grow flex flex-wrap gap-3">
             {% if extra %}
                 <div class="card col-sm-12">
                     <div class="card-body">
@@ -18,8 +17,17 @@
                     </div>
                 </div>
             {% endif %}
-            {% include 'members/partials/member_card.html' %}
-            {% include 'members/partials/lendings_card.html' %}
+            {% component 'members.basic_info' member /%}
+            <div class="grow max-w-screen flex flex-col gap-3 ">
+                {% include 'members/partials/lendings_card.html' %}
+                {% include 'members/partials/reservations_card.html' %}
+            </div>
         </div>
-    </div>
+        {% component 'help_bar' %}
+            You can search for members on this page, by typing their name into the input field.<br>
+            <br>
+            By default, only people who are currently a member are listed; switch to 'also previous' if desired.
+
+        {% endcomponent %}
+
 {% endblock %}

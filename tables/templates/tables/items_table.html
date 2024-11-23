@@ -1,19 +1,20 @@
 {% load render_square %}
 {# Takes a table #}
 
-<table class="table table-striped">
-<tr>
-{% for column in table.columns %}
-    <th>{{ column.get_header }}</th>
-{% endfor %}
-</tr>
-{% for row in table.rows %}
-    <tr>
-        {% for column in table.columns %}
-            {% autoescape off %}
-            <td class="text-nowrap">{% render_square column row perms %}</td>
-            {% endautoescape %}
+
+    <table class="table table-zebra table-xs table-pin-rows table-pin-cols">
+        <tr>
+            {% for column in table.columns %}
+                <th>{{ column.get_header }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in table.rows %}
+            <tr>
+                {% for column in table.columns %}
+                    {% autoescape off %}
+                        <td class="lg:text-nowrap"><p class="text-xs">{% render_square column row perms %}</p></td>
+                    {% endautoescape %}
+                {% endfor %}
+            </tr>
         {% endfor %}
-    </tr>
-{% endfor %}
-</table>
+    </table>
