@@ -1,4 +1,4 @@
-<div class="grow max-w-screen lg:basis-2/5  lg:flex-none bg-base-100 card">
+<div class="grow max-w-screen lg:basis-2/5  lg:flex-none bg-base-100 card ">
     <div class=" card-body" style="overflow: auto;">
         <h5 class="card-title">{% if member.pk == user.member.pk %}My info{% else %}Member Info{% endif %}</h5>
         <p class="card-text">
@@ -21,7 +21,7 @@
                     - {{ member.get_current_membership_period.end_date }}
                     {% if not member.get_current_membership_period %}
                         <a data-hx-get="{% url 'members.membership_period_new_hx'  member.pk %}" hx-target="#dialog"
-                           href="{% url 'members.membership_period_new' member.pk %}" class="btn-sm btn-primary">New</a>
+                           href="{% url 'members.membership_period_new' member.pk %}" class="btn-xs btn-primary glass">New</a>
                         </td>
 
                     {% endif %}
@@ -51,10 +51,10 @@
                 <tr>
                     <th>Add user</th>
                     <td>
-                        <a href="{% url 'members.signup' member.pk %}" class="btn-sm btn-outline-primary">Add new</a>
+                        <a href="{% url 'members.signup' member.pk %}" class="btn btn-xs btn-active glass">Add new</a>
                         {% if not member.invitation_code_valid %}
                             <a href="{% url 'members.generate_invite' member.pk %}"
-                               class="btn-sm btn-outline-primary">Invite</a>
+                               class=" btn btn-xs btn-success ">Invite</a>
                         {% else %}
                             <a href="{% url 'members.disable_invite' member.pk %}"
                                class="btn-sm btn-outline-primary">Uninvite</a>

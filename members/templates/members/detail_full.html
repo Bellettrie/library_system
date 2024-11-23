@@ -9,7 +9,7 @@
             font-size: 12px;
         }
     </style>
-    <div class="flex" >
+    <div class="flex">
         <div class="grow flex  flex-wrap gap-3">
             {% if extra %}
                 <div class="card col-sm-12">
@@ -18,11 +18,11 @@
                     </div>
                 </div>
             {% endif %}
-        <div class="grow basis-2/5 flex flex-col gap-3">
-            {% component 'members.detailed_info' member /%}
-            {% component 'members.membership_periods' member /%}
-        </div>
+
+            {% component 'members.detailed_info' member / %}
+
             <div class="grow flex flex-col gap-3">
+                {% component 'members.membership_periods' member / %}
                 {% include 'members/partials/lendings_card.html' %}
                 {% include 'members/partials/reservations_card.html' %}
             </div>
