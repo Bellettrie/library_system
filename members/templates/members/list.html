@@ -1,12 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}Member Search{% endblock %}
 {% block content %}
-
-    {% component 'members.search_input' request.GET.q / %}
-    <div class="flex w-full ">
-
-        {% component "widget/widget_base" %}
-
+<div class="flex flex-col w-full gap-2">
+    {% component 'members.search_input'  request.GET.q / %}
+        {% component "widget/widget_base" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none" %}
             {% fill "title" %}
                 {% include 'pagination.html' %}
             {% endfill %}
@@ -18,9 +15,6 @@
                         <i> No results</i>
                     {% endfor %}
                 </table>
-
-
-
             {% endfill %}
         {% endcomponent %}
 
@@ -29,7 +23,6 @@
     You can search for members on this page, by typing their name into the input field.<br>
     <br>
     By default, only people who are currently a member are listed; switch to 'also previous' if desired.
-
 {% endcomponent %}
 
 {% endblock %}

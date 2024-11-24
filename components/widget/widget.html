@@ -1,10 +1,6 @@
-<div class="flex w-full mb-4 ">
-    <div class="bg-white  border-gray-200 rounded-lg shadow-sm px-8 py-6 w-full">
-        <div class="flex flex-col gap-4 items-center justify-between">
-            <h3 class="text-2xl font-bold text-gray-700">{% slot "title" %}Title{% endslot %}</h3>
-            <span id="countdown" class="font-semibold text-gray-700 flex gap-5">
-                {% slot "content" %}CC{% endslot %}
-            </span>
-        </div>
+<div class="grow max-w-screen card {{ root_class_tags }} bg-base-100 ">
+    <div class="card-body">
+        <h5 class="card-title">{% slot "title" %}Title{% endslot %}</h5>
+        {% slot "content" %}CC{% endslot %}
     </div>
 </div>
