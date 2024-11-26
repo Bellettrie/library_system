@@ -1036,29 +1036,6 @@ html {
   min-height: fit-content;
 }
 
-:root .countdown {
-  line-height: 1em;
-}
-
-.countdown {
-  display: inline-flex;
-}
-
-.countdown > * {
-  height: 1em;
-  display: inline-block;
-  overflow-y: hidden;
-}
-
-.countdown > *:before {
-  position: relative;
-  content: "00\A 01\A 02\A 03\A 04\A 05\A 06\A 07\A 08\A 09\A 10\A 11\A 12\A 13\A 14\A 15\A 16\A 17\A 18\A 19\A 20\A 21\A 22\A 23\A 24\A 25\A 26\A 27\A 28\A 29\A 30\A 31\A 32\A 33\A 34\A 35\A 36\A 37\A 38\A 39\A 40\A 41\A 42\A 43\A 44\A 45\A 46\A 47\A 48\A 49\A 50\A 51\A 52\A 53\A 54\A 55\A 56\A 57\A 58\A 59\A 60\A 61\A 62\A 63\A 64\A 65\A 66\A 67\A 68\A 69\A 70\A 71\A 72\A 73\A 74\A 75\A 76\A 77\A 78\A 79\A 80\A 81\A 82\A 83\A 84\A 85\A 86\A 87\A 88\A 89\A 90\A 91\A 92\A 93\A 94\A 95\A 96\A 97\A 98\A 99\A";
-  white-space: pre;
-  top: calc(var(--value) * -1em);
-  text-align: center;
-  transition: all 1s cubic-bezier(1, 0, 0, 1);
-}
-
 .drawer {
   position: relative;
   display: grid;
@@ -1902,17 +1879,6 @@ html {
   background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
 }
 
-.toast {
-  position: fixed;
-  display: flex;
-  min-width: -moz-fit-content;
-  min-width: fit-content;
-  flex-direction: column;
-  white-space: nowrap;
-  gap: 0.5rem;
-  padding: 1rem;
-}
-
 .toggle {
   flex-shrink: 0;
   --tglbg: var(--fallback-b1,oklch(var(--b1)/1));
@@ -1935,14 +1901,6 @@ html {
   box-shadow: var(--handleoffsetcalculator) 0 0 2px var(--tglbg) inset,
     0 0 0 2px var(--tglbg) inset,
     var(--togglehandleborder);
-}
-
-.alert-info {
-  border-color: var(--fallback-in,oklch(var(--in)/0.2));
-  --tw-text-opacity: 1;
-  color: var(--fallback-inc,oklch(var(--inc)/var(--tw-text-opacity)));
-  --alert-bg: var(--fallback-in,oklch(var(--in)/1));
-  --alert-bg-mix: var(--fallback-b1,oklch(var(--b1)/1));
 }
 
 .alert-success {
@@ -3051,10 +3009,6 @@ details.collapse summary::-webkit-details-marker {
   --tw-placeholder-opacity: 0.2;
 }
 
-.toast > * {
-  animation: toast-pop 0.25s ease-out;
-}
-
 @keyframes toast-pop {
   0% {
     transform: scale(0.9);
@@ -3348,63 +3302,6 @@ html:has(.drawer-toggle:checked) {
 
 .menu-horizontal > li:not(.menu-title) > details > ul {
   position: absolute;
-}
-
-:where(.toast) {
-  bottom: 0px;
-  inset-inline-end: 0px;
-  inset-inline-start: auto;
-  top: auto;
-  --tw-translate-x: 0px;
-  --tw-translate-y: 0px;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.toast:where(.toast-start) {
-  inset-inline-end: auto;
-  inset-inline-start: 0px;
-  --tw-translate-x: 0px;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.toast:where(.toast-center) {
-  inset-inline-end: 50%;
-  inset-inline-start: 50%;
-  --tw-translate-x: -50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.toast:where(.toast-center):where([dir="rtl"], [dir="rtl"] *) {
-  --tw-translate-x: 50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.toast:where(.toast-end) {
-  inset-inline-end: 0px;
-  inset-inline-start: auto;
-  --tw-translate-x: 0px;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.toast:where(.toast-bottom) {
-  bottom: 0px;
-  top: auto;
-  --tw-translate-y: 0px;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.toast:where(.toast-middle) {
-  bottom: auto;
-  top: 50%;
-  --tw-translate-y: -50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.toast:where(.toast-top) {
-  bottom: auto;
-  top: 0px;
-  --tw-translate-y: 0px;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .tooltip {
@@ -3742,14 +3639,6 @@ html:has(.drawer-toggle:checked) {
   z-index: 7;
 }
 
-.z-\[-50\] {
-  z-index: -50;
-}
-
-.z-\[50\] {
-  z-index: 50;
-}
-
 .my-2 {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -3761,10 +3650,6 @@ html:has(.drawer-toggle:checked) {
 
 .mb-2 {
   margin-bottom: 0.5rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
 }
 
 .mt-12 {
@@ -3793,6 +3678,10 @@ html:has(.drawer-toggle:checked) {
 
 .table {
   display: table;
+}
+
+.contents {
+  display: contents;
 }
 
 .hidden {
@@ -3868,20 +3757,12 @@ html:has(.drawer-toggle:checked) {
   flex: none;
 }
 
-.shrink {
-  flex-shrink: 1;
-}
-
 .shrink-0 {
   flex-shrink: 0;
 }
 
 .grow {
   flex-grow: 1;
-}
-
-.resize {
-  resize: both;
 }
 
 .flex-row {
@@ -3916,10 +3797,6 @@ html:has(.drawer-toggle:checked) {
   gap: 0.75rem;
 }
 
-.gap-4 {
-  gap: 1rem;
-}
-
 .gap-5 {
   gap: 1.25rem;
 }
@@ -3936,16 +3813,8 @@ html:has(.drawer-toggle:checked) {
   border-radius: 9999px;
 }
 
-.rounded-lg {
-  border-radius: 0.5rem;
-}
-
 .rounded-none {
   border-radius: 0px;
-}
-
-.rounded {
-  border-radius: 0.25rem;
 }
 
 .rounded-r-full {
@@ -3955,11 +3824,6 @@ html:has(.drawer-toggle:checked) {
 
 .border {
   border-width: 1px;
-}
-
-.border-gray-200 {
-  --tw-border-opacity: 1;
-  border-color: rgb(229 231 235 / var(--tw-border-opacity));
 }
 
 .bg-base-100 {
@@ -3980,11 +3844,6 @@ html:has(.drawer-toggle:checked) {
 .bg-neutral {
   --tw-bg-opacity: 1;
   background-color: var(--fallback-n,oklch(var(--n)/var(--tw-bg-opacity)));
-}
-
-.bg-white {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
 .stroke-current {
@@ -4013,11 +3872,6 @@ html:has(.drawer-toggle:checked) {
   padding-right: 1.25rem;
 }
 
-.px-8 {
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -4028,22 +3882,12 @@ html:has(.drawer-toggle:checked) {
   padding-bottom: 1rem;
 }
 
-.py-6 {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-}
-
 .pt-20 {
   padding-top: 5rem;
 }
 
 .align-top {
   vertical-align: top;
-}
-
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
 }
 
 .text-lg {
@@ -4065,15 +3909,6 @@ html:has(.drawer-toggle:checked) {
   font-weight: 700;
 }
 
-.font-semibold {
-  font-weight: 600;
-}
-
-.text-gray-700 {
-  --tw-text-opacity: 1;
-  color: rgb(55 65 81 / var(--tw-text-opacity));
-}
-
 .text-neutral-content {
   --tw-text-opacity: 1;
   color: var(--fallback-nc,oklch(var(--nc)/var(--tw-text-opacity)));
@@ -4091,15 +3926,13 @@ html:has(.drawer-toggle:checked) {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.shadow-sm {
-  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
 .shadow-bellered {
   --tw-shadow-color: #c14d00;
   --tw-shadow: var(--tw-shadow-colored);
+}
+
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 @media (min-width: 640px) {
@@ -4270,10 +4103,6 @@ html:has(.drawer-toggle:checked) {
   }
 }
 
-.hover\:hidden:hover {
-  display: none;
-}
-
 @media (min-width: 640px) {
   .sm\:block {
     display: block;
@@ -4319,18 +4148,8 @@ html:has(.drawer-toggle:checked) {
     flex-basis: 40%;
   }
 
-  .lg\:flex-row {
-    flex-direction: row;
-  }
-
   .lg\:text-nowrap {
     text-wrap: nowrap;
-  }
-}
-
-@media (min-width: 1536px) {
-  .\32xl\:flex-row {
-    flex-direction: row;
   }
 }
 
@@ -4373,10 +4192,6 @@ html:has(.drawer-toggle:checked) {
 
   .xl\:flex-none {
     flex: none;
-  }
-
-  .xl\:flex-row {
-    flex-direction: row;
   }
 
   .xl\:pt-0 {
