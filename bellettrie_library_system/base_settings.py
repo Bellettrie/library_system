@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'search',
     'tables',
     'tasks',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
