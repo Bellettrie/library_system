@@ -1,36 +1,45 @@
-{% extends "base_bootstrap.html" %}
+{% extends "base.html" %}
 {% load publication_list_to_items %}
 {#{% load books_table %}#}
 {% block title %}Book Search{% endblock %}
 {% block content %}
-    {% if advanced %}
+    <div class="flex flex-col">
+        {% if advanced %}
             {% include 'works/work_search_field_advanced.html' %}
-        <a href="{% url 'works.list' %}">Simple Search</a>
+            <a href="{% url 'works.list' %}">Simple Search</a>
         {% else %}
-    {% include 'works/work_search_field_simple.html' %}
-        <a href="?advanced=True">Advanced Search</a>
-    {% endif %}
-    {% include 'pagination.html' %}
-    <hr>
-    {% autoescape off %}
-        {% works_table object_list perms %}
-    {% endautoescape %}
-
-    <h3>How to use Search</h3>
-    The search function tries to match the search query to words in the title of books, series, as well as the names of
-    authors. It also matches on parts of books.<br/>
-    It will display all books that match to <b>all</b> words in the query. <br/>
-    There are two special cases to keep in mind:<br>
-    <b>Book codes:</b> The system will search for book codes, but only if it's fed only one word. So do not put spaces in the
-    query if you want to find something. <br/>
-    It will try to complete though, so, for instance, SF-T-37 will find all Tolkien books, and possibly some more.<br/>
-    The system supports the asterisk at the beginning and end of words to state that the word may be longer on this side.<br>
-    However, if you don't know how to spell "Hitchhiker's Guide to the Galaxy",
-    a simple "Hitch*" will suffice.<br/>
-    Note that other regex commands are not supported. <br>
-    {% if advanced %}
-    In advanced search: press ctrl-> click to remove items from the multi-selects{% endif %}
-    <hr>
+            {% include 'works/work_search_field_simple.html' %}
+        {% endif %}
+        <div class="flex-1 w-full">
+            <div class="justify-center items-center w-full">
+                {% include 'pagination.html' %}
+            </div>
+        </div>
+        <div class=" basis-1 w-full">
+            {% autoescape off %}
+                {% works_table object_list perms %}
+            {% endautoescape %}
+        </div>
+    </div>
+    {% component 'help_bar' %}
+        The search function tries to match the search query to words in the title of books, series, as well as the names
+        of
+        authors. It also matches on parts of books.<br/>
+        It will display all books that match to <b>all</b> words in the query. <br/>
+        There are two special cases to keep in mind:<br>
+        <b>Book codes:</b> The system will search for book codes, but only if it's fed only one word. So do not put
+        spaces in the
+        query if you want to find something. <br/>
+        It will try to complete though, so, for instance, SF-T-37 will find all Tolkien books, and possibly some more.
+        <br/>
+        The system supports the asterisk at the beginning and end of words to state that the word may be longer on this
+        side.<br>
+        However, if you don't know how to spell "Hitchhiker's Guide to the Galaxy",
+        a simple "Hitch*" will suffice.<br/>
+        Note that other regex commands are not supported. <br>
+        {% if advanced %}
+            In advanced search: press ctrl-> click to remove items from the multi-selects{% endif %}
+    {% endcomponent %}
     <a class="btn btn-info" href="{% url 'series.list' %}">Find Series</a>
-        <a class="btn btn-info" href="{% url 'creator.list' %}">Find Authors</a>
+    <a class="btn btn-info" href="{% url 'creator.list' %}">Find Authors</a>
 {% endblock %}
