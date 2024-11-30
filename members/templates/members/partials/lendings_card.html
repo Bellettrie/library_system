@@ -1,13 +1,11 @@
-<div class="card col-sm-12 col-xl-7">
-  <div class="card-body" style="overflow: auto;">
-          <h5 class="card-title">Lendings</h5>
+<div class="grow max-w-screen   lg:flex-1  card bg-base-100">
+    <div class="card-body" style="overflow: auto;">
+        <h5 class="card-title">Lendings</h5>
 
-    {% member_current_lendings member %}
-      {% if member.pk == user.member.pk %}
-                      <a href="{% url 'lendings.me' %}">My lending history</a>
-      {% endif %}
-    <hr>
-        <h6>Reservations</h6>
-    {% member_current_reservations member %}
-  </div>
+        {% member_current_lendings member %}
+        {% if member.pk == user.member.pk %}
+            <a href="{% url 'lendings.me' %}">My lending history</a>
+        {% endif %}
+
+    </div>
 </div>
