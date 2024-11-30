@@ -10,10 +10,6 @@ from bellettrie_library_system import settings
 from bellettrie_library_system.base_settings import GET_MENU
 
 
-def get_top_menu():
-    pass
-
-
 @register("top-item")
 class NavItem(Component):
 
@@ -48,7 +44,6 @@ class Navbar(Component):
         if menu is None:
             menu = []
 
-
         return {
             "menu_buttons": menu,
             "logo_debug": settings.UPSIDE_DOWN,
@@ -82,40 +77,3 @@ class Logo(Component):
 }
 
 """
-
-
-@register("top-item-logout")
-class TopLogoutItem(Component):
-
-    # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, text, *args):
-        return {
-            "link_url`": "logout",
-            "text": text,
-        }
-
-    template: types.django_html = """
-     <a class="vertical align-top"> </a>
-    <form method="post" action="{% url 'logout' %}" class="form-inline renderLogoutformstyle align-top">
-        {% csrf_token %}
-        <input class="btn btn-outline renderLogoutfakeURL" type="submit" value="{{ text }}">
-    </form>
-    """
-    css: types.css = """
-       .renderLogoutfakeURL {
-        font-family: 'Rubik', sans-serif;
-        font-size: 1vw;
-        color: grey;
-        padding: 0;
-        border: 0;
-        margin-top: -.8vw;
-    }
-
-    .renderLogoutformstyle {
-        display: inline;
-        padding-left: .1vw;
-        font-family: 'Rubik', sans-serif;
-        font-size: 1vw;
-        color: grey;
-    }
-    """
