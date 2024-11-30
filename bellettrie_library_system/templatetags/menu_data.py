@@ -22,7 +22,7 @@ def menu_data(location, perms):
             if item.sub_items is None:
                 continue
             for subItem in item.sub_items:
-                if subItem.permission and not subItem.permission in perms:
+                if subItem.permission and subItem.permission not in perms:
                     item.sub_items.remove(subItem)
     return result
 
