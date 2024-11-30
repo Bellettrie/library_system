@@ -9,6 +9,7 @@ from django_components import Component, register, types
 from bellettrie_library_system import settings
 from bellettrie_library_system.base_settings import GET_MENU
 
+
 @register("help_bar")
 class HelpBar(Component):
     template_name = "help_bar.html"
