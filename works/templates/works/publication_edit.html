@@ -1,26 +1,45 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
+{% load widget_tweaks %}
 {% block title %}{{ publication.title }}{% endblock %}
 {% block content %}
-
-
     <form action="#" method="post">
         {% csrf_token %}
-        <h2> Base info</h2>
-     <table>
-         {{ form.as_table }}
-
-     </table>
-        <h2> Creators</h2>
-
-        {{ creators.as_p }}
+        <div class="flex flex-col lg:flex-row gap-3">
 
 
-                <h2> Series</h2>
+            {% component 'widget/widget_base' root_class_tags="max-w-1/2 lg:basis-2/5  lg:flex-none" %}
+                {% fill 'title' %}Publication Info{% endfill %}
+                {% fill 'content' %}
+                    <dl class="divide-y divide-gray-100">
 
-        {{ series.as_p }}
+                        {% for field in form.visible_fields %}
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm/6 font-medium text-gray-900">{{ field.label }}</dt>
+                                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ field|add_class:"input input-xs border-1 border-bellered" }}</dd>
+                            </div>
+                        {% endfor %}
+                    </dl>
+                    <input class="btn btn-primary" type="submit" value="Save">
 
-        <input class="btn btn-primary" type="submit" value="Save">
+                {% endfill %}
+            {% endcomponent %}
 
+            <div class="grow max-w-screen flex flex-col gap-3 ">
+                {% component 'widget/widget_base' root_class_tags="w-full" %}
+                    {% fill 'title' %}Creators{% endfill %}
+                    {% fill 'content' %}
+                        <h2> Creators</h2>
+
+                        {{ creators.as_div }}
+                    {% endfill %}
+                {% endcomponent %}
+                {% component 'widget/widget_base' root_class_tags="w-full" %}
+                    {% fill 'title' %}Series{% endfill %}
+                    {% fill 'content' %}
+                        {{ series.as_div }}
+                    {% endfill %}
+                {% endcomponent %}
+            </div>
+        </div>
     </form>
-
 {% endblock %}

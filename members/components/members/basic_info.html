@@ -1,34 +1,31 @@
-{% component 'tile/tile' root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none" %}
-    {% fill 'title' %}Member Info {% endfill %}
+{% component 'widget/widget_base' root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none" %}
+    {% fill 'title' %}{% if member.user == user %}My Info {% else %}Member Info{% endif %} {% endfill %}
     {% fill 'content' %}
+        <dl class="divide-y divide-gray-100">
+            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm/6 font-medium text-gray-900">Full name</dt>
+                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.name }}</dd>
+            </div>
+            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm/6 font-medium text-gray-900">Nick Name</dt>
+                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.nick_name }}</dd>
+            </div>
+            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm/6 font-medium text-gray-900">Current Membership</dt>
+                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.get_current_membership_period.membership_type }}
+                {% if member.is_blacklisted %}BLACKLISTED{% endif %}</dd>
+            </div>
+            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm/6 font-medium text-gray-900">Notes</dt>
+                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.notes | linebreaksbr }}</dd>
+            </div>
+            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm/6 font-medium text-gray-900">DMS Registered?</dt>
+                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.dms_registered }}</dd>
+            </div>
+        </dl>
         <table class="table table-striped table-sm" style="width: 100%;">
-            <tr>
-                <th>Name</th>
-                <td>{{ member.name }}</td>
-            </tr>
-            <tr>
-                <th>Nickname</th>
-                <td>{{ member.nickname }}</td>
-            </tr>
-            <tr>
-                <th>Notes</th>
-                <td>{{ member.notes| linebreaksbr }}</td>
-            </tr>
-            <tr>
-                <th>Current Membership</th>
-                <td>{{ member.get_current_membership_period.start_date }}
-                    - {{ member.get_current_membership_period.end_date }}
-                    {% if not member.get_current_membership_period %}
-                        <a data-hx-get="{% url 'members.membership_period_new_hx'  member.pk %}" hx-target="#dialog"
-                           href="{% url 'members.membership_period_new' member.pk %}" class="btn-xs btn-primary glass">New</a>
-                        </td>
 
-                    {% endif %}
-            </tr>
-            <tr>
-                <th>DMS registered?</th>
-                <td>{{ member.dms_registered }}</td>
-            </tr>
             {% if member.user %}
                 <tr>
                     <th>User</th>
@@ -62,11 +59,13 @@
                 </tr>
             {% endif %}
         </table>
+        <div class="w-full flex flex-row justify-end join">
 
-        <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-primary">Browse catalog for</a>
-        <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-        <a href="{% url 'members.view' member.id 1 %}" class="btn btn-sm btn-outline-primary">More details</a>
-
+            <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-primary join-item">Browse for member</a>
+            <a href="{% url 'members.view' member.id 1 %}" class="btn btn-sm btn-outline-primary join-item">More
+                details</a>
+            <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-outline-primary join-item">Edit</a>
+        </div>
         {% if member.should_be_anonymised %}
             <a href="{% url 'members.anonymise' member.id %}" class="btn btn-sm btn-outline-primary">Anonimyse</a>
         {% endif %}
