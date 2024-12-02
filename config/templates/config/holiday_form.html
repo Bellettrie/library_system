@@ -1,4 +1,4 @@
-{% extends "base_bootstrap.html" %}
+{% extends "base.html" %}
 {% block title %}Holiday Form{% endblock %}
 {% block content %}
     <form action="#" method="post">
@@ -7,7 +7,7 @@
             {{ form.as_table }}
         </table>
 
-        <input type="submit" class="btn btn-success" value="Save">
+        <input type="submit" class="btn btn-sm btn-success" value="Save">
     </form>
 
 {% endblock %}
