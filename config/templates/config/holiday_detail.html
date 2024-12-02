@@ -1,4 +1,4 @@
-{% extends "base_bootstrap.html" %}
+{% extends "base.html" %}
 {% block title %}Holiday details for: {{ object.name }}{% endblock %}
 {% block content %}
 <table>
@@ -7,7 +7,7 @@
     <tr><th>Skip for fine</th><td>{{ object.skipped_for_fine }}</td></tr>
 </table>
 
-    <a href="{%  url 'holiday.list' %}" class="btn btn-outline-primary">Back to overview</a>
+    <a href="{%  url 'holiday.list' %}" class="btn">Back to overview</a>
     <a href="{% url 'holiday.edit' object.id %}" class="btn btn-primary">Edit</a>
-    <a href="{% url 'holiday.delete' object.id %}" class="btn btn-danger">Delete</a>
+    <a href="{% url 'holiday.delete' object.id %}" class="btn btn-warning">Delete</a>
 {% endblock %}

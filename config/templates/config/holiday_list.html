@@ -1,32 +1,10 @@
-{% extends "base_bootstrap.html" %}
+{% extends "base.html" %}
 {% block title %}Holiday List{% endblock %}
 {% block content %}
-    If <i>Skipped for fine</i> is true, this means that the days of the holiday for which it is true are not counted when calculating fines. By default, holiday days count regularly for fines (as do weekend days).<br>
-    <a href="{% url 'holiday.add' %}" class="btn btn-outline-primary">Add Holiday</a>
-<table class="table table-striped" style="width: auto;">
-    <thead>
-        <th>Name</th>
-        <th>Starting date</th>
-        <th>Ending date</th>
-        <th>Skipped for fine</th>
-        <th></th>
-    </thead>
-    {% for holiday in object_list %}
-    <tr>
-        <td><a href="{% url 'holiday.view' holiday.id %}">{{ holiday.name }}</a></td>
-        <td>{{ holiday.starting_date }}</td>
-        <td>{{ holiday.ending_date }}</td>
-        <td>{{ holiday.skipped_for_fine }}</td>
-        <td>
-            <a href="{% url 'holiday.edit' holiday.id %}" class="btn btn-outline-primary">Edit</a>
-            <a href="{% url 'holiday.delete' holiday.id %}" class="btn btn-outline-danger">Delete</a>
-        </td>
-
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="5"><i>No results</i></td>
-    </tr>
-    {% endfor %}
-</table>
+    <a href="{% url 'holiday.add' %}" class="btn btn-primary">Add Holiday</a>
+    {% component 'config.holiday_table' object_list / %}
+    {% component 'help_bar' %}
+        If <i>Skipped for fine</i> is true, this means that the days of the holiday for which it is true are not counted when calculating fines. <br/>
+        By default, holiday days count regularly for fines (as do weekend days).
+    {% endcomponent %}
 {% endblock %}
