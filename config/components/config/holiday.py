@@ -4,8 +4,7 @@ from django_components import Component, register
 @register("config.holiday_table")
 class HolidayTable(Component):
 
-    # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, holidays=""):
+    def get_context_data(self, holidays=None):
         return {
             "holidays": holidays,
         }
