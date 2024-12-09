@@ -9,7 +9,7 @@
             font-size: 12px;
         }
     </style>
-    <div class="max-w-full grow flex flex-wrap gap-3">
+    <div class="  max-w-full flex flex-wrap gap-3">
         {% if extra %}
             <div role="alert" class="alert alert-success" onclick="this.remove()">
                 <svg
@@ -26,10 +26,10 @@
                 <span>{{ extra }}</span>
             </div>
         {% endif %}
-        {% component 'members.basic_info' member / %}
-        <div class="grow max-w-screen flex flex-col gap-3 ">
+{#        {% component 'members.basic_info' member / %}#}
+        <div class="grow  flex flex-col gap-3 ">
             {% include 'members/partials/lendings_card.html' %}
-            {% include 'members/partials/reservations_card.html' %}
+{#            {% include 'members/partials/reservations_card.html' %}#}
         </div>
     </div>
     {% component 'help_bar' %}
