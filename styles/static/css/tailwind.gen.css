@@ -3808,10 +3808,6 @@ html:has(.drawer-toggle:checked) {
   align-items: center;
 }
 
-.justify-start {
-  justify-content: flex-start;
-}
-
 .justify-end {
   justify-content: flex-end;
 }
@@ -3849,6 +3845,14 @@ html:has(.drawer-toggle:checked) {
 .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
   border-color: rgb(243 244 246 / var(--tw-divide-opacity));
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.overflow-x-hidden {
+  overflow-x: hidden;
 }
 
 .rounded-box {
@@ -4256,10 +4260,6 @@ html:has(.drawer-toggle:checked) {
 }
 
 @media (min-width: 1300px) {
-  .lg\:w-2\/5 {
-    width: 40%;
-  }
-
   .lg\:flex-1 {
     flex: 1 1 0%;
   }
