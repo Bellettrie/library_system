@@ -49,10 +49,4 @@
     {% elif member.should_be_anonymised %}
         <a href="{% url 'members.anonymise' member.id %}" class="btn btn-outline-primary">Anonimyse</a>
     {% endif %}
-    {% load books %}
-    {% get_user_books member perms %}
-    {% if member.has_reservations %}
-        <h4>Reservations</h4>
-        {% get_user_reserved_books member perms %}
-    {% endif %}
 {% endblock %}
