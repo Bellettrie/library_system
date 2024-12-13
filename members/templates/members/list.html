@@ -1,15 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Member Search{% endblock %}
 {% block content %}
-    {% include 'members/lookup.html' %}
-    {% include 'pagination.html' %}
-    <table class="table table-striped" style="width: auto;">
-        {% for member in object_list %}
-            {% include 'members/list_item.html' %}
-        {% empty %}
-            <i> No results</i>
-        {% endfor %}
-    </table>
-    <hr>
-    <a href="{% url 'members.new' %}" class="btn btn-outline-primary">New member</a>
+<div class="flex flex-col w-full gap-2">
+    {% component 'members.search_input'  request.GET.q / %}
+        {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none" %}
+            {% fill "title" %}
+                {% include 'pagination.html' %}
+            {% endfill %}
+            {% fill "content" %}
+                <table class="table table-striped" style="width: auto;">
+                    {% for member in object_list %}
+                        {% include 'members/list_item.html' %}
+                    {% empty %}
+                        <i> No results</i>
+                    {% endfor %}
+                </table>
+            {% endfill %}
+        {% endcomponent %}
+
+    </div>
+{% component 'help_bar' %}
+    You can search for members on this page, by typing their name into the input field.<br>
+    <br>
+    By default, only people who are currently a member are listed; switch to 'also previous' if desired.
+{% endcomponent %}
+
 {% endblock %}
