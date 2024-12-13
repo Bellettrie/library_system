@@ -3808,6 +3808,10 @@ html:has(.drawer-toggle:checked) {
   align-items: center;
 }
 
+.justify-start {
+  justify-content: flex-start;
+}
+
 .justify-end {
   justify-content: flex-end;
 }
@@ -4260,6 +4264,10 @@ html:has(.drawer-toggle:checked) {
 }
 
 @media (min-width: 1300px) {
+  .lg\:w-2\/5 {
+    width: 40%;
+  }
+
   .lg\:flex-1 {
     flex: 1 1 0%;
   }
