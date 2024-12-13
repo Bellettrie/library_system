@@ -3851,6 +3851,14 @@ html:has(.drawer-toggle:checked) {
   border-color: rgb(243 244 246 / var(--tw-divide-opacity));
 }
 
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
 .rounded-box {
   border-radius: var(--rounded-box, 1rem);
 }
