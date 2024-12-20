@@ -9,11 +9,12 @@ import members.views.member_edit
 import members.views.member_new
 import members.views.member_show
 from members.permissions import MEMBERS_LIST, MEMBERS_NEW, MEMBERS_VIEW, MEMBERS_EDIT, MEMBERS_DELETE
+from utils.wrappers import hx_wrap
 from .views.member_list import MemberList
 from .views.anon_member_list import AnonMemberList
 from .views.user.self_signup import self_signup, self_signupped
 from .views.user.signup import signup
-from members.views.user.edit import change_user
+from members.views.user.edit import change_own_password
 from .views.user.delete import delete_user, delete_user_prompt
 from .views.membership_period_edit import edit_membership_period
 from .views.membership_period_new import new_membership_period
@@ -37,9 +38,9 @@ urlpatterns = [
     path('user/new', self_signup, name='members.self_signup'),
     path('user/new/done', self_signupped, name='members.self_signupped'),
 
-    path('user/edit/<int:member_id>', members.views.user.edit.change_user, name='members.change_user'),
+    path('user/edit/<int:member_id>', hx_wrap(members.views.user.edit.change_user), name='members.change_user'),
+    path('user/password_change', hx_wrap(members.views.user.edit.change_own_password), name='members.change_self'),
 
-    path('user/edit/hx/<int:member_id>', members.views.user.edit.change_user_hx, name='members.change_user_hx'),
 
     path('user/delete/<int:member_id>', members.views.user.delete.delete_user_prompt, name='members.remove_user'),
     path('user/delete/hx/<int:member_id>', members.views.user.delete.delete_user_prompt_hx, name='members.remove_user_hx'),
