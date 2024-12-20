@@ -1,0 +1,21 @@
+{% component 'tile/tile' root_class_tags="max-w-screen lg:basis-2/5 " %}
+    {% fill 'title' %}Login Credentials{% endfill %}
+    {% fill 'content' %}
+        Username: {{ member.user }}
+        {% if member.user == user %}
+            (That's you ;))
+        {% endif %}
+
+        <div class="w-full flex flex-row justify-end join">
+            {% if member.user == user %}
+                <a href="{% url 'members.change_user' member.pk %}"
+                   class="btn btn-sm btn-primary join-item">Change My Password</a>
+            {% endif %}
+            <a data-hx-get="{% url 'members.remove_user_hx'  member.pk %}"
+               hx-target="#dialog" href="{% url 'members.remove_user' member.pk %}"
+               class="btn btn-sm btn-warning join-item">Delete</a>
+        </div>
+
+
+    {% endfill %}
+{% endcomponent %}
