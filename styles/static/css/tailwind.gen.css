@@ -3763,6 +3763,10 @@ html:has(.drawer-toggle:checked) {
   width: 100%;
 }
 
+.w-screen {
+  width: 100vw;
+}
+
 .min-w-fit {
   min-width: -moz-fit-content;
   min-width: fit-content;
@@ -3782,6 +3786,10 @@ html:has(.drawer-toggle:checked) {
 
 .shrink-0 {
   flex-shrink: 0;
+}
+
+.shrink {
+  flex-shrink: 1;
 }
 
 .grow {
@@ -3847,12 +3855,24 @@ html:has(.drawer-toggle:checked) {
   border-color: rgb(243 244 246 / var(--tw-divide-opacity));
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
+.overflow-clip {
+  overflow: clip;
+}
+
 .overflow-x-auto {
   overflow-x: auto;
 }
 
-.overflow-x-hidden {
-  overflow-x: hidden;
+.overflow-x-clip {
+  overflow-x: clip;
+}
+
+.overflow-x-scroll {
+  overflow-x: scroll;
 }
 
 .rounded-box {
@@ -4256,6 +4276,10 @@ html:has(.drawer-toggle:checked) {
 
   .md\:w-auto {
     width: auto;
+  }
+
+  .md\:grow {
+    flex-grow: 1;
   }
 }
 
