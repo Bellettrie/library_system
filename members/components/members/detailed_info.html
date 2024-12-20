@@ -69,47 +69,18 @@
                 <th>DMS registered?</th>
                 <td>{{ member.dms_registered }}</td>
             </tr>
-            {% if member.user %}
-                <tr>
-                    <th>User</th>
-                    <td>{{ member.user }} <a data-hx-get="{% url 'members.remove_user_hx'  member.pk %}"
-                                             hx-target="#dialog" href="{% url 'members.remove_user' member.pk %}"
-                                             class="btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-                {% if member.user == user %}
-                    <tr>
-                        <th>Change Password</th>
-                        <td><a data-hx-get="{% url 'members.change_user_hx'  member.pk %}"
-                               hx-target="#dialog" href="{% url 'members.change_user' member.pk %}"
-                               class="btn-sm btn-primary">Change</a>
-                        </td>
-                    </tr>
-                {% endif %}
-            {% else %}
-                <tr>
-                    <th>Add user</th>
-                    <td>
-                        <a href="{% url 'members.signup' member.pk %}" class="btn-sm btn-outline-primary">Add new</a>
-                        {% if not member.invitation_code_valid %}
-                            <a href="{% url 'members.generate_invite' member.pk %}"
-                               class="btn-sm btn-outline-primary">Invite</a>
-                        {% else %}
-                            <a href="{% url 'members.disable_invite' member.pk %}"
-                               class="btn-sm btn-outline-primary">Uninvite</a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endif %}
-        </table>
-        <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-primary">Browse catalog for</a>
 
-        <a href="{% url 'members.edit' member.id %}" class="btn  btn-sm btn-outline-primary">Edit</a>
-        {% if member.can_be_deleted %}
-            <a href="{% url 'members.delete' member.id %}" class="btn btn-sm  btn-outline-primary">Delete</a>
-        {% endif %}
-        {% if member.should_be_anonymised %}
-            <a href="{% url 'members.anonymise' member.id %}" class="btn btn-sm  btn-outline-primary">Anonimyse</a>
-        {% endif %}
+        </table>
+         <div class="w-full flex flex-row justify-end join">
+            <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-primary join-item">Browse for
+                member</a>
+            <a href="{% url 'members.view' member.id 0 %}" class="btn btn-sm btn-outline-primary join-item">Less
+                details</a>
+            <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-outline-primary join-item">Edit</a>
+            {% if member.should_be_anonymised %}
+                <a href="{% url 'members.anonymise' member.id %}" class="btn btn-sm btn-outline-primary">Anonimyse</a>
+            {% endif %}
+        </div>
+
 {% endfill %}
 {% endcomponent %}
