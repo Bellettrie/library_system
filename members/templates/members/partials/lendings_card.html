@@ -1,11 +1,9 @@
-<div class="grow  md:max-w-screen max-w-screen lg:flex-1  card bg-base-100">
-    <div class="card-body overflow-x-auto" style="overflow: auto;">
+<div class="shrink overflow-x-auto md:grow   max-w-screen lg:flex-1  card bg-base-100">
+    <div class="card-body " style="overflow: auto;">
         <h5 class="card-title">Lendings</h5>
-
         {% member_current_lendings member %}
         {% if member.pk == user.member.pk %}
             <a href="{% url 'lendings.me' %}">My lending history</a>
         {% endif %}
-
     </div>
 </div>
