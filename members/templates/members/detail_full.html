@@ -18,11 +18,18 @@
                     </div>
                 </div>
             {% endif %}
-
-            {% component 'members.detailed_info' member / %}
+            <div class="grow flex flex-col gap-3">
+                {% component 'members.detailed_info' member / %}
+                {% if member.user %}
+                    {% component 'members.users.user' member / %}
+                {% else %}
+                    {% component 'members.users.no_user' member / %}
+                {% endif %}
+            </div>
 
             <div class="grow flex flex-col gap-3">
                 {% component 'members.membership_periods' member / %}
+
                 {% include 'members/partials/lendings_card.html' %}
                 {% include 'members/partials/reservations_card.html' %}
             </div>
