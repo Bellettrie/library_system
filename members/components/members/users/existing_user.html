@@ -8,14 +8,21 @@
 
         <div class="w-full flex flex-row justify-end join">
             {% if member.user == user %}
-                <a href="{% url 'members.change_user' member.pk %}"
+                <a data-hx-get="{% url 'members.change_self'   %}"
+                   hx-target="#dialog"  href="{% url 'members.change_self' %}"
                    class="btn btn-sm btn-primary join-item">Change My Password</a>
+            {% else %}
+                {% if perms.auth.change_user %}
+                    <a data-hx-get="{% url 'members.change_user' member.pk %}"
+                       hx-target="#dialog" href="{% url 'members.change_user' member.id %}"
+                       class="btn btn-sm btn-primary join-item">Change Password</a>
+                {% endif %}
             {% endif %}
-            <a data-hx-get="{% url 'members.remove_user_hx'  member.pk %}"
-               hx-target="#dialog" href="{% url 'members.remove_user' member.pk %}"
-               class="btn btn-sm btn-warning join-item">Delete</a>
+            {% if perms.auth.delete_user %}
+                <a data-hx-get="{% url 'members.remove_user_hx'  member.pk %}"
+                   hx-target="#dialog" href="{% url 'members.remove_user' member.pk %}"
+                   class="btn btn-sm btn-warning join-item">Delete</a>
+            {% endif %}
         </div>
-
-
     {% endfill %}
 {% endcomponent %}
