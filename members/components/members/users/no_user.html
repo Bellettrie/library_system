@@ -1,15 +1,17 @@
 {% component 'tile/tile' root_class_tags="grow max-w-screen lg:basis-2/5 " %}
     {% fill 'title' %}Login Credentials{% endfill %}
     {% fill 'content' %}
-
+        {% if  member.invitation_code_valid %}
+            Invite link was sent. Still valid till {{ member.invitation_code_end_date }}
+        {% endif %}
        <div class="w-full flex flex-row justify-end join">
-                        <a href="{% url 'members.signup' member.pk %}" class="btn btn-sm btn-active join-item">Add new</a>
+                        <a  href="{% url 'members.signup' member.pk %}" class=" flex btn btn-sm btn-active join-item">Create Login</a>
                         {% if not member.invitation_code_valid %}
-                            <a href="{% url 'members.generate_invite' member.pk %}"
-                               class=" btn btn-sm btn-success join-item">Invite</a>
+                            <a  href="{% url 'members.generate_invite' member.pk %}"
+                               class="flex btn btn-sm btn-success join-item">Send invite link</a>
                         {% else %}
                             <a href="{% url 'members.disable_invite' member.pk %}"
-                               class="btn btn-sm btn-warning  join-item">Uninvite</a>
+                               class="flex btn btn-sm btn-warning  join-item">Disable Invite link</a>
                         {% endif %}
        </div>
 {% endfill %}
