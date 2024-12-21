@@ -61,3 +61,7 @@ def self_signup(request):
 @transaction.atomic
 def self_signupped(request):
     return render(request, 'members/self_signup_done.html')
+
+@transaction.atomic
+def signout(request):
+    return render(request, 'members/logout.html')

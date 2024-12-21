@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Logout {% endblock %}
+{% block content %}
+<form method="post" action="{% url 'logout' %}" class="form-inline renderLogoutformstyle align-top">
+    {% csrf_token %}
+    <input class="btn btn-outline renderLogoutfakeURL" type="submit" value="Logout">
+</form>
+{% endblock %}

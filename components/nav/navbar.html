@@ -33,7 +33,7 @@
                     <a href="{% url 'works.list' %}?advanced=True" class="btn join-item rounded-r-full btn-md">...</a>
                 </div>
             </form>
-
+            {% if user.member %}
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class=" ml-5 btn  btn-circle avatar btn-md">
                     <div class="ring-primary ring-offset-base-100  w-10 rounded-full ring ring-offset-2">
@@ -49,10 +49,12 @@
                             Profile
                         </a>
                     </li>
+                    <input type="hidden" id="csrfmiddlewaretoken" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 {#                    <li><a>Settings <span class="badge">Soon</span></a></li>#}
-                    <li><a>Logout <span class="badge">Todo</span></a></li>
+                    <li><a hx-post="{% url 'logout' %}" hx-target="body" href="{% url 'members.signout' %}" hx-include="[name='csrfmiddlewaretoken']">Logout</a></li>
                 </ul>
             </div>
+            {% endif %}
         </ul>
     </div>
 </div>
