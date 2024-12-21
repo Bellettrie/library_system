@@ -3638,6 +3638,10 @@ html:has(.drawer-toggle:checked) {
   right: 0px;
 }
 
+.top-5 {
+  top: 1.25rem;
+}
+
 .z-\[1\] {
   z-index: 1;
 }
@@ -3812,8 +3816,20 @@ html:has(.drawer-toggle:checked) {
   flex-wrap: wrap;
 }
 
+.place-content-center {
+  place-content: center;
+}
+
+.content-center {
+  align-content: center;
+}
+
 .items-center {
   align-items: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
 }
 
 .justify-end {
@@ -3923,6 +3939,11 @@ html:has(.drawer-toggle:checked) {
 
 .stroke-current {
   stroke: currentColor;
+}
+
+.object-top {
+  -o-object-position: top;
+     object-position: top;
 }
 
 .p-10 {
@@ -4052,6 +4073,10 @@ html:has(.drawer-toggle:checked) {
 
 .ring-offset-base-100 {
   --tw-ring-offset-color: var(--fallback-b1,oklch(var(--b1)/1));
+}
+
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 @media (min-width: 640px) {
@@ -4223,6 +4248,10 @@ html:has(.drawer-toggle:checked) {
 }
 
 @media (min-width: 640px) {
+  .sm\:absolute {
+    position: absolute;
+  }
+
   .sm\:col-span-2 {
     grid-column: span 2 / span 2;
   }
@@ -4247,8 +4276,22 @@ html:has(.drawer-toggle:checked) {
     width: auto;
   }
 
+  .sm\:w-fit {
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+
+  .sm\:w-min {
+    width: -moz-min-content;
+    width: min-content;
+  }
+
   .sm\:flex-none {
     flex: none;
+  }
+
+  .sm\:shrink {
+    flex-shrink: 1;
   }
 
   .sm\:grid-cols-3 {
@@ -4267,9 +4310,33 @@ html:has(.drawer-toggle:checked) {
     padding-left: 0px;
     padding-right: 0px;
   }
+
+  .sm\:pb-3 {
+    padding-bottom: 0.75rem;
+  }
+
+  .sm\:pb-5 {
+    padding-bottom: 1.25rem;
+  }
 }
 
 @media (min-width: 768px) {
+  .md\:absolute {
+    position: absolute;
+  }
+
+  .md\:top-5 {
+    top: 1.25rem;
+  }
+
+  .md\:block {
+    display: block;
+  }
+
+  .md\:flex {
+    display: flex;
+  }
+
   .md\:w-80 {
     width: 20rem;
   }
@@ -4278,12 +4345,40 @@ html:has(.drawer-toggle:checked) {
     width: auto;
   }
 
+  .md\:w-full {
+    width: 100%;
+  }
+
   .md\:grow {
     flex-grow: 1;
+  }
+
+  .md\:content-center {
+    align-content: center;
+  }
+
+  .md\:justify-center {
+    justify-content: center;
   }
 }
 
 @media (min-width: 1300px) {
+  .lg\:absolute {
+    position: absolute;
+  }
+
+  .lg\:top-5 {
+    top: 1.25rem;
+  }
+
+  .lg\:flex {
+    display: flex;
+  }
+
+  .lg\:w-2\/5 {
+    width: 40%;
+  }
+
   .lg\:flex-1 {
     flex: 1 1 0%;
   }
@@ -4298,6 +4393,10 @@ html:has(.drawer-toggle:checked) {
 
   .lg\:flex-row {
     flex-direction: row;
+  }
+
+  .lg\:justify-center {
+    justify-content: center;
   }
 
   .lg\:text-nowrap {

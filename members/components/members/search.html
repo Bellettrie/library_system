@@ -3,26 +3,26 @@
         Members
     {% endfill %}
     {% fill "content" %}
-        <div class="">
-            <form action="/members" method="get" class="flex flex-1 w-full sm:w-auto">
-                <div class="flex flex-wrap sm:flex-none sm:join gap-y-5 gap-2 sm:gap-0 rounded-none">
-                    <label class="form-control w-full sm:w-auto">
+        <div class="place-content-center">
+            <form action="/members" method="get" class="flex flex-1  w-full place-content-center ">
+                <div class="flex flex-wrap sm:flex-none sm:join gap-y-5 gap-2 sm:gap-0 rounded-none md:content-center">
+                    <label class="form-control sm:w-auto">
                         {% component "inputs/text" name="q" placeholder="Who are you looking for" value=query bonus_classes="join-item w-full sm:w-auto" / %}
                         <div class="label sm:hidden">
                             <span class="label-text">Who are you looking for?</span>
                         </div>
                     </label>
-                    <label class="form-control w-full sm:w-auto">
-                        <select class="select input-bordered join-item w-full sm:w-auto" id="previous" name="previous">
+                    <label class="form-control  sm:w-auto">
+                        <select class="select input-bordered join-item sm:w-auto" id="previous" name="previous">
                             <option disabled>Which Members?</option>
                             <option value="" {% if not request.GET.previous %}selected{% endif %}>Only Current</option>
                             <option value="true" {% if request.GET.previous %}selected{% endif %}>Also Previous</option>
                         </select>
-                        <div class="label w-full sm:hidden">
+                        <div class="label sm:hidden">
                             <span class="label-text">Only Current Members?</span>
                         </div>
                     </label>
-                    <button class="btn btn-neutral join-item w-full sm:w-auto ">
+                    <button class="btn btn-neutral join-item sm:w-auto ">
                         Search
                     </button>
                 </div>
