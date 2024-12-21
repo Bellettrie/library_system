@@ -13,7 +13,13 @@
             {% endfill %}
             {% fill "content" %}
 
-                <table class="table table-striped" style="width: auto;">
+                <table class="table table-zebra table-responsive-xs table-auto border-collapse border border-slate-400" style="width: auto;">
+                <thead>
+                <tr>
+                    <th>Member Name</th>
+                    <th></th>
+                </tr>
+                </thead>
                     {% for member in object_list %}
                         {% include 'members/list_item.html' %}
                     {% empty %}
