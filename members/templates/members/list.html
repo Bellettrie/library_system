@@ -1,13 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Member Search{% endblock %}
 {% block content %}
-<div class="flex flex-col w-full gap-2">
-    {% component 'members.search_input'  request.GET.q / %}
-        {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none" %}
+    <div class="flex flex-col w-full gap-2">
+        {% component 'members.search_input' request.GET.q / %}
+        {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none " %}
             {% fill "title" %}
-                {% include 'pagination.html' %}
+
+                <div class="hidden sm:block sm:pb-5">Results</div>
+                <div class="sm:absolute top-5 flex w-full justify-center">
+                    {% include 'pagination.html' %}
+                </div>
             {% endfill %}
             {% fill "content" %}
+
                 <table class="table table-striped" style="width: auto;">
                     {% for member in object_list %}
                         {% include 'members/list_item.html' %}
@@ -19,10 +24,10 @@
         {% endcomponent %}
 
     </div>
-{% component 'help_bar' %}
-    You can search for members on this page, by typing their name into the input field.<br>
-    <br>
-    By default, only people who are currently a member are listed; switch to 'also previous' if desired.
-{% endcomponent %}
+    {% component 'help_bar' %}
+        You can search for members on this page, by typing their name into the input field.<br>
+        <br>
+        By default, only people who are currently a member are listed; switch to 'also previous' if desired.
+    {% endcomponent %}
 
 {% endblock %}
