@@ -16,4 +16,21 @@ If you are a member of Bellettrie, and are a member of the web committee you can
 
 ## Linting
 The CI environment uses Flake8 for linting. The following command may work within pycharm, if you have flake8 installed (install the requirements again if you don't, it's one of the requirements now).
-```flake8 . --ignore F401,E501,W503 --count --show-source --statistics --max-line-length=127 --exclude venv```
+```bash
+flake8 . --ignore F401,E501,W503 --count --show-source --statistics --max-line-length=127 --exclude venv,jstoolchain/node_modules
+```
+
+
+## Using Tailwind
+Install npm (or yarn if you know how), and install the dependencies in the /styles/static folder. Use `npm ci`
+
+
+
+Enter the /styles/config folder and run the following command for local dev:
+`npm run watch`
+
+Run `npm compile` to merely compile 
+
+
+Note that tailwind's tooling reads the source of all our templates to see which tags are actually in use. 
+A *todo* here is to figure out how to hae it load single file components correctly.

@@ -1,0 +1,6 @@
+<table class="table table-sm table-striped">
+        <tr>{% slot "table_head" %}{% endslot %}</tr>
+    {% for item in items %}
+        <tr>{% slot "table_row" item=item %}Default{% endslot %}</tr>
+    {% endfor %}
+</table>
