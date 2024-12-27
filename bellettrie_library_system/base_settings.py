@@ -89,7 +89,6 @@ TEMPLATES = [
                     'tables.templatetags.reservation_table',
                     'tables.templatetags.item_detail_table',
                     'tables.templatetags.lending_history_table',
-
                     'django_components.templatetags.component_tags',
                 ],
             'context_processors':

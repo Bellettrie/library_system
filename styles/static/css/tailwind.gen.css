@@ -1496,6 +1496,12 @@ html {
   margin-inline-end: -0px;
 }
 
+.input-sm[type="number"]::-webkit-inner-spin-button {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-inline-end: -0px;
+}
+
 .join {
   display: inline-flex;
   align-items: stretch;
@@ -3304,6 +3310,14 @@ html:has(.drawer-toggle:checked) {
   line-height: 2;
 }
 
+.input-sm {
+  height: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 2rem;
+}
+
 .join.join-vertical {
   flex-direction: column;
 }
@@ -4099,6 +4113,10 @@ html:has(.drawer-toggle:checked) {
   --tw-ring-offset-color: var(--fallback-b1,oklch(var(--b1)/1));
 }
 
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 @media (min-width: 640px) {
   .sm\:join {
     display: inline-flex;
@@ -4353,12 +4371,12 @@ html:has(.drawer-toggle:checked) {
     flex: none;
   }
 
-  .lg\:basis-2\/5 {
-    flex-basis: 40%;
-  }
-
   .lg\:basis-1\/2 {
     flex-basis: 50%;
+  }
+
+  .lg\:basis-2\/5 {
+    flex-basis: 40%;
   }
 
   .lg\:flex-row {

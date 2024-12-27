@@ -53,7 +53,7 @@ class PublicationCreateForm(ModelForm):
             'date_added'
         ]
         widgets = {
-            'date_added': forms.DateInput(attrs={'type':'date', 'class': 'datepicker'})
+            'date_added': forms.DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         }
         fields = []
         for i in NAMED_TRANSLATED_LIST:

@@ -13,4 +13,5 @@ class MembershipPeriods(Component):
         return {
             "members": members,
         }
+
     template_name = "members/membership_periods.html"

@@ -35,6 +35,7 @@ def change_user(request, member_id, hx_enabled=False):
         form = PasswordChangeForm(member.user)
     return render(request, templ, {'form': form, 'member': member, 'member_user': member.user})
 
+
 @transaction.atomic
 @login_required()
 def change_own_password(request, hx_enabled=False):

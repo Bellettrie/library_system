@@ -23,13 +23,13 @@
                         <div class="label">
                             <span class="label-text">{{ form.fields.name.label }}</span>
                         </div>
-                        {% component "inputs/text" placeholder="Full Name" name="name" bonus_classes="w-full max-w-xs" /%}
+                        {% component "inputs/text" placeholder="Full Name" name="name" bonus_classes="w-full max-w-xs input-md" / %}
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">{{ form.fields.nickname.label }}</span>
                         </div>
-                        {% component "inputs/text" placeholder="Nick Name" name="nickname" bonus_classes="w-full max-w-xs" /%}
+                        {% component "inputs/text" placeholder="Nick Name" name="nickname" bonus_classes="w-full max-w-xs input-md" / %}
                     </label>
 
                     <label class="form-control w-full max-w-xs ">
@@ -38,13 +38,13 @@
                         </div>
                         <div class="join join-vertical">
                             <input type="text" placeholder="Street Part"
-                                   class="input input-bordered w-full max-w-xs join-item"
+                                   class="input input-bordered w-full max-w-xs join-item input-sm"
                                    name="address_line_one"/>
                             <input type="text" placeholder="Postal Code / Town"
-                                   class="input input-bordered w-full max-w-xs join-item"
+                                   class="input input-bordered w-full max-w-xs join-item input-sm"
                                    name="address_line_two"/>
                             <input type="text" placeholder="Country (if not NL)"
-                                   class="input input-bordered w-full max-w-xs join-item"
+                                   class="input input-bordered w-full max-w-xs join-item input-sm"
                                    name="address_line_three"/>
                         </div>
                     </label>
@@ -54,7 +54,7 @@
                         <div class="label">
                             <span class="label-text">{{ form.fields.primary_email.label }}</span>
                         </div>
-                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
+                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-md"
                                name="primary_email"/>
                     </label>
 
@@ -62,14 +62,14 @@
                         <div class="label">
                             <span class="label-text">{{ form.fields.secondary_email.label }}</span>
                         </div>
-                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
+                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-md"
                                name="secondary_email"/>
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">{{ form.fields.phone.label }}</span>
                         </div>
-                        <input type="text" placeholder="06-..." class="input input-bordered w-full max-w-xs"
+                        <input type="text" placeholder="06-..." class="input input-bordered w-full max-w-xs input-md"
                                name="phone"/>
                     </label>
 
@@ -77,7 +77,8 @@
                         <div class="label" for="id_student_number">
                             <span class="label-text">{{ form.fields.student_number.label }}</span>
                         </div>
-                        <input type="text" placeholder="s/m/x ..." class="input input-bordered w-full max-w-xs"
+                        <input type="text" placeholder="s/m/x ..."
+                               class="input input-bordered w-full max-w-xs input-md "
                                name="student_number" id="id_student_number"/>
                     </label>
 

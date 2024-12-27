@@ -27,10 +27,10 @@ class NavItem(Component):
         }
 
     def get_template_name(self, context: Context) -> Optional[str]:
-        l = context.get("location")
-        if l == "top":
+        location = context.get("location")
+        if location == "top":
             return "nav/items/top_menu.html"
-        if l == "mob":
+        if location == "mob":
             return "nav/items/mobile.html"
         return "nav/items/sidebar.html"
 
@@ -75,5 +75,4 @@ class Logo(Component):
     -ms-transform:rotate(180deg);
     transform:rotate(180deg);
 }
-
 """
