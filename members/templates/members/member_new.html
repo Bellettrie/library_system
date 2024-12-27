@@ -3,74 +3,142 @@
     New Member
 {% endblock %}
 {% block content %}
-    {% component "tile/tile" %}
-    {% fill 'title' %}
-        New Member
-    {% endfill %}
-    {% fill "content" %}
-        <form method="post" novalidate>
-            {% csrf_token %}
+    <form action="#"  method="post">
+        <div class="max-w-full flex flex-wrap gap-3">
+            {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-1/2  lg:flex-none" %}
+                {% fill 'title' %}
+                    New Member
+                {% endfill %}
+                {% fill "content" %}
+                    Fill in all the sub-forms, and finally press the submit button.
+                    {% csrf_token %}
 
-            {{ form.non_field_errors }}
-            {% for hidden_field in form.hidden_fields %}
-                {{ hidden_field.errors }}
-                {{ hidden_field }}
-            {% endfor %}
+                    {{ form.non_field_errors }}
+                    {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field.errors }}
+                        {{ hidden_field }}
+                    {% endfor %}
 
-            <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">{{ form.fields.name.label }}</span>
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">{{ form.fields.name.label }}</span>
+                        </div>
+                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
+                               name="name"/>
+                    </label>
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">{{ form.fields.nickname.label }}</span>
+                        </div>
+                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
+                               name="nickname"/>
+                    </label>
+
+                    <label class="form-control w-full max-w-xs ">
+                        <div class="label">
+                            <span class="label-text">{{ form.fields.address_line_one.label }}</span>
+                        </div>
+                        <div class="join join-vertical">
+                            <input type="text" placeholder="Street Part"
+                                   class="input input-bordered w-full max-w-xs join-item"
+                                   name="address_line_one"/>
+                            <input type="text" placeholder="Postal Code / Town"
+                                   class="input input-bordered w-full max-w-xs join-item"
+                                   name="address_line_two"/>
+                            <input type="text" placeholder="Country (if not NL)"
+                                   class="input input-bordered w-full max-w-xs join-item"
+                                   name="address_line_three"/>
+                        </div>
+                    </label>
+
+
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">{{ form.fields.primary_email.label }}</span>
+                        </div>
+                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
+                               name="primary_email"/>
+                    </label>
+
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">{{ form.fields.secondary_email.label }}</span>
+                        </div>
+                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
+                               name="secondary_email"/>
+                    </label>
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">{{ form.fields.phone.label }}</span>
+                        </div>
+                        <input type="text" placeholder="06-..." class="input input-bordered w-full max-w-xs"
+                               name="phone"/>
+                    </label>
+
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label" for="id_student_number">
+                            <span class="label-text">{{ form.fields.student_number.label }}</span>
+                        </div>
+                        <input type="text" placeholder="s/m/x ..." class="input input-bordered w-full max-w-xs"
+                               name="student_number" id="id_student_number"/>
+                    </label>
+
+                {% endfill %}
+            {% endcomponent %}
+    <div class="grow  flex flex-col gap-3  ">
+        {% component "tile/tile" root_class_tags="shrink max-w-screen lg:basis-2/5  lg:flex-none" %}
+            {% fill 'title' %}
+                Privacy Settings
+            {% endfill %}
+
+            {% fill "content" %}
+                These checkboxes should be set in accordance to what the member filled in on their privacy form.
+                <div class="flex flex-col">
+                    <div class="form-control w-52">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">External Activities</span>
+                            <input type="checkbox" class="toggle toggle-primary"/>
+                        </label>
+                    </div>
+                    <div class="form-control w-52">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Photos in Publications</span>
+                            <input type="checkbox" class="toggle toggle-secondary"/>
+                        </label>
+                    </div>
+                    <div class="form-control w-52">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Reunion emails</span>
+                            <input type="checkbox" class="toggle toggle-accent"/>
+                        </label>
+                    </div>
                 </div>
-                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                       name="{{ form.fields.name.id_for_label }}"/>
-            </label>
-            <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">{{ form.fields.nickname.label }}</span>
-                </div>
-                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                       name="{{ form.fields.nickname.id_for_label }}"/>
-            </label>
 
-            <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">{{ form.fields.address_line_one.label }}</span>
-                </div>
-                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                       name="{{ form.fields.address_line_one.id_for_label }}"/>
-                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                       name="{{ form.fields.address_line_two.id_for_label }}"/>
-                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                       name="{{ form.fields.address_line_three.id_for_label }}"/>
-            </label>
+            {% endfill %}
+        {% endcomponent %}
+        {% component "tile/tile" root_class_tags="grow overflow-x-auto md:grow   max-w-screen lg:flex-1  card bg-base-100" %}
+            {% fill 'title' %}
+                Membership Type
 
+            {% endfill %}
+            {% fill "content" %}
+                <table>
+                    {{ md_form.as_table }}
+                </table>
+            {% endfill %}
+        {% endcomponent %}
 
-            <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">{{ form.fields.primary_email.label }}</span>
-                </div>
-                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                       name="{{ form.fields.primary_email.id_for_label }}"/>
-            </label>
+        {% component "tile/tile" root_class_tags="shrink max-w-screen lg:flex-none" %}
+            {% fill 'title' %}
+                All Done!
+            {% endfill %}
+            {% fill "content" %}
+                Remember to tell the new member to sign up in Sports and Culture.
+                <input type="submit" value="Save Member" class="btn btn-success btn-wide btn-2xl">
+            {% endfill %}
+        {% endcomponent %}
+    </div>
+    </div>
 
-            <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">{{ form.fields.secondary_email.label }}</span>
-                </div>
-                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                       name="{{ form.fields.secondary_email.id_for_label }}"/>
-            </label>
-
-
-            <label class="form-control w-full max-w-xs">
-                <div class="label" for="id_student_number">
-                    <span class="label-text">{{ form.fields.student_number.label }}</span>
-                </div>
-                <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                       name="student_number" id="id_student_number"/>
-            </label>
-            <input type="submit" action="Send">
-        </form>
-    {% endfill %}
-    {% endcomponent %}
+    </form>
 {% endblock %}
