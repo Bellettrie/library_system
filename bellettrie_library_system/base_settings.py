@@ -81,6 +81,7 @@ TEMPLATES = [
             'builtins':
                 [
                     'bellettrie_library_system.templatetags.paginator_tag',
+                    'bellettrie_library_system.templatetags.menu_data',
                     'tables.templatetags.render_square',
                     'tables.templatetags.member_lending_table',
                     'tables.templatetags.lending_table',
