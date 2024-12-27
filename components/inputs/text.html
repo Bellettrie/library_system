@@ -1,7 +1,7 @@
 <input
         type="text"
         {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
-        value="{{ query }}"
+        {% if value  %}value="{{ value }}"{% endif %}
         name="{{ name }}"
         class="input input-bordered {% if bonus_classes %}{{ bonus_classes }}{% endif %}"
 >

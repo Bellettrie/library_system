@@ -3,7 +3,7 @@
     New Member
 {% endblock %}
 {% block content %}
-    <form action="#"  method="post">
+    <form action="#" method="post">
         <div class="max-w-full flex flex-wrap gap-3">
             {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-1/2  lg:flex-none" %}
                 {% fill 'title' %}
@@ -23,15 +23,13 @@
                         <div class="label">
                             <span class="label-text">{{ form.fields.name.label }}</span>
                         </div>
-                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                               name="name"/>
+                        {% component "inputs/text" placeholder="Full Name" name="name" bonus_classes="w-full max-w-xs" /%}
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">{{ form.fields.nickname.label }}</span>
                         </div>
-                        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"
-                               name="nickname"/>
+                        {% component "inputs/text" placeholder="Nick Name" name="nickname" bonus_classes="w-full max-w-xs" /%}
                     </label>
 
                     <label class="form-control w-full max-w-xs ">
@@ -85,60 +83,60 @@
 
                 {% endfill %}
             {% endcomponent %}
-    <div class="grow  flex flex-col gap-3  ">
-        {% component "tile/tile" root_class_tags="shrink max-w-screen lg:basis-2/5  lg:flex-none" %}
-            {% fill 'title' %}
-                Privacy Settings
-            {% endfill %}
+            <div class="grow  flex flex-col gap-3  ">
+                {% component "tile/tile" root_class_tags="shrink max-w-screen lg:basis-2/5  lg:flex-none" %}
+                    {% fill 'title' %}
+                        Privacy Settings
+                    {% endfill %}
 
-            {% fill "content" %}
-                These checkboxes should be set in accordance to what the member filled in on their privacy form.
-                <div class="flex flex-col">
-                    <div class="form-control w-52">
-                        <label class="label cursor-pointer">
-                            <span class="label-text">External Activities</span>
-                            <input type="checkbox" class="toggle toggle-primary"/>
-                        </label>
-                    </div>
-                    <div class="form-control w-52">
-                        <label class="label cursor-pointer">
-                            <span class="label-text">Photos in Publications</span>
-                            <input type="checkbox" class="toggle toggle-secondary"/>
-                        </label>
-                    </div>
-                    <div class="form-control w-52">
-                        <label class="label cursor-pointer">
-                            <span class="label-text">Reunion emails</span>
-                            <input type="checkbox" class="toggle toggle-accent"/>
-                        </label>
-                    </div>
-                </div>
+                    {% fill "content" %}
+                        These checkboxes should be set in accordance to what the member filled in on their privacy form.
+                        <div class="flex flex-col">
+                            <div class="form-control w-52">
+                                <label class="label cursor-pointer">
+                                    <span class="label-text">External Activities</span>
+                                    <input type="checkbox" class="toggle toggle-primary"/>
+                                </label>
+                            </div>
+                            <div class="form-control w-52">
+                                <label class="label cursor-pointer">
+                                    <span class="label-text">Photos in Publications</span>
+                                    <input type="checkbox" class="toggle toggle-secondary"/>
+                                </label>
+                            </div>
+                            <div class="form-control w-52">
+                                <label class="label cursor-pointer">
+                                    <span class="label-text">Reunion emails</span>
+                                    <input type="checkbox" class="toggle toggle-accent"/>
+                                </label>
+                            </div>
+                        </div>
 
-            {% endfill %}
-        {% endcomponent %}
-        {% component "tile/tile" root_class_tags="grow overflow-x-auto md:grow   max-w-screen lg:flex-1  card bg-base-100" %}
-            {% fill 'title' %}
-                Membership Type
+                    {% endfill %}
+                {% endcomponent %}
+                {% component "tile/tile" root_class_tags="grow overflow-x-auto md:grow   max-w-screen lg:flex-1  card bg-base-100" %}
+                    {% fill 'title' %}
+                        Membership Type
 
-            {% endfill %}
-            {% fill "content" %}
-                <table>
-                    {{ md_form.as_table }}
-                </table>
-            {% endfill %}
-        {% endcomponent %}
+                    {% endfill %}
+                    {% fill "content" %}
+                        <table>
+                            {{ md_form.as_table }}
+                        </table>
+                    {% endfill %}
+                {% endcomponent %}
 
-        {% component "tile/tile" root_class_tags="shrink max-w-screen lg:flex-none" %}
-            {% fill 'title' %}
-                All Done!
-            {% endfill %}
-            {% fill "content" %}
-                Remember to tell the new member to sign up in Sports and Culture.
-                <input type="submit" value="Save Member" class="btn btn-success btn-wide btn-2xl">
-            {% endfill %}
-        {% endcomponent %}
-    </div>
-    </div>
+                {% component "tile/tile" root_class_tags="shrink max-w-screen lg:flex-none" %}
+                    {% fill 'title' %}
+                        All Done!
+                    {% endfill %}
+                    {% fill "content" %}
+                        Remember to tell the new member to sign up in Sports and Culture.
+                        <input type="submit" value="Save Member" class="btn btn-success btn-wide btn-2xl">
+                    {% endfill %}
+                {% endcomponent %}
+            </div>
+        </div>
 
     </form>
 {% endblock %}
