@@ -78,25 +78,26 @@ TEMPLATES = [
                     'django_components.template_loader.Loader',
                 ]
             )],
-            'builtins': [
-                'bellettrie_library_system.templatetags.paginator_tag',
-                'bellettrie_library_system.templatetags.menu_data',
-                'tables.templatetags.render_square',
-                'tables.templatetags.member_lending_table',
-                'tables.templatetags.lending_table',
-                'tables.templatetags.publications_list_for_member',
-                'tables.templatetags.reservation_table',
-                'tables.templatetags.item_detail_table',
-                'tables.templatetags.lending_history_table',
+            'builtins':
+                [
+                    'bellettrie_library_system.templatetags.paginator_tag',
+                    'tables.templatetags.render_square',
+                    'tables.templatetags.member_lending_table',
+                    'tables.templatetags.lending_table',
+                    'tables.templatetags.publications_list_for_member',
+                    'tables.templatetags.reservation_table',
+                    'tables.templatetags.item_detail_table',
+                    'tables.templatetags.lending_history_table',
 
-                'django_components.templatetags.component_tags',
-            ],
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+                    'django_components.templatetags.component_tags',
+                ],
+            'context_processors':
+                [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
         },
     },
 ]
@@ -139,22 +140,14 @@ LOGOUT_REDIRECT_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/'
 
 
-# This one is still in use by the old bootstrap pages.
 def GET_MENU():
     from config.menu import MenuItem
 
     my_menu = []
-    my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top', [], icon='fa fa-book'))
-    my_menu.append(MenuItem("Our Activities", reverse('named_page', args=('basic', 'member',)), None, 'top', [],
+    my_menu.append(MenuItem('Home', reverse('homepage'), None, 'top-left', [], icon='fa fa-home'))
+    my_menu.append(MenuItem('Our Collection', reverse('works.list'), None, 'top-left', [], icon='fa fa-book'))
+    my_menu.append(MenuItem('Become a member', reverse('named_page', args=('basic', 'member',)), None, 'top-left', [],
                             icon='fa fa-user'))
-    my_menu.append(
-        MenuItem('Become a member', reverse('named_page', args=('basic', 'member',)), None, 'top', [], anonymous=True,
-                 icon='fa fa-user'))
-    my_menu.append(MenuItem("Become Active", reverse('named_page', args=('basic', 'member',)), None, 'top', [],
-                            icon='fa fa-user'))
-
-    my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top-left', [], icon='fa fa-book'))
-
     my_menu.append(
         MenuItem('Board / Committees', reverse('named_page', args=('basic', 'committees',)), None, 'top-left', [],
                  icon='fa fa-users'))
@@ -235,8 +228,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 COMPONENTS = {
     "dirs": [
         os.path.join(BASE_DIR, "works/components"),
-        os.path.join(BASE_DIR, "lendings/components"),
-        os.path.join(BASE_DIR, "members/components"),
         os.path.join(BASE_DIR, "components"),
     ],
 }
