@@ -78,26 +78,24 @@ TEMPLATES = [
                     'django_components.template_loader.Loader',
                 ]
             )],
-            'builtins':
-                [
-                    'bellettrie_library_system.templatetags.paginator_tag',
-                    'bellettrie_library_system.templatetags.menu_data',
-                    'tables.templatetags.render_square',
-                    'tables.templatetags.member_lending_table',
-                    'tables.templatetags.lending_table',
-                    'tables.templatetags.publications_list_for_member',
-                    'tables.templatetags.reservation_table',
-                    'tables.templatetags.item_detail_table',
-                    'tables.templatetags.lending_history_table',
-                    'django_components.templatetags.component_tags',
-                ],
-            'context_processors':
-                [
-                    'django.template.context_processors.debug',
-                    'django.template.context_processors.request',
-                    'django.contrib.auth.context_processors.auth',
-                    'django.contrib.messages.context_processors.messages',
-                ],
+            'builtins': [
+                'bellettrie_library_system.templatetags.paginator_tag',
+                'bellettrie_library_system.templatetags.menu_data',
+                'tables.templatetags.render_square',
+                'tables.templatetags.member_lending_table',
+                'tables.templatetags.lending_table',
+                'tables.templatetags.publications_list_for_member',
+                'tables.templatetags.reservation_table',
+                'tables.templatetags.item_detail_table',
+                'tables.templatetags.lending_history_table',
+                'django_components.templatetags.component_tags',
+            ],
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
         },
     },
 ]
