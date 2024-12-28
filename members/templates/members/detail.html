@@ -37,7 +37,7 @@
         </div>
         <div class="grow  flex flex-col gap-3  ">
             {% component 'members.membership_periods' member / %}
-            {% include 'members/partials/lendings_card.html' %}
+            {% component 'members.current_lendings' member /%}
             {% include 'members/partials/reservations_card.html' %}
         </div>
     </div>
