@@ -17,12 +17,12 @@
                     <td>{{ p.end_date }}</td>
                     <td>{{ p.membership_type }}</td>
                     <td>{{ p.member_background }}</td>
-                    <td><a data-hx-get="{% url 'members.membership_period_edit_hx'  p.pk %}" hx-target="#dialog"
+                    <td><a data-hx-get="{% url 'members.membership_period_edit'  p.pk %}" hx-target="#dialog"
                            href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
                 </tr>
             {% endfor %}
         </table>
-        <a data-hx-get="{% url 'members.membership_period_new_hx'  member.pk %}" hx-target="#dialog"
+        <a data-hx-get="{% url 'members.membership_period_new'  member.pk %}" hx-target="#dialog"
            href="{% url 'members.membership_period_new' member.pk %}">New period</a>
         <hr>
 

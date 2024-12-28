@@ -27,7 +27,7 @@ def self_signup(request):
 
         if not form.is_valid():
             return render(request, 'members/self_signup.html',
-                          {"form": form, "error": "Incorrect form input, likely empty form."})
+                          {"form": form, "error": "Incorrect form input, you may not have filled in all the fields."})
 
         # Retrieve incomplete member object as supplied by form
         member_form_data = form.save(commit=False)
@@ -51,13 +51,9 @@ def self_signup(request):
 
         handle_member_invite(member)
 
-        return redirect("members.self_signupped")
+        return render(request, 'members/self_signup_done.html')
     else:
         # New empty form
         form = SignupForm(request.POST)
         return render(request, 'members/self_signup.html', {"form": form})
 
-
-@transaction.atomic
-def self_signupped(request):
-    return render(request, 'members/self_signup_done.html')

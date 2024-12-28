@@ -19,8 +19,8 @@
                 {% endif %}
             {% endif %}
             {% if perms.auth.delete_user %}
-                <a data-hx-get="{% url 'members.remove_user_hx'  member.pk %}"
-                   hx-target="#dialog" href="{% url 'members.remove_user' member.pk %}"
+                <a data-hx-get="{% url 'members.delete_user'  member.pk %}"
+                   hx-target="#dialog" href="{% url 'members.delete_user' member.pk %}"
                    class="btn btn-sm btn-warning join-item">Delete</a>
             {% endif %}
         </div>
