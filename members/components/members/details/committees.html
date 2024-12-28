@@ -1,7 +1,7 @@
-<div class="max-w-screen bg-base-100 card overflow-x-auto lg:flex-none ">
-    <div class=" card-body" style="overflow: auto;">
-        <h5 class="card-title">Committees</h5>
-        <p class="card-text">
+{% component 'tile/tile' root_class_tags="grow max-w-screen lg:basis-1/5 " %}
+    {% fill 'title' %}Committees{% endfill %}
+    {% fill 'content' %}
+
 
         <table class="table table-xs table-zebra">
             <tr>
@@ -12,16 +12,21 @@
                 <tr>
                     <td>{{ p.name }}</td>
                     {% if perms.members.committee_update %}
-                        <td><a data-hx-get="{% url 'members.membership_period_edit'  p.pk %}" hx-target="#dialog"
-                               href="{% url "members.membership_period_edit" p.pk %}">Remove member</a></td>
+                        <td><a class="btn btn-xs btn-error"  data-hx-get="{% url 'members.committee.leave' member.pk p.pk %}" hx-target="#dialog"
+                               href="{% url "members.committee.leave"  member.pk p.pk %}">Remove member</a></td>
                     {% endif %}
                 </tr>
             {% endfor %}
         </table>
-    {% if perms.members.committee_update %}
-        <a data-hx-get="{% url 'members.membership_period_new'  member.pk %}" hx-target="#dialog"
-           href="{% url 'members.membership_period_new' member.pk %}">Add to Committee</a>
 
-    {% endif %}
-    </div>
-</div>
+    {% endfill %}
+    {% fill 'footer' %}
+        {% component 'tile/footer' %}
+            {% if perms.members.committee_update %}
+
+                <a  class="btn btn-sm btn-primary join-item" data-hx-get="{% url 'members.committee.join'  member.pk %}" hx-target="#dialog"
+                   href="{% url 'members.committee.join' member.pk %}">Add to Committee</a>
+            {% endif %}
+        {% endcomponent %}
+    {% endfill %}
+{% endcomponent %}

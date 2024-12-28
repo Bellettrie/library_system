@@ -10,6 +10,7 @@ import members.views.member_new
 import members.views.member_show
 from members.permissions import MEMBERS_LIST, MEMBERS_NEW, MEMBERS_VIEW, MEMBERS_EDIT, MEMBERS_DELETE
 from utils.wrappers import hx_wrap
+from .views.committee_membership import join_committee, leave_committee
 from .views.member_list import MemberList
 from .views.anon_member_list import AnonMemberList
 from .views.user.self_signup import self_signup
@@ -52,6 +53,10 @@ urlpatterns = [
     path('membership_period/<int:membership_period_id>/edit',
          hx_wrap(members.views.membership_period_edit.edit_membership_period), name='members.membership_period_edit'),
 
+    path('<int:member_id>/committee/join/', hx_wrap(join_committee),
+         name='members.committee.join'),
+    path('<int:member_id>/committee/<int:committee_id>/leave/', hx_wrap(leave_committee),
+         name='members.committee.leave'),
     path('auth/by_committee/webcie', members.views.auth.by_committee.webcie, name='members.view.by_committee'),
 
 ]
