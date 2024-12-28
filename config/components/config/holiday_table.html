@@ -1,0 +1,31 @@
+{% component 'tile/tile' root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none" %}
+    {% fill 'title' %}Holidays{% endfill %}
+    {% fill 'content' %}
+        <table class="table">
+            <thead>
+            <th>Name</th>
+            <th>Starting date</th>
+            <th>Ending date</th>
+            <th>Skipped for fine</th>
+            <th></th>
+            </thead>
+            {% for holiday in holidays %}
+                <tr>
+                    <td><a href="{% url 'holiday.view' holiday.id %}">{{ holiday.name }}</a></td>
+                    <td>{{ holiday.starting_date }}</td>
+                    <td>{{ holiday.ending_date }}</td>
+                    <td>{{ holiday.skipped_for_fine }}</td>
+                    <td>
+                        <a href="{% url 'holiday.edit' holiday.id %}" class="btn">Edit</a>
+                        <a href="{% url 'holiday.delete' holiday.id %}" class="btn btn-warning">Delete</a>
+                    </td>
+
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5"><i>No results</i></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endfill %}
+{% endcomponent %}

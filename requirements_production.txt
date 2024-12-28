@@ -12,3 +12,5 @@ gunicorn~=22.0.0
 psycopg[binary]~=3.1.18
 
 jsonpickle~=3.3.0
+django_components
+django-widget-tweaks
