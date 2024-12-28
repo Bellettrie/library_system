@@ -10,7 +10,7 @@ import members.views.member_new
 import members.views.member_show
 from members.permissions import MEMBERS_LIST, MEMBERS_NEW, MEMBERS_VIEW, MEMBERS_EDIT, MEMBERS_DELETE
 from utils.wrappers import hx_wrap
-from .views.committee_membership import join_committee, leave_committee
+from .views.committees import join_committee, leave_committee
 from .views.member_list import MemberList
 from .views.anon_member_list import AnonMemberList
 from .views.user.self_signup import self_signup
