@@ -57,6 +57,6 @@ urlpatterns = [
          name='members.committee.join'),
     path('<int:member_id>/committee/<int:committee_id>/leave/', hx_wrap(leave_committee),
          name='members.committee.leave'),
-    path('auth/by_committee/webcie', members.views.auth.by_committee.webcie, name='members.view.by_committee'),
+    path('auth/by_committee/webcie', members.views.auth.by_committee.webcie, name='members.auth.by_committee.webcie'),
 
 ]

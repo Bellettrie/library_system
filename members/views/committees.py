@@ -30,7 +30,6 @@ def join_committee(request, member_id, hx_enabled=True):
                 return HttpResponse(status=209, headers={"HX-Redirect": "0"})
             return HttpResponseRedirect(reverse('members.view', args=(member_id, 0,)))
 
-
     return render(request, templ, {'member': member, 'committees': committees})
 
 
