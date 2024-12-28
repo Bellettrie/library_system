@@ -1,1 +1,19 @@
-COMMITTEE JOIN BASIC EDITIOn
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="modal-header">
+        <h4>Add {{ member.name }} to Committee</h4>
+    </div>
+    <form action="{% url 'members.committee.join' member.pk %}" class="modal-content" method="post">
+        {% csrf_token %}
+        <select class="select select-bordered w-full max-w-xs" name="committee_id">
+            {% for committee in committees %}
+            <option value="{{ committee.pk }}">{{ committee.name }}</option>
+            {% endfor    %}
+        </select>
+        <div class="modal-footer">
+            <input type="submit" class="btn btn-danger" value="Confirm">
+        </div>
+
+    </form>
+{% endblock %}

@@ -1,1 +1,17 @@
-LEAVE COMMITTEE?
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="modal-header">
+        <h4>Remove {{ member.name }} from {{ committee.name }}?</h4>
+    </div>
+    <form action="{% url 'members.committee.leave' member.pk committee.pk %}" class="modal-content" method="post">
+        {% csrf_token %}
+        <div class="modal-body">
+            Are you sure you want to do this?
+        </div>
+        <div class="modal-footer">
+            <input type="submit" class="btn btn-danger" value="Confirm">
+        </div>
+
+    </form>
+{% endblock %}
