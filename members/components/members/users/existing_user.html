@@ -1,4 +1,4 @@
-{% component 'tile/tile' root_class_tags="max-w-screen lg:basis-2/5 " %}
+{% component 'tile/tile' root_class_tags="max-w-screen lg:basis-1/5 " %}
     {% fill 'title' %}Login Credentials{% endfill %}
     {% fill 'content' %}
         Username: {{ member.user }}
@@ -12,11 +12,11 @@
                    hx-target="#dialog"  href="{% url 'members.change_self' %}"
                    class="btn btn-sm btn-primary join-item">Change My Password</a>
             {% else %}
-                {% if perms.auth.change_user %}
-                    <a data-hx-get="{% url 'members.change_user' member.pk %}"
-                       hx-target="#dialog" href="{% url 'members.change_user' member.id %}"
-                       class="btn btn-sm btn-primary join-item">Change Password</a>
-                {% endif %}
+{#                {% if perms.auth.change_user %}#}
+{#                    <a data-hx-get="{% url 'members.change_user' member.pk %}"#}
+{#                       hx-target="#dialog" href="{% url 'members.change_user' member.id %}"#}
+{#                       class="btn btn-sm btn-primary join-item">Change Password</a>#}
+{#                {% endif %}#}
             {% endif %}
             {% if perms.auth.delete_user %}
                 <a data-hx-get="{% url 'members.delete_user'  member.pk %}"

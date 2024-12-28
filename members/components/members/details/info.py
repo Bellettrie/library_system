@@ -8,7 +8,7 @@ class BasicInfo(Component):
             "members": members,
         }
 
-    template_name = "members/basic_info.html"
+    template_name = "members/details/info_basic.html"
 
 
 @register("members.detailed_info")
@@ -18,4 +18,4 @@ class DetailedInfo(Component):
             "members": members,
         }
 
-    template_name = "members/detailed_info.html"
+    template_name = "members/details/info_detailed.html"

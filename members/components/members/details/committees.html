@@ -1,0 +1,27 @@
+<div class="max-w-screen bg-base-100 card overflow-x-auto lg:flex-none ">
+    <div class=" card-body" style="overflow: auto;">
+        <h5 class="card-title">Committees</h5>
+        <p class="card-text">
+
+        <table class="table table-xs table-zebra">
+            <tr>
+                <th>Committee Name</th>
+                <th></th>
+            </tr>
+            {% for p in committees %}
+                <tr>
+                    <td>{{ p.name }}</td>
+                    {% if perms.members.committee_update %}
+                        <td><a data-hx-get="{% url 'members.membership_period_edit'  p.pk %}" hx-target="#dialog"
+                               href="{% url "members.membership_period_edit" p.pk %}">Remove member</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% if perms.members.committee_update %}
+        <a data-hx-get="{% url 'members.membership_period_new'  member.pk %}" hx-target="#dialog"
+           href="{% url 'members.membership_period_new' member.pk %}">Add to Committee</a>
+
+    {% endif %}
+    </div>
+</div>

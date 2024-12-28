@@ -1,9 +1,9 @@
-<div class="max-w-screen bg-base-100 card">
+<div class="max-w-screen bg-base-100 card ">
     <div class=" card-body" style="overflow: auto;">
         <h5 class="card-title">Membership Periods</h5>
         <p class="card-text">
 
-        <table class="table table-sm table-striped">
+        <table class="table table-xs table-zebra">
             <tr>
                 <th>From</th>
                 <th>To</th>
@@ -24,7 +24,7 @@
         </table>
         <a data-hx-get="{% url 'members.membership_period_new'  member.pk %}" hx-target="#dialog"
            href="{% url 'members.membership_period_new' member.pk %}">New period</a>
-        <hr>
+
 
     </div>
 </div>
