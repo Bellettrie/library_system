@@ -11,6 +11,7 @@ class BaseTile(Component):
 
     template_name = "tile/tile.html"
 
+
 @register("tile/footer")
 class TileFooter(Component):
     def get_context_data(self, root_class_tags=""):
