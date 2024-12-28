@@ -56,4 +56,3 @@ def self_signup(request):
         # New empty form
         form = SignupForm(request.POST)
         return render(request, 'members/self_signup.html', {"form": form})
-

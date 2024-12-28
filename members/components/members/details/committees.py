@@ -10,7 +10,7 @@ from members.models import Member
 class Committees(Component):
 
     # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, members:Member=None):
+    def get_context_data(self, members: Member = None):
         return {
             "committees": members.committees.all(),
         }
