@@ -117,7 +117,7 @@ class Member(MemberData):
                 found = False
                 for group in groups:
                     found = found or committee.code == group.name
-                if not found and committee.code != "":
+                if not found:
                     self.user.groups.add(Group.objects.get(name=committee.code))
             self.user.save()
 

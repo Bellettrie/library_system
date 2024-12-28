@@ -1,0 +1,18 @@
+{% extends 'hx_modal.html' %}
+
+{% block modal_content %}
+    <div class="text-lg font-bold">
+        Remove {{ member.name }} from {{ committee.name }}?
+    </div>
+
+    <form hx-post="{{ request.path }}" class="modal-content" method="post">
+        {% csrf_token %}
+        <div class="modal-body">
+            Are you sure you want to do this?
+        </div>
+        <div class="modal-action">
+            <input type="submit" class="btn btn-error" value="Confirm">
+        </div>
+
+    </form>
+{% endblock %}
