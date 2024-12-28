@@ -16,7 +16,7 @@
                     <td>{{ p.end_date }}</td>
                     <td>{{ p.membership_type }}</td>
                     <td>{{ p.member_background }}</td>
-                    <td><a  class="btn btn-xs btn-secondary"  data-hx-get="{% url 'members.membership_period_edit'  p.pk %}" hx-target="#dialog"
+                    <td class="text-right"><a  class="btn btn-xs btn-secondary"  data-hx-get="{% url 'members.membership_period_edit'  p.pk %}" hx-target="#dialog"
                            href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
                 </tr>
             {% endfor %}
