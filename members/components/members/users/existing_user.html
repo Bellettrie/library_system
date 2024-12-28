@@ -1,0 +1,26 @@
+{% component 'tile/tile' root_class_tags="max-w-screen lg:basis-1/5 " %}
+    {% fill 'title' %}Login Credentials{% endfill %}
+    {% fill 'content' %}
+        Username: {{ member.user }}
+        {% if member.user == user %}
+            (That's you ;))
+        {% endif %}
+
+
+    {% endfill %}
+    {% fill 'footer' %}
+        {% component 'tile/footer' %}
+            {% if member.user == user %}
+                <a data-hx-get="{% url 'members.change_self' %}"
+                   hx-target="#dialog" href="{% url 'members.change_self' %}"
+                   class="btn btn-sm btn-primary join-item">Change My Password</a>
+
+            {% endif %}
+            {% if perms.auth.delete_user %}
+                <a data-hx-get="{% url 'members.delete_user'  member.pk %}"
+                   hx-target="#dialog" href="{% url 'members.delete_user' member.pk %}"
+                   class="btn btn-sm btn-warning join-item">Delete</a>
+            {% endif %}
+        {% endcomponent %}
+    {% endfill %}
+{% endcomponent %}

@@ -2,21 +2,60 @@
 
 {% block modal_content %}
     <div class="modal-header">
-        <h4>Change Password</h4>
+        Change Password<
     </div>
     <form hx-post="{{ request.path }}" class="modal-content" method="post">
         <div class="modal-body">
 
             {% csrf_token %}
-            {{ form.as_p }}
+            {% if form.non_field_errors %}
+                <li>{{ form.non_field_errors }}</li>
+            {% endif %}
+
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">{{ form.old_password.label }}</span>
+                </div>
+                <input type="password" placeholder="06-..." class="input input-bordered w-full max-w-xs input-md"
+                       name="old_password"/>
+                {% if form.old_password.errors %}
+                    <div class="label">
+                        <span class="label-text-alt">{{ form.old_password.errors.0 }}</span>
+                    </div>
+                {% endif %}
+            </label>
+
+
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">{{ form.new_password1.label }}</span>
+                </div>
+                <input type="password" placeholder="**********" class="input input-bordered w-full max-w-xs input-md"
+                       name="new_password1"/>
+                {% if form.new_password2.errors %}
+                    <div class="label">
+                        <span class="label-text-alt">{{ form.new_password1.errors }}</span>
+                    </div>
+                {% endif %}
+            </label>
+
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">{{ form.new_password2.label }}</span>
+                </div>
+                <input type="password" placeholder="**********" class="input input-bordered w-full max-w-xs input-md"
+                       name="new_password2"/>
+                {% if form.new_password2.error %}
+                    <div class="label">
+                        <span class="label-text-alt">{{ form.new_password2.error }}</span>
+                    </div>
+                {% endif %}
+            </label>
 
             Observe that after changing your password you will be logged out and redirected to the homepage.
         </div>
         <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
-
-
     </form>
-
 {% endblock %}

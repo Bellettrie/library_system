@@ -13,10 +13,6 @@ from members.views.member_new import get_end_date
 from utils.time import get_today, get_now
 
 
-def new_membership_period_hx(request, member_id):
-    return new_membership_period(request, member_id, True)
-
-
 @transaction.atomic
 @permission_required('members.change_member')
 def new_membership_period(request, member_id, hx_enabled=False):
