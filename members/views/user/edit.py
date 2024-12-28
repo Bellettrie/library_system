@@ -45,7 +45,6 @@ def change_own_password(request, hx_enabled=False):
     member = request.user.member
     if request.method == 'POST':
         form = PasswordChangeForm(user=member.user, data=request.POST)
-        print(form)
         if form.is_valid():
             instance = form.save()
 
@@ -56,9 +55,6 @@ def change_own_password(request, hx_enabled=False):
             if hx_enabled:
                 return HttpResponse(status=209, headers={"HX-Redirect": "/"})
             return HttpResponseRedirect('/')
-        else:
-            # print(form.fields.get("old_password").error)
-            print(form.errors)
     else:
         form = PasswordChangeForm(member.user)
     return render(request, templ, {'form': form, 'member': member, 'member_user': member.user})
