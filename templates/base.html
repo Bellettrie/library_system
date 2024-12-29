@@ -21,7 +21,7 @@
 
     <div class="grow flex flex-row w-full justify-content-center">
         {% menu_data 'sidebar' perms as sidebar_menu_items %}
-        {% component "nav.sidebar.Sidebar" sidebar_menu_items / %}
+        {% component "nav.sidebar.Sidebar" sidebar_menu_items top_menu_items / %}
 
         <section class="grow px-5  mt-12 mb-3">
                 {% block content %}{% endblock %}
