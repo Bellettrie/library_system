@@ -4566,10 +4566,6 @@ html:has(.drawer-toggle:checked) {
   z-index: 8;
 }
 
-.m-3 {
-  margin: 0.75rem;
-}
-
 .my-2 {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -4692,36 +4688,20 @@ html:has(.drawer-toggle:checked) {
   max-width: 1.25rem;
 }
 
-.max-w-full {
-  max-width: 100%;
-}
-
-.max-w-xs {
-  max-width: 20rem;
-}
-
 .max-w-\[1200px\] {
   max-width: 1200px;
-}
-
-.max-w-\[1400px\] {
-  max-width: 1400px;
 }
 
 .max-w-\[1600px\] {
   max-width: 1600px;
 }
 
-.\!max-w-none {
-  max-width: none !important;
+.max-w-full {
+  max-width: 100%;
 }
 
-.max-w-none {
-  max-width: none;
-}
-
-.max-w-\[900px\] {
-  max-width: 900px;
+.max-w-xs {
+  max-width: 20rem;
 }
 
 .flex-1 {
@@ -4776,10 +4756,6 @@ html:has(.drawer-toggle:checked) {
   place-content: center;
 }
 
-.content-end {
-  align-content: flex-end;
-}
-
 .items-center {
   align-items: center;
 }
@@ -4798,10 +4774,6 @@ html:has(.drawer-toggle:checked) {
 
 .justify-between {
   justify-content: space-between;
-}
-
-.gap-0 {
-  gap: 0px;
 }
 
 .gap-2 {
