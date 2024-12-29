@@ -42,7 +42,6 @@ def get_menu_item_list():
     my_menu.append(MenuItem("Become Active", reverse('named_page', args=('basic', 'member',)), None, 'top', [],
                             icon='fa fa-user', anonymous=True))
 
-
     my_menu.append(
         MenuItem('Board / Committees', reverse('named_page', args=('basic', 'committees',)), None, 'top-left', [],
                  icon='fa fa-users'))

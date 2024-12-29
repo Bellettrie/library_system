@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django_components',
     'widget_tweaks',
     'mail_templated',
+    'widget_tweaks',
     'works',
     'members',
     'series',
