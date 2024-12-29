@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.forms',
     'django_components',
+    'widget_tweaks',
     'mail_templated',
     'widget_tweaks',
     'works',
