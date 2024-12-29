@@ -41,7 +41,7 @@ def render_square(markdown_text: str, title: str, medium: str, large: str, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/square.html')
-    return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large, "title": title})
+    return search_template.render(context={"content": html, "sm": 12, "lg": medium, "xl": large, "title": title})
 
 
 # The render find function creates a bootstrap card with a search field for finding books.
