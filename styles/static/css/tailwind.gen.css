@@ -4580,6 +4580,10 @@ html:has(.drawer-toggle:checked) {
   z-index: 8;
 }
 
+.m-3 {
+  margin: 0.75rem;
+}
+
 .my-2 {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -4718,6 +4722,18 @@ html:has(.drawer-toggle:checked) {
   max-width: 20rem;
 }
 
+.max-w-\[1200px\] {
+  max-width: 1200px;
+}
+
+.max-w-\[1400px\] {
+  max-width: 1400px;
+}
+
+.max-w-\[1600px\] {
+  max-width: 1600px;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -4770,6 +4786,10 @@ html:has(.drawer-toggle:checked) {
   place-content: center;
 }
 
+.content-end {
+  align-content: flex-end;
+}
+
 .items-center {
   align-items: center;
 }
@@ -4788,6 +4808,10 @@ html:has(.drawer-toggle:checked) {
 
 .justify-between {
   justify-content: space-between;
+}
+
+.gap-0 {
+  gap: 0px;
 }
 
 .gap-2 {
@@ -5002,6 +5026,10 @@ html:has(.drawer-toggle:checked) {
 
 .ring-offset-base-100 {
   --tw-ring-offset-color: var(--fallback-b1,oklch(var(--b1)/1));
+}
+
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 @media (min-width: 640px) {
