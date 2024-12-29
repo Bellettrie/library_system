@@ -3,7 +3,9 @@
         {{ title }}
     {% endfill %}
     {% fill "content" %}
-        <h6 class="card-subtitle mb-2 text-muted">{{ subtitle }}</h6>
-        {{ content|safe }}
+        <div class="w-full prose prose-sm  max-w-[1200px] ">
+            <h2 class="card-subtitle mb-2 text-muted  ">{{ subtitle }}</h2>
+            {{ content|safe }}
+        </div>
     {% endfill %}
 {% endcomponent %}
