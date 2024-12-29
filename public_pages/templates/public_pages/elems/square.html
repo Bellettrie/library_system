@@ -1,9 +1,9 @@
-<div class="col col-{{ sm }} col-md-{{ md }} col-lg-{{ lg }}">
-    <div class="card  h-100" >
-        <div class="card-body">
-            <h5 class="card-title">{{ title }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{ subtitle }}</h6>
-            {{ content|safe }}
-        </div>
-    </div>
-</div>
+{% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-1/5 lg:flex-none" %}
+    {% fill "title" %}
+        {{ title }}
+    {% endfill %}
+    {% fill "content" %}
+        <h6 class="card-subtitle mb-2 text-muted">{{ subtitle }}</h6>
+        {{ content|safe }}
+    {% endfill %}
+{% endcomponent %}
