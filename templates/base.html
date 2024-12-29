@@ -9,20 +9,7 @@
     {% include 'base_header.html' %}
     {% get_title %}
     {% component_css_dependencies %}
-    <style>
-        h1{
-            font-size:3.5rem;
-        }
-        h2{
-            font-size:2.5rem;
-        }
-        h3{
-            font-size:2rem;
-        }
-        h4{
-            font-size:1.5rem;
-        }
-    </style>
+
 </head>
 
 <body>
@@ -37,7 +24,7 @@
         {% menu_data 'sidebar' perms user.is_anonymous as sidebar_menu_items %}
         {% component "nav.sidebar.Sidebar" sidebar_menu_items top_menu_items / %}
 
-        <section class="grow px-5  mt-12 mb-3">
+        <section class="grow px-5  mt-12 mb-3 ">
                 {% block content %}{% endblock %}
         </section>
     </div>
