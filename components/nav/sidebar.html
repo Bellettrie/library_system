@@ -1,49 +1,68 @@
-{% if items %}
-    <div class="xl:h-grow">
-        <div class=" drawer xl:drawer-open absolute  xl:static xl:h-full xl:w-full  z-[6] ">
-            {#    drawer xl:drawer-open absolute  xl:relative xl:flex xl:flex-initial#}
-            <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
+<div class="xl:h-grow">
+    <div class=" drawer xl:drawer-open absolute  xl:static xl:h-full xl:w-full {% if not items %}xl:hidden{% endif %}  z-[6] ">
+        {#    drawer xl:drawer-open absolute  xl:relative xl:flex xl:flex-initial#}
+        <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
 
-            <div class="drawer-side  h-full">
-                {#                <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>#}
-                {#            <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>#}
-                <ul class="menu bg-base-200 min-h-full w-full pt-20 xl:pt-0 md:w-80 ">
-                    <!-- Sidebar content here -->
-                    <div class="my-2"></div>
-                    {% for item in items %}
-                        {% if item.sub_items %}
-                            <li>
-                                <details>
-                                    <summary>{{ item.title }}</summary>
-                                    <ul>
-                                        {% for item in item.sub_items %}
-                                            {% component 'top-item' item.title item.url location="sidebar" perm=item.permission / %}
+        <div class="drawer-side  h-full">
+            {#                <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>#}
+            {#            <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>#}
+            <ul class="menu bg-base-200 min-h-full w-full pt-[6rem] xl:pt-0 md:w-80 ">
+                <!-- Sidebar content here -->
+                <div class="my-2"></div>
+                {% for item in mobile_items %}
+                    {% if item.sub_items %}
+                        <li class="xl:hidden">
+                            <details>
+                                <summary>{{ item.title }}</summary>
+                                <ul>
+                                    {% for item in item.sub_items %}
+                                        {% component 'top-item' item.title item.url location="sidebar" perm=item.permission / %}
 
-                                        {% endfor %}
-                                    </ul>
-                                </details>
-                            </li>
-                        {% else %}
-                            {% component 'top-item' item.title item.url location="sidebar" perm=item.permission / %}
-                        {% endif %}
-                    {% endfor %}
-                    <li class="xl:hidden"></li>
-                    {% if user.is_anonymous %}
-                        {% component 'top-item' "Login" 'login' location="sidebar" extra_classes="xl:hidden" / %}
+                                    {% endfor %}
+                                </ul>
+                            </details>
+                        </li>
                     {% else %}
-                        {% component 'top-item' "Profile" "members.view" user.member.pk 0 location="sidebar" extra_classes="xl:hidden" / %}
 
-
-                        <input type="hidden" id="csrfmiddlewaretoken" name="csrfmiddlewaretoken"
-                               value="{{ csrf_token }}">
-                        <li class="xl:hidden"><a  hx-post="{% url 'logout' %}" hx-target="#dialog"
-                               hx-afterRequest="window.location.href='/';" href="{% url 'logout' %}"
-                               hx-include="[name='csrfmiddlewaretoken']">Logout</a></li>
+                        {% component 'top-item' item.title item.url location="sidebar" perm=item.permission extra_classes="xl:hidden" / %}
                     {% endif %}
-                </ul>
-            </div>
-        </div>
+                {% endfor %}
+                {% if mobile_items and items %}
+                    <li class="xl:hidden"></li>
+                {% endif %}
+                {% for item in items %}
+                    {% if item.sub_items %}
+                        <li>
+                            <details>
+                                <summary>{{ item.title }}</summary>
+                                <ul>
+                                    {% for item in item.sub_items %}
+                                        {% component 'top-item' item.title item.url location="sidebar" perm=item.permission / %}
 
+                                    {% endfor %}
+                                </ul>
+                            </details>
+                        </li>
+                    {% else %}
+                        {% component 'top-item' item.title item.url location="sidebar" perm=item.permission / %}
+                    {% endif %}
+                {% endfor %}
+                <li class="xl:hidden"></li>
+                {% if user.is_anonymous %}
+                    {% component 'top-item' "Login" 'login' location="sidebar" extra_classes="xl:hidden" / %}
+                {% else %}
+                    {% component 'top-item' "Profile" "members.view" user.member.pk 0 location="sidebar" extra_classes="xl:hidden" / %}
+
+
+                    <input type="hidden" id="csrfmiddlewaretoken" name="csrfmiddlewaretoken"
+                           value="{{ csrf_token }}">
+                    <li class="xl:hidden"><a hx-post="{% url 'logout' %}" hx-target="#dialog"
+                                             hx-afterRequest="window.location.href='/';" href="{% url 'logout' %}"
+                                             hx-include="[name='csrfmiddlewaretoken']">Logout</a></li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 
-{% endif %}
+</div>
+
