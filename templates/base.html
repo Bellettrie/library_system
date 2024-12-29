@@ -16,11 +16,11 @@
 {% include 'base_hx_dialog.html' %}
 
 <div class="min-h-screen flex flex-col w-full ">
-    {% menu_data 'top' perms as top_menu_items %}
+    {% menu_data 'top' perms user.is_anonymous as top_menu_items %}
     {% component 'nav.navbar.Navbar' top_menu_items / %}
 
     <div class="grow flex flex-row w-full justify-content-center">
-        {% menu_data 'sidebar' perms as sidebar_menu_items %}
+        {% menu_data 'sidebar' perms user.is_anonymous as sidebar_menu_items %}
         {% component "nav.sidebar.Sidebar" sidebar_menu_items top_menu_items / %}
 
         <section class="grow px-5  mt-12 mb-3">

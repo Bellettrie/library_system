@@ -11,11 +11,13 @@ register = template.Library()
 
 
 @register.simple_tag
-def menu_data(location, perms):
+def menu_data(location, perms, is_anonymous):
     menu = get_menu_item_list()
     result = []
     for item in menu:
         if item.location != location:
+            continue
+        if not item.anonymous and is_anonymous:
             continue
         if (not item.permission) or item.permission in perms:
             result.append(item)
@@ -31,14 +33,14 @@ def menu_data(location, perms):
 # Should probably be refactored into a much simpler code structure.
 def get_menu_item_list():
     my_menu = []
-    my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top', [], icon='fa fa-book'))
+    my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top', [], icon='fa fa-book', anonymous=True))
     my_menu.append(MenuItem("Our Activities", reverse('named_page', args=('basic', 'member',)), None, 'top', [],
-                            icon='fa fa-user'))
+                            icon='fa fa-user', anonymous=True))
     my_menu.append(
         MenuItem('Become a member', reverse('named_page', args=('basic', 'member',)), None, 'top', [], anonymous=True,
                  icon='fa fa-user'))
     my_menu.append(MenuItem("Become Active", reverse('named_page', args=('basic', 'member',)), None, 'top', [],
-                            icon='fa fa-user'))
+                            icon='fa fa-user', anonymous=True))
 
     my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top-left', [], icon='fa fa-book'))
 
