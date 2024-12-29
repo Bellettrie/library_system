@@ -3856,6 +3856,11 @@ html:has(.drawer-toggle:checked) {
   width: 100%;
 }
 
+.w-fit {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
 .min-w-fit {
   min-width: -moz-fit-content;
   min-width: fit-content;
@@ -4080,6 +4085,11 @@ html:has(.drawer-toggle:checked) {
   vertical-align: top;
 }
 
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
 .text-sm\/6 {
   font-size: 0.875rem;
   line-height: 1.5rem;
@@ -4093,11 +4103,6 @@ html:has(.drawer-toggle:checked) {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
 }
 
 .font-bold {
@@ -4157,10 +4162,6 @@ html:has(.drawer-toggle:checked) {
 
 .ring-offset-base-100 {
   --tw-ring-offset-color: var(--fallback-b1,oklch(var(--b1)/1));
-}
-
-.filter {
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 @media (min-width: 640px) {
