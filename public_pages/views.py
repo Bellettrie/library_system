@@ -40,7 +40,6 @@ def render_base_section(markdown_text: str, title: str, layout_overrides: str = 
 def render_square(markdown_text: str, title: str, layout_overrides: str = "", *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
-    print("LO", layout_overrides)
     search_template = get_template('public_pages/elems/square.html')
     return search_template.render(context={"content": html, "layout": layout_overrides, "title": title})
 
@@ -96,9 +95,7 @@ def flex_to_layout(mdflex: str, lgflex: str) -> str:
     lgg = ""
     if 0 < int(lgflex) <= 12:
         lgg = " lg:basis-" + lgflex + "/12-gap-3 "
-        print(lgg)
     if mdd == "" and lgg == "":
-        print("HI")
         return "basis-12/12"
     return mdd + lgg
 
@@ -167,8 +164,6 @@ def forbid_showing_page(page: PublicPage, is_anonymous: bool, member: Member, cu
 
 def view_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
-    print("HERE", page_name, sub_page_name, page_group)
-
     can_edit = False
 
     if not request.user.is_anonymous and (request.user
