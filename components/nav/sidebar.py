@@ -15,12 +15,13 @@ class Sidebar(Component):
     template_name = "nav/sidebar.html"
 
     # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, menu=None):
+    def get_context_data(self, menu=None, mobile_only=None):
         if menu is None:
             menu = []
-
+        print(mobile_only)
         return {
             "items": menu,
+            "mobile_items":mobile_only,
             "logo_debug": settings.UPSIDE_DOWN,
             "logo_name": settings.LIBRARY_NAME,
             "logo_image": settings.LIBRARY_IMAGE_URL,
