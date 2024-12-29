@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_components',
+    'widget_tweaks',
     'mail_templated',
     'widget_tweaks',
     'works',
