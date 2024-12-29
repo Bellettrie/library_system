@@ -42,7 +42,6 @@ def get_menu_item_list():
     my_menu.append(MenuItem("Become Active", reverse('named_page', args=('basic', 'member',)), None, 'top', [],
                             icon='fa fa-user', anonymous=True))
 
-    my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top-left', [], icon='fa fa-book'))
 
     my_menu.append(
         MenuItem('Board / Committees', reverse('named_page', args=('basic', 'committees',)), None, 'top-left', [],
@@ -61,7 +60,6 @@ def get_menu_item_list():
         MenuItem('Logout', reverse('logout'), None, 'top-right', [], anonymous=False, icon='fa fa-sign-out-alt',
                  is_logout=True))
 
-    my_menu.append(MenuItem('Catalog', reverse('works.list'), None, 'sidebar', [], anonymous=False, icon='fa fa-book'))
     my_menu.append(MenuItem('Members', reverse('members.list'), 'members.view_member', 'sidebar', [], anonymous=None,
                             icon='fa fa-user'))
     my_menu.append(
