@@ -21,7 +21,7 @@ class Sidebar(Component):
         print(mobile_only)
         return {
             "items": menu,
-            "mobile_items":mobile_only,
+            "mobile_items": mobile_only,
             "logo_debug": settings.UPSIDE_DOWN,
             "logo_name": settings.LIBRARY_NAME,
             "logo_image": settings.LIBRARY_IMAGE_URL,
