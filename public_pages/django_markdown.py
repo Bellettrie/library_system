@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.urls import reverse, NoReverseMatch
+from markdown.treeprocessors import Treeprocessor
 
 
 class Error(Exception):
@@ -118,3 +119,21 @@ class DjangoUrlExtension(markdown.Extension):
     def extendMarkdown(self, md, *args, **kwrags):
         md.inlinePatterns.register(DjangoLinkInlineProcessor(LINK_RE, md), 'link', 160)
         md.inlinePatterns.register(CustomImageLinkProcessor(IMAGE_LINK_RE, md), 'image_link', 140)
+
+
+class MyTreeprocessor(Treeprocessor):
+    def set_link_class(self, element):
+        for child in element:
+            if child.tag == "a":
+                child.set("class", "link")  # set the class attribute
+            self.set_link_class(child)  # run recursively on children
+    def set_link_class(self, element):
+        for child in element:
+            if child.tag == "h1":
+                child.set("class", "")  # set the class attribute
+            self.set_link_class(child)  # run recursively on children
+    def run(self, root):
+        self.set_link_class(root)
+
+        return root
+# No return statement is same as `return None`
