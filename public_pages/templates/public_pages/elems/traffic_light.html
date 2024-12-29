@@ -1,22 +1,20 @@
 {% load static %}
 
-<div class="col col-{{ sm }} col-md-{{ md }} col-lg-{{ lg }}">
-    <div class="card  h-100" >
-        <div class="card-body">
-                <h5 class="card-title">Are we Open?</h5>
 
-                    {% if open %}
-                        <h6 class="card-subtitle mb-2 text-muted">The Drakenkelder is open!<br/></h6>
+{% component "tile/tile" root_class_tags=layout %}
+    {% fill "title" %}
+        Are we Open?
+    {% endfill %}
+    {% fill "content" %}
+        {% if open %}
+            <h6 class="card-subtitle mb-2 text-muted align-right">The Drakenkelder is open!<br/></h6>
 
-                        <img style="width:100px;" src="{% static 'images/light/green.png' %}"><br/>
-                    {% else %}
-                        <h6 class="card-subtitle mb-2 text-muted">The Drakenkelder is closed :(.<br/></h6>
+            <img style="width:100px;" src="{% static 'images/light/green.png' %}"><br/>
+        {% else %}
+            <h6 class="card-subtitle mb-2 text-muted">The Drakenkelder is closed :(.<br/></h6>
 
-                        <img style="width:100px;" src="{% static 'images/light/red.png' %}"><br/>
-                    {% endif %}
+            <img style="width:100px;" src="{% static 'images/light/red.png' %}"><br/>
+        {% endif %}
 
-
-
-            </div>
-        </div>
-    </div>
+    {% endfill %}
+{% endcomponent %}
