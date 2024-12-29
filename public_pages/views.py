@@ -23,33 +23,34 @@ from public_pages.models import PublicPageGroup, PublicPage, FileUpload
 
 
 # The interrupt ends a bootstrap row component and starts a new one.
-def render_interrupt(markdown_text: str, title: str, *_):
+def render_interrupt(markdown_text: str, title: str, layout_overrides: str = "", *_):
     search_template = get_template('public_pages/elems/interrupt.html')
-    return search_template.render(context={})
+    return search_template.render(context={"content": markdown_text})
 
 
 # The base section creates a basic text area with a size. Observe that the title parameter is ignored, but it's kept to keep standardised functions.
-def render_base_section(markdown_text: str, title: str, medium: str, large: str, *_):
+def render_base_section(markdown_text: str, title: str, layout_overrides: str = "", *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/basic_area.html')
-    return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
+    return search_template.render(context={"content": html, "layout": layout_overrides})
 
 
 # The render square function creates a bootstrap card component.
-def render_square(markdown_text: str, title: str, medium: str, large: str, *_):
+def render_square(markdown_text: str, title: str, layout_overrides: str = "", *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
+    print("LO", layout_overrides)
     search_template = get_template('public_pages/elems/square.html')
-    return search_template.render(context={"content": html, "sm": 12, "lg": medium, "xl": large, "title": title})
+    return search_template.render(context={"content": html, "layout": layout_overrides, "title": title})
 
 
 # The render find function creates a bootstrap card with a search field for finding books.
-def render_find(markdown_text: str, title: str, medium: str, large: str, *_):
+def render_find(markdown_text: str, title: str, layout_overrides: str = "", *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/search_field.html')
-    return search_template.render(context={"content": html, "sm": 12, "md": medium, "lg": large})
+    return search_template.render(context={"content": html, "layout": layout_overrides})
 
 
 def get_open():
@@ -64,9 +65,17 @@ def get_open():
 
 
 # The render trafficlight function creates a trafficlight that shows whether the DK is open
-def render_trafficlight(markdown_text: str, title: str, medium: str, large: str, *_):
+def render_trafficlight(markdown_text: str, title: str, layout_overrides: str = "", *_):
     search_template = get_template('public_pages/elems/traffic_light.html')
-    return search_template.render(context={"open": get_open(), "sm": 12, "md": medium, "lg": large})
+    return search_template.render(context={"open": get_open(), "layout": layout_overrides})
+
+
+def start_column(markdown_text: str, title: str, layout_overrides: str = "", *_):
+    return '<div class="grow flex flex-col gap-3 {layout}">'.format(layout=layout_overrides)
+
+
+def end_column(markdown_text: str, title: str, layout_overrides: str = "", *_):
+    return '</div>'
 
 
 CMDS = {
@@ -75,7 +84,23 @@ CMDS = {
     "search": render_find,
     "light": render_trafficlight,
     "interrupt": render_interrupt,
+    "start_column": start_column,
+    "end_column": end_column,
 }
+
+
+def flex_to_layout(mdflex: str, lgflex: str) -> str:
+    mdd = ""
+    if 0 < int(mdflex) <= 12:
+        mdd = "md:basis-" + mdflex + "/12-gap-3 "
+    lgg = ""
+    if 0 < int(lgflex) <= 12:
+        lgg = " lg:basis-" + lgflex + "/12-gap-3 "
+        print(lgg)
+    if mdd == "" and lgg == "":
+        print("HI")
+        return "basis-12/12"
+    return mdd + lgg
 
 
 # The render_md function is the main rendering function.
@@ -85,29 +110,38 @@ def render_md(markdown_text: str):
     lines = ""
     result = ""
     title = ""
+    mdflex = "0"
+    lgflex = "0"
     cms = None
     first_line = True
     for line in markdown_text.split("\n"):
         # Set the title of the current component
         if line.startswith("#!title"):
             title = line[7:].strip()
+        elif line.startswith("#!mdflex"):
+            mdflex = line[len("#!mdflex "):].strip()
+        elif line.startswith("#!lgflex"):
+            lgflex = line[len("#!lgflex "):].strip()
+
         # new component barrier
         elif line.startswith("#!"):
             if not first_line:
-                result += CMDS[cms[0]](lines, title, *cms[1:])
+                result += CMDS[cms[0]](lines, title, *cms[1:], layout_overrides=flex_to_layout(mdflex, lgflex))
             cms = line[2:].strip().split(" ")
             # Basic sanity check: does the command exist at all
             if cms[0] not in CMDS.keys():
                 return cms[0] + " : not a valid keyword"
             lines = ""
             title = ""
+            mdflex = "0"
+            lgflex = "0"
         else:
             lines += "\n" + line
         first_line = False
     # If no specific blocks are made, make a 12/12 block with *everything*
     if cms is None:
-        cms = ["base", "-", "12", "12"]
-    result += CMDS[cms[0]](lines, title, *cms[1:])
+        cms = ["base"]
+    result += CMDS[cms[0]](lines, title, *cms[1:], layout_overrides=flex_to_layout(mdflex, lgflex))
     return result
 
 
@@ -133,6 +167,7 @@ def forbid_showing_page(page: PublicPage, is_anonymous: bool, member: Member, cu
 
 def view_named_page(request, page_name, sub_page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_name)
+    print("HERE", page_name, sub_page_name, page_group)
 
     can_edit = False
 
