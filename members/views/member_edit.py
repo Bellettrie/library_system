@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from members.forms import EditForm
+from members.forms import EditForm, PrivacyForm
 from members.models import Member
 
 
@@ -16,13 +16,12 @@ def edit(request, member_id):
     edit_dms = request.user.has_perm('members.change_committee')
     if request.method == 'POST':
         form = EditForm(can_change, edit_dms, request.POST, instance=member)
-        if form.is_valid():
-            if not can_change and 'committees' in form.changed_data:
-                raise ValueError("Wrong")
+        p_form = PrivacyForm(request.POST, instance=member)
+        if form.is_valid() and p_form.is_valid():
             form.save()
-            if can_change:
-                member.update_groups()
+            p_form.save()
             return HttpResponseRedirect(reverse('members.view', args=(member_id, 0,)))
     else:
         form = EditForm(can_change, edit_dms, instance=member)
-    return render(request, 'members/edit.html', {'form': form, 'member': member})
+        p_form = PrivacyForm(instance=member)
+    return render(request, 'members/edit.html', {'form': form, 'member': member, 'privacy_form': p_form})

@@ -1,0 +1,20 @@
+{{ form.non_field_errors }}
+{% for hidden_field in form.hidden_fields %}
+    {{ hidden_field.errors }}
+    {{ hidden_field }}
+{% endfor %}
+
+{% for field in form %}
+    <div class="form-control w-400">
+        <label class="label cursor-pointer">
+            <span class="label-text w-200 overflow-hidden">{{ field.label }}</span>
+            {{ field }}
+
+        </label>
+        {% if field.errors %}
+            {% for err in field.errors %}
+                <span class=" label label-text-alt text-error">{{ err }}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endfor %}

@@ -1,7 +1,20 @@
 from django import forms
+from django.db.models import Model
 from django.forms import ModelForm
 
 from members.models import Member, MembershipPeriod
+
+
+class PrivacyForm(ModelForm):
+    class Meta:
+        model = Member
+
+        fields = ['privacy_activities', 'privacy_publications', 'privacy_reunions']
+        labels = {
+            'privacy_activities': 'Mails for Activities?',
+            'privacy_publications': 'Photos in Publications?',
+            'privacy_reunions': 'Mails for Reunions?'
+        }
 
 
 class EditForm(ModelForm):
@@ -30,11 +43,8 @@ class EditForm(ModelForm):
                   'notes',
                   'is_anonymous_user',
                   'dms_registered',
-                  'committees',
                   'is_blacklisted',
-                  'privacy_activities',
-                  'privacy_publications',
-                  'privacy_reunions',
+
                   ]
         labels = {'name': 'Name',
                   'nickname': 'Nickname',
@@ -50,11 +60,7 @@ class EditForm(ModelForm):
                   'notes': 'Notes',
                   'is_anonymous_user': 'Is anonymous user',
                   'dms_registered': 'Is registered in DMS',
-                  'committees': 'Committees',
                   'is_blacklisted': 'Is Blacklisted?',
-                  'privacy_activities': 'Mails for Activities?',
-                  'privacy_publications': 'Photos in Publications?',
-                  'privacy_reunions': 'Mails for Reunions?'
                   }
         widgets = {
             'end_date': forms.DateInput(attrs={'class': 'datepicker'})
