@@ -3,15 +3,17 @@ from django_components import Component, register, types
 
 from bellettrie_library_system import settings
 from bellettrie_library_system.base_settings import GET_MENU
+from members.models import Member
 
 
 @register("members.membership_periods")
 class MembershipPeriods(Component):
-
-    # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, members=""):
+    # Show the membership periods for one member.
+    # It feeds the member_id into the template because this is required for the 'new' button.
+    def get_context_data(self, member:Member=None):
         return {
-            "members": members,
+            "member_pk": member.pk,
+            "periods": member.get_periods(),
         }
 
     template_name = "members/details/membership_periods.html"

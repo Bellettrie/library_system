@@ -8,10 +8,11 @@ from bellettrie_library_system.base_settings import GET_MENU
 
 @register("members.search_input")
 class SearchInput(Component):
-
-    # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, query=""):
+    # The search input for the member page
+    def get_context_data(self, query="", previous: bool = False):
         return {
             "query": query,
+            "previous": previous,
         }
+
     template_name = "members/search.html"

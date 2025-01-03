@@ -15,8 +15,8 @@
                     <label class="form-control  sm:w-auto">
                         <select class="select input-bordered join-item sm:w-auto" id="previous" name="previous">
                             <option disabled>Which Members?</option>
-                            <option value="" {% if not request.GET.previous %}selected{% endif %}>Only Current</option>
-                            <option value="true" {% if request.GET.previous %}selected{% endif %}>Also Previous</option>
+                            <option value="" {% if not previous %}selected{% endif %}>Only Current</option>
+                            <option value="true" {% if previous %}selected{% endif %}>Also Previous</option>
                         </select>
                         <div class="label sm:hidden">
                             <span class="label-text">Only Current Members?</span>

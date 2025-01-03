@@ -1,7 +1,6 @@
-{% component 'tile/tile' root_class_tags="grow max-w-screen lg:basis-1/5 " %}
+{% component 'tile/tile' root_class_tags="h-fit" %}
     {% fill 'title' %}Membership Periods{% endfill %}
     {% fill 'content' %}
-
         <table class="table table-xs table-zebra">
             <tr>
                 <th>From</th>
@@ -10,22 +9,29 @@
                 <th>Background</th>
                 <th></th>
             </tr>
-            {% for p in member.get_periods %}
+            {% for p in periods %}
                 <tr>
                     <td>{{ p.start_date }}</td>
                     <td>{{ p.end_date }}</td>
                     <td>{{ p.membership_type }}</td>
                     <td>{{ p.member_background }}</td>
-                    <td class="text-right"><a  class="btn btn-xs btn-secondary"  data-hx-get="{% url 'members.membership_period_edit'  p.pk %}" hx-target="#dialog"
-                           href="{% url "members.membership_period_edit" p.pk %}">Edit</a></td>
+                    <td class="text-right">
+                        <a class="btn btn-xs btn-secondary"
+                           data-hx-get="{% url 'members.membership_period_edit'  p.pk %}"
+                           hx-target="#dialog"
+                           href="{% url "members.membership_period_edit" p.pk %}">
+                            Edit
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
     {% endfill %}
     {% fill 'footer' %}
         {% component 'tile/footer' %}
-            <a class="btn btn-sm btn-primary join-item"  data-hx-get="{% url 'members.membership_period_new'  member.pk %}" hx-target="#dialog"
-               href="{% url 'members.membership_period_new' member.pk %}">New period</a>
+            <a class="btn btn-sm btn-primary join-item"
+               data-hx-get="{% url 'members.membership_period_new'  member_pk %}" hx-target="#dialog"
+               href="{% url 'members.membership_period_new' member_pk %}">New period</a>
         {% endcomponent %}
     {% endfill %}
 {% endcomponent %}
