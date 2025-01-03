@@ -1,4 +1,3 @@
-# In a file called [project root]/components/calendar/calendar.py
 from django.urls import reverse
 from django_components import Component, register, types
 

@@ -1,4 +1,3 @@
-# In a file called [project root]/components/calendar/calendar.py
 from typing import Optional
 
 from django.template.context import Context
@@ -13,7 +12,6 @@ from bellettrie_library_system.base_settings import GET_MENU
 @register("top-item")
 class NavItem(Component):
 
-    # This component takes one parameter, a date string to show in the template
     def get_context_data(self, text, my_url, *args, location="aaa", perm=None, extra_classes="", **kwargs):
         # skip absolute urls
         if not (my_url == "" or my_url.startswith("/") or my_url.startswith("https://")):
@@ -38,8 +36,6 @@ class NavItem(Component):
 @register("nav.navbar.Navbar")
 class Navbar(Component):
     template_name = "nav/navbar.html"
-
-    # This component takes one parameter, a date string to show in the template
     def get_context_data(self, menu=None):
         if menu is None:
             menu = []
@@ -57,8 +53,6 @@ class Navbar(Component):
 
 @register("logo")
 class Logo(Component):
-
-    # This component takes one parameter, a date string to show in the template
     def get_context_data(self, debug, name, logo):
         return {
             "debug": debug,

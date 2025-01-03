@@ -1,4 +1,3 @@
-# In a file called [project root]/components/calendar/calendar.py
 from typing import Optional
 
 from django.template.context import Context
@@ -14,11 +13,11 @@ from bellettrie_library_system.base_settings import GET_MENU
 class Sidebar(Component):
     template_name = "nav/sidebar.html"
 
-    # This component takes one parameter, a date string to show in the template
+    # The sidebar always shows its own menu, and shows the mobile_only entries only if the sidebar switches to the foldout mode.
     def get_context_data(self, menu=None, mobile_only=None):
         if menu is None:
             menu = []
-        print(mobile_only)
+
         return {
             "items": menu,
             "mobile_items": mobile_only,
