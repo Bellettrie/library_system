@@ -1,4 +1,3 @@
-# In a file called [project root]/components/calendar/calendar.py
 from django_components import Component, register
 
 
@@ -6,7 +5,7 @@ from django_components import Component, register
 class ItemTable(Component):
     template_name = "table.html"
 
-    # This component takes one parameter, a date string to show in the template
+    # Item table component
     def get_context_data(self, items):
         return {
             "items": items,
