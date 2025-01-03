@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.forms',
     'django_components',
     'mail_templated',
     'widget_tweaks',
@@ -230,3 +231,5 @@ COMPONENTS = {
         os.path.join(BASE_DIR, "components"),
     ],
 }
+
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
