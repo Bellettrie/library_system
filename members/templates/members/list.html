@@ -2,24 +2,20 @@
 {% block title %}Member Search{% endblock %}
 {% block content %}
     <div class="flex flex-col w-full gap-2">
-        {% component 'members.search_input' request.GET.q / %}
+        {% component 'members.search_input' request.GET.q request.GET.previous / %}
         {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none " %}
             {% fill "title" %}
-
                 <div class="hidden sm:block sm:pb-5">Results</div>
                 <div class="sm:absolute top-5 flex w-full justify-center">
                     {% include 'pagination.html' %}
                 </div>
             {% endfill %}
             {% fill "content" %}
-
-                <table class="table table-zebra table-responsive-xs w-full table-auto border-collapse border border-slate-400" >
-
-                <tr>
-                    <th>Member Name</th>
-                    <th></th>
-                </tr>
-
+                <table class="table table-zebra table-responsive-xs w-full table-auto border-collapse border border-slate-400">
+                    <tr>
+                        <th>Member Name</th>
+                        <th></th>
+                    </tr>
                     {% for member in object_list %}
                         {% include 'members/list_item.html' %}
                     {% empty %}

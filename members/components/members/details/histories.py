@@ -9,7 +9,6 @@ from members.models import Member
 class LendingHistory(Component):
     def get_context_data(self, member: Member):
         return {
-
             "member": member
         }
 

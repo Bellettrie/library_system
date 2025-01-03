@@ -9,10 +9,10 @@ from members.models import Member
 @register("members.committees")
 class Committees(Component):
 
-    # This component takes one parameter, a date string to show in the template
-    def get_context_data(self, members: Member = None):
+    # Renders the committees that a member is in
+    def get_context_data(self, member: Member = None):
         return {
-            "committees": members.committees.all(),
+            "committees": member.committees.all(),
         }
 
     template_name = "members/details/committees.html"

@@ -14,6 +14,4 @@ def show(request, member_id, full):
     member = get_object_or_404(Member, pk=member_id)
     if member.is_anonimysed:
         return render(request, 'members/detail_anonymous.html', {'member': member})
-    if full:
-        return render(request, 'members/detail_full.html', {'member': member})
-    return render(request, 'members/detail.html', {'member': member})
+    return render(request, 'members/detail.html', {'member': member, 'detailed': full})
