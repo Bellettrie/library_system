@@ -36,3 +36,6 @@ class MenuItem:
 
     def get_title_shortened(self):
         return self.title.replace(" ", "")
+
+    def __str__(self):
+        return "{title} ? ".format(title=self.title)

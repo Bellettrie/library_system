@@ -59,7 +59,7 @@ class Member(MemberData):
         return None
 
     def get_periods(self):
-        return self.membershipperiod_set.all().order_by('start_date')
+        return self.membershipperiod_set.all().order_by('-start_date')
 
     def get_email(self):
         if self.primary_email_in_use:
@@ -117,7 +117,7 @@ class Member(MemberData):
                 found = False
                 for group in groups:
                     found = found or committee.code == group.name
-                if not found and committee.code != "":
+                if not found:
                     self.user.groups.add(Group.objects.get(name=committee.code))
             self.user.save()
 

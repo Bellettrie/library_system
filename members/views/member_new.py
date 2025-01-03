@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from members.forms import EditForm, MembershipPeriodForm
+from members.forms import EditForm, MembershipPeriodForm, PrivacyForm
 from members.models import Member
 from utils.time import get_today, get_now
 
@@ -30,12 +30,18 @@ def new(request):
     if request.method == 'POST':
         member = student_number_exists(request.POST['student_number'])
         form = EditForm(can_change, edit_dms, request.POST, {'member': member})
+        p_form = PrivacyForm(request.POST).save(commit=False)
         if form.is_valid() and request.POST.get('end_date') and (member is None or 'make_anyway' in request.POST):
             if not can_change and 'committees' in form.changed_data:
                 raise ValueError("Wrong")
-            instance = form.save()
+            instance = form.save(commit=False)
+            instance.privacy_activities = p_form.privacy_activities
+            instance.privacy_publications = p_form.privacy_publications
+            instance.privacy_reunions = p_form.privacy_reunions
+            instance.save()
             inst = MembershipPeriodForm(request.POST).save(commit=False)
             inst.member = instance
+
             inst.save()
             if can_change:
                 instance.update_groups()
@@ -43,13 +49,16 @@ def new(request):
         else:
             if member is not None:
                 return render(request, 'members/edit.html',
-                              {'form': form, 'new': True, 'warning': member,
-                               'md_form': MembershipPeriodForm(request.POST)})
-            return render(request, 'members/edit.html', {'form': form, 'new': True, 'error': "No end date specified",
-                                                         'md_form': MembershipPeriodForm(request.POST)})
+                              {'form': form, 'warning': member,
+                               'md_form': MembershipPeriodForm(request.POST), 'new': True})
+            return render(request, 'members/edit.html',
+                          {'form': form, 'error': "No end date specified",
+                           'md_form': MembershipPeriodForm(request.POST), 'new': True})
     else:
         form = EditForm(can_change, edit_dms)
     md_form = MembershipPeriodForm(initial={'start_date': get_today(),
                                             'end_date': get_end_date(get_now().year,
                                                                      get_now().month > 6)})
-    return render(request, 'members/edit.html', {'form': form, 'new': True, 'md_form': md_form})
+    p_form = PrivacyForm()
+    return render(request, 'members/edit.html',
+                  {'form': form, 'md_form': md_form, 'privacy_form': p_form, 'new': True})

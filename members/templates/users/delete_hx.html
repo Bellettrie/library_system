@@ -9,7 +9,7 @@
             You are about to delete the user: {{ member_user.username }}? <br> This is not reversable. Are you sure?
         </div>
         <div class="modal-footer">
-            <a href="{% url 'members.delete_user' member.pk %}" class="btn btn-danger">Delete</a>
+            <a href="{% url 'members.delete_user' member.pk %}?sure=True" class="btn btn-danger">Delete</a>
         </div>
 
     </form>
