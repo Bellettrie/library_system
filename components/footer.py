@@ -1,4 +1,3 @@
-# In a file called [project root]/components/calendar/calendar.py
 from typing import Optional
 
 from django.template.context import Context
