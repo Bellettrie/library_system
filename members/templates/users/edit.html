@@ -1,11 +1,10 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %}Change user for member: {{ member.name }}{% endblock %}
 {% block content %}
-    <form method="post">
+    <form method="post" class="max-w-[500px]">
         {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <button type="submit">Save</button>
+            {% component 'form/compact' form / %}
+
+        <button type="submit" class="btn btn-success">Save</button>
     </form>
 {% endblock %}
