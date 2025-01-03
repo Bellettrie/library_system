@@ -36,6 +36,7 @@ class NavItem(Component):
 @register("nav.navbar.Navbar")
 class Navbar(Component):
     template_name = "nav/navbar.html"
+
     def get_context_data(self, menu=None):
         if menu is None:
             menu = []
