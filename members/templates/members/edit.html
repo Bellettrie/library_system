@@ -10,16 +10,20 @@
             You might be making a duplicate member check the <em><b>Make anyway</b></em> checkbox to make a new member
             anyway.</p>
     {% endif %}
-    <form action="#" method="post" >
+    <form action="#" method="post">
         <div class="max-w-full flex flex-wrap gap-3">
             {% component "tile/tile" root_class_tags="grow max-w-screen" %}
                 {% fill 'title' %}
-                    Edit info of member {{ member.name }}
+                    {% if new %}
+                        New Member
+                    {% else %}
+                        Edit info of member {{ member.name }}
+                    {% endif %}
                 {% endfill %}
                 {% fill "content" %}
                     Verify in all the sub-forms, and finally press the submit button.
                     {% csrf_token %}
-                    {% component 'form/compact' form  only / %}
+                    {% component 'form/compact' form only / %}
 
                 {% endfill %}
             {% endcomponent %}
@@ -32,7 +36,16 @@
                         {% component 'form/compact' privacy_form only / %}
                     {% endfill %}
                 {% endcomponent %}
-
+                {% if new %}
+                    {% component "tile/tile" root_class_tags="grow md:grow   max-w-screen lg:flex-1  card bg-base-100" %}
+                        {% fill 'title' %}
+                            Membership Type
+                        {% endfill %}
+                        {% fill "content" %}
+                            {% component 'form/compact' md_form / %}
+                        {% endfill %}
+                    {% endcomponent %}
+                {% endif %}
 
                 {% component "tile/tile" root_class_tags="shrink max-w-screen lg:flex-none" %}
                     {% fill 'title' %}
