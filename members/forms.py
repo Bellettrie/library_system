@@ -28,7 +28,7 @@ class EditForm(ModelForm):
         self.fields['is_anonymous_user'].widget = forms.HiddenInput()
         self.fields['name'].widget = forms.TextInput(attrs={'placeholder': "Full Name"})
 
-        self.fields['address_line_one'].widget = forms.TextInput(attrs={'placeholder':"Street ##"})
+        self.fields['address_line_one'].widget = forms.TextInput(attrs={'placeholder': "Street ##"})
         self.fields['address_line_two'].widget = forms.TextInput(attrs={'placeholder': "Postal Code + Town Name"})
         self.fields['address_line_three'].widget = forms.TextInput(attrs={'placeholder': "Country (if not NL)"})
         self.fields['phone'].widget = forms.TextInput(attrs={'placeholder': "Eg. 06-123 456 78"})
