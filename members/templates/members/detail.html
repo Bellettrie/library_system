@@ -27,7 +27,11 @@
             </div>
         {% endif %}
         <div class="grow flex flex-col gap-3 ">
-            {% component 'members.basic_info' member / %}
+            {% if detailed %}
+                {% component 'members.detailed_info' member / %}
+            {% else %}
+                {% component 'members.basic_info' member / %}
+            {% endif %}
             {% if member.user %}
                 {% component 'members.users.user' member / %}
             {% else %}
@@ -37,7 +41,7 @@
         </div>
         <div class="grow  flex flex-col gap-3  ">
             {% component 'members.membership_periods' member / %}
-            {% component 'members.current_lendings' member /%}
+            {% component 'members.current_lendings' member / %}
             {% include 'members/partials/reservations_card.html' %}
         </div>
     </div>
