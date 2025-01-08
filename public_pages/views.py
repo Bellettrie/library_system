@@ -228,7 +228,6 @@ def edit_named_page(request, page_name, sub_page_name):
             rights_form.save()
             edit_form.save()
 
-
             return HttpResponseRedirect(reverse('named_page', args=(page_name, sub_page_name)))
         else:
             print("ERROR")
@@ -237,7 +236,8 @@ def edit_named_page(request, page_name, sub_page_name):
         rights_form = PageAccessForm(instance=page)
         edit_form = EditForm(instance=page)
     return render(request, 'public_pages/page_edit_form.html',
-                  {'MY_URL': settings.BASE_URL, 'form': form, 'page': page, 'rights_form': rights_form, "edit_form": edit_form})
+                  {'MY_URL': settings.BASE_URL, 'form': form, 'page': page, 'rights_form': rights_form,
+                   "edit_form": edit_form})
 
 
 @login_required()
