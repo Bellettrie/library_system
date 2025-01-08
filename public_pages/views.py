@@ -221,7 +221,7 @@ def edit_named_page(request, page_name, sub_page_name):
 
     if request.method == 'POST':
         form = PageEditForm(request.POST, instance=page)
-        rights_form = PageEditForm(request.POST, instance=page)
+        rights_form = PageAccessForm(request.POST, instance=page)
         edit_form = EditForm(request.POST, instance=page)
         if form.is_valid() and rights_form.is_valid() and edit_form.is_valid():
             form.save()
