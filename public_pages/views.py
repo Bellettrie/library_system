@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from members.models import Member
 from public_pages.django_markdown import DjangoUrlExtension
-from public_pages.forms import PageEditForm, UploadFileForm
+from public_pages.forms import PageEditForm, UploadFileForm, PageAccessForm, EditForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload
 
 
@@ -221,16 +221,23 @@ def edit_named_page(request, page_name, sub_page_name):
 
     if request.method == 'POST':
         form = PageEditForm(request.POST, instance=page)
-        if form.is_valid():
+        rights_form = PageEditForm(request.POST, instance=page)
+        edit_form = EditForm(request.POST, instance=page)
+        if form.is_valid() and rights_form.is_valid() and edit_form.is_valid():
             form.save()
+            rights_form.save()
+            edit_form.save()
+
 
             return HttpResponseRedirect(reverse('named_page', args=(page_name, sub_page_name)))
         else:
             print("ERROR")
     else:
         form = PageEditForm(instance=page)
+        rights_form = PageAccessForm(instance=page)
+        edit_form = EditForm(instance=page)
     return render(request, 'public_pages/page_edit_form.html',
-                  {'MY_URL': settings.BASE_URL, 'form': form, 'page': page})
+                  {'MY_URL': settings.BASE_URL, 'form': form, 'page': page, 'rights_form': rights_form, "edit_form": edit_form})
 
 
 @login_required()
@@ -246,16 +253,23 @@ def new_named_page(request, page_name):
         return HttpResponse("cannot edit")
     if request.method == 'POST':
         form = PageEditForm(request.POST)
-        if form.is_valid():
+        rights_form = PageEditForm(request.POST)
+        edit_form = EditForm(request.POST)
+        if form.is_valid() and rights_form.is_valid() and edit_form.is_valid():
             instance = form.save(commit=False)
             instance.save()
+            rights_form.save()
+            edit_form.save()
             return HttpResponseRedirect(reverse('named_page', args=(instance.group.name, instance.name)))
         else:
             print("ERROR")
     else:
         instance = PublicPage(group=page_group)
         form = PageEditForm(instance=instance)
-    return render(request, 'public_pages/page_edit_form.html', {'MY_URL': settings.BASE_URL, 'form': form})
+        rights_form = PageAccessForm(instance=instance)
+        edit_form = EditForm(instance=instance)
+    return render(request, 'public_pages/page_edit_form.html',
+                  {'MY_URL': settings.BASE_URL, 'form': form, 'rights_form': rights_form, "edit_form": edit_form})
 
 
 @permission_required('public_pages.view_publicpage')
