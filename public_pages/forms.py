@@ -28,10 +28,10 @@ class PageEditForm(ModelForm):
                   "show_title",
                   ]
         labels = {
-                  "only_for_logged_in": "Only for logged in users?",
-                  "only_for_current_members": "Only for current members?",
-                  "limited_to_committees": "Limit to these committees",
-                  },
+            "only_for_logged_in": "Only for logged in users?",
+            "only_for_current_members": "Only for current members?",
+            "limited_to_committees": "Limit to these committees",
+        },
 
 
 class PageAccessForm(ModelForm):
@@ -43,10 +43,10 @@ class PageAccessForm(ModelForm):
             "limited_to_committees",
         ]
         labels = {
-                  "only_for_logged_in": "Only for logged in users?",
-                  "only_for_current_members": "Only for current members?",
-                  "limited_to_committees": "Limit to these committees",
-                  },
+            "only_for_logged_in": "Only for logged in users?",
+            "only_for_current_members": "Only for current members?",
+            "limited_to_committees": "Limit to these committees",
+        },
 
 
 class EditForm(ModelForm):
