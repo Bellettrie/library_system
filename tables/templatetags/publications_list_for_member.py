@@ -9,7 +9,7 @@ from tables.table import Table
 from works.models import Publication
 
 
-@register.inclusion_tag("tables/items_table.html")
+@register.inclusion_tag("tables/items_table_xs.html")
 def works_table_for_member(publications: List[Publication], perms, member: Member):
     rows = []
     for publication in publications:

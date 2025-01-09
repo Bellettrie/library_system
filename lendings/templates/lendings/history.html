@@ -3,6 +3,6 @@
 {% block title %}{{ 'Lending history for: ' }}{{ item.publication.title }}{% endblock %}
 {% block content %}
     <a class="btn btn-primary" href="{% url 'work.view' item.publication.pk %}">Back to Publication</a>
-    {% include 'pagination.html' %}
+    {% include 'pagination_bootstrap.html' %}
     {% lending_history_table object_list perms %}
 {% endblock %}

@@ -33,6 +33,17 @@ class Button:
             return self.disabled_render(row, perms, dis)
 
 
+class LendingTableXsReturnButton(Button):
+    def is_visible(self, row, perms) -> bool:
+        return row.is_item()
+
+    def is_enabled(self, row, perms):
+        return True, "-"
+
+    def enabled_render(self, row, perms=None):
+        return render_to_string("buttons/return_item_button_xs.html", {"lending": row.lending})
+
+
 class LendingTableReturnButton(Button):
     def is_visible(self, row, perms) -> bool:
         return row.is_item()
@@ -124,7 +135,7 @@ class ReturnBookButton(Button):
         return False
 
     def enabled_render(self, row, perms=None):
-        return render_to_string("buttons/return_item_button.html", {"lending": row.get_item().current_lending()})
+        return render_to_string("buttons/return_item_button_xs.html", {"lending": row.get_item().current_lending()})
 
     def disabled_render(self, row, perms=None, err=None):
         return render_to_string("buttons/return_item_disabled_button.html", {})
@@ -171,6 +182,16 @@ class ReservationCancelButton(Button):
         return render_to_string("buttons/reservation_cancel_button.html", {"reservation": row.reservation})
 
 
+class ReservationCancelButtonXs(Button):
+    def is_visible(self, row, perms):
+        return row.is_item()
+
+    def is_enabled(self, row, perms: PermWrapper):
+        return True, "-"
+
+    def enabled_render(self, row: ReservationRow, perms=None):
+        return render_to_string("buttons/reservation_cancel_button_xs.html", {"reservation": row.reservation})
+
 class ReservationLendButton(Button):
     def is_visible(self, row, perms):
         return row.is_item()
@@ -183,6 +204,20 @@ class ReservationLendButton(Button):
 
     def disabled_render(self, row: ReservationRow, perms=None, err=None):
         return render_to_string("buttons/reservation_finalize_disabled_button.html", {"err": err})
+
+
+class ReservationLendButtonXs(Button):
+    def is_visible(self, row, perms):
+        return row.is_item()
+
+    def is_enabled(self, row, perms: PermWrapper):
+        return not row.get_item().is_lent_out(), "Item is lent out"
+
+    def enabled_render(self, row: ReservationRow, perms=None):
+        return render_to_string("buttons/reservation_finalize_button_xs.html", {"reservation": row.reservation})
+
+    def disabled_render(self, row: ReservationRow, perms=None, err=None):
+        return render_to_string("buttons/reservation_finalize_disabled_button_xs.html", {"err": err})
 
 
 class ExtendButton(Button):
