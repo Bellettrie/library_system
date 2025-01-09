@@ -192,6 +192,7 @@ class ReservationCancelButtonXs(Button):
     def enabled_render(self, row: ReservationRow, perms=None):
         return render_to_string("buttons/reservation_cancel_button_xs.html", {"reservation": row.reservation})
 
+
 class ReservationLendButton(Button):
     def is_visible(self, row, perms):
         return row.is_item()
