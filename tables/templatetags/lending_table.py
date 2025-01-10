@@ -38,7 +38,7 @@ cols_me = [
 ]
 
 
-@register.inclusion_tag('tables/items_table.html')
+@register.inclusion_tag('tables/items_table_xs.html')
 def my_lendings(lendings: List[Lending], perms):
     rows = []
     for lending in lendings:

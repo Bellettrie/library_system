@@ -5,7 +5,7 @@
 {% block title %}Creator Search{% endblock %}
 {% block content %}
     {% include 'creators/list_lookup.html' %}
-        {% include 'pagination.html' %}
+        {% include 'pagination_bootstrap.html' %}
 
     <table class="table table-striped" style="width: auto;">
         {% for member in object_list %}
