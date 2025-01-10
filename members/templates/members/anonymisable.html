@@ -21,7 +21,7 @@
                 </table>
             {% endif %}
         {% endfor %}
-    {% include 'pagination.html' %}
+    {% include 'pagination_bootstrap.html' %}
     <form method="post" action="{% url 'members.anonymise_all' %}">
     {% csrf_token %}
         <table class="table table-zebra" style="width: auto;">
