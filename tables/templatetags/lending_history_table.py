@@ -9,7 +9,7 @@ from tables.table import Table
 columns = [StartDate(), LentByColumn(), HandinDate()]
 
 
-@register.inclusion_tag("tables/items_table.html")
+@register.inclusion_tag("tables/items_table_xs.html")
 def lending_history_table(lendings: List[Lending], perms):
     rows = []
     for lending in lendings:
