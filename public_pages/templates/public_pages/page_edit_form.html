@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title %}Editing page {{ form.title.value }}{% endblock %}
 {% block content %}
     <form method="POST" action="#">
         {% csrf_token %}
@@ -9,7 +10,7 @@
                         Title info
                     {% endfill %}
                     {% fill 'content' %}
-                        {% component 'form/form' form / %}
+                        {% component 'form/compact' form / %}
                     {% endfill %}
                 {% endcomponent %}
                 {% component "tile/tile" root_class_tags="flex lg:basis-6/12-gap-3 lg:flex-none" %}
@@ -17,7 +18,7 @@
                         Rights info
                     {% endfill %}
                     {% fill 'content' %}
-                        {% component 'form/form' rights_form / %}
+                        {% component 'form/compact' rights_form / %}
                     {% endfill %}
                 {% endcomponent %}
 
