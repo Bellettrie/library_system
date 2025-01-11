@@ -7,7 +7,7 @@
 </div>
 
 <script>
-    $("#compileButton{{ name }}").click(function () {
+    function func () {
         $.post("/pages/render",
             {
                 text: document.getElementById("{{ name }}").value,
@@ -15,6 +15,8 @@
             function (data, status) {
                 document.getElementById('compiledContent{{ name }}').innerHTML = "<div class=\"flex flex-wrap gap-3\">"+data+"</div>";
             });
-    });
+    }
+    $("#compileButton{{ name }}").click(func);
+    func();
 
 </script>
