@@ -127,11 +127,13 @@ class MyTreeprocessor(Treeprocessor):
             if child.tag == "a":
                 child.set("class", "link")  # set the class attribute
             self.set_link_class(child)  # run recursively on children
+
     def set_link_class(self, element):
         for child in element:
             if child.tag == "h1":
                 child.set("class", "")  # set the class attribute
             self.set_link_class(child)  # run recursively on children
+
     def run(self, root):
         self.set_link_class(root)
 
