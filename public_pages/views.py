@@ -123,7 +123,11 @@ def render_md(markdown_text: str):
         # new component barrier
         elif line.startswith("#!"):
             if not first_line:
-                result += CMDS[cms[0]](lines, title, *cms[1:], layout_overrides=flex_to_layout(mdflex, lgflex))
+                if mdflex == "0" and len(cms)>1:
+                    mdflex=str(cms[1])
+                if lgflex=="0" and len(cms)>2:
+                    lgflex = str(cms[2])
+                result += CMDS[cms[0]](lines, title, layout_overrides=flex_to_layout(mdflex, lgflex))
             cms = line[2:].strip().split(" ")
             # Basic sanity check: does the command exist at all
             if cms[0] not in CMDS.keys():
@@ -138,7 +142,7 @@ def render_md(markdown_text: str):
     # If no specific blocks are made, make a 12/12 block with *everything*
     if cms is None:
         cms = ["base"]
-    result += CMDS[cms[0]](lines, title, *cms[1:], layout_overrides=flex_to_layout(mdflex, lgflex))
+    result += CMDS[cms[0]](lines, title,  layout_overrides=flex_to_layout(mdflex, lgflex))
     return result
 
 
