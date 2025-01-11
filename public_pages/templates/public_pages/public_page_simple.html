@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}{% if page.show_title %}{{ page_title }}{% endif %}{% endblock %}
+{% block title %}{% if page.show_title %}{{ page_title }}{% endif %} {% if can_edit %} <a class="btn btn-primary btn-sm"
+                                      href="{% url 'edit_named_page' page.group.name page.name %}">edit</a> {% endif %}{% endblock %}
 {% block content %}
     <div class=" w-full flex justify-center ">
         <div class="max-w-full flex flex-wrap gap-3 max-w-[1600px]">
@@ -8,10 +9,5 @@
         </div>
 
     </div>
-    {% if can_edit %}
-        <div class="row">
-            <div class="col sm-12"><a class="btn btn-primary"
-                                      href="{% url 'edit_named_page' page.group.name page.name %}">edit</a></div>
-        </div>
-    {% endif %}
+
 {% endblock %}
