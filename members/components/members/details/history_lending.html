@@ -1,7 +1,9 @@
 {% component 'tile/tile' root_class_tags="" %}
     {% fill 'title' %}{% if member.user == user %}My Lendings {% else %}Lendings{% endif %} {% endfill %}
     {% fill 'content' %}
-        {% member_current_lendings member %}
+        {% component 'lendings.list.List' lendings perms show_member=False small_table=True / %}
+
+{#        {% member_current_lendings member %}#}
     {% endfill %}
     {% fill 'footer' %}
         {% if member.pk == user.member.pk %}
