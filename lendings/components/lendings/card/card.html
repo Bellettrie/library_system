@@ -1,0 +1,32 @@
+<div class="bg-base-100 shadow-xl flex relative">
+
+    <div class="bg-blue-100 place-items-center basis-[5rem]  ">
+        <dl class="items-center flex flex-col items-center justify-center h-full">
+            {% for cd in split_code %}
+                <dd><b>{{ cd }}</b></dd>
+            {% endfor %}
+        </dl>
+
+    </div>
+
+    <div class="flex-1 m-2 ">
+        <dl>
+            <dd class="text-lg">{{ lending.item.get_title }}</dd>
+            <dd class="text-xs">{{ lending.item.book_code }}</dd>
+            <dd class="pt-2">
+                Author: {{ lending.item.publication.get_authors.0.creator.name }} {{ lending.item.publication.get_authors.0.creator.given_names }}</dd>
+        </dl>
+        <hr>
+        <h3 class="text-lg text-md">Lending </h3>
+        <dl class="mb-2">
+            <dd>Member: {{ lending.member.name }}</dd>
+            <dd><label>End Date:</label> {{ lending.end_date }}</dd>
+            {% if lending.is_late %}
+                <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}
+        </dl>
+   <div class=" flex  justify-end  join">
+        <a class="btn btn-sm btn-primary join-item">Extend</a><a class="btn btn-sm btn-secondary join-item">Return</a>
+    </div>
+    </div>
+
+</div>

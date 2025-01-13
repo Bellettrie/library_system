@@ -1,0 +1,27 @@
+<table class="m-3 hidden md:table table-zebra {% if small_table %}table-xs{% endif %} table-pin-rows table-pin-cols ">
+    <tr>
+
+        <th>Book Code</th>
+        <th>Title</th>
+        <th>Authors</th>
+        <th>Member</th>
+        <th>Lending Info</th>
+
+    </tr>
+    {% for lending in lendings %}
+        <tr>
+            <td>{{ lending.item.book_code }}</td>
+            <td>{{ lending.item.get_title }}</td>
+            <td>{{ lending.item.publication.get_authors.0.creator.name }}, {{ lending.item.publication.get_authors.0.creator.given_names }}</td>
+            <td>{{ lending.member.name }}</td>
+            <td><dl><dd>{{ lending.end_date }}</dd>{% if lending.is_late %}<dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}</dl></td>
+        </tr>
+    {% endfor %}
+</table>
+
+<div class="md:hidden flex flex-col gap-5 m-3">
+    {% for lending in lendings %}
+        {% component 'lendings.card.Card' lending perms / %}
+
+    {% endfor %}
+</div>
