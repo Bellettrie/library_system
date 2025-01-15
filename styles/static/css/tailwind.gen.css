@@ -4536,10 +4536,6 @@ html:has(.drawer-toggle:checked) {
   top: 1.25rem;
 }
 
-.bottom-2 {
-  bottom: 0.5rem;
-}
-
 .z-\[1\] {
   z-index: 1;
 }
@@ -4599,18 +4595,6 @@ html:has(.drawer-toggle:checked) {
 
 .mt-6 {
   margin-top: 1.5rem;
-}
-
-.mb-6 {
-  margin-bottom: 1.5rem;
-}
-
-.mb-10 {
-  margin-bottom: 2.5rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
 }
 
 .block {
@@ -4872,14 +4856,14 @@ html:has(.drawer-toggle:checked) {
   background-color: rgb(247 236 85 / var(--tw-bg-opacity));
 }
 
-.bg-neutral {
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-n,oklch(var(--n)/var(--tw-bg-opacity)));
-}
-
 .bg-blue-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(219 234 254 / var(--tw-bg-opacity));
+}
+
+.bg-neutral {
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-n,oklch(var(--n)/var(--tw-bg-opacity)));
 }
 
 .stroke-current {
@@ -5026,10 +5010,6 @@ html:has(.drawer-toggle:checked) {
 
 .ring-offset-base-100 {
   --tw-ring-offset-color: var(--fallback-b1,oklch(var(--b1)/1));
-}
-
-.filter {
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 @media (min-width: 640px) {
@@ -5237,6 +5217,85 @@ html:has(.drawer-toggle:checked) {
   }
 }
 
+@media (min-width: 1300px) {
+  @media (hover:hover) {
+    .lg\:table tr.hover:hover,.lg\:table tr.hover:nth-child(even):hover {
+      --tw-bg-opacity: 1;
+      background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
+    }
+  }
+
+  .lg\:table {
+    position: relative;
+    width: 100%;
+    border-radius: var(--rounded-box, 1rem);
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .lg\:table :where(.table-pin-rows thead tr) {
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
+  }
+
+  .lg\:table :where(.table-pin-rows tfoot tr) {
+    position: sticky;
+    bottom: 0px;
+    z-index: 1;
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
+  }
+
+  .lg\:table :where(.table-pin-cols tr th) {
+    position: sticky;
+    left: 0px;
+    right: 0px;
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
+  }
+
+  .lg\:table:where([dir="rtl"], [dir="rtl"] *) {
+    text-align: right;
+  }
+
+  .lg\:table :where(th, td) {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    vertical-align: middle;
+  }
+
+  .lg\:table tr.active,.lg\:table tr.active:nth-child(even) {
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
+  }
+
+  .lg\:table :where(thead tr, tbody tr:not(:last-child), tbody tr:first-child:last-child) {
+    border-bottom-width: 1px;
+    --tw-border-opacity: 1;
+    border-bottom-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  }
+
+  .lg\:table :where(thead, tfoot) {
+    white-space: nowrap;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 700;
+    color: var(--fallback-bc,oklch(var(--bc)/0.6));
+  }
+
+  .lg\:table :where(tfoot) {
+    border-top-width: 1px;
+    --tw-border-opacity: 1;
+    border-top-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  }
+}
+
 @media (min-width: 1600px) {
   .xl\:drawer-open > .drawer-toggle {
     display: none;
@@ -5361,6 +5420,14 @@ html:has(.drawer-toggle:checked) {
 }
 
 @media (min-width: 1300px) {
+  .lg\:table {
+    display: table;
+  }
+
+  .lg\:hidden {
+    display: none;
+  }
+
   .lg\:w-2\/5 {
     width: 40%;
   }

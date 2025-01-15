@@ -12,7 +12,7 @@
             <dd class="text-lg"><a href="{% url "work.view" item.publication.pk %}">{{ item.get_title }}</a></dd>
             <dd class="text-xs">{{ item.book_code }}</dd>
             <dd class="pt-2">
-                Author: <a href="{% url "creator.view" item.publication.get_authors.0.creator.pk %}"><em>{{ item.publication.get_authors.0.creator.name }}</em>, {{ item.publication.get_authors.0.creator.given_names }}</a></dd>
+                Author:<a href="{% url "creator.view" item.publication.get_authors.0.creator.pk %}"><em>{{ item.publication.get_authors.0.creator.name }}</em>, {{ item.publication.get_authors.0.creator.given_names }}</a></dd>
         </dl>
         <hr>
         {% slot "infos" %}{% endslot %}

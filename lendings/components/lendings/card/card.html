@@ -1,4 +1,3 @@
-
 {% component "works.info_card" lending.item %}
     {% fill "infos" %}
         <h3 class="text-lg text-md">Lending </h3>
@@ -9,9 +8,8 @@
                 <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}
         </dl>
         <div class=" flex  justify-end  join">
-
-            <a class="btn btn-sm btn-primary join-item">Extend</a><a
-                class="btn btn-sm btn-secondary join-item">Return</a>
+            {% component 'lendings/buttons/extend' lending user.member perms bonus_classes="btn-sm join-item" / %}
+            {% component 'lendings/buttons/return' lending user.member perms bonus_classes="btn-sm join-item" / %}
         </div>
     {% endfill %}
 {% endcomponent %}
