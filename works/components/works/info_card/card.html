@@ -1,0 +1,20 @@
+<div class="bg-base-100 shadow-xl flex relative">
+
+        <div class="bg-blue-100 place-items-center basis-[5rem]  " role="link" tabindex="0" onclick="location.href='{% url 'work.view' item.publication.pk %}'" >
+            <dl class="items-center flex flex-col items-center justify-center h-full">
+                {% for cd in split_code %}
+                    <dd><b><a href="{% url "work.view" item.publication.pk %}">{{ cd }}</a></b></dd>
+                {% endfor %}
+            </dl>
+        </div>
+    <div class="flex-1 m-2 ">
+        <dl>
+            <dd class="text-lg"><a href="{% url "work.view" item.publication.pk %}">{{ item.get_title }}</a></dd>
+            <dd class="text-xs">{{ item.book_code }}</dd>
+            <dd class="pt-2">
+                Author: <a href="{% url "creator.view" item.publication.get_authors.0.creator.pk %}"><em>{{ item.publication.get_authors.0.creator.name }}</em>, {{ item.publication.get_authors.0.creator.given_names }}</a></dd>
+        </dl>
+        <hr>
+        {% slot "infos" %}{% endslot %}
+    </div>
+</div>
