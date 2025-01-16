@@ -11,8 +11,6 @@ from members.models import Member
 
 @register("lendings.list.List")
 class List(Component):
-
-    # Renders the committees that a member is in
     def get_context_data(self, lendings: List[Lending], perms, show_member: bool = True,
                          small_table: bool = False):
         if small_table:

@@ -11,8 +11,6 @@ from members.models import Member
 
 @register("lendings.card.Card")
 class Card(Component):
-
-    # Renders the committees that a member is in
     def get_context_data(self, lending: Lending, perms, show_member: bool = True):
         code = lending.item.book_code
 
