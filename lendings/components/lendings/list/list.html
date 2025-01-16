@@ -1,53 +1,50 @@
-<table class="m-3 hidden lg:table {% if small_table %}table-xs{% endif %} table-zebra  table-pin-rows table-pin-cols ">
+<table class="m-3 hidden lg:table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols ">
     <tr>
-
+        {% if not skip_header %}
+            <th></th>
+        {% endif %}
         <th>Title</th>
         <th>Author</th>
         {% if show_member %}
             <th>Member</th>
         {% endif %}
-        <th>Lending Info</th>
+        <th>Infos</th>
         <th></th>
-
     </tr>
     {% for lending in lendings %}
-        <tr>
-            <td>
-                <dl>
-                    <dd><a href="{% url "work.view" lending.item.publication.pk %}">{{ lending.item.get_title }}</a></dd>
-                    <dd class="text-xs"><a href="{% url "work.view" lending.item.publication.pk %}">{{ lending.item.book_code }}</a></dd>
-                </dl>
-            </td>
-            <td><a href="{% url "creator.view" lending.item.publication.get_authors.0.creator.pk %}"><em>{{ lending.item.publication.get_authors.0.creator.name }}</em>, {{ lending.item.publication.get_authors.0.creator.given_names }}</a></td>
-            {% if show_member %}
-                <td><a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a></td>
-            {% endif %}
-            {% if lending.handed_in %}
-                <td>
+        {% component 'works.table.row' lending.item skip_header=skip_header %}
+            {% fill "extra_rows" %}
+                {% if show_member %}
+                    <td><a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a></td>
+                {% endif %}
+                <td >
                     <dl>
-                        <dd>End Date: {{ lending.end_date }}</dd>
-                        <dd>Handed in: {{ lending.handed_in_on }}</dd>
+
+                        <dd>
+                            {% if lending.handed_in %}
+                                Returned: {{ lending.handed_in_on }}
+                            {% else %}
+                                Due: <em>{{ lending.end_date }}</em>
+                            {% endif %}
+                        </dd>
+                        {% if lending.is_late and not lending.handed_in %}
+                            <dd>Fine: €{{ lending.calculate_fine }}</dd>
+                        {% endif %}
                     </dl>
                 </td>
-                <td></td>
-            {% else %}
-                <td>
-                    <dl>
-                        <dd>End Date: {{ lending.end_date }}</dd>{% if lending.is_late %}
-                        <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}</dl>
+                <td class="items-center">
+                    <div class="join">
+                        {% component 'lendings/buttons/extend' lending user.member perms bonus_classes=btn_bonus_classes / %}
+                        {% component 'lendings/buttons/return' lending user.member perms bonus_classes=btn_bonus_classes / %}
+                    </div>
                 </td>
-                <td class=" flex  justify-end  join">
-                    {% component 'lendings/buttons/extend' lending user.member perms bonus_classes=btn_bonus_classes / %}
-                    {% component 'lendings/buttons/return' lending user.member perms bonus_classes=btn_bonus_classes / %}
-                </td>
-            {% endif %}
-        </tr>
+            {% endfill %}
+        {% endcomponent %}
     {% endfor %}
 </table>
 
 <div class="lg:hidden flex flex-col gap-5 m-3">
     {% for lending in lendings %}
         {% component 'lendings.card.Card' lending perms show_member=show_member / %}
-
     {% endfor %}
 </div>

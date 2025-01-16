@@ -1,18 +1,32 @@
 <div class="bg-base-100 shadow-xl flex relative">
 
-        <div class="bg-blue-100 place-items-center basis-[5rem]  " role="link" tabindex="0" onclick="location.href='{% url 'work.view' item.publication.pk %}'" >
+    <div class="bg-blue-100 place-items-center basis-[5rem]  " role="link" tabindex="0"
+         onclick="location.href='{% url 'work.view' item.publication.pk %}'">
+        {% if item.book_code %}
             <dl class="items-center flex flex-col items-center justify-center h-full">
                 {% for cd in split_code %}
-                    <dd><b><a href="{% url "work.view" item.publication.pk %}">{{ cd }}</a></b></dd>
+                    <dd><b><a href="{% url "work.view" item.publication.pk %}">{{ cd }}</a></b>{% if forloop.last %}
+                        {% if item.book_code_extension %}({{ item.book_code_extension }}){% endif %}{% endif %}</dd>
                 {% endfor %}
+
             </dl>
-        </div>
+        {% else %}
+            <div class="flex text-center  items-center h-full">Not In Collection</div>
+        {% endif %}
+    </div>
     <div class="flex-1 m-2 ">
         <dl>
-            <dd class="text-lg"><a href="{% url "work.view" item.publication.pk %}">{{ item.get_title }}</a></dd>
-            <dd class="text-xs">{{ item.book_code }}</dd>
-            <dd class="pt-2">
-                Author:<a href="{% url "creator.view" item.publication.get_authors.0.creator.pk %}"><em>{{ item.publication.get_authors.0.creator.name }}</em>, {{ item.publication.get_authors.0.creator.given_names }}</a></dd>
+            <dd class="text-lg"><a href="{% url "work.view" item.publication.pk %}">
+                {% if item.publication.article %}{{ item.publication.article }}{% endif %} <em>{{ item.get_title }}</em></a>
+            </dd>
+            {% if  item.publication.sub_title %}
+                <dd class="text-xs pb-1">{{ item.publication.sub_title }}</dd> {% endif %}
+            {% for author in authors %}
+                <dd>
+                    {{ author.role.name }} <a
+                        href="{% url "creator.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}
+                </a></dd>
+            {% endfor %}
         </dl>
         <hr class="w-full h-1 mx-auto my-2 bg-gray-200 border-0 rounded">
         {% slot "infos" %}{% endslot %}

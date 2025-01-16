@@ -10,17 +10,22 @@ from members.models import Member
 from works.models import Item
 
 
-@register("works.info_card")
+@register("works.table.row")
 class Card(Component):
-    def get_context_data(self, item: Item, all_authors=False):
+
+    # Renders the committees that a member is in
+    def get_context_data(self, item: Item, all_authors=False, extra_context=None, skip_header=False):
         code = item.book_code
         authors = item.publication.get_authors()
-        if not all_authors:
-            authors = authors[:1]
+        if not all_authors and len(authors)>0:
+           authors = authors[:1]
+        print(all_authors, authors)
         return {
-            "item": item,
+            "skip_header": skip_header,
             "authors": authors,
+            "item": item,
+            "extra_context": extra_context,
             "split_code": code.split("-"),
         }
 
-    template_name = "works/info_card/card.html"
+    template_name = "works/table/row/row.html"

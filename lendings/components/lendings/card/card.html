@@ -7,8 +7,7 @@
                     <dd>Member: <a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a>
                     </dd>
                 {% endif %}
-                <dd><label>Start Date:</label> {{ lending.lended_on }}</dd>
-                <dd><label>Hand In Date:</label> {{ lending.handed_in_on }}</dd>
+                <dd><label>Returned:</label> {{ lending.handed_in_on }}</dd>
             </dl>
         {% else %}
             <dl class="mb-2">
@@ -16,8 +15,7 @@
                     <dd>Member: <a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a>
                     </dd>
                 {% endif %}
-                <dd><label>Start Date:</label> {{ lending.lended_on }}</dd>
-                <dd><label>End Date:</label> {{ lending.end_date }}</dd>
+                <dd><label>Due:</label> {{ lending.end_date }}</dd>
                 {% if lending.is_late %}
                     <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}
             </dl>
