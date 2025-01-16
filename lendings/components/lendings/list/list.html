@@ -15,10 +15,8 @@
             <td>{{ lending.member.name }}</td>
             <td><dl><dd>{{ lending.end_date }}</dd>{% if lending.is_late %}<dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}</dl></td>
         <td class=" flex  justify-end  join">
-
             {% component 'lendings/buttons/extend' lending user.member perms bonus_classes="btn-sm join-item " / %}
             {% component 'lendings/buttons/return' lending user.member perms bonus_classes="btn-sm join-item "  / %}
-
         </td>
         </tr>
     {% endfor %}

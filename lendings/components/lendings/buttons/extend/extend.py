@@ -10,7 +10,7 @@ class Button(Component):
     template_name = "lendings/buttons/extend/extend.html"
 
     def get_context_data(self, lending, user_member, perms, bonus_classes=""):
-        is_visible =   not lending.handed_in
+        is_visible = not lending.handed_in
         if lending.member != user_member and not perms["lendings"]["change_lending"]:
             is_visible = False
         cannot_extend_reason = can_extend(lending, get_today())

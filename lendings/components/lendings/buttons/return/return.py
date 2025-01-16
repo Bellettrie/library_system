@@ -10,7 +10,7 @@ class Button(Component):
     template_name = "lendings/buttons/return/return.html"
 
     def get_context_data(self, lending, user_member, perms, bonus_classes=""):
-        is_visible =   not lending.handed_in
+        is_visible = not lending.handed_in
         if not perms["lendings"]["change_lending"]:
             is_visible = False
 
