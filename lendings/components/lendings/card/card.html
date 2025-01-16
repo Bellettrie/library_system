@@ -2,7 +2,9 @@
     {% fill "infos" %}
         <h3 class="text-lg text-md">Lending </h3>
         <dl class="mb-2">
-            <dd>Member: <a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a></dd>
+            {% if show_member %}
+                <dd>Member: <a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a></dd>
+            {% endif %}
             <dd><label>End Date:</label> {{ lending.end_date }}</dd>
             {% if lending.is_late %}
                 <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}
