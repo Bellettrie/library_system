@@ -4753,6 +4753,10 @@ html:has(.drawer-toggle:checked) {
   flex-basis: 5rem;
 }
 
+.basis-1 {
+  flex-basis: 0.25rem;
+}
+
 .table-auto {
   table-layout: auto;
 }

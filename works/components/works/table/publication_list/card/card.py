@@ -10,11 +10,10 @@ from members.models import Member
 from works.models import Item
 
 
-@register("works.table.card.Card")
+@register("works.table.publication_list.card.Card")
 class Card(Component):
     def get_context_data(self, item: Item, perms, all_authors=False):
         code = item.book_code
-
         return {
             "all_authors": all_authors,
             "item": item,
@@ -22,4 +21,4 @@ class Card(Component):
             "perms": perms,
         }
 
-    template_name = "works/table/card/card.html"
+    template_name = "works/table/publication_list/card/card.html"

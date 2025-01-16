@@ -10,8 +10,10 @@ from members.models import Member
 from works.models import Item, Publication
 
 
-@register("works.table.list.List")
-class List(Component):
+@register("works.table.publication_list.PublicationList")
+class PublicationList(Component):
+    # The publication_list component shows an item table for a list of publications.
+    # The context data creates dummy Items for Publications without items.
     def get_context_data(self, publications: List[Publication], perms,
                          small_table: bool = False, skip_header=False):
         if small_table:
@@ -37,4 +39,4 @@ class List(Component):
             "btn_bonus_classes": btn_bonus_classes,
         }
 
-    template_name = "works/table/list/list.html"
+    template_name = "works/table/publication_list/list.html"

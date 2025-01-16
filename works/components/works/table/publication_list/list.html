@@ -20,6 +20,6 @@
 
 <div class="md:hidden flex flex-col gap-5 m-3">
     {% for item in items %}
-        {% component 'works.table.card.Card' item perms all_authors=all_authors / %}
+        {% component 'works.table.publication_list.card.Card' item perms all_authors=all_authors / %}
     {% endfor %}
 </div>
