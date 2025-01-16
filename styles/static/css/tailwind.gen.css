@@ -4564,9 +4564,24 @@ html:has(.drawer-toggle:checked) {
   margin: 0.75rem;
 }
 
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
 .my-2 {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .-mb-3 {
@@ -4642,6 +4657,14 @@ html:has(.drawer-toggle:checked) {
   height: 100%;
 }
 
+.h-px {
+  height: 1px;
+}
+
+.h-1 {
+  height: 0.25rem;
+}
+
 .min-h-full {
   min-height: 100%;
 }
@@ -4676,6 +4699,10 @@ html:has(.drawer-toggle:checked) {
 
 .w-full {
   width: 100%;
+}
+
+.w-48 {
+  width: 12rem;
 }
 
 .min-w-fit {
@@ -4822,6 +4849,10 @@ html:has(.drawer-toggle:checked) {
   border-radius: 0px;
 }
 
+.rounded {
+  border-radius: 0.25rem;
+}
+
 .rounded-r-full {
   border-top-right-radius: 9999px;
   border-bottom-right-radius: 9999px;
@@ -4829,6 +4860,10 @@ html:has(.drawer-toggle:checked) {
 
 .border {
   border-width: 1px;
+}
+
+.border-0 {
+  border-width: 0px;
 }
 
 .border-bellered {
@@ -4864,6 +4899,21 @@ html:has(.drawer-toggle:checked) {
 .bg-neutral {
   --tw-bg-opacity: 1;
   background-color: var(--fallback-n,oklch(var(--n)/var(--tw-bg-opacity)));
+}
+
+.bg-gray-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
+.bg-gray-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
 .stroke-current {
@@ -5138,85 +5188,6 @@ html:has(.drawer-toggle:checked) {
   }
 }
 
-@media (min-width: 768px) {
-  @media (hover:hover) {
-    .md\:table tr.hover:hover,.md\:table tr.hover:nth-child(even):hover {
-      --tw-bg-opacity: 1;
-      background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
-    }
-  }
-
-  .md\:table {
-    position: relative;
-    width: 100%;
-    border-radius: var(--rounded-box, 1rem);
-    text-align: left;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
-
-  .md\:table :where(.table-pin-rows thead tr) {
-    position: sticky;
-    top: 0px;
-    z-index: 1;
-    --tw-bg-opacity: 1;
-    background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
-  }
-
-  .md\:table :where(.table-pin-rows tfoot tr) {
-    position: sticky;
-    bottom: 0px;
-    z-index: 1;
-    --tw-bg-opacity: 1;
-    background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
-  }
-
-  .md\:table :where(.table-pin-cols tr th) {
-    position: sticky;
-    left: 0px;
-    right: 0px;
-    --tw-bg-opacity: 1;
-    background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
-  }
-
-  .md\:table:where([dir="rtl"], [dir="rtl"] *) {
-    text-align: right;
-  }
-
-  .md\:table :where(th, td) {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    vertical-align: middle;
-  }
-
-  .md\:table tr.active,.md\:table tr.active:nth-child(even) {
-    --tw-bg-opacity: 1;
-    background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
-  }
-
-  .md\:table :where(thead tr, tbody tr:not(:last-child), tbody tr:first-child:last-child) {
-    border-bottom-width: 1px;
-    --tw-border-opacity: 1;
-    border-bottom-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
-  }
-
-  .md\:table :where(thead, tfoot) {
-    white-space: nowrap;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    font-weight: 700;
-    color: var(--fallback-bc,oklch(var(--bc)/0.6));
-  }
-
-  .md\:table :where(tfoot) {
-    border-top-width: 1px;
-    --tw-border-opacity: 1;
-    border-top-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
-  }
-}
-
 @media (min-width: 1300px) {
   @media (hover:hover) {
     .lg\:table tr.hover:hover,.lg\:table tr.hover:nth-child(even):hover {
@@ -5394,14 +5365,6 @@ html:has(.drawer-toggle:checked) {
 }
 
 @media (min-width: 768px) {
-  .md\:table {
-    display: table;
-  }
-
-  .md\:hidden {
-    display: none;
-  }
-
   .md\:w-80 {
     width: 20rem;
   }

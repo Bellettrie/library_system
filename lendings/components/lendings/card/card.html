@@ -1,17 +1,30 @@
 {% component "works.info_card" lending.item %}
     {% fill "infos" %}
         <h3 class="text-lg text-md">Lending </h3>
-        <dl class="mb-2">
-            {% if show_member %}
-                <dd>Member: <a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a></dd>
-            {% endif %}
-            <dd><label>End Date:</label> {{ lending.end_date }}</dd>
-            {% if lending.is_late %}
-                <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}
-        </dl>
-        <div class=" flex  justify-end  join">
-            {% component 'lendings/buttons/extend' lending user.member perms bonus_classes="btn-sm join-item" / %}
-            {% component 'lendings/buttons/return' lending user.member perms bonus_classes="btn-sm join-item" / %}
-        </div>
+        {% if lending.handed_in %}
+            <dl class="mb-2">
+                {% if show_member %}
+                    <dd>Member: <a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a>
+                    </dd>
+                {% endif %}
+                <dd><label>Start Date:</label> {{ lending.lended_on }}</dd>
+                <dd><label>Hand In Date:</label> {{ lending.handed_in_on }}</dd>
+            </dl>
+        {% else %}
+            <dl class="mb-2">
+                {% if show_member %}
+                    <dd>Member: <a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a>
+                    </dd>
+                {% endif %}
+                <dd><label>Start Date:</label> {{ lending.lended_on }}</dd>
+                <dd><label>End Date:</label> {{ lending.end_date }}</dd>
+                {% if lending.is_late %}
+                    <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}
+            </dl>
+            <div class=" flex  justify-end  join">
+                {% component 'lendings/buttons/extend' lending user.member perms bonus_classes="btn-sm join-item" / %}
+                {% component 'lendings/buttons/return' lending user.member perms bonus_classes="btn-sm join-item" / %}
+            </div>
+        {% endif %}
     {% endfill %}
 {% endcomponent %}

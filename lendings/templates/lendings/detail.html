@@ -3,7 +3,7 @@
 {% block content %}
     {% with  lendings as page_obj%}
         {% include 'pagination.html' %}
-        {% component 'lendings.list.List' lendings perms / %}
+        {% component 'lendings.list.List' lendings perms show_member=False / %}
         {% include 'pagination.html' %}
     {% endwith %}
 {% endblock %}

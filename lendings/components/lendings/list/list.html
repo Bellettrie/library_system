@@ -14,23 +14,33 @@
         <tr>
             <td>
                 <dl>
-                    <dd>{{ lending.item.get_title }}</dd>
-                    <dd class="text-xs">{{ lending.item.book_code }}</dd>
+                    <dd><a href="{% url "work.view" lending.item.publication.pk %}">{{ lending.item.get_title }}</a></dd>
+                    <dd class="text-xs"><a href="{% url "work.view" lending.item.publication.pk %}">{{ lending.item.book_code }}</a></dd>
                 </dl>
             </td>
-            <td>{{ lending.item.publication.get_authors.0.creator.name }}, {{ lending.item.publication.get_authors.0.creator.given_names }}</td>
+            <td><a href="{% url "creator.view" lending.item.publication.get_authors.0.creator.pk %}"><em>{{ lending.item.publication.get_authors.0.creator.name }}</em>, {{ lending.item.publication.get_authors.0.creator.given_names }}</a></td>
             {% if show_member %}
-                <td>{{ lending.member.name }}</td>
+                <td><a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a></td>
             {% endif %}
-            <td>
-                <dl>
-                    <dd>{{ lending.end_date }}</dd>{% if lending.is_late %}
-                    <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}</dl>
-            </td>
-            <td class=" flex  justify-end  join">
-                {% component 'lendings/buttons/extend' lending user.member perms bonus_classes=btn_bonus_classes / %}
-                {% component 'lendings/buttons/return' lending user.member perms bonus_classes=btn_bonus_classes / %}
-            </td>
+            {% if lending.handed_in %}
+                <td>
+                    <dl>
+                        <dd>End Date: {{ lending.end_date }}</dd>
+                        <dd>Handed in: {{ lending.handed_in_on }}</dd>
+                    </dl>
+                </td>
+                <td></td>
+            {% else %}
+                <td>
+                    <dl>
+                        <dd>End Date: {{ lending.end_date }}</dd>{% if lending.is_late %}
+                        <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}</dl>
+                </td>
+                <td class=" flex  justify-end  join">
+                    {% component 'lendings/buttons/extend' lending user.member perms bonus_classes=btn_bonus_classes / %}
+                    {% component 'lendings/buttons/return' lending user.member perms bonus_classes=btn_bonus_classes / %}
+                </td>
+            {% endif %}
         </tr>
     {% endfor %}
 </table>

@@ -16,15 +16,15 @@ class List(Component):
     def get_context_data(self, lendings: List[Lending], perms, show_member: bool = True,
                          small_table: bool = False):
         if small_table:
-            btn_bonus_classes="join-item btn-xs"
+            btn_bonus_classes = "join-item btn-xs"
         else:
-            btn_bonus_classes="join-item btn-sm"
+            btn_bonus_classes = "join-item btn-sm"
         return {
             "lendings": lendings,
             "perms": perms,
             "show_member": show_member,
             "small_table": small_table,
-            "btn_bonus_classes":btn_bonus_classes,
+            "btn_bonus_classes": btn_bonus_classes,
         }
 
     template_name = "lendings/list/list.html"
