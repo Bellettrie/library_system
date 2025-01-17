@@ -1,8 +1,11 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 
 {% block title %}{{ 'Lending history for: ' }}{{ item.publication.title }}{% endblock %}
 {% block content %}
-    <a class="btn btn-primary" href="{% url 'work.view' item.publication.pk %}">Back to Publication</a>
-    {% include 'pagination_bootstrap.html' %}
-    {% lending_history_table object_list perms %}
+    <div class="flex w-full justify-center gap-3">
+        <a class="btn btn-primary" href="{% url 'work.view' item.publication.pk %}">Back to Publication</a>
+        {% include 'pagination.html' %}
+    </div>
+    {% component 'lendings.list.List' object_list perms / %}
+    {% include 'pagination.html' %}
 {% endblock %}
