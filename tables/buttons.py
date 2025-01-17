@@ -33,28 +33,6 @@ class Button:
             return self.disabled_render(row, perms, dis)
 
 
-class LendingTableXsReturnButton(Button):
-    def is_visible(self, row, perms) -> bool:
-        return row.is_item()
-
-    def is_enabled(self, row, perms):
-        return True, "-"
-
-    def enabled_render(self, row, perms=None):
-        return render_to_string("buttons/return_item_button_xs.html", {"lending": row.lending})
-
-
-class LendingTableReturnButton(Button):
-    def is_visible(self, row, perms) -> bool:
-        return row.is_item()
-
-    def is_enabled(self, row, perms):
-        return True, "-"
-
-    def enabled_render(self, row, perms=None):
-        return render_to_string("buttons/return_item_button.html", {"lending": row.lending})
-
-
 class LendBookButton(Button):
     def is_enabled(self, row, perms: PermWrapper):
         if row.get_item().is_lent_out():
@@ -219,21 +197,6 @@ class ReservationLendButtonXs(Button):
 
     def disabled_render(self, row: ReservationRow, perms=None, err=None):
         return render_to_string("buttons/reservation_finalize_disabled_button_xs.html", {"err": err})
-
-
-class ExtendButton(Button):
-    def is_visible(self, row: LendingRow, perms):
-        return row.is_item() and not row.lending.handed_in
-
-    def is_enabled(self, row: LendingRow, perms: PermWrapper):
-        e = can_extend(row.lending, get_today())
-        return not e, e
-
-    def enabled_render(self, row: LendingRow, perms=None):
-        return render_to_string("buttons/extend_button.html", {"item": row.get_item()})
-
-    def disabled_render(self, row: LendingRow, perms=None, err=None):
-        return render_to_string("buttons/extend_button_disabled.html", {"err": err})
 
 
 class LendingHistoryButton(Button):
