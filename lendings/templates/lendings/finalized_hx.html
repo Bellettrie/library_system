@@ -3,7 +3,7 @@
 {% block modal_content %}
     {# reload page when modal is hidden so we show the correct info behind it #}
     <script>
-        $('#modal').on("hidden.bs.modal", function (evt) {
+        $('#dialog').on("close", function (evt) {
             location.reload();
         });
     </script>
@@ -16,8 +16,10 @@
         until: {{ date }}
 
     </div>
-    <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Ok</button>
+    <div class="modal-action">
+        <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn">Ok</button>
+        </form>
     </div>
-
 {% endblock %}
