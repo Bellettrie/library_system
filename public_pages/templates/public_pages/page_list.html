@@ -7,23 +7,24 @@
             <div class="collapse-title font-semibold">
                 <table class="m-3 table"><tr>
                     <th>{{ group.name }}</th>
-                    <th class="text-right"><a class="btn btn-primary" href="{% url 'new_named_page' group.name %}">Add new to group</a></th>
+                    <th class="text-right"><a class="btn btn-primary" href="{% url 'new_named_page' group.name %}">Add page</a></th>
                 </tr></table>
             </div>
             <div class="collapse-content text-sm">
-                <table class="m-3 table">
+                <table class="m-3 md:ml-8 table">
                     <tr>
                         <th>Title</th>
                         <th class="hidden md:table-cell">Path</th>
-                        <th></th>
                         <th></th>
                     </tr>
                     {% for page in group.publicpage_set.all %}
                         <tr>
                             <td><a href="{% url 'named_page' page.group.name page.name %}">{{ page.title }}</a></td>
-                            <td class="hidden md:table-cell"><a href="{% url 'named_page' page.group.name page.name %}">{% url 'named_page' page.group.name page.name %}</a></td>
-                            <td><a class="btn btn-primary" href="{% url 'edit_named_page' page.group.name page.name %}">Edit</a></td>
-                            <td><a class="btn btn-danger" href="{% url 'delete_named_page' page.pk %}">Delete</a></td>
+                            <td class="hidden md:table-cell"><a class="link" href="{% url 'named_page' page.group.name page.name %}">{% url 'named_page' page.group.name page.name %}</a></td>
+                            <td><div class="join">
+                                <a class="btn btn-primary" href="{% url 'edit_named_page' page.group.name page.name %}">Edit</a>
+                                <a class="btn btn-danger" href="{% url 'delete_named_page' page.pk %}">Delete</a>
+                            </div></td>
                         </tr>
                     {% endfor %}
                 </table>
