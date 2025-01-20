@@ -1,21 +1,34 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %}Page Management{% endblock %}
 {% block content %}
     Here you can see which pages exist on the website. This has a list of all pages on the site. Warning, the delete buttons are agressive.
     {% for group in groups %}
-        <h4>{{ group.name }}</h4>
-        <td><a class="btn btn-primary" href="{% url 'new_named_page' group.name %}">Add new to group</a></td>
-        <table>
-            {% for page in group.publicpage_set.all %}
-                <tr>
-                    <td>{{ page.title }}</td>
-                    <td>{{ page.group.name }}</td>
-                    <td><a class="btn btn-primary" href="{% url 'named_page' page.group.name page.name %}">View</a></td>
-                    <td><a class="btn btn-primary" href="{% url 'edit_named_page' page.group.name page.name %}">Edit</a></td>
-                    <td><a class="btn btn-danger" href="{% url 'delete_named_page' page.pk %}">Delete</a></td>
-                </tr>
-            {% endfor %}
-        </table>
+        <div tabindex="0" class="collapse collapse-arrow border-base-300 bg-base-100 border">
+            <div class="collapse-title font-semibold">
+                <table class="m-3 table"><tr>
+                    <th>{{ group.name }}</th>
+                    <th class="text-right"><a class="btn btn-primary" href="{% url 'new_named_page' group.name %}">Add new to group</a></th>
+                </tr></table>
+            </div>
+            <div class="collapse-content text-sm">
+                <table class="m-3 table">
+                    <tr>
+                        <th>Title</th>
+                        <th class="hidden md:table-cell">Path</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    {% for page in group.publicpage_set.all %}
+                        <tr>
+                            <td><a href="{% url 'named_page' page.group.name page.name %}">{{ page.title }}</a></td>
+                            <td class="hidden md:table-cell"><a href="{% url 'named_page' page.group.name page.name %}">{% url 'named_page' page.group.name page.name %}</a></td>
+                            <td><a class="btn btn-primary" href="{% url 'edit_named_page' page.group.name page.name %}">Edit</a></td>
+                            <td><a class="btn btn-danger" href="{% url 'delete_named_page' page.pk %}">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
     {% endfor %}
     </table>
 {% endblock %}
