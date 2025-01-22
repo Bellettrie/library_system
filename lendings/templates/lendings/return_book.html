@@ -1,52 +1,34 @@
-{% extends 'base_bootstrap.html' %}
-{% block title %}{% endblock %}
-{% block content%}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col col-md-12 col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Returning Book</h4>
-                    <table class="card-text" cellspacing="0" cellpadding="2">
-                        <tr><td>Title:</td><td>{{ item.get_title }}</td></tr>
-                        <tr><td>Name:</td><td>{{ lending.member }}</td></tr>
-                        <tr><td>Return Date:</td><td>{{ today }}</td></tr>
-                    </table>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item card-text">
-                        <table cellspacing="0" cellpadding="2">
-                            {% if late %}
-                                <tr><td>Due date:</td><td>{{ lending.end_date }} ({{ days_late }} days late)</td><tr>
-                                <tr><td>Fine:</td><td> &euro;{{ fine }}</td></tr>
-                            {% else %}
-                                 <tr><td>Due date:</td><td>{{ lending.end_date }}(on time :))</td></tr>
-                            {% endif %}
-                        </table>
-                    </li>
-                    {% if reserved %}
-                        <li class="list-group-item card-text">
-                            <h6>Reservation Pending</h6>
-                            <table cellspacing="0" cellpadding="2">
-                                <tr><td>Member:</td><td>{{ reservation.member.name }}</td></tr>
-                                <tr><td>Today:</td><td>{{ today }}</td></tr>
-                            </table><br />
-                            Please put a sticky note on the book with the member name & date of today, and place the book apart. The member will be notified automatically.
-                        </li>
-                    {% endif %}
-                    {% if not item.in_available_state %}
-                        <li class="list-group-item">Book is {{ item.get_state }}, please treat it accordingly.</li>
-                    {% endif %}
-                </ul>
-                <div class="card-body">
-                    <form action="#" method="post">
-                        {% csrf_token %}
-                        <input type="submit" value="Return it" class="btn btn-success" >
-                    </form>
-                </div>
-            </div>
+{% extends hx_fallback|yesno:"base.html,hx_modal.html" %}
+{% block content %}
+    <form post="{{ request.path }}" hx-post="{{ request.path }}" class="modal-content" method="post">
+        {% csrf_token %}
+        <div class="modal-header">
+            <h5 class="modal-title">Returning Book</h5>
         </div>
-    </div>
-</div>
-
+        <div class="modal-body">
+            Returning work: {{ item.get_title }} <br/>
+            From member: {{ lending.member }} <br/>
+            End date {{ today }} <br/>
+            {% if late %}
+                Due date: {{ lending.end_date }} ({{ days_late }} days late) <br/>
+                Fine: &euro;{{ fine }} <br/>
+            {% else %}
+                Due date: {{ lending.end_date }}(on time :)) <br/>
+            {% endif %}
+            {% if reserved %}
+                <br />
+                Reservation Pending <br/>
+                Member: {{ reservation.member.name }} <br/>
+                Today: {{ today }} <br/>
+                <br />
+                Please put a sticky note on the book with the member name & date of today, and place the book apart. The member will be notified automatically. <br/>
+            {% endif %}
+            {% if not item.in_available_state %}
+                Book is {{ item.get_state }}, please treat it accordingly. <br/>
+            {% endif %}
+        </div>
+        <div class="modal-footer">
+            <input type="submit" value="Return" class="btn btn-success">
+        </div>
+    </form>
 {% endblock %}

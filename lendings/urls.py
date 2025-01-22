@@ -2,6 +2,7 @@ from django.urls import path
 
 from lendings.path_names import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, LENDING_FINALIZE, \
     LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK, LENDING_EXTEND, LENDING_FAILED, LENDING_HISTORY
+from utils.wrappers import hx_wrap
 
 from .views.extend import extend, hx_extend
 from .views.finalize import finalize, finalize_hx
@@ -24,7 +25,7 @@ urlpatterns = [
     path('extend/<int:work_id>', extend, name=LENDING_EXTEND),
     path('extend/hx/<int:work_id>', hx_extend, name=LENDING_EXTEND + "_hx"),
     path('return/<int:work_id>', return_item, name=LENDING_RETURNBOOK),
-    path('return/hx/<int:work_id>', hx_return_item, name=LENDING_RETURNBOOK + "_hx"),
+    path('return/hx/<int:work_id>', hx_wrap(return_item), name=LENDING_RETURNBOOK + "_hx"),
     path('me/', lendings_and_reservations, name=LENDING_MY_LENDINGS),
     path('history/<int:work_id>', LendingHistory.as_view(), name=LENDING_HISTORY),
 ]

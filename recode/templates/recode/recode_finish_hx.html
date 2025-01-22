@@ -1,7 +1,7 @@
 {% extends 'hx_modal_form.html' %}
 
 {% block modal_title %}Confirm Recode {% if recode.item.get_title %} of {{ recode.item.get_title }}{% endif %}{% endblock %}
-{% block modal_content %}
+{% block content %}
 
     From {{ recode.item.book_code }} {% if recode.item.book_code_extension %}[{{ recode.item.book_code_extension }}]{% endif %}
 
