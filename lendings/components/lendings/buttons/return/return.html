@@ -1,5 +1,5 @@
 {% if is_visible %}
     <a class="btn btn-primary {{ bonus_classes }}"
-       data-hx-get="{% url 'lendings.returnbook_hx' lending.item.pk %}" hx-target="#dialog"
+       data-hx-get="{% url 'lendings.returnbook' lending.item.pk %}" hx-target="#dialog"
        href="{% url "lendings.returnbook" lending.item.pk %}">Return</a>
 {% endif %}

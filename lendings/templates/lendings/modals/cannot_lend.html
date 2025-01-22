@@ -1,5 +1,4 @@
-{% extends 'hx_modal.html' %}
-
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 {% block content %}
     {% if member %}
         {% if item %}
@@ -17,5 +16,4 @@
     {% endif %}
     <br>
     {{ error }}
-
 {% endblock %}

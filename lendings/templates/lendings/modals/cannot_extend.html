@@ -1,5 +1,4 @@
-{% extends 'hx_modal.html' %}
-
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 {% block content %}
     <div class="modal-header">
         <h5 class="modal-title">Cannot extend item</h5>
