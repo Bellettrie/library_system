@@ -11,11 +11,6 @@ from works.models import Item
 from lendings.procedures.register_returned import register_returned_with_mail
 
 
-@permission_required('lendings.return')
-def hx_return_item(request, work_id):
-    return return_item(request, work_id, True)
-
-
 @transaction.atomic
 @permission_required('lendings.return')
 def return_item(request, work_id, hx_enabled=False):
