@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from members.models import Member
 
+
 @transaction.atomic
 @login_required()
 def change_own_password(request, hx_enabled=False):

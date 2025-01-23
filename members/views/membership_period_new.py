@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.http import HttpResponseRedirect, HttpResponse
@@ -11,8 +9,6 @@ from members.models import Member
 from members.procedures.delete_double_periods import delete_double_periods
 from members.views.member_new import get_end_date
 from utils.time import get_today, get_now
-from utils.wrappers import hx_wrap
-
 
 @transaction.atomic
 @permission_required('members.change_member')
@@ -32,4 +28,5 @@ def new_membership_period(request, member_id, hx_enabled=False):
         form = MembershipPeriodForm(instance=member, initial={'start_date': get_today(),
                                                               'end_date': get_end_date(get_now().year,
                                                                                        get_now().month > 6)})
-    return render(request, 'members/modals/membership_period_edit.html', {'form': form, 'member': member, "hx_enabled":hx_enabled})
+    return render(request, 'members/modals/membership_period_edit.html',
+                  {'form': form, 'member': member, "hx_enabled": hx_enabled})

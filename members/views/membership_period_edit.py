@@ -24,4 +24,5 @@ def edit_membership_period(request, membership_period_id, hx_enabled=False):
     else:
         form = MembershipPeriodForm(instance=membership_period)
 
-    return render(request,  'members/modals/membership_period_edit.html', {'form': form, 'member': membership_period, "hx_enabled":hx_enabled})
+    return render(request, 'members/modals/membership_period_edit.html',
+                  {'form': form, 'member': membership_period, "hx_enabled": hx_enabled})

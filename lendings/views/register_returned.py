@@ -26,7 +26,7 @@ def return_item(request, work_id, hx_enabled=False):
             return render(request, 'lendings/modals/returned_book.html',
                           {'item': item, 'member': lending.member})
         return HttpResponseRedirect(reverse('members.view', args=(lending.member.pk, 0,)))
-    return render(request, return_book_template, {'hx_enabled':  hx_enabled,'item': item,
+    return render(request, return_book_template, {'hx_enabled': hx_enabled, 'item': item,
                                                   'lending': lending,
                                                   'late': lending.end_date < get_today(),
                                                   'days_late': late_days.days,

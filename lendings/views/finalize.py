@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404
@@ -37,10 +35,10 @@ def finalize(request, work_id, member_id, hx_enabled=False):
             lending = new_lending(item, member, request.user.member, get_today())
             return render(request, finalized_template,
                           {'member': member, 'item': item, "date": lending.end_date, 'fee': fee,
-                           'hx_enabled':hx_enabled})
+                           'hx_enabled': hx_enabled})
         except LendingImpossibleException as error:
             return render(request, cannot_lend_template,
-                          {'member': member, 'item': item, 'error': error, 'fee': fee, 'hx_enabled':hx_enabled})
+                          {'member': member, 'item': item, 'error': error, 'fee': fee, 'hx_enabled': hx_enabled})
     return render(request, finalize_template,
                   {'member': member, 'item': item, "date": get_end_date(item, member, get_today()), 'fee': fee,
-                   'hx_enabled':hx_enabled})
+                   'hx_enabled': hx_enabled})

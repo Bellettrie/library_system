@@ -19,5 +19,6 @@ def lending_failed(request, member_id, work_id, reason_id):
     member = get_object_or_404(Member, pk=member_id)
     organising_member = request.user.member
     return render(request, 'lendings/modals/cannot_lend.html', {'item': item,
-                                                         'member': member, 'organising_member': organising_member,
-                                                         'reason': lending_failed_reasons[reason_id]})
+                                                                'member': member,
+                                                                'organising_member': organising_member,
+                                                                'reason': lending_failed_reasons[reason_id]})

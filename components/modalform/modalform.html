@@ -1,0 +1,15 @@
+<form hx-post="{{ form_path }}" class="modal-content" method="post">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h5 class="modal-title">{{ form_title }}</h5>
+    </div>
+    <div class="modal-body">
+        {% fill 'formbody' %}
+        {% endfill %}
+    </div>
+    <div class="modal-footer">
+        {% if with_cancel %}
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>{% endif %}
+        <input class="btn btn-primary" type="submit" value="{{ form_button_name }}">
+    </div>
+</form>

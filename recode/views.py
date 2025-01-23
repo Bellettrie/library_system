@@ -45,4 +45,4 @@ def recode_finish(request, pk, hx_enabled=False):
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         else:
             return redirect(alt)
-    return render(request, templ, {'recode': recode, "hx_enabled":hx_enabled})
+    return render(request, templ, {'recode': recode, "hx_enabled": hx_enabled})

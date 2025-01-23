@@ -8,7 +8,6 @@ import members.views.member_delete
 import members.views.member_edit
 import members.views.member_new
 import members.views.member_show
-from members.permissions import MEMBERS_LIST, MEMBERS_NEW, MEMBERS_VIEW, MEMBERS_EDIT, MEMBERS_DELETE
 from utils.wrappers import hx_wrap
 from .views.committees import join_committee, leave_committee
 from .views.member_list import MemberList
@@ -28,7 +27,7 @@ urlpatterns = [
     path('anonymise/list', members.views.anonymise_list.anonymise_list, name='members.anonymise_all'),
     path('new', members.views.member_new.new, name="members.new"),
 
-    path('<int:member_id>/<int:full>', members.views.member_show.show, name= "members.view"),
+    path('<int:member_id>/<int:full>', members.views.member_show.show, name="members.view"),
     path('<int:member_id>/edit', members.views.member_edit.edit, name="members.edit"),
     path('<int:member_id>/delete', members.views.member_delete.delete_member, name='members.delete'),
 

@@ -1,14 +1,9 @@
-from datetime import datetime
-
-from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from lendings.lendingException import LendingImpossibleException
-from lendings.models.lending import Lending
-from lendings.procedures.extend import extend_lending, new_extension
+from lendings.procedures.extend import new_extension
 from lendings.procedures.get_end_date import get_end_date
 from utils.time import get_today
 
@@ -62,5 +57,5 @@ def extend(request, work_id, hx_enabled=False):
                        'late': lending.end_date < get_today(),
                        'days_late': late_days.days,
                        'fine': lending.calculate_fine()
-                        , "hx_enabled": hx_enabled
+                          , "hx_enabled": hx_enabled
                        })
