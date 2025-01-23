@@ -56,6 +56,6 @@ def extend(request, work_id, hx_enabled=False):
                        "date": get_end_date(item, lending.member, get_today()),
                        'late': lending.end_date < get_today(),
                        'days_late': late_days.days,
-                       'fine': lending.calculate_fine()
-                          , "hx_enabled": hx_enabled
+                       'fine': lending.calculate_fine(),
+                       "hx_enabled": hx_enabled
                        })

@@ -10,6 +10,7 @@ from members.procedures.delete_double_periods import delete_double_periods
 from members.views.member_new import get_end_date
 from utils.time import get_today, get_now
 
+
 @transaction.atomic
 @permission_required('members.change_member')
 def new_membership_period(request, member_id, hx_enabled=False):
