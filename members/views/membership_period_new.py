@@ -11,14 +11,12 @@ from members.models import Member
 from members.procedures.delete_double_periods import delete_double_periods
 from members.views.member_new import get_end_date
 from utils.time import get_today, get_now
+from utils.wrappers import hx_wrap
 
 
 @transaction.atomic
 @permission_required('members.change_member')
 def new_membership_period(request, member_id, hx_enabled=False):
-    templ = 'members/membership_edit.html'
-    if hx_enabled:
-        templ = 'members/membership_edit_hx.html'
     member = get_object_or_404(Member, pk=member_id)
     if request.method == 'POST':
         form = MembershipPeriodForm(request.POST)
@@ -34,4 +32,4 @@ def new_membership_period(request, member_id, hx_enabled=False):
         form = MembershipPeriodForm(instance=member, initial={'start_date': get_today(),
                                                               'end_date': get_end_date(get_now().year,
                                                                                        get_now().month > 6)})
-    return render(request, templ, {'form': form, 'member': member})
+    return render(request, 'members/modals/membership_period_edit.html', {'form': form, 'member': member, "hx_enabled":hx_enabled})

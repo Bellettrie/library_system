@@ -43,8 +43,6 @@ urlpatterns = [
          name='members.generate_invite'),
     path('<int:member_id>/uninvite', members.views.user.invite_code_disable.disable_invite_code,
          name='members.disable_invite'),
-    path('<int:member_id>/user/edit/', hx_wrap(members.views.user.edit.change_user), name='members.change_user'),
-
     path('<int:member_id>/user/delete', hx_wrap(members.views.user.delete.delete_user),
          name='members.delete_user'),
 

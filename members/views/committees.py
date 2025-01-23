@@ -11,10 +11,6 @@ from members.models import Member, Committee
 @transaction.atomic
 @permission_required('members.committee_update')
 def join_committee(request, member_id, hx_enabled=True):
-    templ = 'members/committee/join.html'
-    if hx_enabled:
-        templ = 'members/committee/join_hx.html'
-
     member = get_object_or_404(Member, pk=member_id)
     committees = Committee.objects.exclude(member=member)
 
@@ -30,16 +26,13 @@ def join_committee(request, member_id, hx_enabled=True):
                 return HttpResponse(status=209, headers={"HX-Redirect": "0"})
             return HttpResponseRedirect(reverse('members.view', args=(member_id, 0,)))
 
-    return render(request, templ, {'member': member, 'committees': committees})
+    return render(request, 'members/modals/committee_join.html',
+                  {'member': member, 'committees': committees, "hx_enabled": hx_enabled})
 
 
 @transaction.atomic
 @permission_required('members.committee_update')
 def leave_committee(request, member_id, committee_id, hx_enabled=True):
-    templ = 'members/committee/leave.html'
-    if hx_enabled:
-        templ = 'members/committee/leave_hx.html'
-
     member = get_object_or_404(Member, pk=member_id)
     committee = get_object_or_404(Committee, pk=committee_id)
 
@@ -51,4 +44,5 @@ def leave_committee(request, member_id, committee_id, hx_enabled=True):
             return HttpResponse(status=209, headers={"HX-Redirect": "0"})
         return HttpResponseRedirect(reverse('members.view', args=(member_id, 0,)))
 
-    return render(request, templ, {'member': member, 'committee': committee})
+    return render(request, 'members/modals/committee_leave.html',
+                  {'member': member, 'committee': committee, "hx_enabled": hx_enabled})

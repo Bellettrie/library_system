@@ -9,16 +9,9 @@ from members.models import MembershipPeriod
 from members.procedures.delete_double_periods import delete_double_periods
 
 
-def edit_membership_period_hx(request, membership_period_id):
-    return edit_membership_period(request, membership_period_id, True)
-
-
 @transaction.atomic
 @permission_required('members.change_member')
 def edit_membership_period(request, membership_period_id, hx_enabled=False):
-    templ = 'members/membership_edit.html'
-    if hx_enabled:
-        templ = 'members/membership_edit_hx.html'
     membership_period = get_object_or_404(MembershipPeriod, pk=membership_period_id)
     if request.method == 'POST':
         form = MembershipPeriodForm(request.POST, instance=membership_period)
@@ -31,4 +24,4 @@ def edit_membership_period(request, membership_period_id, hx_enabled=False):
     else:
         form = MembershipPeriodForm(instance=membership_period)
 
-    return render(request, templ, {'form': form, 'member': membership_period})
+    return render(request,  'members/modals/membership_period_edit.html', {'form': form, 'member': membership_period, "hx_enabled":hx_enabled})

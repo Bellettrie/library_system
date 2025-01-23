@@ -31,8 +31,6 @@ class RecodeList(PermissionRequiredMixin, ListView):
 @permission_required('recode.change_recode')
 def recode_finish(request, pk, hx_enabled=False):
     templ = 'recode/recode_finish.html'
-    if hx_enabled:
-        templ = 'recode/recode_finish_hx.html'
 
     recode = get_object_or_404(Recode, pk=pk)
     if request.method == 'POST':
@@ -47,4 +45,4 @@ def recode_finish(request, pk, hx_enabled=False):
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         else:
             return redirect(alt)
-    return render(request, templ, {'recode': recode})
+    return render(request, templ, {'recode': recode, "hx_enabled":hx_enabled})
