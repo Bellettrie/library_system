@@ -1,7 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    {% component 'modalform.ModalForm' title="Change Password" path=request.path with_cancel=True button_name="Save" button_type="btn-success" btn_action="submit" %}
+    {% component 'modalform.ModalForm' title="Change Password" path=request.path button_name="Save" button_type="btn-success" btn_action="submit" %}
         Observe that after changing your password you will be logged out and redirected to the homepage.
     {% endcomponent %}
 {% endblock %}

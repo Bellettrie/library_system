@@ -1,7 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    {% component 'modalform.ModalForm' title="Add "|add:member.name|add:" to Committee" path=request.path with_cancel=True button_name="Add" button_type="btn-success" btn_action="submit" %}
+    {% component 'modalform.ModalForm' title="Add "|add:member.name|add:" to Committee" path=request.path button_name="Add" button_type="btn-success" btn_action="submit" %}
             <select class="select select-bordered w-full max-w-xs join-item" name="committee_id">
                 {% for committee in committees %}
                     <option value="{{ committee.pk }}">{{ committee.name }}</option>

@@ -1,19 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-{#    <div class="modal-header">#}
-{#        <h4>Delete user {{ member.user }}</h4>#}
-{#    </div>#}
-{#    <form hx-post="{{ request.path }}" class="modal-content" method="post">#}
-{#        <div class="modal-body">#}
-{#        </div>#}
-{#        <div class="modal-footer">#}
-{#            <a href="{% %}" class="btn btn-danger">Delete</a>#}
-{#        </div>#}
-{##}
-{#    </form>#}
-    {% url 'members.delete_user' member.pk as url %}
-    {% component 'modalform.ModalForm' title="Delete user credentials" path=url|add:"?sure=True" with_cancel=True button_name="Delete" button_type="btn-error" btn_action="submit" %}
+    {% component 'modalform.ModalForm' title="Delete user credentials" path=request.path button_name="Delete" button_type="btn-error" btn_action="submit" %}
         You are about to delete the user: {{ member_user.username }}? <br> This is not reversable. Are you sure?
     {% endcomponent %}
 {% endblock %}

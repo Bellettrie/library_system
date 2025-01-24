@@ -1,6 +1,6 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 {% block content %}
-    {% component 'modalform.ModalForm' title='Returning Book' path=request.path with_cancel=True button_name="Return" button_type="btn-primary" %}
+    {% component 'modalform.ModalForm' title='Returning Book' path=request.path button_name="Return" button_type="btn-primary" %}
 
         Returning work: {{ item.get_title }} <br/>
         From member: {{ lending.member }} <br/>
