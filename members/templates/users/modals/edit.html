@@ -1,19 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    <div class="modal-header text-lg font-bold">
-        Change Password
-    </div>
-    <form hx-post="{{ request.path }}" class="modal-content" method="post">
-        <div class="modal-body">
-
-            {% csrf_token %}
-            {% component 'form/compact' form / %}
-
-            Observe that after changing your password you will be logged out and redirected to the homepage.
-        </div>
-        <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-    </form>
+    {% component 'modalform.ModalForm' title="Change Password" path=request.path with_cancel=True button_name="Save" button_type="btn-success" btn_action="submit" %}
+        Observe that after changing your password you will be logged out and redirected to the homepage.
+    {% endcomponent %}
 {% endblock %}

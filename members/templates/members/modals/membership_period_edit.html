@@ -1,15 +1,6 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 {% block content %}
-    <div class="modal-header">
-        <h4>Edit Membership period for {{ member.get_name }}</h4>
-    </div>
-    <form hx-post="{{ request.path }}" class="modal-content" method="post">
-        <div class="modal-body">
-            {% csrf_token %}
-            {% component 'form/compact' form / %}
-        </div>
-        <div class="modal-footer">
-            <input class="btn btn-success" type="submit" value="Submit">
-        </div>
-    </form>
+    {% component 'modalform.ModalForm' title="Edit Membership period" path=request.path with_cancel=True button_name="Save" button_type="btn-success" btn_action="submit" %}
+    {% component 'form/compact' form / %}
+    {% endcomponent %}
 {% endblock %}

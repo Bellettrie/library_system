@@ -11,9 +11,6 @@ from members.models import Member
 @transaction.atomic
 @login_required()
 def change_own_password(request, hx_enabled=False):
-    templ = 'users/edit.html'
-    if hx_enabled:
-        templ = 'users/edit_hx.html'
     member = request.user.member
     if request.method == 'POST':
         form = PasswordChangeForm(user=member.user, data=request.POST)
@@ -29,4 +26,5 @@ def change_own_password(request, hx_enabled=False):
             return HttpResponseRedirect('/')
     else:
         form = PasswordChangeForm(member.user)
-    return render(request, templ, {'form': form, 'member': member, 'member_user': member.user})
+    return render(request, 'users/modals/edit.html',
+                  {'form': form, 'member': member, 'member_user': member.user, "hx_enabled": hx_enabled})

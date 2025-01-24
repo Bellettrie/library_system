@@ -1,18 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    <div class="text-lg font-bold">
-        Remove {{ member.name }} from {{ committee.name }}?
-    </div>
-
-    <form hx-post="{{ request.path }}" class="modal-content" method="post">
-        {% csrf_token %}
-        <div class="modal-body">
-            Are you sure you want to do this?
-        </div>
-        <div class="modal-action">
-            <input type="submit" class="btn btn-error" value="Confirm">
-        </div>
-
-    </form>
+    {% component 'modalform.ModalForm' title="Remove "|add:member.name|add:" from "|add:committee.name path=request.path with_cancel=True button_name="Remove" button_type="btn-error" btn_action="submit" %}
+        Are you sure you want to do this?
+    {% endcomponent %}
 {% endblock %}
