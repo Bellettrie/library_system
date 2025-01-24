@@ -1,25 +1,8 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    {# reload page when modal is hidden so we show the correct info behind it #}
-    <script>
-        $('#dialog').on("close", function (evt) {
-            location.reload();
-        });
-    </script>
-
-    <div class="modal-header">
-        <h5 class="modal-title">Item lent successfully</h5>
-    </div>
-    <div class="modal-body">
+    {% component 'modalform.ModalForm' title='Book lent out' path=request.path with_cancel=True button_name="Ok" button_type="" btn_action="close" %}
         <a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a> may keep {{ item.publication.title }}
         until: {{ date }}
-
-    </div>
-    <div class="modal-action">
-        <form method="dialog">
-            <!-- if there is a button in form, it will close the modal -->
-            <button class="btn">Ok</button>
-        </form>
-    </div>
+    {% endcomponent %}
 {% endblock %}

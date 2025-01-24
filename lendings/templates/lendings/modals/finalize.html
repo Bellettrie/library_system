@@ -1,13 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    <form hx-post="{{ request.path }}" class="modal-content" method="post">
-        {% csrf_token %}
-        <div class="modal-header">
-            <h5 class="modal-title">Finalize lending</h5>
-        </div>
-        <div class="modal-body">
-
+    {% component 'modalform.ModalForm' title='Finalize Lending of Book' path=request.path with_cancel=True button_name="Return" button_type="btn-primary" %}
             Lending work: {{ item.get_title }} <br/>
             Lending to member: {{ member.name }} <br/>
             End date {{ date }} <br/>
@@ -15,10 +9,6 @@
             {% if fee != "" %}
                 Lending fee: €{{ fee }}
             {% endif %}
-        </div>
-        <div class="modal-footer">
-            <input type="submit" value="Lend" class="btn btn-success">
-        </div>
-    </form>
+    {% endcomponent %}
 {% endblock %}
 

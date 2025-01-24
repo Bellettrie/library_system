@@ -17,7 +17,7 @@ If you are a member of Bellettrie, and are a member of the web committee you can
 ## Linting
 The CI environment uses Flake8 for linting. The following command may work within pycharm, if you have flake8 installed (install the requirements again if you don't, it's one of the requirements now).
 ```bash
-flake8 . --ignore F401,E501,W503 --count --show-source --statistics --max-line-length=127 --exclude venv,jstoolchain/node_modules
+flake8 . --ignore F401,E501,W503 --count --show-source --statistics --max-line-length=127 --exclude venv,styles/config/node_modules
 ```
 
 
