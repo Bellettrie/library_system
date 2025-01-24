@@ -4737,6 +4737,15 @@ html:has(.drawer-toggle:checked) {
   width: 100%;
 }
 
+.w-max {
+  width: -moz-max-content;
+  width: max-content;
+}
+
+.w-auto {
+  width: auto;
+}
+
 .min-w-fit {
   min-width: -moz-fit-content;
   min-width: fit-content;
@@ -5631,6 +5640,15 @@ html:has(.drawer-toggle:checked) {
     width: 40%;
   }
 
+  .lg\:w-max {
+    width: -moz-max-content;
+    width: max-content;
+  }
+
+  .lg\:w-auto {
+    width: auto;
+  }
+
   .lg\:flex-1 {
     flex: 1 1 0%;
   }
@@ -5697,6 +5715,10 @@ html:has(.drawer-toggle:checked) {
 
   .lg\:basis-9\/12-gap-3 {
     flex-basis: calc( 75% - (1.5rem));
+  }
+
+  .lg\:basis-\[1400px\] {
+    flex-basis: 1400px;
   }
 
   .lg\:flex-row {
