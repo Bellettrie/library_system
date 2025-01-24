@@ -5128,6 +5128,10 @@ html:has(.drawer-toggle:checked) {
   --tw-ring-offset-color: var(--fallback-b1,oklch(var(--b1)/1));
 }
 
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 @media (min-width: 640px) {
   .sm\:join {
     display: inline-flex;
