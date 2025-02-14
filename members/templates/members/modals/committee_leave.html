@@ -2,6 +2,11 @@
 
 {% block content %}
     {% component 'modalform.ModalForm' title="Remove "|add:member.name|add:" from "|add:committee.name path=request.path form_action="submit" %}
-        Are you sure you want to do this?
+        {% fill "modal_body" %}
+            Are you sure you want to do this?
+        {% endfill %}
+        {% fill "modal_submit_button" %}
+            <button class="btn btn-error">Delete</button>
+        {% endfill %}
     {% endcomponent %}
 {% endblock %}

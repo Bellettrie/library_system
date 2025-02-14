@@ -9,14 +9,14 @@
     {% csrf_token %}
     <h5 class="modal-title text-2xl">{{ form_title }}</h5>
     <div class="modal-body">
-        {% slot 'formbody' default %}
+        {% slot 'modal_body' default %}
         {% endslot %}
     </div>
 
     <div class="modal-footer join w-full justify-end">
         {% if form_action == "submit" %}
               {% slot "modal_submit_button" %}
-                  <button class="btn btn-primary">Submit</button>
+                  <button class="btn btn-success">Save</button>
               {% endslot %}
         {% endif %}
         {% if btn_action == "close" %}
@@ -24,7 +24,7 @@
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
                   {% slot "modal_submit_button" %}
-                      <button class="btn btn-primary">Submit</button>
+                      <button class="btn">Close</button>
                   {% endslot %}
                 </form>
             </div>
