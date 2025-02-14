@@ -1,7 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    {% component 'modalform.ModalForm' title='Book returned' path=request.path button_name="Ok" button_type="" btn_action="close" %}
+    {% component 'modalform.ModalForm' title='Book returned' path=request.path form_action="close" %}
         <a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a> may put {{ item.publication.title }} back
         to where it belongs.
     {% endcomponent %}

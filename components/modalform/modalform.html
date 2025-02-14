@@ -1,4 +1,4 @@
-{% if btn_action == 'close' %}
+{% if form_action == 'close' %}
     <script>
         $('#dialog').on("close", function (evt) {
             location.reload();
@@ -14,14 +14,18 @@
     </div>
 
     <div class="modal-footer join w-full justify-end">
-        {% if btn_action == "submit" %}
-            <input class="btn {{ form_button_type }} join-item" type="submit" value="{{ form_button_name }}">
+        {% if form_action == "submit" %}
+              {% slot "modal_submit_button" %}
+                  <button class="btn btn-primary">Submit</button>
+              {% endslot %}
         {% endif %}
         {% if btn_action == "close" %}
             <div class="modal-action">
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
-                    <button class="btn {{ form_button_type }} join-item">{{ form_button_name }}</button>
+                  {% slot "modal_submit_button" %}
+                      <button class="btn btn-primary">Submit</button>
+                  {% endslot %}
                 </form>
             </div>
         {% endif %}

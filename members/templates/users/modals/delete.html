@@ -1,7 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    {% component 'modalform.ModalForm' title="Delete user credentials" path=request.path button_name="Delete" button_type="btn-error" btn_action="submit" %}
+    {% component 'modalform.ModalForm' title="Delete user credentials" path=request.path form_action="submit" %}
         You are about to delete the user: {{ member_user.username }}? <br> This is not reversable. Are you sure?
     {% endcomponent %}
 {% endblock %}
