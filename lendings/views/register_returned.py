@@ -24,7 +24,7 @@ def return_item(request, work_id, hx_enabled=False):
         register_returned_with_mail(lending, request.user.member)
         if hx_enabled:
             return render(request, 'lendings/modals/returned_book.html',
-                          {'item': item, 'member': lending.member})
+                          {'hx_enabled': hx_enabled, 'item': item, 'member': lending.member})
         return HttpResponseRedirect(reverse('members.view', args=(lending.member.pk, 0,)))
     return render(request, return_book_template, {'hx_enabled': hx_enabled, 'item': item,
                                                   'lending': lending,
