@@ -2,6 +2,7 @@
 
 {% block content %}
     {% component 'modalform.ModalForm' title='Finalize Lending of Book' path=request.path button_name="Lend" button_type="btn-success" %}
+        {% fill "modal_body" %}
             Lending work: {{ item.get_title }} <br/>
             Lending to member: {{ member.name }} <br/>
             End date {{ date }} <br/>
@@ -9,6 +10,11 @@
             {% if fee != "" %}
                 Lending fee: €{{ fee }}
             {% endif %}
+        {% endfill %}
+
+        {% fill "modal_submit_button" %}
+            <button class="btn btn-success">Lend</button>
+        {% endfill %}
     {% endcomponent %}
 {% endblock %}
 

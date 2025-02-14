@@ -2,10 +2,15 @@
 
 {% block content %}
     {% component 'modalform.ModalForm' title="Add "|add:member.name|add:" to Committee" path=request.path form_action="submit" %}
+        {% fill "modal_body" %}
             <select class="select select-bordered w-full max-w-xs join-item" name="committee_id">
                 {% for committee in committees %}
                     <option value="{{ committee.pk }}">{{ committee.name }}</option>
                 {% endfor %}
             </select>
+        {% endfill %}
+        {% fill "modal_submit_button" %}
+            <button class="btn btn-success">Add to Committee</button>
+        {% endfill %}
     {% endcomponent %}
 {% endblock %}
