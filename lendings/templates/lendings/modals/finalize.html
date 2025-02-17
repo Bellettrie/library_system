@@ -1,7 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    {% component 'modalform.ModalForm' title='Finalize Lending of Book' path=request.path button_name="Lend" button_type="btn-success" %}
+    {% component 'modalform.ModalForm' title='Finalize Lending of Book' path=request.path %}
         {% fill "modal_body" %}
             Lending work: {{ item.get_title }} <br/>
             Lending to member: {{ member.name }} <br/>
