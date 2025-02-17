@@ -86,7 +86,6 @@ TEMPLATES = [
                 'tables.templatetags.render_square',
 
                 'tables.templatetags.publications_list_for_member',
-                'tables.templatetags.reservation_table',
                 'tables.templatetags.item_detail_table',
                 'django_components.templatetags.component_tags',
             ],
