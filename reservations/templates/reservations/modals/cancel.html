@@ -1,0 +1,13 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
+{% block content %}
+    {% component 'modalform.ModalForm' title="Cancel Reservation" %}
+        {% fill "modal_body" %}
+            Lending work: {{ reservation.item.get_title }} <br/>
+
+        {% endfill %}
+        {% fill "modal_submit_button" %}
+            <button class="btn btn-error">Cancel</button>
+        {% endfill %}
+    {% endcomponent %}
+{% endblock %}

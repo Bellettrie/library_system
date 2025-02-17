@@ -67,25 +67,6 @@ class LentByColumn(Column):
     def render(self, row: LendingRow, perms=None):
         return render_to_string("columns/member_column.html", {"member": row.lending.member})
 
-
-class ReservedByColumn(Column):
-    @staticmethod
-    def get_header():
-        return "Member"
-
-    def render(self, row: ReservationRow, perms=None):
-        return render_to_string("columns/member_column.html", {"member": row.reservation.member})
-
-
-class ReservationEndDate(Column):
-    @staticmethod
-    def get_header():
-        return "End Date"
-
-    def render(self, row: ReservationRow, perms=None):
-        return render_to_string("columns/reservation_end_date.html", {"reservation": row.reservation})
-
-
 class StartDate(Column):
     @staticmethod
     def get_header():
