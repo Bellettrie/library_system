@@ -1,12 +1,8 @@
-{% extends 'hx_modal.html' %}
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+{% block content %}
+    {% component 'modalform.ModalForm' title='Returning Book' path=request.path %}
+        {% fill "modal_body" %}
 
-{% block modal_content %}
-    <form hx-post="{{ request.path }}" class="modal-content" method="post">
-        {% csrf_token %}
-        <div class="modal-header">
-            <h5 class="modal-title">Returning Book</h5>
-        </div>
-        <div class="modal-body">
             Returning work: {{ item.get_title }} <br/>
             From member: {{ lending.member }} <br/>
             End date {{ today }} <br/>
@@ -17,19 +13,20 @@
                 Due date: {{ lending.end_date }}(on time :)) <br/>
             {% endif %}
             {% if reserved %}
-                <br />
+                <br/>
                 Reservation Pending <br/>
                 Member: {{ reservation.member.name }} <br/>
                 Today: {{ today }} <br/>
-                <br />
-                Please put a sticky note on the book with the member name & date of today, and place the book apart. The member will be notified automatically. <br/>
+                <br/>
+                Please put a sticky note on the book with the member name & date of today, and place the book apart. The
+                member will be notified automatically. <br/>
             {% endif %}
             {% if not item.in_available_state %}
                 Book is {{ item.get_state }}, please treat it accordingly. <br/>
             {% endif %}
-        </div>
-        <div class="modal-footer">
-            <input type="submit" value="Return" class="btn btn-success">
-        </div>
-    </form>
+        {% endfill %}
+        {% fill "modal_submit_button" %}
+            <button class="btn btn-success">Return</button>
+        {% endfill %}
+    {% endcomponent %}
 {% endblock %}

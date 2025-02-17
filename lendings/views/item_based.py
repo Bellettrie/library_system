@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, get_object_or_404
 
-from lendings.path_names import LENDING_FINALIZE
 from works.models import Item
 
 
@@ -12,5 +11,4 @@ def item_based(request, work_id):
     words = get_query_words(request.GET.get("q"))
     members = query_members(words)
     return render(request, 'lendings/based_on_work.html',
-                  {'members': members, 'item': get_object_or_404(Item, pk=work_id),
-                   "LENDING_FINALIZE": LENDING_FINALIZE})
+                  {'members': members, 'item': get_object_or_404(Item, pk=work_id)})

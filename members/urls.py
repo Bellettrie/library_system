@@ -22,14 +22,14 @@ from .views.membership_period_new import new_membership_period
 from .views.auth.by_committee import webcie
 
 urlpatterns = [
-    path('', MemberList.as_view(), name=MEMBERS_LIST),
-    path('anon', AnonMemberList.as_view(), name='members.list.anon'),
+    path('', MemberList.as_view(), name="members.list"),
+    path('anonymise', AnonMemberList.as_view(), name='members.list.anon'),
     path('anonymise/<int:member_id>', members.views.anonymise.anonymise, name='members.anonymise'),
     path('anonymise/list', members.views.anonymise_list.anonymise_list, name='members.anonymise_all'),
-    path('new', members.views.member_new.new, name=MEMBERS_NEW),
+    path('new', members.views.member_new.new, name="members.new"),
 
-    path('<int:member_id>/<int:full>', members.views.member_show.show, name=MEMBERS_VIEW),
-    path('<int:member_id>/edit', members.views.member_edit.edit, name=MEMBERS_EDIT),
+    path('<int:member_id>/<int:full>', members.views.member_show.show, name="members.view"),
+    path('<int:member_id>/edit', members.views.member_edit.edit, name="members.edit"),
     path('<int:member_id>/delete', members.views.member_delete.delete_member, name='members.delete'),
 
     path('<int:member_id>/signup', members.views.user.signup.signup, name='members.signup'),
@@ -43,8 +43,6 @@ urlpatterns = [
          name='members.generate_invite'),
     path('<int:member_id>/uninvite', members.views.user.invite_code_disable.disable_invite_code,
          name='members.disable_invite'),
-    path('<int:member_id>/user/edit/', hx_wrap(members.views.user.edit.change_user), name='members.change_user'),
-
     path('<int:member_id>/user/delete', hx_wrap(members.views.user.delete.delete_user),
          name='members.delete_user'),
 
