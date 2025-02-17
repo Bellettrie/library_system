@@ -2,6 +2,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
 
 from members.models import Member
+from reservations.models import Reservation
 
 
 def show(request, member_id, full):
@@ -12,6 +13,7 @@ def show(request, member_id, full):
         if not (member and member.pk == member_id):
             raise PermissionDenied
     member = get_object_or_404(Member, pk=member_id)
+    reservations = Reservation.objects.filter(member=member).all()
     if member.is_anonimysed:
         return render(request, 'members/detail_anonymous.html', {'member': member})
-    return render(request, 'members/detail.html', {'member': member, 'detailed': full})
+    return render(request, 'members/detail.html', {'member': member, 'detailed': full, 'reservations': reservations})

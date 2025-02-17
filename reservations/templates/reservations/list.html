@@ -3,5 +3,7 @@
 
 {% block title %}All current reservations{% endblock %}
 {% block content %}
-    {%  current_reservations %}
+    {%  component "reservations.list.List" reservations perms show_member=True %}
+
+    {% endcomponent %}
 {% endblock %}

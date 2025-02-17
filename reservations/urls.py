@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .path_names import RESERVE_LIST, RESERVE_ITEM, RESERVE_MEMBER, RESERVE_FINALIZE, RESERVE_FAILED, RESERVE_LEND, RESERVE_DELETE
+from utils.wrappers import hx_wrap
+from .path_names import RESERVE_LIST, RESERVE_ITEM, RESERVE_MEMBER, RESERVE_FINALIZE, RESERVE_FAILED, RESERVE_LEND
 
 from .views.delete_reservation import delete_reservation
 from .views.finalize_reservation_based import finalize_reservation_based
@@ -16,7 +17,7 @@ urlpatterns = [
     path('reserve/member/<int:member_id>', reserve_member, name=RESERVE_MEMBER),
     path('reserve/finalize/<int:work_id>/<int:member_id>', reserve_finalize, name=RESERVE_FINALIZE),
     path('reserve/failed/<int:work_id>/<int:member_id>/<int:reason_id>', reserve_failed, name=RESERVE_FAILED),
-    path('reserve/lendfor/<slug:reservation_id>', finalize_reservation_based, name=RESERVE_LEND),
-    path('reserve/delete/<slug:reservation_id>', delete_reservation, name=RESERVE_DELETE),
+    path('reserve/lendfor/<slug:reservation_id>', hx_wrap(finalize_reservation_based), name=RESERVE_LEND),
+    path('reserve/delete/<slug:reservation_id>', hx_wrap(delete_reservation), name='lendings.reserve_delete'),
 
 ]
