@@ -1,0 +1,10 @@
+{% if is_visible %}
+    {% if  cannot_lend_reason %}
+        <div class="tooltip" data-tip="{{ cannot_lend_reason }}">
+            <a class="btn btn-primary btn-secondary {{ bonus_classes }}" disabled="disabled">Lend</a>
+        </div>
+    {% else %}
+        <a class="btn btn-primary  {{ bonus_classes }}" data-hx-get="{% url 'lendings.reserve_lend'  reservation.pk %}"
+           hx-target="#dialog" href="{% url 'lendings.reserve_lend'  reservation.pk %}">Lend</a>
+    {% endif %}
+{% endif %}
