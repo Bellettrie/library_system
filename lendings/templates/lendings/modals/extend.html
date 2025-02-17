@@ -1,0 +1,14 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+{% block content %}
+    {% component 'modalform.ModalForm' title='Extend Item' path=request.path %}
+        {% fill "modal_body" %}
+
+            Extending work: {{ item.publication.title }} <br/>
+            Extending for member: {{ member.name }} <br/>
+            End date {{ date }} <br/>
+        {% endfill %}
+        {% fill "modal_submit_button" %}
+            <button class="btn btn-success">Extend</button>
+        {% endfill %}
+    {% endcomponent %}
+{% endblock %}

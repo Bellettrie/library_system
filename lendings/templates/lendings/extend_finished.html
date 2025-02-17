@@ -1,7 +1,0 @@
-{% extends 'base_bootstrap.html' %}
-{% block title %}Lending extended{% endblock %}
-{%block content %}
-<a href="{% url 'members.view' member.id 0 %}">{{member.name}}</a> may keep {{ item.publication.title }} until: {{ date }}
-<br/>
-<td><a href="{% url 'members.view' member.id 0 %}" class="btn btn-primary btn-sm">Return to member page</a></td>
-{% endblock %}

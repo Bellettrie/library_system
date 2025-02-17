@@ -1,10 +1,10 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %}
     Select a Member for Lending
 {% endblock %}
 {% block content %}
     Lending for work: {{ item.publication.title }}
-    <form action="/lend/work/{{ item.pk }}" method="get">
+    <form action="{% url 'lendings.new.work'  item.pk %}" method="get">
         <label for="Query">Name: </label>
         <input id="q" type="text" name="q">
         <input type="submit" value="Search" class="btn-primary btn" >
@@ -12,8 +12,8 @@
     <table>
         {% for member in members %}
             <tr>
-                <td><a href="{% url LENDING_FINALIZE item.pk  member.id %}">{{ member.name }}</a></td>
-                <td><a  data-hx-get="{% url 'lendings.finalize_hx' item.pk member.pk %}" hx-target="#dialog" href="{% url LENDING_FINALIZE item.pk  member.id %}" class="btn btn-sm btn-primary">Finish lending</a></td>
+                <td><a href="{% url 'lendings.finalize' item.pk  member.id %}">{{ member.name }}</a></td>
+                <td><a  data-hx-get="{% url 'lendings.finalize' item.pk member.pk %}" hx-target="#dialog" href="{% url 'lendings.finalize' item.pk  member.id %}" class="btn btn-sm btn-primary">Finish lending</a></td>
             </tr>
         {% endfor %}
     </table>

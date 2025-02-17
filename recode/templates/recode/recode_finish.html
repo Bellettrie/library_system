@@ -1,12 +1,16 @@
-{% extends 'base_bootstrap.html' %}
-{% block title %}Confirm Recode {% if recode.item.get_title %} of {{ recode.item.get_title }}{% endif %}{% endblock %}
-{% block content%}
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
-    From {{ recode.item.book_code }} {% if recode.item.book_code_extension %}[{{  recode.item.book_code_extension}}]{% endif %}
+{% block content %}
+    {% component 'modalform.ModalForm' title="Confirm Recoding "|add:recode.item.get_title path=request.path %}
+        {% fill "modal_body" %}
 
-    to {{ recode.book_code }} {% if recode.book_code_extension %}[{{  recode.book_code_extension}}]{% endif %}
-    <form method="post" action="#">
-        {% csrf_token %}
-        <input class="btn btn-success" type="submit" value="Save">
-    </form>
+            From {{ recode.item.book_code }} {% if recode.item.book_code_extension %}[
+            {{ recode.item.book_code_extension }}]{% endif %}
+
+            to {{ recode.book_code }} {% if recode.book_code_extension %}[{{ recode.book_code_extension }}]{% endif %}
+        {% endfill %}
+        {% fill "modal_submit_button" %}
+            <button class="btn btn-success" type="submit">Save</button>
+        {% endfill %}
+    {% endcomponent %}
 {% endblock %}
