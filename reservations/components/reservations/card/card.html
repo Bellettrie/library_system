@@ -1,0 +1,22 @@
+{% component "works.info_card" reservation.item %}
+    {% fill "infos" %}
+        <h3 class="text-lg text-md">Reservation </h3>
+        {% if reservation.reservation_end_date %}\
+            <dl>
+                <dd>
+                    {{ reservation.reservation_end_date }}
+                </dd>
+            </dl>
+            <div class=" flex  justify-end  join">
+                {% component 'reservations/buttons/cancel' reservation user.member perms bonus_classes="btn-sm join-item" / %}
+                {% component 'reservations/buttons/lend' reservation user.member perms bonus_classes="btn-sm join-item" / %}
+            </div>
+        {% else %}
+            <dl>
+                <dd>
+                    Not available yet
+                </dd>
+            </dl>
+        {% endif %}
+    {% endfill %}
+{% endcomponent %}

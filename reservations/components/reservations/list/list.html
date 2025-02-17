@@ -1,0 +1,42 @@
+<table class="m-3 hidden lg:table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols ">
+    <tr>
+        {% if not skip_header %}
+            <th></th>
+        {% endif %}
+        <th>Title</th>
+        <th>Author</th>
+        {% if show_member %}
+            <th>Member</th>
+        {% endif %}
+        <th>Infos</th>
+        <th></th>
+    </tr>
+    {% for reservation in reservations %}
+        {% component 'works.table.row' reservation.item skip_header=skip_header %}
+            {% fill "extra_rows" %}
+                {% if show_member %}
+                    <td><a href="{% url 'members.view' reservation.member.pk 0 %}">{{ reservation.member.name }}</a>
+                    </td>
+                {% endif %}
+                {% if reservation.reservation_end_date %}
+                    <td>
+                        {{ reservation.reservation_end_date }}
+                    </td>
+                    <td>
+                    ...
+                    </td>
+                {% else %}
+                    <td colspan="2">
+                        Not available yet
+                    </td>
+                {% endif %}
+            {% endfill %}
+        {% endcomponent %}
+    {% endfor %}
+</table>
+
+<div class="lg:hidden flex flex-col gap-5 m-3">
+    {% for reservation in reservations %}
+        {% component 'reservations.card.Card' reservation perms show_member=show_member / %}
+    {% endfor %}
+</div>

@@ -13,7 +13,7 @@ from utils.time import get_today
 
 @transaction.atomic
 @permission_required('lendings.add_lending')
-def finalize_reservation_based(request, reservation_id):
+def finalize_reservation_based(request, reservation_id, hx_enabled=False):
     reservation = get_object_or_404(Reservation, pk=reservation_id)
     member = reservation.member
     item = reservation.item
@@ -21,10 +21,10 @@ def finalize_reservation_based(request, reservation_id):
         try:
             lending = new_lending(item, member, request.user.member, get_today(), True)
             return render(request, 'lendings/modals/finalized.html',
-                          {'member': member, 'item': item, "date": lending.end_date})
+                          {'hx_enabled':hx_enabled, 'member': member, 'item': item, "date": lending.end_date})
         except LendingImpossibleException as error:
             return render(request, 'lendings/modals/cannot_lend.html',
-                          {'member': member, 'item': item, 'error': error})
+                          {'hx_enabled':hx_enabled, 'member': member, 'item': item, 'error': error})
 
     return render(request, 'lendings/modals/finalize.html',
-                  {'member': member, 'item': item, "date": get_end_date(item, member, get_today())})
+                  {'hx_enabled':hx_enabled, 'member': member, 'item': item, "date": get_end_date(item, member, get_today())})
