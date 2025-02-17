@@ -1,7 +1,7 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    {% component 'modalform.ModalForm' title="Cancel Reservation" %}
+    {% component 'modalform.ModalForm' title="Cancel Reservation" path=request.path  %}
         {% fill "modal_body" %}
             Lending work: {{ reservation.item.get_title }} <br/>
 
