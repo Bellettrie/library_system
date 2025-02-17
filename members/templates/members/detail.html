@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load member_reservation_table %}
 {% block title %}{% if member.is_blacklisted %}<p style="color:red;">BLACKLISTED</p>{% endif %}Member:
     {{ member.name }}{% endblock %}
 {% block content %}
