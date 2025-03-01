@@ -4,7 +4,7 @@
             <a class="btn btn-primary btn-secondary {{ bonus_classes }}" disabled="disabled">Lend</a>
         </div>
     {% else %}
-        <a class="btn btn-primary  {{ bonus_classes }}" data-hx-get="{% url 'lendings.reserve_lend'  reservation.pk %}"
-           hx-target="#dialog" href="{% url 'lendings.reserve_lend'  reservation.pk %}">Lend</a>
+        <a class="btn btn-primary  {{ bonus_classes }}" data-hx-get="{% url 'reservations.lendfor'  reservation.pk %}"
+           hx-target="#dialog" href="{% url 'reservations.lendfor'  reservation.pk %}">Lend</a>
     {% endif %}
 {% endif %}

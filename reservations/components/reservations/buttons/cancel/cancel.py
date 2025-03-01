@@ -1,8 +1,4 @@
-from django.urls import reverse
-from django_components import Component, register, types
-
-from lendings.procedures.extend import can_extend
-from utils.time import get_today
+from django_components import Component, register
 
 
 @register("reservations/buttons/cancel")
