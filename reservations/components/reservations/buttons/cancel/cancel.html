@@ -4,7 +4,7 @@
             <a class="btn  {{ bonus_classes }}" disabled="disabled">Cancel</a>
         </div>
     {% else %}
-        <a class="btn {{ bonus_classes }}" data-hx-get="{% url 'lendings.reserve_delete'  reservation.pk %}"
-           hx-target="#dialog" href="{% url 'lendings.reserve_delete'  reservation.pk %}">Cancel</a>
+        <a class="btn {{ bonus_classes }}" data-hx-get="{% url 'reservations.delete'  reservation.pk %}"
+           hx-target="#dialog" href="{% url 'reservations.delete'  reservation.pk %}">Cancel</a>
     {% endif %}
 {% endif %}

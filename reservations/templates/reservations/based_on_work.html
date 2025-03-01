@@ -12,8 +12,8 @@
     <table>
         {% for member in members %}
             <tr>
-                <td><a href="{% url RESERVE_FINALIZE item.pk  member.id %}">{{ member.name }}</a></td>
-                <td><a href="{% url RESERVE_FINALIZE item.pk  member.id %}" class="btn btn-sm btn-primary">Finish reservation</a></td>
+                <td><a href="{% url 'reservations.finalize' item.pk  member.id %}">{{ member.name }}</a></td>
+                <td><a href="{% url 'reservations.finalize' item.pk  member.id %}" class="btn btn-sm btn-primary">Finish reservation</a></td>
             </tr>
         {% endfor %}
     </table>
