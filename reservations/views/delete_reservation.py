@@ -23,6 +23,4 @@ def delete_reservation(request, reservation_id, hx_enabled=False):
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         return render(request, 'reservations/delete.html')
 
-    return render(request, 'reservations/modals/cancel.html', {'hx_enabled':hx_enabled, "reservation": reservation})
-
-
+    return render(request, 'reservations/modals/cancel.html', {'hx_enabled': hx_enabled, "reservation": reservation})
