@@ -1,10 +1,4 @@
-from datetime import date
-
-from django.urls import reverse
-from django.utils.timezone import now
-from django_components import Component, register, types
-
-from lendings.procedures.extend import can_extend
+from django_components import Component, register
 from lendings.procedures.new_lending import can_lend
 from utils.time import get_today
 

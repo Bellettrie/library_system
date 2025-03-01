@@ -1,12 +1,10 @@
-from datetime import datetime
-
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 
 from lendings.lendingException import LendingImpossibleException
 from lendings.procedures.get_end_date import get_end_date
-from lendings.procedures.new_lending import create_lending, new_lending
+from lendings.procedures.new_lending import new_lending
 from reservations.models import Reservation
 from utils.time import get_today
 
