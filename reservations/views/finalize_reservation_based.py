@@ -21,10 +21,11 @@ def finalize_reservation_based(request, reservation_id, hx_enabled=False):
         try:
             lending = new_lending(item, member, request.user.member, get_today(), True)
             return render(request, 'lendings/modals/finalized.html',
-                          {'hx_enabled':hx_enabled, 'member': member, 'item': item, "date": lending.end_date})
+                          {'hx_enabled': hx_enabled, 'member': member, 'item': item, "date": lending.end_date})
         except LendingImpossibleException as error:
             return render(request, 'lendings/modals/cannot_lend.html',
-                          {'hx_enabled':hx_enabled, 'member': member, 'item': item, 'error': error})
+                          {'hx_enabled': hx_enabled, 'member': member, 'item': item, 'error': error})
 
     return render(request, 'lendings/modals/finalize.html',
-                  {'hx_enabled':hx_enabled, 'member': member, 'item': item, "date": get_end_date(item, member, get_today())})
+                  {'hx_enabled': hx_enabled, 'member': member, 'item': item,
+                   "date": get_end_date(item, member, get_today())})

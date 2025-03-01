@@ -67,34 +67,6 @@ class LentByColumn(Column):
     def render(self, row: LendingRow, perms=None):
         return render_to_string("columns/member_column.html", {"member": row.lending.member})
 
-class StartDate(Column):
-    @staticmethod
-    def get_header():
-        return "Lent On"
-
-    def render(self, row: LendingRow, perms=None):
-        return render_to_string("columns/start_date.html", {"lending": row.lending})
-
-
-class HandinDate(Column):
-    @staticmethod
-    def get_header():
-        return "Handin Date"
-
-    def render(self, row: LendingRow, perms=None):
-        return render_to_string("columns/handin_date.html", {"lending": row.lending})
-
-
-class FineColumn(Column):
-    @staticmethod
-    def get_header():
-        return "Fine"
-
-    def render(self, row: LendingRow, perms=None):
-        if row.lending.handed_in or not row.lending.is_late():
-            return ""
-        return render_to_string("columns/fine_column.html", {"lending": row.lending})
-
 
 class ButtonsColumn(Column):
     def __init__(self, buttons: List[Button], title: str):
