@@ -65,7 +65,7 @@ def get_menu_item_list():
         MenuItem('Lendings', reverse('lendings.list'), 'lendings.view_lending', 'sidebar', [], anonymous=None,
                  icon='fa fa-bookmark'))
     my_menu.append(
-        MenuItem('Reservations', reverse('lendings.reserve.list'), 'reservations.view_reservation', 'sidebar', [],
+        MenuItem('Reservations', reverse('reservations.list'), 'reservations.view_reservation', 'sidebar', [],
                  anonymous=None, icon='fa fa-bookmark'))
     holiday_item = MenuItem('Holidays', reverse('holiday.list'), 'config.view_holiday', 'sidebar', [], anonymous=None,
                             icon='fa fa-plane')
