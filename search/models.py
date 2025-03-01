@@ -1,3 +1,6 @@
+from django.contrib.auth.models import User
+from django.contrib.postgres.indexes import GinIndex, GistIndex
+from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.db import models
 
 # Create your models here.
@@ -5,6 +8,7 @@ from django.db.models import CASCADE
 
 from book_code_generation.helpers import normalize_str
 from creators.models import Creator
+from members.models import Member
 from series.models import Series
 from works.models import Publication, SubWork
 
@@ -227,3 +231,46 @@ class SubWorkWordMatch(WordMatch):
             words[word.word] = word
         for pub in subwork.workinpublication_set.all():
             WordMatch.create_all_for(pub.publication, words)
+
+
+class SearchRecord(models.Model):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.all_text = self.title_text + " " + self.creator_text + " " + self.series_titles_text + " " + self.sub_title_text + " "+self.member_text
+        if self.series is not None:
+            self.result_priority = 1.1
+        if self.member is not None:
+            self.result_priority = 1.3
+        if self.creator is not None:
+            self.result_priority = 1.2
+        if len(self.all_text) > 2000:
+            self.all_text = self.all_text[:2000]
+
+    publication = models.ForeignKey(Publication, on_delete=CASCADE, null=True, blank=True, db_index=True)
+    series = models.ForeignKey(Series, on_delete=CASCADE, null=True, blank=True, db_index=True)
+    creator = models.ForeignKey(Creator, on_delete=CASCADE, null=True, blank=True, db_index=True)
+    member = models.ForeignKey(Member, on_delete=CASCADE, null=True, blank=True, db_index=True)
+
+    all_text = models.TextField()
+    member_text = models.TextField(null=False, default="")
+    title_text = models.TextField(null=False, default="")
+    sub_title_text = models.TextField(null=False, default="")
+    creator_text = models.TextField(null=False, default="")
+    series_titles_text = models.TextField(null=False, default="")  # All words through the
+    search_vector = SearchVectorField()
+
+    result_priority = models.FloatField(default=1)
+
+    # new
+    class Meta:
+        indexes = [
+            GinIndex(fields=['title_text'], name='searchV_title', opclasses=['gin_trgm_ops']),
+            GinIndex(fields=['all_text'], name='searchV_all', opclasses=['gin_trgm_ops']),
+            GinIndex(fields=['member_text'], name='searchV_member', opclasses=['gin_trgm_ops']),
+
+            GistIndex(fields=['all_text'], name='searchX_all', opclasses=['gist_trgm_ops']),
+            GinIndex(fields=['sub_title_text'], name='searchV_subtitle', opclasses=['gin_trgm_ops']),
+            GinIndex(fields=['creator_text'], name='searchV_creator', opclasses=['gin_trgm_ops']),
+            GinIndex(fields=['series_titles_text'], name='searchV_series', opclasses=['gin_trgm_ops']),
+        ]
