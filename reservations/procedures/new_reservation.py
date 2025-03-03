@@ -10,8 +10,6 @@ from reservations.reservationException import ReservationImpossibleException
 from works.models import Item
 from utils.time import get_now
 
-from django.conf import settings
-
 
 @transaction.atomic
 def create_reservation(item, member: Member, edited_member: Member, current_date=None):

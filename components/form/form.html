@@ -1,0 +1,14 @@
+{{ form.non_field_errors }}
+{% for hidden_field in form.hidden_fields %}
+    {{ hidden_field.errors }}
+    {{ hidden_field }}
+{% endfor %}
+
+{% for field in form %}
+    <label class="form-control w-full max-w-xs">
+        <div class="label">
+            <span class="label-text">{{ field.label }}</span>
+        </div>
+        {{ field }}
+    </label>
+{% endfor %}

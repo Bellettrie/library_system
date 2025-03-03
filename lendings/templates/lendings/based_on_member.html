@@ -4,7 +4,7 @@
 
 {% block content %}
     Lending for member: {{ member.name }}
-    <form action="/lend/member/{{ member.pk }}" method="get">
+    <form action="{% url 'lendings.new.member' member.pk %}" method="get">
         <label for="Query">Query: </label>
         <input id="q" type="text" name="q">
         <input type="submit" value="Search" class="btn-primary btn" >

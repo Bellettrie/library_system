@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {% load publication_list_to_items %}
 
 {#{% load books_table %}#}
@@ -11,7 +11,7 @@
         {% include 'works/work_search_field_simple.html' %}
         <a href="?advanced=True">Advanced Search</a>
     {% endif %}
-    {% include 'pagination.html' %}
+    {% include 'pagination_bootstrap.html' %}
     <hr>
 
     {% autoescape off %}

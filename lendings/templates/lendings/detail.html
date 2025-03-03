@@ -1,22 +1,9 @@
 {% extends 'base.html' %}
-{% block title %}Lending history{% endblock %}
+{% block title %}Lending history for person{% endblock %}
 {% block content %}
-    <span class="step-links pagination">
-        {% if lendings.has_previous %}
-            <a href="?page={{ lendings.previous_page_number }}" class="btn btn-outline-primary">Prev</a>
-       {% else %}
-       <a class="btn btn-outline-primary disabled">Prev</a>
-        {% endif %}
-        <span class="current btn btn-light disabled">
-            Page {{ lendings.number }} of {{ lendings.paginator.num_pages }}
-        </span>
-        {% if lendings.has_next %}
-            <a href="?page={{ lendings.next_page_number }}" class="btn btn-outline-primary">Next</a>
-        {% else %}
-         <a class="btn btn-outline-primary disabled">Next</a>
-     {% endif %}
-    </span>
-    {% my_lendings lendings perms %}
-
-
+    {% with  lendings as page_obj%}
+        {% include 'pagination.html' %}
+        {% component 'lendings.list.List' lendings perms show_member=False / %}
+        {% include 'pagination.html' %}
+    {% endwith %}
 {% endblock %}

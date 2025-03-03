@@ -17,7 +17,7 @@ columns = [BookCodeColumn(), TitleColumn(), AllAuthorsColumn(), ButtonsColumn([N
            ButtonsColumn(buttons_list, "")]
 
 
-@register.inclusion_tag("tables/items_table.html")
+@register.inclusion_tag("tables/items_table_xs.html")
 def works_table(publications: List[Publication], perms):
     rows = []
     for publication in publications:

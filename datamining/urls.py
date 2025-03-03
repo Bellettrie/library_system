@@ -1,8 +1,5 @@
 from django.urls import path
 
-from lendings.path_names import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, LENDING_FINALIZE, \
-    LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK, LENDING_EXTEND, LENDING_FAILED
-
 from .views import show_members_by_date, show_members_by_group, show_members_by_special
 from .views import show_membership_stats, show_lending_stats
 

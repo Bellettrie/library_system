@@ -1,0 +1,33 @@
+{% if form_action == 'close' %}
+    <script>
+        $('#dialog').on("close", function (evt) {
+            location.reload();
+        });
+    </script>
+{% endif %}
+<form hx-post="{{ form_path }}" class="modal-content" method="post">
+    {% csrf_token %}
+    <h5 class="modal-title text-2xl">{{ form_title }}</h5>
+    <div class="modal-body">
+        {% slot 'modal_body' default %}
+        {% endslot %}
+    </div>
+
+    <div class="modal-footer join w-full justify-end">
+        {% if form_action == "submit" %}
+              {% slot "modal_submit_button" %}
+                  <button class="btn btn-success">Save</button>
+              {% endslot %}
+        {% endif %}
+        {% if form_action == "close" %}
+            <div class="modal-action">
+                <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                  {% slot "modal_submit_button" %}
+                      <button class="btn">Close</button>
+                  {% endslot %}
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</form>

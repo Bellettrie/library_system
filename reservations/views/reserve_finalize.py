@@ -1,9 +1,6 @@
-from datetime import datetime, timedelta
-
-from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 
 from lendings.procedures.get_end_date import get_end_date
 from mail.models import mail_member

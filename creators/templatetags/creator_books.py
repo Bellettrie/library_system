@@ -24,7 +24,7 @@ cols = [BookCodeColumn(), TitleColumn(), AllAuthorsColumn(), ButtonsColumn([NotI
         ButtonsColumn(buttons_list, "")]
 
 
-@register.inclusion_tag('tables/items_table.html')
+@register.inclusion_tag('tables/items_table_xs.html')
 def get_creator_books(creator: Creator, perms):
     series = set(Series.objects.filter(creatortoseries__creator=creator))
     series_len = 0
