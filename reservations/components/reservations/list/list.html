@@ -22,17 +22,18 @@
                     <td>
                         {{ reservation.reservation_end_date }}
                     </td>
-                    <td>
-                        <div class="join">
-                            {% component 'reservations/buttons/cancel' reservation user.member perms bonus_classes=btn_bonus_classes / %}
-                            {% component 'reservations/buttons/lend' reservation user.member perms bonus_classes=btn_bonus_classes / %}
-                        </div>
-                    </td>
                 {% else %}
-                    <td colspan="2">
+                    <td>
                         Not available yet
                     </td>
                 {% endif %}
+                <td>
+                    <div class="join">
+                        {% component 'reservations/buttons/cancel' reservation user.member perms bonus_classes=btn_bonus_classes / %}
+                        {% component 'reservations/buttons/lend' reservation user.member perms bonus_classes=btn_bonus_classes / %}
+                    </div>
+                </td>
+
             {% endfill %}
         {% endcomponent %}
     {% endfor %}
