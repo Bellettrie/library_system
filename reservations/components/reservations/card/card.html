@@ -2,9 +2,9 @@
     {% fill "infos" %}
         <h3 class="text-lg text-md">Reservation </h3>
         <dl>
-        <dd>
-            Member: {{ reservation.member }}
-        </dd>
+            <dd>
+                Member: {{ reservation.member }}
+            </dd>
             {% if reservation.reservation_end_date %}
                 <dd>
                     {{ reservation.reservation_end_date }}
@@ -19,6 +19,5 @@
             {% component 'reservations/buttons/cancel' reservation user.member perms bonus_classes="btn-sm join-item" / %}
             {% component 'reservations/buttons/lend' reservation user.member perms bonus_classes="btn-sm join-item" / %}
         </div>
-
     {% endfill %}
 {% endcomponent %}
