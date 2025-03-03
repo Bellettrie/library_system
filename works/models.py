@@ -49,7 +49,7 @@ class NamedTranslatableThing(NamedThing, TranslatedThing):
 
     def all_title_words(self):
         full_title = ""
-        titles = [self.article, self.title, self.sub_title, self.original_article, self.original_title,
+        titles = [ self.title, self.sub_title, self.original_title,
                   self.original_subtitle]
         for title in titles:
             if title is not None:
