@@ -237,7 +237,14 @@ class SearchRecord(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.all_text = self.title_text + " " + self.creator_text + " " + self.series_titles_text + " " + self.sub_title_text + " "+self.member_text
+        self.all_text = (self.publication_title_text + " " +
+                         self.publication_series_text + " " +
+                         self.publication_sub_work_title_text + " " +
+                         self.publication_creator_text + " " +
+                         self.publication_sub_work_creator_text + " " +
+                         self.creator_text + " " +
+                         self.series_text + " " +
+                         self.member_text)
         if self.series is not None:
             self.result_priority = 1.1
         if self.member is not None:
@@ -252,25 +259,22 @@ class SearchRecord(models.Model):
     creator = models.ForeignKey(Creator, on_delete=CASCADE, null=True, blank=True, db_index=True)
     member = models.ForeignKey(Member, on_delete=CASCADE, null=True, blank=True, db_index=True)
 
-    all_text = models.TextField()
+    all_text = models.TextField(null=False, default="")
+
+    publication_title_text = models.TextField(null=False, default="")
+    publication_series_text = models.TextField(null=False, default="")
+    publication_sub_work_title_text = models.TextField(null=False, default="")
+    publication_creator_text = models.TextField(null=False, default="")
+    publication_sub_work_creator_text = models.TextField(null=False, default="")
+
     member_text = models.TextField(null=False, default="")
-    title_text = models.TextField(null=False, default="")
-    sub_title_text = models.TextField(null=False, default="")
     creator_text = models.TextField(null=False, default="")
-    series_titles_text = models.TextField(null=False, default="")  # All words through the
-    search_vector = SearchVectorField()
+    series_text = models.TextField(null=False, default="")  # All words through the
 
     result_priority = models.FloatField(default=1)
 
     # new
     class Meta:
         indexes = [
-            GinIndex(fields=['title_text'], name='searchV_title', opclasses=['gin_trgm_ops']),
             GinIndex(fields=['all_text'], name='searchV_all', opclasses=['gin_trgm_ops']),
-            GinIndex(fields=['member_text'], name='searchV_member', opclasses=['gin_trgm_ops']),
-
-            GistIndex(fields=['all_text'], name='searchX_all', opclasses=['gist_trgm_ops']),
-            GinIndex(fields=['sub_title_text'], name='searchV_subtitle', opclasses=['gin_trgm_ops']),
-            GinIndex(fields=['creator_text'], name='searchV_creator', opclasses=['gin_trgm_ops']),
-            GinIndex(fields=['series_titles_text'], name='searchV_series', opclasses=['gin_trgm_ops']),
         ]

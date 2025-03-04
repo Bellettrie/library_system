@@ -14,15 +14,14 @@ class Command(BaseCommand):
         pubs = Publication.objects.all()
         SearchRecord.objects.all().delete()
         for pub in pubs:
-            title_words = pub.all_title_words()
             subworks = SubWork.objects.filter(workinpublication__publication=pub)
             author_words = ""
             sub_work_texts = ""
             for subwork in subworks:
                 sub_work_texts += " " + subwork.all_title_words()
-
+            sub_authors = ""
             for author in Creator.objects.filter(creatortowork__work__in=subworks):
-                author_words = author_words + " " + author.get_name()
+                sub_authors = sub_authors + " " + author.get_name()
 
             authors = pub.get_authors()
             for author in authors:
@@ -33,13 +32,18 @@ class Command(BaseCommand):
                     series_words = series_words + " " + ser.all_title_words().lower()
 
             SearchRecord.objects.create(
-                publication=pub, title_text=pub.all_title_words().lower(), sub_title_text=sub_work_texts.lower(),
-                creator_text=author_words.lower(), series_titles_text=series_words)
+                publication=pub,
+                publication_title_text=pub.all_title_words().lower(),
+                publication_sub_work_title_text=sub_work_texts.lower(),
+                publication_sub_work_creator_text=sub_authors.lower(),
+                publication_creator_text=author_words.lower(),
+                publication_series_text=series_words
+            )
 
         for creator in Creator.objects.all():
             SearchRecord.objects.create(
                 creator=creator, creator_text=creator.get_name().lower())
-        SearchRecord.objects.filter(member_id__isnull=False).delete()
+
         for member in Member.objects.all():
             SearchRecord.objects.create(member=member, member_text=member.name.lower())
 

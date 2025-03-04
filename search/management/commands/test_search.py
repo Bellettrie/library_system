@@ -86,4 +86,3 @@ class Command(BaseCommand):
         run_query(ts_trigram_simple("it"), "it")
         run_query(ts_trigram_simple("king it"), "king it")
         run_query(ts_trigram_simple("stephen king it"), "king it")
-        run_query(ts_trigram_simple("steven  king it"), "king it")
