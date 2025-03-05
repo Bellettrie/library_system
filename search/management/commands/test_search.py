@@ -3,7 +3,7 @@ import time
 from django.contrib.postgres.search import TrigramWordSimilarity, TrigramStrictWordDistance
 from django.core.management.base import BaseCommand
 from django.db.models import Q, F
-
+from django.db.models.expressions import RawSQL
 
 from search.models import  SearchRecord
 
@@ -19,7 +19,6 @@ def show_explain(qs):
         settings=True,
         wal=True,
     )
-    print(json.dumps(plan))
     print(qs.explain( verbose=True))
 
 def run_query(query, name):
@@ -77,12 +76,28 @@ def ts_trigram_simple(txt):
     return SearchRecord.objects.annotate(similarityOrder=sim).filter(q).order_by('-similarityOrder', '-result_priority')
 
 
+def ts_vector_search(txt):
+    return SearchRecord.objects.annotate(
+        rank=RawSQL("ts_rank(all_text_search_vector, websearch_to_tsquery(%s))", [txt]),
+    ).extra(where=["all_text_search_vector @@ websearch_to_tsquery('simple', %s)"], params=[txt]).order_by('-rank')
+
+
 class Command(BaseCommand):
     help = 'Generate all search records'
 
     def handle(self, *args, **options):
+        # run_query(ts_vector_search("stephen king it"), "king it")
+        # run_query(ts_vector_search("king it"), "king it")
+        # run_query(ts_vector_search("king"), "king:*")
+        #
         run_query(ts_trigram_simple("dune"), "dune")
-        run_query(ts_trigram_simple("hitch hiker"), "hitch hiker")
-        run_query(ts_trigram_simple("it"), "it")
-        run_query(ts_trigram_simple("king it"), "king it")
-        run_query(ts_trigram_simple("stephen king it"), "king it")
+        run_query(ts_vector_search("dune"), "dune")
+        run_query(ts_trigram_simple("tolkien"), "tolkien")
+        run_query(ts_vector_search("tolkien"), "tolkien")
+
+        # run_query(ts_vector_search("dune"), "dune")
+
+        # run_query(ts_trigram_simple("hitch hiker"), "hitch hiker")
+        # run_query(ts_trigram_simple("it"), "it")
+        # run_query(ts_trigram_simple("king it"), "king it")
+        # run_query(ts_trigram_simple("stephen king it"), "king it")

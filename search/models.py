@@ -244,6 +244,7 @@ class SearchRecord(models.Model):
                          self.publication_sub_work_creator_text + " " +
                          self.creator_text + " " +
                          self.series_text + " " +
+                         self.series_creator_text + " " +
                          self.member_text)
         if self.series is not None:
             self.result_priority = 1.1
@@ -270,6 +271,7 @@ class SearchRecord(models.Model):
     member_text = models.TextField(null=False, default="")
     creator_text = models.TextField(null=False, default="")
     series_text = models.TextField(null=False, default="")  # All words through the
+    series_creator_text = models.TextField(null=False, default="")  # All words through the
 
     result_priority = models.FloatField(default=1)
 

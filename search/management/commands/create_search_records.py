@@ -11,8 +11,30 @@ class Command(BaseCommand):
     help = 'Generate all search records'
 
     def handle(self, *args, **options):
-        pubs = Publication.objects.all()
         SearchRecord.objects.all().delete()
+        creator_words = dict()
+        creator_parent_child = dict()
+        creator_is_alias = dict()
+        direct_creators = []
+
+        creators = Creator.objects.all()
+        for creator in creators:
+            creator_words[creator.id] = creator_words.get(creator.id, "") + creator.given_names + " " + creator.name
+            if creator.is_alias_of_id is not None:
+                creator_is_alias[creator.id] = creator.is_alias_of_id
+                creator_parent_child[creator.is_alias_of_id] = creator_parent_child.get(creator.id, [])+[creator.id]
+                creator_words[creator.is_alias_of_id] = creator_words.get(creator.is_alias_of_id, "") + creator.given_names + " " + creator.name
+            else:
+                direct_creators.append(creator)
+        print(creator_parent_child)
+        print(direct_creators)
+        for creator in direct_creators:
+            pass
+
+
+        series_words = dict()
+        series_creator_words = dict()
+
         for pub in pubs:
             subworks = SubWork.objects.filter(workinpublication__publication=pub)
             author_words = ""
@@ -48,4 +70,4 @@ class Command(BaseCommand):
             SearchRecord.objects.create(member=member, member_text=member.name.lower())
 
         for series in Series.objects.all():
-            pass
+            SearchRecord.objects.create(series=series, series_text=series.all_title_words().lower())
