@@ -1,5 +1,5 @@
 markdown==3.5.2
-django==5.1.4
+django==5.1.7
 namegenerator
 names
 django-tables2==2.7.0

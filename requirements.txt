@@ -1,5 +1,5 @@
 markdown~=3.7
-django==5.1.4
+django==5.1.7
 namegenerator~=1.0.6
 names~=0.3.0
 django-tables2
