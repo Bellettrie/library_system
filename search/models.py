@@ -9,8 +9,8 @@ from django.db.models import CASCADE
 from book_code_generation.helpers import normalize_str
 from creators.models import Creator
 from members.models import Member
-from series.models import Series
-from works.models import Publication, SubWork
+from series.models import Series, WorkInSeries
+from works.models import Publication, SubWork, Item
 
 
 class SearchWord(models.Model):
@@ -237,30 +237,52 @@ class SearchRecord(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.all_text = (self.publication_title_text + " " +
-                         self.publication_series_text + " " +
-                         self.publication_sub_work_title_text + " " +
-                         self.publication_creator_text + " " +
-                         self.publication_sub_work_creator_text + " " +
-                         self.creator_text + " " +
-                         self.series_text + " " +
-                         self.series_creator_text + " " +
-                         self.member_text)
-        if self.series is not None:
-            self.result_priority = 1.1
-        if self.member is not None:
-            self.result_priority = 1.3
-        if self.creator is not None:
-            self.result_priority = 1.2
-        if len(self.all_text) > 2000:
-            self.all_text = self.all_text[:2000]
 
-    publication = models.ForeignKey(Publication, on_delete=CASCADE, null=True, blank=True, db_index=True)
+    @staticmethod
+    def search_record_for_author(creator: Creator):
+        SearchRecord.objects.filter(author=creator).delete()
+        # TODO: decide on how(?) to do aliases
+        SearchRecord.objects.create(author=creator, creator_text=creator.given_names+" "+creator.name)
+
+    @staticmethod
+    def search_record_for_series(series: Series):
+        SearchRecord.objects.filter(series=series).delete()
+        # TODO
+
+    @staticmethod
+    def search_record_for_member(member: Member):
+        SearchRecord.objects.filter(member=member).delete()
+        SearchRecord.objects.create(member=member, member_text=member.name + " " + member.student_number)
+
+    @staticmethod
+    def search_record_for_publication(pub: Publication):
+        SearchRecord.objects.filter(item__in=pub.item_set.all()).delete()
+        publication_title_text= pub.all_title_words()
+        publication_creator_text = ""
+
+        crs = SearchRecord.objects.filter(creator_id__in=map((lambda i: i.creator_id), pub.creatortowork_set.all())).all()
+        for cr in crs:
+            publication_creator_text += " " + cr.creator_text
+        publication_series_text = ""
+        srs = SearchRecord.objects.filter(series_id__in=map((lambda i: i.part_of_series), pub.workinseries_set.all())).all()
+        for sr in srs:
+            publication_creator_text += " "+sr.series_creator_text
+            publication_series_text += " "+sr.series_text
+        # TODO: fix subworks
+        publication_sub_work_title_text = ""
+        publication_sub_work_creator_text = ""
+
+
+        for item in pub.item_set.all():
+            SearchRecord.objects.create(item_id=item.id, publication_title_text=publication_title_text, publication_series_text=publication_series_text,
+                                        publication_sub_work_title_text=publication_sub_work_title_text, publication_creator_text=publication_creator_text,
+                                        publication_sub_work_creator_text=publication_sub_work_creator_text)
+
+    item = models.ForeignKey(Item, on_delete=CASCADE, null=True, blank=True, db_index=True)
     series = models.ForeignKey(Series, on_delete=CASCADE, null=True, blank=True, db_index=True)
     creator = models.ForeignKey(Creator, on_delete=CASCADE, null=True, blank=True, db_index=True)
     member = models.ForeignKey(Member, on_delete=CASCADE, null=True, blank=True, db_index=True)
 
-    all_text = models.TextField(null=False, default="")
 
     publication_title_text = models.TextField(null=False, default="")
     publication_series_text = models.TextField(null=False, default="")
@@ -269,14 +291,11 @@ class SearchRecord(models.Model):
     publication_sub_work_creator_text = models.TextField(null=False, default="")
 
     member_text = models.TextField(null=False, default="")
+    member_is_current_member = models.BooleanField(null=True, blank=True)
+
     creator_text = models.TextField(null=False, default="")
+
     series_text = models.TextField(null=False, default="")  # All words through the
     series_creator_text = models.TextField(null=False, default="")  # All words through the
 
     result_priority = models.FloatField(default=1)
-
-    # new
-    class Meta:
-        indexes = [
-            GinIndex(fields=['all_text'], name='searchV_all', opclasses=['gin_trgm_ops']),
-        ]

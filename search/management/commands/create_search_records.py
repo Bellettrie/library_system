@@ -3,8 +3,8 @@ from django.core.management.base import BaseCommand
 from creators.models import Creator
 from members.models import Member
 from search.models import WordMatch, SearchWord, SearchRecord
-from series.models import Series
-from works.models import Publication, SubWork
+from series.models import Series, WorkInSeries
+from works.models import Publication, SubWork, Item, CreatorToWork
 
 
 class Command(BaseCommand):
@@ -12,62 +12,73 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         SearchRecord.objects.all().delete()
+        SearchRecord.search_record_for_publication(Publication.objects.first())
+
         creator_words = dict()
         creator_parent_child = dict()
         creator_is_alias = dict()
         direct_creators = []
-
         creators = Creator.objects.all()
         for creator in creators:
-            creator_words[creator.id] = creator_words.get(creator.id, "") + creator.given_names + " " + creator.name
+            creator_words[creator.id] = creator_words.get(creator.id, "") + " "+creator.given_names + " " + creator.name
             if creator.is_alias_of_id is not None:
                 creator_is_alias[creator.id] = creator.is_alias_of_id
-                creator_parent_child[creator.is_alias_of_id] = creator_parent_child.get(creator.id, [])+[creator.id]
-                creator_words[creator.is_alias_of_id] = creator_words.get(creator.is_alias_of_id, "") + creator.given_names + " " + creator.name
+                creator_parent_child[creator.is_alias_of_id] = creator_parent_child.get(creator.is_alias_of_id, []) + [
+                    creator.id]
+                creator_words[creator.is_alias_of_id] = creator_words.get(creator.is_alias_of_id,
+                                                                          "") + " "+creator.given_names + " " + creator.name
             else:
                 direct_creators.append(creator)
-        print(creator_parent_child)
-        print(direct_creators)
+
+        def creator_names(crea):
+            subs = creator_parent_child.get(crea, [])
+            res = creator_words.get(crea)
+            for child in creator_parent_child.get(crea, []):
+                substrings, children = creator_names(child)
+                res = res + " " + substrings
+                subs += children
+            return res, subs
+
+        creator_indirect_alias = dict()
+        creator_texts = dict()
         for creator in direct_creators:
-            pass
-
-
-        series_words = dict()
-        series_creator_words = dict()
-
-        for pub in pubs:
-            subworks = SubWork.objects.filter(workinpublication__publication=pub)
-            author_words = ""
-            sub_work_texts = ""
-            for subwork in subworks:
-                sub_work_texts += " " + subwork.all_title_words()
-            sub_authors = ""
-            for author in Creator.objects.filter(creatortowork__work__in=subworks):
-                sub_authors = sub_authors + " " + author.get_name()
-
-            authors = pub.get_authors()
-            for author in authors:
-                author_words = author_words + " " + author.creator.get_name()
-            series_words = ""
-            for ser in pub.all_series():
-                if ser is not None:
-                    series_words = series_words + " " + ser.all_title_words().lower()
-
+            stringz, subs = creator_names(creator.id)
+            for sub in subs:
+                creator_indirect_alias[sub] = creator.id
             SearchRecord.objects.create(
-                publication=pub,
-                publication_title_text=pub.all_title_words().lower(),
-                publication_sub_work_title_text=sub_work_texts.lower(),
-                publication_sub_work_creator_text=sub_authors.lower(),
-                publication_creator_text=author_words.lower(),
-                publication_series_text=series_words
-            )
+                creator=creator, creator_text=stringz.lower())
+            creator_texts[creator.id]=stringz.lower()
+        series_creator_texts = dict()
+        series_texts = dict()
 
-        for creator in Creator.objects.all():
+        for crea in direct_creators:
+            creator_indirect_alias[crea.id] = crea.id
+
+        series_map = dict()
+        for series in Series.objects.all():
+            series_map[series.id] = series
+        for series in Series.objects.prefetch_related("creatortoseries_set").all():
+            sr = series
+            sr_tx = ""
+            sr_cx = ""
+            while sr is not None:
+                sr_tx += " "+ series.all_title_words()
+
+                for crea in series.creatortoseries_set.all():
+                    sr_cx += " "+creator_words[crea.creator_id]
+                if sr.part_of_series is  None:
+                    break
+                sr = series_map[sr.part_of_series_id]
+
+
+            series_texts[series.id] = sr_tx
+            series_creator_texts[series.id] = sr_cx
             SearchRecord.objects.create(
-                creator=creator, creator_text=creator.get_name().lower())
+                series=series, series_text=sr_tx.lower(), series_creator_text=sr_cx.lower())
+
+        for publication in Publication.objects.all():
+            SearchRecord.search_record_for_publication(publication)
+
 
         for member in Member.objects.all():
-            SearchRecord.objects.create(member=member, member_text=member.name.lower())
-
-        for series in Series.objects.all():
-            SearchRecord.objects.create(series=series, series_text=series.all_title_words().lower())
+            SearchRecord.search_record_for_member(member)

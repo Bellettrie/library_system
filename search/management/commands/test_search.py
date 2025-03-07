@@ -7,9 +7,6 @@ from django.db.models.expressions import RawSQL
 
 from search.models import  SearchRecord
 
-import json
-
-
 def show_explain(qs):
     plan = qs.explain(
         format="json",
@@ -30,13 +27,15 @@ def run_query(query, name):
     print("\n")
     print("results", len(query))
     print("time", time.time() - tm)
-    for r in query[0:20]:
+    for r in query[0:100]:
         if r.creator:
             print("CREATOR ", r.creator.get_name())
         elif r.member:
             print("MEMBER", r.member.name)
+        elif r.series:
+            print("SERIES", r.series.get_title())
         else:
-            print("PUB", r.publication.get_title(), r.publication.id)
+            print("PUB", r.item.publication.get_title(), r.item.publication.id)
 
 
 """ get_contains_query builds a search query based on the 'contains' operation."""
@@ -78,26 +77,23 @@ def ts_trigram_simple(txt):
 
 def ts_vector_search(txt):
     return SearchRecord.objects.annotate(
-        rank=RawSQL("ts_rank(all_text_search_vector, websearch_to_tsquery(%s))", [txt]),
-    ).extra(where=["all_text_search_vector @@ websearch_to_tsquery('simple', %s)"], params=[txt]).order_by('-rank')
+        rank=RawSQL("ts_rank(all_text_search_vector, plainto_tsquery(%s))", [txt]),
+    ).extra(where=["all_text_search_vector @@ plainto_tsquery('simple', %s)"], params=[txt]).order_by('-rank')
 
 
 class Command(BaseCommand):
     help = 'Generate all search records'
 
     def handle(self, *args, **options):
-        # run_query(ts_vector_search("stephen king it"), "king it")
-        # run_query(ts_vector_search("king it"), "king it")
-        # run_query(ts_vector_search("king"), "king:*")
-        #
-        run_query(ts_trigram_simple("dune"), "dune")
+        # run_query(ts_trigram_simple("dune"), "dune")
         run_query(ts_vector_search("dune"), "dune")
-        run_query(ts_trigram_simple("tolkien"), "tolkien")
+        # run_query(ts_trigram_simple("tolkien"), "tolkien")
+        run_query(ts_vector_search("brandon sanderson"), "brandon sanderson")
+        # run_query(ts_vector_search("steven"), "maarten")
         run_query(ts_vector_search("tolkien"), "tolkien")
 
-        # run_query(ts_vector_search("dune"), "dune")
+        run_query(ts_vector_search("king"), "king")
+        run_query(ts_vector_search("king it"), "king it")
+        run_query(ts_vector_search("year old man disappeared"), "year old man disappeared")
 
-        # run_query(ts_trigram_simple("hitch hiker"), "hitch hiker")
-        # run_query(ts_trigram_simple("it"), "it")
-        # run_query(ts_trigram_simple("king it"), "king it")
-        # run_query(ts_trigram_simple("stephen king it"), "king it")
+
