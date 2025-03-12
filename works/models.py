@@ -26,7 +26,8 @@ class NamedThing(models.Model):
     article = models.CharField(max_length=64, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     sub_title = models.CharField(max_length=255, null=True, blank=True)
-
+    
+    search_words = models.CharField(max_length=255, null=True, blank=True)
     def get_title(self):
         return self.article + " " + self.title if self.article else self.title
 
@@ -47,13 +48,14 @@ class TranslatedThing(models.Model):
 class NamedTranslatableThing(NamedThing, TranslatedThing):
     is_translated = models.BooleanField()
 
-    def all_title_words(self):
+    def all_title_words(self, titles=None):
         full_title = ""
-        titles = [ self.title, self.sub_title, self.original_title,
-                  self.original_subtitle]
+        if titles is None:
+            titles = [ "title","sub_title", "original_title", "original_subtitle"]
         for title in titles:
-            if title is not None:
-                full_title += " " + title
+            val = self.__getattribute__(title)
+            if val is not None:
+                full_title += " " + val
         return full_title
 
     class Meta:

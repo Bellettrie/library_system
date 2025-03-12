@@ -29,13 +29,13 @@ def run_query(query, name):
     print("time", time.time() - tm)
     for r in query[0:100]:
         if r.creator:
-            print("CREATOR ", r.creator.get_name())
+            print("CREATOR ", r.creator.get_name(), r.rank)
         elif r.member:
-            print("MEMBER", r.member.name)
+            print("MEMBER", r.member.name, r.rank)
         elif r.series:
-            print("SERIES", r.series.get_title())
+            print("SERIES", r.series.get_title(), r.series.id, r.rank)
         else:
-            print("PUB", r.item.publication.get_title(), r.item.publication.id)
+            print("PUB", r.item.publication.get_title(), r.item.publication.id, r.rank)
 
 
 """ get_contains_query builds a search query based on the 'contains' operation."""
@@ -60,7 +60,7 @@ def ts_trigram_similarity_query(txt):
 """ get_contains_query builds a search query based on trigram similarity"""
 def ts_trigram_simple(txt):
     q = None
-    sim = None
+    sim = F('similarity')
     for word in txt.split(" "):
         qq = Q(all_text__trigram_word_similar=word)
         if q is None:
@@ -76,24 +76,27 @@ def ts_trigram_simple(txt):
 
 
 def ts_vector_search(txt):
+    txt = txt.lower()
     return SearchRecord.objects.annotate(
-        rank=RawSQL("ts_rank(all_text_search_vector, plainto_tsquery(%s))", [txt]),
-    ).extra(where=["all_text_search_vector @@ plainto_tsquery('simple', %s)"], params=[txt]).order_by('-rank')
+        rank=RawSQL("ts_rank(all_text_search_vector, websearch_to_tsquery('simple', %s))", [txt]),
+    ).extra(where=["websearch_to_tsquery('simple', %s) @@ all_text_search_vector"], params=[txt]).filter(hidden=False).order_by('-rank')
 
 
 class Command(BaseCommand):
-    help = 'Generate all search records'
+    help = 'Run some test scenarios for search'
 
     def handle(self, *args, **options):
-        # run_query(ts_trigram_simple("dune"), "dune")
-        run_query(ts_vector_search("dune"), "dune")
-        # run_query(ts_trigram_simple("tolkien"), "tolkien")
-        run_query(ts_vector_search("brandon sanderson"), "brandon sanderson")
-        # run_query(ts_vector_search("steven"), "maarten")
-        run_query(ts_vector_search("tolkien"), "tolkien")
-
-        run_query(ts_vector_search("king"), "king")
-        run_query(ts_vector_search("king it"), "king it")
-        run_query(ts_vector_search("year old man disappeared"), "year old man disappeared")
+        run_query(ts_vector_search("lord of the rings"), "lord of the rings")
+        run_query(ts_vector_search("lord rings"), "lord  rings")
+        run_query(ts_vector_search("lotr"), "lotr")
 
 
+        run_query(ts_vector_search("lord"), "lord")
+        run_query(ts_vector_search("rings"), " rings")
+        run_query(ts_vector_search("dune"), " dune")
+        run_query(ts_vector_search("hitchhiker"), " hitchhiker")
+        run_query(ts_vector_search("so long and thanks for all the fish"), " so long and thanks for all the fish")
+        run_query(ts_vector_search("hitch hiker"), " hitch hiker")
+        run_query(ts_vector_search("hg2g"), " hg2g")
+        run_query(ts_vector_search("tolkien"), " tolkien")
+        run_query(ts_vector_search("king"), " king")
