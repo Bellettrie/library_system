@@ -26,7 +26,8 @@ class NamedThing(models.Model):
     article = models.CharField(max_length=64, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     sub_title = models.CharField(max_length=255, null=True, blank=True)
-
+    
+    search_words = models.CharField(max_length=255, null=True, blank=True)
     def get_title(self):
         return self.article + " " + self.title if self.article else self.title
 
@@ -46,6 +47,16 @@ class TranslatedThing(models.Model):
 
 class NamedTranslatableThing(NamedThing, TranslatedThing):
     is_translated = models.BooleanField()
+
+    def all_title_words(self, titles=None):
+        full_title = ""
+        if titles is None:
+            titles = [ "title","sub_title", "original_title", "original_subtitle"]
+        for title in titles:
+            val = self.__getattribute__(title)
+            if val is not None:
+                full_title += " " + val
+        return full_title
 
     class Meta:
         abstract = True
@@ -153,6 +164,18 @@ class Work(NamedTranslatableThing):
 
 
 class Publication(Work):
+
+    def all_series(self):
+        from series.models import WorkInSeries
+
+        res = []
+        for ser in WorkInSeries.objects.filter(work_id=self.id).all():
+            if ser.part_of_series:
+                res.append(ser.part_of_series)
+                if ser.part_of_series.part_of_series:
+                    res.append(ser.part_of_series.part_of_series)
+                    # todo : fix this better
+        return res
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
 
@@ -305,7 +328,8 @@ class Item(NamedThing, BookCode):
         return states[1]
 
     def get_most_recent_state_not_this_inventarisation(self, inventarisation: Inventarisation):
-        states = ItemState.objects.filter(item_id=self.id).exclude(inventarisation=inventarisation).order_by("-date_time")
+        states = ItemState.objects.filter(item_id=self.id).exclude(inventarisation=inventarisation).order_by(
+            "-date_time")
         if len(states) == 0:
             return ItemState(item_id=self.id, date_time=get_now(), type="AVAILABLE")
         return states[0]
