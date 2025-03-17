@@ -22,12 +22,12 @@ def run_query(query, name):
     tm = time.time()
 
     print("\n \n ", name)
-    print(query.query)
-    show_explain(query)
+    # print(query.query)
+    # show_explain(query)
     print("\n")
     print("results", len(query))
     print("time", time.time() - tm)
-    for r in query[0:100]:
+    for r in query[0:10]:
         if r.creator:
             print("CREATOR ", r.creator.get_name(), r.rank)
         elif r.member:
@@ -78,7 +78,7 @@ def ts_trigram_simple(txt):
 def ts_vector_search(txt):
     txt = txt.lower()
     return SearchRecord.objects.annotate(
-        rank=RawSQL("ts_rank(all_text_search_vector, websearch_to_tsquery('simple', %s))", [txt]),
+        rank=RawSQL("ts_rank(all_text_search_vector, websearch_to_tsquery('simple', %s))*result_priority", [txt]),
     ).extra(where=["websearch_to_tsquery('simple', %s) @@ all_text_search_vector"], params=[txt]).filter(hidden=False).order_by('-rank')
 
 
