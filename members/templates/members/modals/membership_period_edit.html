@@ -1,0 +1,6 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+{% block content %}
+    {% component 'modalform.ModalForm' title="Edit Membership period" path=request.path form_action="submit" %}
+    {% component 'form/compact' form / %}
+    {% endcomponent %}
+{% endblock %}

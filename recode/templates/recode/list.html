@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {#{% load books_table %}#}
 {% block title %}Recode List{% endblock %}
 {% block content %}
 
-    {% include 'pagination.html' %}
+    {% include 'pagination_bootstrap.html' %}
     {% load locations %}
     {{ request.GET.location }}
     {% get_locations request.GET.location %}

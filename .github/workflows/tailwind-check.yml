@@ -1,0 +1,26 @@
+name: Tailwind Check
+
+on: 
+  pull_request:
+      branches: 
+        - main
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-node@v4
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        cd styles/config/
+        npm ci
+    - name: Check tailwind compile
+      run: |
+        cd styles/config/
+        npm run compile
+        cd ..
+        git status
+        git diff && echo 0
+        git diff-index HEAD --quiet -- ./styles
+

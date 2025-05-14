@@ -1,7 +1,0 @@
-{% extends 'base.html' %}
-{% block title %}Lent!{% endblock %}
-{%block content %}
-<a href="{% url 'members.view' member.id 0 %}">{{member.name}}</a> may keep {{ item.publication.title }} until: {{ date }}
-<br/>
-<td><a href="{% url 'lendings.new.member' member.id %}" class="btn btn-primary btn-sm">Lend an other book</a></td>
-{% endblock %}

@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, get_object_or_404
 
-from lendings.path_names import LENDING_FINALIZE
 from members.models import Member
 from works.views import get_works
 
@@ -15,5 +14,4 @@ def member_based(request, member_id):
     if q is not None:
         items = get_works(request)
     return render(request, 'lendings/based_on_member.html',
-                  {'items': items, 'member': get_object_or_404(Member, pk=member_id),
-                   "LENDING_FINALIZE": LENDING_FINALIZE})
+                  {'items': items, 'member': get_object_or_404(Member, pk=member_id)})

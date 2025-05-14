@@ -1,0 +1,7 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+{% block content %}
+    {% component 'modalform.ModalForm' title='Item extended successfully' path=request.path form_action="close" %}
+        <a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a> may keep {{ item.publication.title }}
+        until: {{ date }}
+    {% endcomponent %}
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {#{% load books_table %}#}
 {% block title %}Series Search{% endblock %}
 {% block content %}
@@ -8,7 +8,7 @@
         <input type="submit" value="Search">
     </form>
 
-    {% include 'pagination.html' %}
+    {% include 'pagination_bootstrap.html' %}
     <hr>
     <table>
         {% for series in object_list %}

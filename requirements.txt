@@ -1,5 +1,5 @@
 markdown~=3.7
-django==5.1.1
+django==5.1.4
 namegenerator~=1.0.6
 names~=0.3.0
 django-tables2
@@ -11,3 +11,5 @@ importlib-metadata==7.0.2
 psycopg[binary]~=3.1.18
 
 jsonpickle~=3.3.0
+django_components
+django-widget-tweaks

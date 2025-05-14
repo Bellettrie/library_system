@@ -1,19 +1,16 @@
-<div id="modal" class="modal fade">
-    <div id="dialog" class="modal-dialog" hx-target="this"></div>
-</div>
+<dialog id="dialog" hx-target="this" class="modal">
+
+</dialog>
 <script>
-    const modal = new bootstrap.Modal(document.getElementById("modal"))
+    {#const modal = new bootstrap.Modal(document.getElementById("modal"))#}
     htmx.on("htmx:afterSwap", (e) => {
-        // Response targeting #dialog => show the modal
-        if (e.detail.target.id === "dialog") {
-            modal.show()
-        }
+        dialog.showModal();
     })
 
     htmx.on("htmx:beforeSwap", (e) => {
         // if the response HTTP status of a dialog content swap is 204, we close the dialog.
-        if (e.detail.target.id === "dialog" && e.detail.xhr.status ==="204") {
-            modal.hide()
+        if (e.detail.target.id === "dialog" && e.detail.xhr.status === "204") {
+            dialog.hideModal();
             e.detail.shouldSwap = false
         }
     })

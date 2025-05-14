@@ -13,6 +13,7 @@ WSGI_APPLICATION = 'bellettrie_library_system.wsgi.application'
 ALLOWED_HOSTS = ["*"]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+VERSION = env("VERSION", default="UNKNOWN VERSION")
 LIBRARY_NAME = env("LIBRARY_NAME", default="Bellettrie")
 LIBRARY_IMAGE_URL = env("LIBRARY_IMAGE_URL", default="images/wurm.png")
 LIBRARY_DESCRIPTION = env("LIBRARY_DESCRIPTION",
@@ -53,6 +54,7 @@ STATIC_ROOT = env("STATIC_ROOT", default=os.path.join(BASE_DIR, 'root'))
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
     os.path.join(BASE_DIR, 'bootstrap'),
+    os.path.join(BASE_DIR, 'styles/static'),
 ]
 
 OLD_DB = "bellettrie"
@@ -68,7 +70,7 @@ EMAIL_USE_SSL = env("EMAIL_USE_SSL", default=False)
 OVERRIDE_MAIL_ADDRESS = env("OVERRIDE_MAIL_ADDRESS", default=None)
 EMAIL_BACKEND = env("EMAIL_BACKEND", default='django.core.mail.backends.console.EmailBackend')
 
-TASK_POLL_FREQUENCY = env("TASK_POLL_FREQUENCY", default=10) # Seconds
+TASK_POLL_FREQUENCY = env("TASK_POLL_FREQUENCY", default=10)  # Seconds
 
 HOST = env("MY_HOST_NAME", default="-")
 

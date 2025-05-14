@@ -68,53 +68,6 @@ class LentByColumn(Column):
         return render_to_string("columns/member_column.html", {"member": row.lending.member})
 
 
-class ReservedByColumn(Column):
-    @staticmethod
-    def get_header():
-        return "Member"
-
-    def render(self, row: ReservationRow, perms=None):
-        return render_to_string("columns/member_column.html", {"member": row.reservation.member})
-
-
-class ReservationEndDate(Column):
-    @staticmethod
-    def get_header():
-        return "End Date"
-
-    def render(self, row: ReservationRow, perms=None):
-        return render_to_string("columns/reservation_end_date.html", {"reservation": row.reservation})
-
-
-class StartDate(Column):
-    @staticmethod
-    def get_header():
-        return "Lent On"
-
-    def render(self, row: LendingRow, perms=None):
-        return render_to_string("columns/start_date.html", {"lending": row.lending})
-
-
-class HandinDate(Column):
-    @staticmethod
-    def get_header():
-        return "Handin Date"
-
-    def render(self, row: LendingRow, perms=None):
-        return render_to_string("columns/handin_date.html", {"lending": row.lending})
-
-
-class FineColumn(Column):
-    @staticmethod
-    def get_header():
-        return "Fine"
-
-    def render(self, row: LendingRow, perms=None):
-        if row.lending.handed_in or not row.lending.is_late():
-            return ""
-        return render_to_string("columns/fine_column.html", {"lending": row.lending})
-
-
 class ButtonsColumn(Column):
     def __init__(self, buttons: List[Button], title: str):
         self.buttons = buttons
