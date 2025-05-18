@@ -50,6 +50,16 @@ class NamedTranslatableThing(NamedThing, TranslatedThing):
     class Meta:
         abstract = True
 
+    def all_title_words(self, titles=None):
+        full_title = ""
+        if titles is None:
+            titles = ["title", "sub_title", "original_title", "original_subtitle"]
+        for title in titles:
+            val = self.__getattribute__(title)
+            if val is not None:
+                full_title += " " + val
+        return full_title
+
 
 class ItemType(models.Model):
     name = models.CharField(max_length=255)
@@ -163,6 +173,19 @@ class Publication(Work):
         for item in self.get_items():
             if len(Lending.objects.filter(item=item)) == 0:
                 return item
+
+
+    def all_series(self):
+        from series.models import WorkInSeries
+
+        res = []
+        for ser in WorkInSeries.objects.filter(work_id=self.id).all():
+            if ser.part_of_series:
+                res.append(ser.part_of_series)
+                if ser.part_of_series.part_of_series:
+                    res.append(ser.part_of_series.part_of_series)
+                    # todo : fix this better
+        return res
 
     def get_why_no(self):
         if len(self.get_items()) == 0:
