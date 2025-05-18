@@ -113,9 +113,6 @@ class WorkInSeries(SeriesNode):
             raise RuntimeError("Cannot Save")
         super().save(*args, **kwargs)
 
-        from search.models import SeriesWordMatch
-        SeriesWordMatch.series_rename(self.part_of_series)
-
     def get_authors(self):
         if self.part_of_series:
             return self.part_of_series.get_authors()
@@ -130,8 +127,6 @@ class CreatorToSeries(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        from search.models import SeriesWordMatch
-        SeriesWordMatch.series_rename(self.series)
 
     class Meta:
         unique_together = ("creator", "series", "number")

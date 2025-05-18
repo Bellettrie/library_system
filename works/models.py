@@ -27,6 +27,8 @@ class NamedThing(models.Model):
     title = models.CharField(max_length=255, null=True, blank=True)
     sub_title = models.CharField(max_length=255, null=True, blank=True)
 
+    search_words = models.CharField(max_length=255, null=True, blank=True)
+
     def get_title(self):
         return self.article + " " + self.title if self.article else self.title
 
