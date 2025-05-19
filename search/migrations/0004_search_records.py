@@ -59,5 +59,42 @@ alter table search_searchrecord
          setweight(to_tsvector('simple', coalesce(publication_sub_work_creator_text, '')), 'D') :: tsvector
      ) stored;
 create index idx_all_text_search on search_searchrecord using GIN(all_text_search_vector)
-             """)
+             """),
+        migrations.RunSQL("""
+    alter table search_searchrecord
+     add title_text_search_vector tsvector
+         generated always as 
+         (
+             setweight(to_tsvector('english', coalesce(series_text, '')), 'B') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(series_parents_text, '')), 'C') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(publication_series_text, '')), 'C') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(publication_title_text, '')), 'C') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(publication_title_secondary_text, '')), 'D') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(publication_sub_work_title_text, '')), 'D') :: tsvector  || ' ' 
+         ) stored;
+    create index idx_title_text_search on search_searchrecord using GIN(title_text_search_vector)
+                 """),
+        migrations.RunSQL("""
+    alter table search_searchrecord
+     add author_search_vector tsvector
+         generated always as 
+         (
+             setweight(to_tsvector('english', coalesce(creator_text, '')), 'A') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(series_creator_text, '')), 'B') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(publication_creator_text, '')), 'C') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(publication_sub_work_creator_text, '')), 'D') :: tsvector
+         ) stored;
+    create index idx_author_search on search_searchrecord using GIN(author_search_vector)
+                 """),
+        migrations.RunSQL("""
+    alter table search_searchrecord
+     add series_search_vector tsvector
+         generated always as 
+         (
+             setweight(to_tsvector('english', coalesce(series_text, '')), 'B') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(series_parents_text, '')), 'C') :: tsvector  || ' ' ||
+             setweight(to_tsvector('english', coalesce(publication_series_text, '')), 'C') :: tsvector  || ' ' 
+         ) stored;
+    create index idx_series_search on search_searchrecord using GIN(series_search_vector)
+                 """),
     ]

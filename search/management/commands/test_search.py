@@ -6,6 +6,9 @@ from django.db.models import Q, F
 from django.db.models.expressions import RawSQL
 
 from search.models import  SearchRecord
+from search.procedures.filters import TextSearchFilter
+from search.procedures.search import search
+
 
 def show_explain(qs):
     plan = qs.explain(
@@ -21,12 +24,11 @@ def show_explain(qs):
 def run_query(query, name):
     tm = time.time()
 
-    print("\n \n ", name)
-    # print(query.query)
-    # show_explain(query)
+    print("\n \n ---------------- ", name)
     print("\n")
     print("results", len(query))
     print("time", time.time() - tm)
+    query = query.prefetch_related("creator").prefetch_related("member").prefetch_related("series").prefetch_related("item").prefetch_related("item__publication")
     for r in query[0:10]:
         if r.creator:
             print("CREATOR ", r.creator.get_name(), r.rank)
@@ -76,10 +78,7 @@ def ts_trigram_simple(txt):
 
 
 def ts_vector_search(txt):
-    txt = txt.lower()
-    return SearchRecord.objects.annotate(
-        rank=RawSQL("ts_rank(all_text_search_vector, websearch_to_tsquery('simple', %s))*result_priority", [txt]),
-    ).extra(where=["websearch_to_tsquery('simple', %s) @@ all_text_search_vector"], params=[txt]).filter(hidden=False).order_by('-rank')
+    return search(["*"],0, TextSearchFilter(txt))
 
 
 class Command(BaseCommand):

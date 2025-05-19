@@ -1,7 +1,12 @@
+from typing import Protocol
+
+import django.db.models
 from django.contrib.auth.models import User
+from django.contrib.postgres.search import SearchQuery
 from django.db import models
 
 from django.db.models import CASCADE
+from django.db.models.expressions import RawSQL
 
 from creators.models import Creator
 from members.models import Member
@@ -10,7 +15,6 @@ from works.models import Publication, SubWork, Item
 
 
 class SearchRecord(models.Model):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -136,3 +140,4 @@ class SearchRecord(models.Model):
     hidden = models.BooleanField(default=False)
 
     result_priority = models.FloatField(default=1)
+
