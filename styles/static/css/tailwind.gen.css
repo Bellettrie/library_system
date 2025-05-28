@@ -3064,6 +3064,9 @@
   .w-full {
     width: 100%;
   }
+  .w-screen {
+    width: 100vw;
+  }
   .max-w-1\/2 {
     max-width: calc(1/2 * 100%);
   }
@@ -3088,6 +3091,9 @@
   .min-w-fit {
     min-width: fit-content;
   }
+  .min-w-full {
+    min-width: 100%;
+  }
   .flex-0 {
     flex: 0;
   }
@@ -3111,6 +3117,9 @@
   }
   .basis-1 {
     flex-basis: calc(var(--spacing) * 1);
+  }
+  .basis-6 {
+    flex-basis: calc(var(--spacing) * 6);
   }
   .basis-12\/12 {
     flex-basis: calc(12/12 * 100%);
@@ -3814,6 +3823,24 @@
       }
     }
   }
+  .lg\:divider-vertical {
+    @media (width >= 64rem) {
+      --divider-m: 1rem 0;
+      &.divider {
+        height: calc(0.25rem * 4);
+        width: auto;
+        flex-direction: row;
+        &:before {
+          height: calc(0.25rem * 0.5);
+          width: 100%;
+        }
+        &:after {
+          height: calc(0.25rem * 0.5);
+          width: 100%;
+        }
+      }
+    }
+  }
   .lg\:min-h-full {
     @media (width >= 64rem) {
       min-height: 100%;
@@ -3847,6 +3874,11 @@
   .lg\:basis-2\/5 {
     @media (width >= 64rem) {
       flex-basis: calc(2/5 * 100%);
+    }
+  }
+  .lg\:basis-6 {
+    @media (width >= 64rem) {
+      flex-basis: calc(var(--spacing) * 6);
     }
   }
   .lg\:flex-row {
