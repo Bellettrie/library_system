@@ -26,16 +26,21 @@
         </dl>
         <table class="table table-striped table-sm" style="width: 100%;">
         </table>
-        <div class="w-full flex flex-row justify-end join">
-            <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-primary join-item">Browse for
-                member</a>
-            <a href="{% url 'members.view' member.id 1 %}" class="btn btn-sm btn-outline-primary join-item">More
-                details</a>
-            <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-outline-primary join-item">Edit</a>
-            {% if member.should_be_anonymised %}
-                <a href="{% url 'members.anonymise' member.id %}" class="btn btn-sm btn-outline-primary">Anonimyse</a>
-            {% endif %}
-        </div>
 
+
+    {% endfill %}
+
+    {% fill 'footer' %}
+        {% component 'tile/footer' %}
+            <a href="{% url 'members.view' member.id 0 %}" class="btn btn-sm btn-outline-primary join-item">Less
+                details</a>
+            <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-primary join-item">Edit</a>
+            <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-secondary join-item">Browse for
+                member</a>
+            {% if member.should_be_anonymised %}
+                <a href="{% url 'members.anonymise' member.id %}"
+                   class="btn btn-sm btn-outline-primary">Anonimyse</a>
+            {% endif %}
+        {% endcomponent %}
     {% endfill %}
 {% endcomponent %}

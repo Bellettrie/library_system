@@ -1,21 +1,26 @@
+<div class="w-full flex flex-wrap gap-12 min-h-[80vh] ">
+ <textarea class="card bg-base-100 rounded-box w-full" name={{ name }} id="{{ name }}">{{ value }}
+ </textarea>
+</div>
+<div class="divider">
+    <button id="compileButton{{ name }}" type="button" class="btn btn-primary">>></button>
+</div>
+<div class="card w-full" id="compiledContenttext">
+    <div class="grow w-screen "></div>
+</div>
 
-<div class="flex grow w-full flex-col lg:flex-row gap-3 ">
-     <textarea class="card  rounded-box lg:min-h-full grid flex-grow place-items-center lg:basis-5/12-gap-3 lg:flex-none min-h-[20rem]" name= {{ name }} id="{{ name }}" >{{ value }}</textarea>
-  <div class="divider lg:divider-horizontal"><button id="compileButton{{ name }}" type="button" class="btn btn-primary" >>></button>
-</div>
-  <div class="card bg-base-300 rounded-box overflow-auto grid min-h-32 flex-grow place-items-center lg:flex-1" id="compiledContenttext">     <div class="grow max-w-screen flex-none lg:basis-1"></div>          </div>
-</div>
 
 <script>
-    function func () {
+    function func() {
         $.post("/pages/render",
             {
                 text: document.getElementById("{{ name }}").value,
             }).done(
             function (data, status) {
-                document.getElementById('compiledContent{{ name }}').innerHTML = "<div class=\"flex flex-wrap gap-3\">"+data+"</div>";
+                document.getElementById('compiledContent{{ name }}').innerHTML = "<div class=\"flex flex-wrap gap-3\">" + data + "</div>";
             });
     }
+
     $("#compileButton{{ name }}").click(func);
     func();
 
