@@ -1,4 +1,4 @@
-/*! tailwindcss v4.1.7 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.8 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
@@ -2638,8 +2638,8 @@
     opacity: 60%;
     font-weight: 600;
   }
-  .-mb-3 {
-    margin-bottom: calc(var(--spacing) * -3);
+  .-mb-5 {
+    margin-bottom: calc(var(--spacing) * -5);
   }
   .mb-2 {
     margin-bottom: calc(var(--spacing) * 2);
@@ -3229,10 +3229,6 @@
   .rounded-none {
     border-radius: 0;
   }
-  .rounded-r-full {
-    border-top-right-radius: calc(infinity * 1px);
-    border-bottom-right-radius: calc(infinity * 1px);
-  }
   .border {
     border-style: var(--tw-border-style);
     border-width: 1px;
@@ -3279,6 +3275,9 @@
       }
     }
   }
+  .bg-accent {
+    background-color: var(--color-accent);
+  }
   .bg-base-100 {
     background-color: var(--color-base-100);
   }
@@ -3296,9 +3295,6 @@
   }
   .bg-neutral {
     background-color: var(--color-neutral);
-  }
-  .bg-primary {
-    background-color: var(--color-primary);
   }
   .stroke-current {
     stroke: currentcolor;
@@ -3398,6 +3394,12 @@
     color: var(--color-primary-content);
     --input-color: var(--color-primary);
   }
+  .text-accent-content {
+    color: var(--color-accent-content);
+  }
+  .text-base-content {
+    color: var(--color-base-content);
+  }
   .text-error {
     color: var(--color-error);
   }
@@ -3448,10 +3450,10 @@
     --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
-  .shadow-accent {
-    --tw-shadow-color: var(--color-accent);
+  .shadow-accent-content {
+    --tw-shadow-color: var(--color-accent-content);
     @supports (color: color-mix(in lab, red, red)) {
-      --tw-shadow-color: color-mix(in oklab, var(--color-accent) var(--tw-shadow-alpha), transparent);
+      --tw-shadow-color: color-mix(in oklab, var(--color-accent-content) var(--tw-shadow-alpha), transparent);
     }
   }
   .ring-primary {
@@ -3516,10 +3518,6 @@
   .btn-info {
     --btn-color: var(--color-info);
     --btn-fg: var(--color-info-content);
-  }
-  .btn-neutral {
-    --btn-color: var(--color-neutral);
-    --btn-fg: var(--color-neutral-content);
   }
   .btn-primary {
     --btn-color: var(--color-primary);
@@ -4192,8 +4190,8 @@
     --color-primary-content: oklch(87.49% 0.037 325.02);
     --color-secondary: oklch(53.92% 0.162 241.36);
     --color-secondary-content: oklch(90.784% 0.032 241.36);
-    --color-accent: oklch(75.98% 0.204 56.72);
-    --color-accent-content: oklch(15.196% 0.04 56.72);
+    --color-accent: #f7ec55;
+    --color-accent-content: #aa4203;
     --color-neutral: oklch(27.807% 0.029 256.847);
     --color-neutral-content: oklch(85.561% 0.005 256.847);
     --color-info: oklch(72.06% 0.191 231.6);
@@ -4204,14 +4202,14 @@
     --color-warning-content: oklch(0% 0 0);
     --color-error: oklch(71.76% 0.221 22.18);
     --color-error-content: oklch(0% 0 0);
-    --radius-selector: 0.25rem;
-    --radius-field: 0.25rem;
-    --radius-box: 0.25rem;
+    --radius-selector: 0.5rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.5rem;
     --size-selector: 0.25rem;
     --size-field: 0.25rem;
     --border: 1px;
     --depth: 1;
-    --noise: 1;
+    --noise: 0;
   }
 }
 @property --tw-divide-y-reverse {
