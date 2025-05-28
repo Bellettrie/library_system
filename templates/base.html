@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="fantasy">
+<html lang="en" data-theme="bellekia">
 
 {% load static %}
 {% load menu %}
@@ -19,7 +19,7 @@
     {% menu_data 'top' perms user.is_anonymous as top_menu_items %}
     {% component 'nav.navbar.Navbar' top_menu_items / %}
 
-    <div class="grow bg-base flex flex-row w-full justify-content-center">
+    <div class="grow bg-base-200 flex flex-row w-full justify-content-center">
         {% menu_data 'sidebar' perms user.is_anonymous as sidebar_menu_items %}
         {% component "nav.sidebar.Sidebar" sidebar_menu_items top_menu_items / %}
 
