@@ -18,7 +18,7 @@ jobs:
     - name: Check tailwind compile
       run: |
         cd styles/config/
-        npm run compile
+        npx @tailwindcss/cli -i ./index.css -o ../static/css/tailwind.gen.css
         cd ..
         git status
         git diff && echo 0

@@ -25,9 +25,9 @@ flake8 . --ignore F401,E501,W503 --count --show-source --statistics --max-line-l
 Install npm (or yarn if you know how), and install the dependencies in the /styles/config folder. Use `npm ci`
 
 Enter the /styles/config folder and run the following command for local dev:
-`npm run watch`
+`npx @tailwindcss/cli -i ./index.css -o ../static/css/tailwind.gen.css --watch`
 
-Run `npm compile` to merely compile 
+Run `npx @tailwindcss/cli -i ./index.css -o ../static/css/tailwind.gen.css` to merely compile.
 
 
 Note that tailwind's tooling reads the source of all our templates to see which tags are actually in use. 

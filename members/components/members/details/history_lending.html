@@ -6,7 +6,7 @@
     {% fill 'footer' %}
         {% if member.pk == user.member.pk %}
             {% component 'tile/footer' %}
-                <a class="btn btn-sm btn-outline-primary" href="{% url 'lendings.me' %}">My lending history</a>
+                <a class="btn btn-sm btn-outline-primary join-item" href="{% url 'lendings.me' %}">My lending history</a>
             {% endcomponent %}
         {% endif %}
     {% endfill %}
