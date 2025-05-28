@@ -1,4 +1,4 @@
-<table class="my-3 hidden md:table  table-zebra table-pin-rows table-auto table-pin-cols ">
+<div class=" hidden md:table bg-base-100 "> <table class="my-3 table-zebra table-pin-rows table-auto table-pin-cols ">
     <tr>
         {% if not skip_header %}
             <th ></th>
@@ -17,7 +17,7 @@
         {% endcomponent %}
     {% endfor %}
 </table>
-
+</div>
 <div class="md:hidden flex flex-col gap-5 m-3">
     {% for item in items %}
         {% component 'works.table.publication_list.card.Card' item perms all_authors=all_authors / %}

@@ -1,7 +1,7 @@
 {% load static %}
-<div class="flex items-center -mb-3 min-w-fit">
+<div class="flex items-center -mb-5 min-w-fit">
     <a class="hidden sm:block flex-none" href="{% url 'homepage' %}">
-        <img  style="height: 5rem"; {% if not debug %}class="rotate4"{% endif %} src="{% static logo %}"/>
+        <img  style="height: 4.5rem" {% if not debug %}class="rotate4"{% endif %} src="{% static logo %}"/>
     </a>
     <div class="top-bar-logo grow">
         <a href="{% url 'homepage' %}">
