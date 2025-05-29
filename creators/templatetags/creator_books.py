@@ -1,7 +1,9 @@
 from django import template
 from django.db.models import Q
 
+from book_code_generation import procedures
 from creators.models import Creator
+from creators.procedures.creator_books import get_books_for_author
 from series.models import Series
 from tables.buttons import LendBookButton, ReturnBookButton, IsLentOutStatus, NoItemsButton, NotInAvailableStatus
 from tables.columns import BookCodeColumn, TitleColumn, AllAuthorsColumn, ButtonsColumn
@@ -26,21 +28,12 @@ cols = [BookCodeColumn(), TitleColumn(), AllAuthorsColumn(), ButtonsColumn([NotI
 
 @register.inclusion_tag('tables/items_table_xs.html')
 def get_creator_books(creator: Creator, perms):
-    series = set(Series.objects.filter(creatortoseries__creator=creator))
-    series_len = 0
-    while series_len < len(series):
-        series_len = len(series)
-        series = series | set(Series.objects.filter(part_of_series__in=series))
-
-    item_set = set()
-    for work in Publication.objects.filter(
-            Q(creatortowork__creator=creator) | Q(workinseries__part_of_series__in=series) | Q(workinpublication__work__creatortowork__creator=creator)):
-        for item in work.item_set.all():
-            item_set.add(item)
+    item_set = get_books_for_author(creator)
 
     result = []
-    for item in item_set:
-        result.append(ItemRow(item))
+    for work in item_set:
+        for item in work.item_set.all():
+            result.append(ItemRow(item))
     result.sort(key=lambda r: r.get_item().book_code_sortable)
 
     return {"perms": perms, "table": Table(result, cols)}
