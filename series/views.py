@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models import Q
@@ -15,7 +17,15 @@ from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
 from series.models import Series, SeriesNode
 from book_code_generation.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
-from works.views import word_to_regex
+
+
+def word_to_regex(word: str):
+    if re.match('^[\\w-]+?$', word.replace("*", "").replace("+", "").replace("?", "")) is None:
+        return ""
+    word = word.replace("*", ".*")
+    word = word.replace("?", ".?")
+    word = word.replace("+", ".+")
+    return "(?<!\\S)" + word + "(?!\\S)"
 
 
 def get_series_by_query(request, search_text):
