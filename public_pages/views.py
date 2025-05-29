@@ -86,6 +86,14 @@ def end_row(markdown_text: str, title: str, layout_overrides: str = "", *_):
     return '</div>'
 
 
+
+def start_row(markdown_text: str, title: str, layout_overrides: str = "", *_):
+    return '<div class="grow flex flex-col lg:flex-row gap-3 {layout}">'.format(layout=layout_overrides)
+
+
+def end_row(markdown_text: str, title: str, layout_overrides: str = "", *_):
+    return '</div>'
+
 def start_column(markdown_text: str, title: str, layout_overrides: str = "", *_):
     return '<div class="grow flex flex-col gap-3 {layout}">'.format(layout=layout_overrides)
 
