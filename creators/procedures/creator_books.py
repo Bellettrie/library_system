@@ -14,5 +14,5 @@ def get_books_for_author(creator: Creator):
 
     return Publication.objects.filter(
         Q(creatortowork__creator=creator) | Q(workinseries__part_of_series__in=series) | Q(
-            workinpublication__work__creatortowork__creator=creator)).order_by("title").prefetch_related(
-        "item_set").all()
+            workinpublication__work__creatortowork__creator=creator)).order_by("title","id").prefetch_related(
+        "item_set").distinct("title","id").all()
