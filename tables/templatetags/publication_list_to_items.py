@@ -27,4 +27,5 @@ def works_table(publications: List[Publication]):
             its = True
         if not its:
             rows.append(NoItemRow(publication))
+    print(rows)
     return rows

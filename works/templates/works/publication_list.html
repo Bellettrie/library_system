@@ -9,7 +9,6 @@
     <div class="flex flex-col gap-3">
         {% if advanced %}
             {% include 'works/work_search_field_advanced.html' %}
-            <a href="{% url 'works.list' %}">Simple Search</a>
         {% else %}
             {% include 'works/work_search_field_simple.html' %}
         {% endif %}

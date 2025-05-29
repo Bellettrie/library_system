@@ -4121,6 +4121,11 @@
       flex-grow: 1;
     }
   }
+  .md\:flex-row {
+    @media (width >= 48rem) {
+      flex-direction: row;
+    }
+  }
   .md\:place-items-center {
     @media (width >= 48rem) {
       place-items: center;
