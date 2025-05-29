@@ -3,10 +3,10 @@ from django.db.models import Q
 from works.models import  Category
 
 
-def get_basic_text_search(words):
+def filter_basic_text(query, words):
         if len(words) == 0:
             return None
-        full_query = None
+
         for word in words:
             if word.startswith("*"):
                 next_query_part = Q(wordmatch__word__word__endswith=word.replace("*", ""))
@@ -15,27 +15,22 @@ def get_basic_text_search(words):
                 next_query_part = Q(wordmatch__word__word__startswith=word.replace("*", ""))
             else:
                 next_query_part = Q(wordmatch__word__word=word)
-
-            if full_query is None:
-                full_query = next_query_part
-            else:
-                full_query = full_query & next_query_part
-        print(full_query)
-        return full_query
+            query= query.filter(next_query_part)
+        return query
 
 
-def get_author_text_search(words):
-        return get_basic_text_search(words) & Q(wordmatch__type="AUTHOR")
+def filter_author_text(query, words):
+        return filter_basic_text(query, words).filter(wordmatch__type="AUTHOR")
 
-def get_series_text_search(words):
-    return get_basic_text_search(words) & Q(wordmatch__type="SERIES")
+def filter_series_text(query, words):
+    return filter_basic_text(query, words).filter(wordmatch__type="SERIES")
 
-def get_title_text_search(words):
-    return get_basic_text_search(words) & Q(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK"))
+def filter_title_text(query, words):
+    return filter_basic_text(query, words).filter(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK"))
 
 
 
-def search_state(q, states):
+def filter_state(q, states):
     # Shortcut, because 'available' is not a state on which we can search.
     if "AVAILABLE" in states or len(states) == 0:
         return q
@@ -62,31 +57,16 @@ INNER JOIN
     return q.extra(where=[query], params=[states])
 
 
-def get_book_code_search_subquery(word):
+def filter_book_code(query, word):
     if word.startswith("*"):
-        return Q(item__book_code_sortable__endswith=word.replace("*", "")) | Q(
-            item__book_code__endswith=word.replace("*", ""))
+        return query.filter(Q(item__book_code_sortable__endswith=word.replace("*", "")) | Q(
+            item__book_code__endswith=word.replace("*", "")))
     elif word.endswith("*"):
-        return Q(item__book_code_sortable__startswith=word.replace("*", "")) | Q(
-            item__book_code__startswith=word.replace("*", ""))
+        return query.filter(Q(item__book_code_sortable__startswith=word.replace("*", "")) | Q(
+            item__book_code__startswith=word.replace("*", "")))
     else:
-        return Q(item__book_code_sortable=word) | Q(item__book_code=word)
+        return query.filter(Q(item__book_code_sortable=word) | Q(item__book_code=word))
 
 
-
-class LocationSearchQuery:
-    def __init__(self, categories: [Category]):
-        self.categories = categories
-
-    def exec(self):
-        return Q(item__location__category__in=self.categories)
-
-
-
-class AndOp:
-    def __init__(self, left, right):
-        self.left = left
-        self.right = right
-
-    def exec(self):
-        return self.left.exec() & self.right.exec()
+def filter_location(query, categories):
+    return query.filter(item__location__category__in=categories)

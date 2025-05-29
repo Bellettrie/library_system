@@ -9,8 +9,8 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
-from search.queries import LocationSearchQuery, search_state, get_book_code_search_subquery, \
-    get_basic_text_search, get_author_text_search, get_series_text_search, get_title_text_search
+from search.queries import  filter_state, filter_book_code, \
+    filter_basic_text, filter_author_text, filter_series_text, filter_title_text, filter_location
 
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
@@ -39,37 +39,38 @@ def get_works(request):
     # If one word, also check bookcodes
     if len(words) == 1:
         any_query = True
-        query = query.filter(get_book_code_search_subquery(words[0]) | get_basic_text_search(words))
+        query = filter_book_code(query, words[0])
+        query = filter_basic_text(query, words)
     elif len(words) > 1:
         any_query = True
-        query = query.filter(get_basic_text_search(words))
+        query = filter_basic_text(query, words)
 
     if len(words_author) > 0:
         any_query = True
-        query = query.filter(get_author_text_search(words_author))
+        query = filter_author_text(query, words_author)
     if len(words_series) > 0:
         any_query = True
-        query = query.filter(get_series_text_search(words_series))
+        query = filter_series_text(query, words_series)
     if len(words_title) > 0:
         any_query = True
-        query = query.filter(get_title_text_search(words_title))
+        query = filter_title_text(query, words_title)
 
     if len(categories) > 0:
         any_query = True
-        query = query.filter(LocationSearchQuery(categories).exec())
+        query = filter_location(query, categories)
     if len(book_code) > 0:
         any_query = True
-        query = query.filter(get_book_code_search_subquery(book_code))
+        query = filter_book_code(query, book_code)
     if len(states) > 0:
         any_query = True
-        query = search_state(query, states)
+        query = filter_state(query, states)
 
     if not any_query:
         return Publication.objects.none()
 
     query = query.annotate(titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
         "titleorder", "id").order_by("titleorder", "id")
-
+    print(query.query)
     return query
 
 
