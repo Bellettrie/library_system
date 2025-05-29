@@ -5,7 +5,7 @@
     <div class="flex flex-col gap-3">
         {% component 'search.searchbox' selected_tag="series" %}
             <form class="flex flex-1  w-full place-content-center join" action="/series/list" method="get">
-                <input class="input input-bordered join-item" id="q" type="text" name="q" value="{{ request.GET.q }}" >
+                <input class="input input-bordered join-item" id="q" type="text" name="q" value="{{ request.GET.q }}" placeholder="Cosmere">
                 <input class="btn btn-primary join-item" type="submit" value="Search">
             </form>
         {% endcomponent %}
