@@ -45,7 +45,6 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
 
 
 def item_lending_checks(item: Item, current_date: datetime.date):
-
     if item.is_lent_out():
         raise LendingImpossibleException("Item is lent out")
     if not item.in_available_state():
@@ -76,6 +75,7 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
     if item.is_reserved():
         if not item.is_reserved_for(member):
             raise LendingImpossibleException("Item is reserved for another member")
+
     end_date = get_end_date(item, member, current_date)
     if end_date < current_date:
         raise LendingImpossibleException("End date for this lending would be in the past, cannot lend.")
