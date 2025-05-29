@@ -3018,6 +3018,9 @@
   .h-full {
     height: 100%;
   }
+  .max-h-full {
+    max-height: 100%;
+  }
   .min-h-32 {
     min-height: calc(var(--spacing) * 32);
   }

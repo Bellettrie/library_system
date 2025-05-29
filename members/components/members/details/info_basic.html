@@ -32,7 +32,7 @@
 
     {% fill 'footer' %}
         {% component 'tile/footer' %}
-            <a href="{% url 'members.view' member.id 0 %}" class="btn btn-sm btn-outline-primary join-item">Less
+            <a href="{% url 'members.view' member.id 1 %}" class="btn btn-sm btn-outline-primary join-item">More
                 details</a>
             <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-primary join-item">Edit</a>
             <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-secondary join-item">Browse for

@@ -91,10 +91,10 @@ CMDS = {
 def flex_to_layout(mdflex: str, lgflex: str) -> str:
     mdd = ""
     if 0 < int(mdflex) <= 12:
-        mdd = "md:basis-" + mdflex + "/12-gap-3 "
+        mdd = "md:basis-" + mdflex + "/12 gap-3"
     lgg = ""
     if 0 < int(lgflex) <= 12:
-        lgg = " lg:basis-" + lgflex + "/12-gap-3 "
+        lgg = " lg:basis-" + lgflex + "/12 gap-3 "
     if mdd == "" and lgg == "":
         return "basis-12/12"
     return mdd + lgg
