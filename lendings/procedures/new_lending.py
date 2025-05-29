@@ -70,11 +70,12 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
             "Member currently has items that are late. These need to be returned before it can be handed out.")
     if member.is_blacklisted:
         raise LendingImpossibleException("Member currently blacklisted, cannot lend")
-
-    item_lending_checks(item, current_date)
     if item.is_reserved():
         if not item.is_reserved_for(member):
             raise LendingImpossibleException("Item is reserved for another member")
+
+    item_lending_checks(item, current_date)
+
 
     end_date = get_end_date(item, member, current_date)
     if end_date < current_date:
