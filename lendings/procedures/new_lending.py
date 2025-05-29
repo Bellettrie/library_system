@@ -45,9 +45,7 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
 
 
 def item_lending_checks(item: Item, current_date: datetime.date):
-    if item.is_reserved():
-        if not item.is_reserved_for(member):
-            raise LendingImpossibleException("Item is reserved for another member")
+
     if item.is_lent_out():
         raise LendingImpossibleException("Item is lent out")
     if not item.in_available_state():
@@ -64,6 +62,7 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
     :return: None
     :except LendingImpossibleException: If the lending-checks fail.
     """
+
     if not can_lend_more_of_item(member, item, from_reservation):
         raise LendingImpossibleException(
             "Member currently has lent too many items in category {}".format(item.location.category.item_type))
@@ -74,7 +73,9 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
         raise LendingImpossibleException("Member currently blacklisted, cannot lend")
 
     item_lending_checks(item, current_date)
-
+    if item.is_reserved():
+        if not item.is_reserved_for(member):
+            raise LendingImpossibleException("Item is reserved for another member")
     end_date = get_end_date(item, member, current_date)
     if end_date < current_date:
         raise LendingImpossibleException("End date for this lending would be in the past, cannot lend.")
