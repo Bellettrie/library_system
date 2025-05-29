@@ -71,7 +71,6 @@ def get_works(request):
     query = query.annotate(
         titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
         "titleorder", "id").order_by("titleorder", "id")
-    print(query.query)
     return query
 
 
