@@ -3,19 +3,49 @@
     Select a Member for Lending
 {% endblock %}
 {% block content %}
-    Lending for work: {{ item.publication.title }}
-    <form action="{% url 'lendings.new.work'  item.pk %}" method="get">
-        <label for="Query">Name: </label>
-        <input id="q" type="text" name="q">
-        <input type="submit" value="Search" class="btn-primary btn" >
-    </form>
-    <table>
-        {% for member in members %}
-            <tr>
-                <td><a href="{% url 'lendings.finalize' item.pk  member.id %}">{{ member.name }}</a></td>
-                <td><a  data-hx-get="{% url 'lendings.finalize' item.pk member.pk %}" hx-target="#dialog" href="{% url 'lendings.finalize' item.pk  member.id %}" class="btn btn-sm btn-primary">Finish lending</a></td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="flex flex-col gap-3">
+        <div class="flex flex-col lg:flex-row gap-3">
+            <div class="lg:flex-1 lg:mt-3 lg:mb-3">
+                {% component "works.info_card" item / %}
+            </div>
+            {% component 'members.search_input' request.GET.q request.GET.previous myUrl="#" / %}
+
+
+        </div>
+        {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none " %}
+            {% fill "title" %}
+                <div class="hidden sm:block sm:pb-5">Results</div>
+                <div class="sm:absolute top-5 flex w-full justify-center">
+                    {% include 'pagination_bootstrap.html' %}
+                </div>
+            {% endfill %}
+            {% fill "content" %}
+                <table class="table table-zebra table-responsive-xs w-full table-auto border-collapse border border-slate-400">
+                    <tr>
+                        <th>Member Name</th>
+                        <th></th>
+                    </tr>
+                    {% for member in members %}
+                        <tr class="hover">
+                            <td>{% if member.is_blacklisted %}
+                                <b style="font-size: large;color:red;">THIS MEMBER IS BLACKLISTED</b>
+                                <br>{% endif %}{% if member.is_anonimysed %}[anon] {% endif %}<a
+                                    class="link link-secondary"
+                                    href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a>
+                                {% if member.nickname %}<br/>
+                                    <i>{{ member.nickname }}</i>{% endif %}</td>
+                            <td class="text-right">
+                                {% component 'lendings/buttons/finalize' item member perms bonus_classes="btn-sm join-item" / %}
+                            </td>
+                        </tr>
+
+                    {% empty %}
+                        <i> No results</i>
+                    {% endfor %}
+                </table>
+            {% endfill %}
+        {% endcomponent %}
+    </div>
+
 {% endblock %}
 
