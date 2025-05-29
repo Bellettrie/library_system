@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
-from search.queries import  filter_state, filter_book_code, \
+from search.queries import filter_state, filter_book_code, \
     filter_basic_text, filter_author_text, filter_series_text, filter_title_text, filter_location
 
 from utils.get_query_words import get_query_words
@@ -68,7 +68,8 @@ def get_works(request):
     if not any_query:
         return Publication.objects.none()
 
-    query = query.annotate(titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
+    query = query.annotate(
+        titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
         "titleorder", "id").order_by("titleorder", "id")
     print(query.query)
     return query

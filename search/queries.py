@@ -1,7 +1,5 @@
 from django.db.models import Q
 
-from works.models import Category
-
 
 def filter_basic_text(query, words):
     if len(words) == 0:
