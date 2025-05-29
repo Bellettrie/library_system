@@ -76,7 +76,6 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
 
     item_lending_checks(item, current_date)
 
-
     end_date = get_end_date(item, member, current_date)
     if end_date < current_date:
         raise LendingImpossibleException("End date for this lending would be in the past, cannot lend.")
