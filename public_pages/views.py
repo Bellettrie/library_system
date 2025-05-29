@@ -28,6 +28,12 @@ def render_interrupt(markdown_text: str, title: str, layout_overrides: str = "",
     return search_template.render(context={"content": markdown_text})
 
 
+# Shows the youtube vid
+def render_yt(markdown_text: str, title: str, layout_overrides: str = "", *_):
+    yt_template = get_template('public_pages/elems/yt.html')
+    return yt_template.render(context={"url": markdown_text})
+
+
 # The base section creates a basic text area with a size. Observe that the title parameter is ignored, but it's kept to keep standardised functions.
 def render_base_section(markdown_text: str, title: str, layout_overrides: str = "", *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
@@ -69,6 +75,14 @@ def render_trafficlight(markdown_text: str, title: str, layout_overrides: str = 
     return search_template.render(context={"open": get_open(), "layout": layout_overrides})
 
 
+
+def start_row(markdown_text: str, title: str, layout_overrides: str = "", *_):
+    return '<div class="grow flex flex-col lg:flex-row gap-3 {layout}">'.format(layout=layout_overrides)
+
+
+def end_row(markdown_text: str, title: str, layout_overrides: str = "", *_):
+    return '</div>'
+
 def start_column(markdown_text: str, title: str, layout_overrides: str = "", *_):
     return '<div class="grow flex flex-col gap-3 {layout}">'.format(layout=layout_overrides)
 
@@ -81,23 +95,18 @@ CMDS = {
     "base": render_base_section,
     "square": render_square,
     "search": render_find,
+    "yt": render_yt,
     "light": render_trafficlight,
     "interrupt": render_interrupt,
+    "start_row": start_row,
+    "end_row": end_row,
     "start_column": start_column,
     "end_column": end_column,
 }
 
 
-def flex_to_layout(mdflex: str, lgflex: str) -> str:
-    mdd = ""
-    if 0 < int(mdflex) <= 12:
-        mdd = "md:basis-" + mdflex + "/12-gap-3 "
-    lgg = ""
-    if 0 < int(lgflex) <= 12:
-        lgg = " lg:basis-" + lgflex + "/12-gap-3 "
-    if mdd == "" and lgg == "":
-        return "basis-12/12"
-    return mdd + lgg
+def get_overrides() -> str:
+    return "w-full md:flex-1"
 
 
 # The render_md function is the main rendering function.
@@ -107,8 +116,6 @@ def render_md(markdown_text: str):
     lines = ""
     result = ""
     title = ""
-    mdflex = "0"
-    lgflex = "0"
     cms = None
     first_line = True
     for line in markdown_text.split("\n"):
@@ -116,18 +123,14 @@ def render_md(markdown_text: str):
         if line.startswith("#!title"):
             title = line[7:].strip()
         elif line.startswith("#!mdflex"):
-            mdflex = line[len("#!mdflex "):].strip()
+            pass
         elif line.startswith("#!lgflex"):
-            lgflex = line[len("#!lgflex "):].strip()
+            pass
 
         # new component barrier
         elif line.startswith("#!"):
             if not first_line:
-                if mdflex == "0" and len(cms) > 1:
-                    mdflex = str(cms[1])
-                if lgflex == "0" and len(cms) > 2:
-                    lgflex = str(cms[2])
-                result += CMDS[cms[0]](lines, title, layout_overrides=flex_to_layout(mdflex, lgflex))
+                result += CMDS[cms[0]](lines, title, layout_overrides=get_overrides())
             cms = line[2:].strip().split(" ")
             # Basic sanity check: does the command exist at all
             if cms[0] not in CMDS.keys():
@@ -142,7 +145,7 @@ def render_md(markdown_text: str):
     # If no specific blocks are made, make a 12/12 block with *everything*
     if cms is None:
         cms = ["base"]
-    result += CMDS[cms[0]](lines, title, layout_overrides=flex_to_layout(mdflex, lgflex))
+    result += CMDS[cms[0]](lines, title, layout_overrides=get_overrides())
     return result
 
 
