@@ -14,8 +14,8 @@
 
                         {% for field in form.visible_fields %}
                             <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm/6 font-medium text-gray-900">{{ field.label }}</dt>
-                                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ field|add_class:"input input-xs border-1 border-bellered" }}</dd>
+                                <dt class=" font-medium ">{{ field.label }}</dt>
+                                <dd class="mt-1  sm:col-span-2 sm:mt-0">{{ field|add_class:"input input-xs border-1 border-bellered" }}</dd>
                             </div>
                         {% endfor %}
                     </dl>
