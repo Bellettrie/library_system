@@ -35,26 +35,38 @@ def get_works(request):
     states = request.GET.getlist('q_states', [])
 
     query = Publication.objects
+    any_query = False
     # If one word, also check bookcodes
     if len(words) == 1:
+        any_query = True
         query = query.filter(get_book_code_search_subquery(words[0]) | get_basic_text_search(words))
     elif len(words) > 1:
+        any_query = True
         query = query.filter(get_basic_text_search(words))
 
     if len(words_author) > 0:
+        any_query = True
         query = query.filter(get_author_text_search(words_author))
     if len(words_series) > 0:
+        any_query = True
         query = query.filter(get_series_text_search(words_series))
     if len(words_title) > 0:
+        any_query = True
         query = query.filter(get_title_text_search(words_title))
 
     if len(categories) > 0:
+        any_query = True
         query = query.filter(LocationSearchQuery(categories).exec())
     if len(book_code) > 0:
+        any_query = True
         query = query.filter(get_book_code_search_subquery(book_code))
     if len(states) > 0:
+        any_query = True
         query = search_state(query, states)
-    print(query.query)
+
+    if not any_query:
+        return Publication.objects.none()
+
     query = query.annotate(titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
         "titleorder", "id").order_by("titleorder", "id")
 
