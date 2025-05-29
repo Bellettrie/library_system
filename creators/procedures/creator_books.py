@@ -12,12 +12,5 @@ def get_books_for_author(creator:Creator):
         series_len = len(series)
         series = series | set(Series.objects.filter(part_of_series__in=series))
 
-    work_set = set()
-    for work in Publication.objects.filter(
-            Q(creatortowork__creator=creator) | Q(workinseries__part_of_series__in=series) | Q(workinpublication__work__creatortowork__creator=creator)):
-            work_set.add(work)
-
-    result = []
-    for item in work_set:
-        result.append(item)
-    return result
+    return Publication.objects.filter(
+            Q(creatortowork__creator=creator) | Q(workinseries__part_of_series__in=series) | Q(workinpublication__work__creatortowork__creator=creator)).order_by("title").all()
