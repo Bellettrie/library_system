@@ -1,33 +1,34 @@
 from django.db.models import Q
 
-from works.models import  Category
+from works.models import Category
 
 
 def filter_basic_text(query, words):
-        if len(words) == 0:
-            return None
+    if len(words) == 0:
+        return None
 
-        for word in words:
-            if word.startswith("*"):
-                next_query_part = Q(wordmatch__word__word__endswith=word.replace("*", ""))
+    for word in words:
+        if word.startswith("*"):
+            next_query_part = Q(wordmatch__word__word__endswith=word.replace("*", ""))
 
-            elif word.endswith("*"):
-                next_query_part = Q(wordmatch__word__word__startswith=word.replace("*", ""))
-            else:
-                next_query_part = Q(wordmatch__word__word=word)
-            query= query.filter(next_query_part)
-        return query
+        elif word.endswith("*"):
+            next_query_part = Q(wordmatch__word__word__startswith=word.replace("*", ""))
+        else:
+            next_query_part = Q(wordmatch__word__word=word)
+        query = query.filter(next_query_part)
+    return query
 
 
 def filter_author_text(query, words):
-        return filter_basic_text(query, words).filter(wordmatch__type="AUTHOR")
+    return filter_basic_text(query, words).filter(wordmatch__type="AUTHOR")
+
 
 def filter_series_text(query, words):
     return filter_basic_text(query, words).filter(wordmatch__type="SERIES")
 
+
 def filter_title_text(query, words):
     return filter_basic_text(query, words).filter(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK"))
-
 
 
 def filter_state(q, states):
