@@ -20,7 +20,12 @@ class ItemRow(Row):
         self.item = item
 
     def get_item(self) -> Item:
+        print("zz", self.item)
         return self.item
+
+    def is_item(self):
+        print("A", self.get_item())
+        return True
 
 
 class NoItemRow(Row):

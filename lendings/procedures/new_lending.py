@@ -43,6 +43,15 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
     item.is_seen("Book was lent out.")
     return new_lending
 
+def item_lending_checks(item: Item, current_date: datetime.date):
+    if item.is_reserved():
+        if not item.is_reserved_for(member):
+            raise LendingImpossibleException("Item is reserved for another member")
+    if item.is_lent_out():
+        raise LendingImpossibleException("Item is lent out")
+    if not item.in_available_state():
+        raise LendingImpossibleException(
+            "Item is not currently available for lending, the item is {}.".format(item.get_state()))
 
 def lending_checks(item: Item, member: Member, current_date: datetime.date, from_reservation=False):
     """
@@ -61,14 +70,8 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
             "Member currently has items that are late. These need to be returned before it can be handed out.")
     if member.is_blacklisted:
         raise LendingImpossibleException("Member currently blacklisted, cannot lend")
-    if item.is_reserved():
-        if not item.is_reserved_for(member):
-            raise LendingImpossibleException("Item is reserved for another member")
-    if item.is_lent_out():
-        raise LendingImpossibleException("Item is lent out")
-    if not item.in_available_state():
-        raise LendingImpossibleException(
-            "Item is not currently available for lending, the item is {}.".format(item.get_state()))
+
+    item_lending_checks(item, current_date)
 
     end_date = get_end_date(item, member, current_date)
     if end_date < current_date:
@@ -81,6 +84,11 @@ def can_lend(item: Item, member: Member, current_date: datetime.date, from_reser
     except LendingImpossibleException as error:
         return error.__str__()
 
+def item_can_be_lended(item: Item, current_date: datetime.date):
+    try:
+        item_lending_checks(item, current_date)
+    except LendingImpossibleException as error:
+        return error.__str__()
 
 def new_lending(item: Item, member: Member, user_member: Member, current_date: datetime.date, from_reservation=False):
     """

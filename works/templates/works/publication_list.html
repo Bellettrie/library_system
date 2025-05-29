@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% load publication_list_to_items %}
 {#{% load books_table %}#}
-{% block title %}Book Search{% endblock %}
+
+{% block title %}Search
+
+{% endblock %}
 {% block content %}
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-3">
         {% if advanced %}
             {% include 'works/work_search_field_advanced.html' %}
             <a href="{% url 'works.list' %}">Simple Search</a>
@@ -12,18 +15,55 @@
         {% endif %}
         <div class="flex-1 w-full">
             <div class="justify-center items-center w-full">
-                {% include 'pagination_bootstrap.html' %}
+                {% include 'pagination.html' %}
             </div>
         </div>
-        <div class=" basis-1 w-full">
-            {% autoescape off %}
-                {% works_table object_list perms %}
-            {% endautoescape %}
-{#        {% include "pagination.html" %}#}
-{#        {% component 'works.table.publication_list.PublicationList' object_list perms / %}#}
-{#        {% include "pagination.html" %}#}
+
+
+        {% works_table object_list as items %}
+        <div class="card  p-3 hidden md:block bg-base-100 ">
+            <div class="rounded-box ">
+                <table class="table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols rounded-box">
+                    <tr>
+                        {% if not skip_header %}
+                            <th></th>
+                        {% endif %}
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Infos</th>
+                        <th></th>
+                    </tr>
+                    {% for itemRow in items %}
+                        {% component 'works.table.row' itemRow.get_item skip_header=skip_header %}
+                            {% fill "extra_rows" %}
+                                <td>
+                                    {% if itemRow.is_item and itemRow.get_item.get_state != "AVAILABLE" %}
+                                        [{{ itemRow.get_item.get_state }}]
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% component 'lendings/buttons/lend' item perms bonus_classes="btn-sm join-item" / %}
+
+                                </td>
+                            {% endfill %}
+
+                        {% endcomponent %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="lg:hidden flex flex-col gap-5 m-3">
+            {% for item in items %}
+                {% component 'works.item_card' item.get_item perms / %}
+            {% endfor %}
+        </div>
+        <div class="flex-1 w-full">
+            <div class="justify-center items-center w-full">
+                {% include 'pagination.html' %}
+            </div>
         </div>
     </div>
+
     {% component 'help_bar' %}
         The search function tries to match the search query to words in the title of books, series, as well as the names
         of
@@ -43,6 +83,5 @@
         {% if advanced %}
             In advanced search: press ctrl-> click to remove items from the multi-selects{% endif %}
     {% endcomponent %}
-    <a class="btn btn-info" href="{% url 'series.list' %}">Find Series</a>
-    <a class="btn btn-info" href="{% url 'creator.list' %}">Find Authors</a>
+
 {% endblock %}

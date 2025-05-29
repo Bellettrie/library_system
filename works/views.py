@@ -141,6 +141,7 @@ class WorkList(ListView):
 
     def get_queryset(self):  # new
         result = get_works(self.request)
+
         return result
 
 

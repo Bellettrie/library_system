@@ -17,8 +17,8 @@ columns = [BookCodeColumn(), TitleColumn(), AllAuthorsColumn(), ButtonsColumn([N
            ButtonsColumn(buttons_list, "")]
 
 
-@register.inclusion_tag("tables/items_table_xs.html")
-def works_table(publications: List[Publication], perms):
+@register.simple_tag
+def works_table(publications: List[Publication]):
     rows = []
     for publication in publications:
         its = False
@@ -27,4 +27,4 @@ def works_table(publications: List[Publication], perms):
             its = True
         if not its:
             rows.append(NoItemRow(publication))
-    return {"table": Table(rows, columns), "perms": perms}
+    return rows
