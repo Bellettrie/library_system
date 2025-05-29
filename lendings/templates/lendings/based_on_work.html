@@ -9,8 +9,6 @@
                 {% component "works.info_card" item / %}
             </div>
             {% component 'members.search_input' request.GET.q request.GET.previous myUrl="#" / %}
-
-
         </div>
         {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none " %}
             {% fill "title" %}
@@ -38,7 +36,6 @@
                                 {% component 'lendings/buttons/finalize' item member perms bonus_classes="btn-sm join-item" / %}
                             </td>
                         </tr>
-
                     {% empty %}
                         <i> No results</i>
                     {% endfor %}
@@ -46,6 +43,5 @@
             {% endfill %}
         {% endcomponent %}
     </div>
-
 {% endblock %}
 

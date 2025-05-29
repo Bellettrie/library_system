@@ -12,7 +12,7 @@ from works.models import Item
 class Button(Component):
     template_name = "lendings/buttons/finalize/finalize.html"
 
-    def get_context_data(self, item:Item, member: Member, perms, bonus_classes=""):
+    def get_context_data(self, item: Item, member: Member, perms, bonus_classes=""):
         is_visible = perms["lendings"]["change_lending"]
         cannot_lend_reason = can_lend(item, member, get_today())
         return {

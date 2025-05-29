@@ -43,6 +43,7 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
     item.is_seen("Book was lent out.")
     return new_lending
 
+
 def item_lending_checks(item: Item, current_date: datetime.date):
     if item.is_reserved():
         if not item.is_reserved_for(member):
@@ -52,6 +53,7 @@ def item_lending_checks(item: Item, current_date: datetime.date):
     if not item.in_available_state():
         raise LendingImpossibleException(
             "Item is not currently available for lending, the item is {}.".format(item.get_state()))
+
 
 def lending_checks(item: Item, member: Member, current_date: datetime.date, from_reservation=False):
     """
@@ -84,11 +86,13 @@ def can_lend(item: Item, member: Member, current_date: datetime.date, from_reser
     except LendingImpossibleException as error:
         return error.__str__()
 
+
 def item_can_be_lended(item: Item, current_date: datetime.date):
     try:
         item_lending_checks(item, current_date)
     except LendingImpossibleException as error:
         return error.__str__()
+
 
 def new_lending(item: Item, member: Member, user_member: Member, current_date: datetime.date, from_reservation=False):
     """

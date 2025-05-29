@@ -12,7 +12,7 @@ from works.models import Item
 
 @register("lendings.by_item_card")
 class Card(Component):
-    def get_context_data(self, item: Item, member: Member,  perms) -> dict:
+    def get_context_data(self, item: Item, member: Member, perms) -> dict:
         code = item.book_code
         authors = item.publication.get_authors()
 
