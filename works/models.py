@@ -270,7 +270,6 @@ class Item(NamedThing, BookCode):
 
     def current_lending(self):
         lndngs = Lending.objects.filter(item_id=self.id, handed_in=False)
-        print(lndngs)
         if len(lndngs) != 1:
             return None
         return lndngs[0]

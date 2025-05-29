@@ -14,7 +14,6 @@ class Button(Component):
     def get_context_data(self, item:Item, perms, bonus_classes=""):
         is_visible = perms["lendings"]["change_lending"]
         cannot_lend_reason = item_can_be_lended(item, get_today())
-        print("HERE", is_visible, cannot_lend_reason)
         return {
             "item": item,
             "is_visible": is_visible,
