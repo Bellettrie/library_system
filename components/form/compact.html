@@ -6,10 +6,10 @@
 
 
 {% for field in form %}
-    <div class="form-control w-400">
+    <div class="form-control max-w-full w-400">
         <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm/6 font-medium text-gray-900">{{ field.label }}</dt>
-            <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ field }}</dd>
+            <dt class="text-sm/6 font-medium">{{ field.label }}</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0">{{ field }}</dd>
         </div>
     {% if field.errors %}
         {% for err in field.errors %}
