@@ -30,7 +30,7 @@ def get_works(request):
     words_author = get_query_words(request.GET.get('q_author', "").upper())
     words_series = get_query_words(request.GET.get('q_series', "").upper())
     words_title = get_query_words(request.GET.get('q_title', "").upper())
-    book_code = request.GET.get('q_bookcode', "")
+    book_code = request.GET.get('q_bookcode', "").upper()
     categories = request.GET.getlist('q_categories', [])
     states = request.GET.getlist('q_states', [])
 
