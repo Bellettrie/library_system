@@ -33,7 +33,7 @@ def get_series_by_query(request, search_text):
             i = len(zz)
         series = series & zz
     list = []
-    for serie in series:
+    for serie in series.order_by('title'):
         list.append({'id': serie.pk, 'text': serie.get_canonical_title()})
     return JsonResponse({'results': list}, safe=False)
 
@@ -143,14 +143,16 @@ class SeriesList(ListView):
                                                | Q(sub_title__iregex=word)
                                                | Q(original_title__iregex=word)
                                                | Q(original_subtitle__iregex=word)
-                                               ))
+                                               ).order_by('title'))
             if result is None:
                 result = series
             else:
                 result = series & result
         if result is None:
             return []
-        return list(result)
+        lst = list(result)
+        lst.sort(key=lambda i: i.title)
+        return lst
 
 
 @transaction.atomic

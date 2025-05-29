@@ -1,97 +1,71 @@
-{% component 'tile/tile' root_class_tags="w-full lg:basis-2/5  lg:flex-none" %}
-    {% fill "direct_into" %}
-        <div class="hidden mt-8  w-full sm:grid place-items-center absolute ">
-            <div role="tablist" class="tabs tabs-lift absolute object-top ">
-                <a role="tab" href="/works/search" class="tab">Simple</a>
-                <a role="tab" class="tab tab-active ">Advanced</a>
-                <a role="tab" class="tab" href="{% url 'series.list' %}">Series</a>
-                <a role="tab" class="tab" href="{% url 'creator.list' %}">Authors</a>
-            </div>
+{% component 'search.searchbox' selected_tag="advanced" %}
+    <form action="/works/search" method="get">
+        <label for="Query">Query: </label>
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Any Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1" id="q"
+                                                                     type="text" name="q"
+                                                                     value="{{ request.GET.q }}"></dd>
         </div>
-    {% endfill %}
-    {% fill 'title' %} Search
-    {% endfill %}
-    {% fill 'content' %}
-         <div class="sm:hidden mt-4 w-full flex place-items-center justify-center ">
-            <div role="tablist" class="tabs tabs-lift">
-                <a role="tab" class="tab" href="/works/search">Simple</a>
-                <a role="tab" class="tab tab-active  " >Advanced</a>
-                <a role="tab" class="tab" href="{% url 'series.list' %}">Series</a>
-                <a role="tab" class="tab" href="{% url 'creator.list' %}">Authors</a>
-            </div>
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Title Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
+                                                                     id="q_title" type="text" name="q_title"
+                                                                     value="{{ request.GET.q_title }}"></dd>
         </div>
-        <div class="place-content-center mt-4">
-
-            <form action="/works/search" method="get">
-                <label for="Query">Query: </label>
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm/6 font-medium">Any Field</dt>
-                    <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1" id="q"
-                                                                             type="text" name="q"
-                                                                             value="{{ request.GET.q }}"></dd>
-                </div>
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm/6 font-medium">Title Field</dt>
-                    <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
-                                                                             id="q_title" type="text" name="q_title"
-                                                                             value="{{ request.GET.q_title }}"></dd>
-                </div>
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm/6 font-medium">Author Field</dt>
-                    <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
-                                                                             id="q_author" type="text" name="q_author"
-                                                                             value="{{ request.GET.q_author }}"></dd>
-                </div>
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm/6 font-medium">Series Field</dt>
-                    <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
-                                                                             id="q_series" type="text" name="q_series"
-                                                                             value="{{ request.GET.q_series }}"></dd>
-                </div>
-
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm/6 font-medium">Book Code Field</dt>
-                    <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
-                                                                             id="q_bookcode" type="text"
-                                                                             name="q_bookcode"
-                                                                             value="{{ request.GET.q_bookcode }}"></dd>
-                </div>
-
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm/6 font-medium">Book State Field</dt>
-                    <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0">
-                        <select class="select border-1" name="q_states" id="q_states" class="multiselect"
-                                multiple="multiple">
-                            {% for state in states %}
-                                {% if state.0 != "AVAILABLE" %}
-                                    <option value="{{ state.0 }}"
-                                            {% if state.0 in selected_states %}SELECTED {% endif %}>{{ state.1 }}</option>
-                                {% endif %}
-
-                            {% endfor %}
-                        </select>
-                    </dd>
-                </div>
-                <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm/6 font-medium">Category Field</dt>
-                    <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><select class="select border-1"
-                                                                              name="q_categories" id="q_categories"
-                                                                              class="multiselect" multiple="multiple">
-                        {% for cat in categories %}
-
-                            <option value="{{ cat.pk }}"
-                                    {% if cat.pk in selected_categories %}SELECTED {% endif %}>{{ cat.name }}</option>
-
-                        {% endfor %}
-                    </select></dd>
-                </div>
-
-
-                <input type="hidden" name="advanced" value="True">
-                <input class="btn btn-primary" type="submit" value="Search">
-            </form>
-
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Author Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
+                                                                     id="q_author" type="text" name="q_author"
+                                                                     value="{{ request.GET.q_author }}"></dd>
         </div>
-    {% endfill %}
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Series Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
+                                                                     id="q_series" type="text" name="q_series"
+                                                                     value="{{ request.GET.q_series }}"></dd>
+        </div>
+
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Book Code Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
+                                                                     id="q_bookcode" type="text"
+                                                                     name="q_bookcode"
+                                                                     value="{{ request.GET.q_bookcode }}"></dd>
+        </div>
+
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Book State Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0">
+                <select class="select border-1" name="q_states" id="q_states" class="multiselect"
+                        multiple="multiple">
+                    {% for state in states %}
+                        {% if state.0 != "AVAILABLE" %}
+                            <option value="{{ state.0 }}"
+                                    {% if state.0 in selected_states %}SELECTED {% endif %}>{{ state.1 }}</option>
+                        {% endif %}
+
+                    {% endfor %}
+                </select>
+            </dd>
+        </div>
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Category Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><select class="select border-1"
+                                                                      name="q_categories" id="q_categories"
+                                                                      class="multiselect" multiple="multiple">
+                {% for cat in categories %}
+
+                    <option value="{{ cat.pk }}"
+                            {% if cat.pk in selected_categories %}SELECTED {% endif %}>{{ cat.name }}</option>
+
+                {% endfor %}
+            </select></dd>
+        </div>
+
+
+        <input type="hidden" name="advanced" value="True">
+        <input class="btn btn-primary" type="submit" value="Search">
+    </form>
 {% endcomponent %}
 

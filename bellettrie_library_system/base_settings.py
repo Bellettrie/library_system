@@ -224,6 +224,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 COMPONENTS = {
     "dirs": [
         os.path.join(BASE_DIR, "works/components"),
+        os.path.join(BASE_DIR, "search/components"),
         os.path.join(BASE_DIR, "components"),
     ],
 }

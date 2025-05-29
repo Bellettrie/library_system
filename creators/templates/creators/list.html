@@ -1,20 +1,30 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 <!-- Brand and toggle get grouped for better mobile display -->
 <!-- bs-example-navbar-collapse-1 -->
 
 {% block title %}Creator Search{% endblock %}
 {% block content %}
-    {% include 'creators/list_lookup.html' %}
-        {% include 'pagination_bootstrap.html' %}
+    <div class="flex flex-col gap-3">
+        {% component 'search.searchbox' selected_tag="creator" %}
+            <form class="flex flex-1  w-full place-content-center join" action="#" method="get">
+                <input class="input input-bordered join-item" id="q" type="text" name="q" value="{{ request.GET.q }}" placeholder="Mary Shelley">
+                <input class="btn btn-primary join-item" type="submit" value="Search">
+            </form>
+        {% endcomponent %}
 
-    <table class="table table-striped" style="width: auto;">
-        {% for member in object_list %}
-            {% include 'creators/list_item.html' %}
-        {% empty %}
-            <i> No results</i>
-        {% endfor %}
+        {% include 'pagination.html' %}
 
-    </table>
-    <hr>
-    <a href="{% url 'creator.new' %}" class="btn btn-outline-primary">New creator</a>
+        {% component 'tile/tile' root_class_tags="max-w-screen flex-0 shrink " %}
+            {% fill 'title' %}Results{% endfill %}
+            {% fill 'content' %}
+                <table class="table table-striped" style="width: auto;">
+                    {% for member in object_list %}
+                        {% include 'creators/list_item.html' %}
+                    {% empty %}
+                        <i> No results</i>
+                    {% endfor %}
+                </table>
+            {% endfill %}
+        {% endcomponent %}
+    </div>
 {% endblock %}

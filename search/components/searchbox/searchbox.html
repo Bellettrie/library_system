@@ -1,0 +1,73 @@
+{% component 'tile/tile' root_class_tags="w-full lg:basis-2/5  lg:flex-none" %}
+    {% fill "direct_into" %}
+        {% if with_tags %}
+            <div class="hidden mt-8 w-full sm:grid place-items-center absolute ">
+                <div role="tablist" class="tabs tabs-lift absolute object-top ">
+                    {% if selected_tag == "simple" %}
+                        <a role="tab" class="tab tab-active">Simple</a>
+                    {% else %}
+                        <a role="tab" class="tab" href="{% url 'works.list' %}">Simple</a>
+                    {% endif %}
+                    {% if selected_tag == "advanced" %}
+                        <a role="tab" class="tab tab-active">Advanced</a>
+                    {% else %}
+                        <a role="tab" class="tab" href="{% url 'works.list' %}?advanced=True">Advanced</a>
+                    {% endif %}
+                    {% if selected_tag == "series" %}
+                        <a role="tab" class="tab tab-active">Series</a>
+                    {% else %}
+                        <a role="tab" class="tab" href="{% url 'series.list' %}">Series</a>
+                    {% endif %}
+                    {% if selected_tag == "creator" %}
+                        <a role="tab" class="tab tab-active">Creator</a>
+                    {% else %}
+                        <a role="tab" class="tab" href="{% url 'creator.list' %}">Creator</a>
+                    {% endif %}
+
+                </div>
+            </div>
+        {% endif %}
+    {% endfill %}
+    {% fill 'title' %}Search{% endfill %}
+    {% fill 'content' %}
+        {% if with_tags %}
+            <div class="sm:hidden mt-4 w-full flex place-items-center justify-center ">
+                <div role="tablist" class="tabs tabs-lift">
+                    {% if selected_tag == "simple" %}
+                        <a role="tab" class="tab" href="{% url 'works.list' %}">Simple</a>
+                    {% else %}
+                        <a role="tab" class="tab tab-active">Simple</a>
+                    {% endif %}
+                    {% if selected_tag == "advanced" %}
+                        <a role="tab" class="tab" href="{% url 'works.list' %}?advanced=True">Advanced</a>
+                    {% else %}
+                        <a role="tab" class="tab tab-active">Advanced</a>
+                    {% endif %}
+                    {% if selected_tag == "series" %}
+                        <a role="tab" class="tab" href="{% url 'series.list' %}">Series</a>
+                    {% else %}
+                        <a role="tab" class="tab tab-active">Series</a>
+                    {% endif %}
+                    {% if selected_tag == "creator" %}
+                        <a role="tab" class="tab" href="{% url 'creator.list' %}">Creator</a>
+                    {% else %}
+                        <a role="tab" class="tab tab-active">Creator</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+        <div class="place-content-center mt-4">
+            {% slot "searchboxcontent" default %}
+                <form class="flex flex-1  w-full place-content-center  gap-2" action="/works/search" method="get">
+                    <div class="join md:content-center">
+                        <input class="join-item input input-bordered" id="q" type="text" name="q"
+                               value="{{ request.GET.q }}"
+                               placeholder="Dune">
+                        <input type="submit" class="join-item btn btn-primary" value="Search">
+                        <a class="join-item btn " href="/works/search?advanced=True">...</a>
+                    </div>
+                </form>
+            {% endslot %}
+        </div>
+    {% endfill %}
+{% endcomponent %}
