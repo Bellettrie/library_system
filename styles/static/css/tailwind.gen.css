@@ -4167,6 +4167,11 @@
       margin-bottom: calc(var(--spacing) * 3);
     }
   }
+  .lg\:block {
+    @media (width >= 64rem) {
+      display: block;
+    }
+  }
   .lg\:hidden {
     @media (width >= 64rem) {
       display: none;

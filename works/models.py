@@ -265,8 +265,15 @@ class Item(NamedThing, BookCode):
         reservations = Reservation.objects.filter(item_id=self.id, member=member)
         return reservations.count() > 0
 
-    def current_lending(self):
+    def current_lending_or_404(self):
         return get_object_or_404(Lending, item_id=self.id, handed_in=False)
+
+    def current_lending(self):
+        lndngs = Lending.objects.filter(item_id=self.id, handed_in=False)
+        print(lndngs)
+        if len(lndngs) != 1:
+            return None
+        return lndngs[0]
 
     def get_title(self):
         return self.title or self.publication.title

@@ -1,8 +1,15 @@
 {% component "works.info_card" item %}
     {% fill "infos" %}
         <h3 class="text-lg text-md">Item </h3>
-            <div class=" flex  justify-end  join">
-                {% component 'lendings/buttons/lend' item  perms bonus_classes="btn-sm join-item" / %}
-            </div>
+        <div class=" flex  justify-end  join">
+            {% if item.pk %}
+                {% component 'lendings/buttons/lend' item perms bonus_classes="btn-sm join-item" / %}
+                {% with item.current_lending as cur_lnd %}
+                    {% if cur_lnd %}
+                        {% component 'lendings/buttons/return' cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+        </div>
     {% endfill %}
 {% endcomponent %}

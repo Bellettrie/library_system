@@ -85,7 +85,6 @@ TEMPLATES = [
                 'bellettrie_library_system.templatetags.menu_data',
                 'tables.templatetags.render_square',
 
-                'tables.templatetags.publications_list_for_member',
                 'tables.templatetags.item_detail_table',
                 'django_components.templatetags.component_tags',
             ],

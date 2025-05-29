@@ -16,7 +16,7 @@ from lendings.procedures.register_returned import register_returned_with_mail
 def return_item(request, work_id, hx_enabled=False):
     return_book_template = 'lendings/modals/return_book.html'
     item = get_object_or_404(Item, pk=work_id)
-    lending = item.current_lending()
+    lending = item.current_lending_or_404()
 
     late_days = get_today() - lending.end_date
     reservations = Reservation.objects.filter(item=item)
