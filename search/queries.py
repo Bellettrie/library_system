@@ -1,10 +1,10 @@
 from django.db.models import Q
 
 
-def filter_basic_text(query, words):
+def filter_basic_text_get_q(words):
     if len(words) == 0:
         return None
-
+    queries = []
     for word in words:
         if word.startswith("*"):
             next_query_part = Q(wordmatch__word__word__endswith=word.replace("*", ""))
@@ -13,20 +13,32 @@ def filter_basic_text(query, words):
             next_query_part = Q(wordmatch__word__word__startswith=word.replace("*", ""))
         else:
             next_query_part = Q(wordmatch__word__word=word)
-        query = query.filter(next_query_part)
+        queries = queries + [next_query_part]
+    return queries
+
+
+def filter_basic_text(query, words):
+    for q in filter_basic_text_get_q( words):
+        query = query.filter(q)
     return query
 
 
 def filter_author_text(query, words):
-    return filter_basic_text(query, words).filter(wordmatch__type="AUTHOR")
+    for q in filter_basic_text_get_q( words):
+        query = query.filter(q)
+    return query.filter(wordmatch__type="AUTHOR")
 
 
 def filter_series_text(query, words):
-    return filter_basic_text(query, words).filter(wordmatch__type="SERIES")
+    for q in filter_basic_text_get_q(words):
+        query = query.filter(q)
+    return query.filter(wordmatch__type="SERIES")
 
 
 def filter_title_text(query, words):
-    return filter_basic_text(query, words).filter(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK"))
+    for q in filter_basic_text_get_q(words):
+        query = query.filter(q)
+    return query.filter(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK"))
 
 
 def filter_state(q, states):
@@ -56,16 +68,15 @@ INNER JOIN
     return q.extra(where=[query], params=[states])
 
 
-def filter_book_code(query, word):
+def filter_book_code_get_q(word):
     if word.startswith("*"):
-        return query.filter(Q(item__book_code_sortable__endswith=word.replace("*", "")) | Q(
-            item__book_code__endswith=word.replace("*", "")))
+        return Q(item__book_code_sortable__endswith=word.replace("*", "")) | Q(
+            item__book_code__endswith=word.replace("*", ""))
     elif word.endswith("*"):
-        return query.filter(Q(item__book_code_sortable__startswith=word.replace("*", "")) | Q(
-            item__book_code__startswith=word.replace("*", "")))
+        return Q(item__book_code_sortable__startswith=word.replace("*", "")) | Q(
+            item__book_code__startswith=word.replace("*", ""))
     else:
-        return query.filter(Q(item__book_code_sortable=word) | Q(item__book_code=word))
-
+        return Q(item__book_code_sortable=word) | Q(item__book_code=word)
 
 def filter_location(query, categories):
     return query.filter(item__location__category__in=categories)

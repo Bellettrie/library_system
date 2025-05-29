@@ -9,8 +9,9 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
-from search.queries import filter_state, filter_book_code, \
-    filter_basic_text, filter_author_text, filter_series_text, filter_title_text, filter_location
+from search.queries import filter_state, filter_book_code_get_q, \
+    filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
+    filter_basic_text
 
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
@@ -39,10 +40,10 @@ def get_works(request):
     # If one word, also check bookcodes
     if len(words) == 1:
         any_query = True
-        query = filter_book_code(query, words[0])
-        query = filter_basic_text(query, words)
+        query = query.filter(filter_book_code_get_q(words[0]) | filter_basic_text_get_q(words)[0])
     elif len(words) > 1:
         any_query = True
+
         query = filter_basic_text(query, words)
 
     if len(words_author) > 0:
@@ -60,7 +61,7 @@ def get_works(request):
         query = filter_location(query, categories)
     if len(book_code) > 0:
         any_query = True
-        query = filter_book_code(query, book_code)
+        query = query.filter(filter_book_code_get_q(book_code))
     if len(states) > 0:
         any_query = True
         query = filter_state(query, states)
