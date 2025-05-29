@@ -39,7 +39,6 @@ class NoItemRow(Row):
         return False
 
 
-
 @register.simple_tag
 def get_item_rows_for_publications(publications: List[Publication]):
     rows = []

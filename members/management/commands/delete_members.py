@@ -24,4 +24,3 @@ class Command(BaseCommand):
                 MembershipPeriod.objects.filter(member=member).delete()
 
                 member.delete()
-
