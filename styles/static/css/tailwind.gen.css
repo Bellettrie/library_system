@@ -2999,6 +2999,14 @@
     width: var(--size);
     height: var(--size);
   }
+  .tabs-sm {
+    :where(.tab) {
+      height: calc(var(--size-field, 0.25rem) * 8);
+      font-size: 0.875rem;
+      --tab-p: 0.5rem;
+      --tab-radius-min: calc(0.5rem - var(--border));
+    }
+  }
   .h-1 {
     height: calc(var(--spacing) * 1);
   }
