@@ -18,13 +18,13 @@ def filter_basic_text_get_q(words):
 
 
 def filter_basic_text(query, words):
-    for q in filter_basic_text_get_q( words):
+    for q in filter_basic_text_get_q(words):
         query = query.filter(q)
     return query
 
 
 def filter_author_text(query, words):
-    for q in filter_basic_text_get_q( words):
+    for q in filter_basic_text_get_q(words):
         query = query.filter(q)
     return query.filter(wordmatch__type="AUTHOR")
 
@@ -77,6 +77,7 @@ def filter_book_code_get_q(word):
             item__book_code__startswith=word.replace("*", ""))
     else:
         return Q(item__book_code_sortable=word) | Q(item__book_code=word)
+
 
 def filter_location(query, categories):
     return query.filter(item__location__category__in=categories)
