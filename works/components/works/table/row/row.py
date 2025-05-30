@@ -21,7 +21,6 @@ class Card(Component):
         authors = item.publication.get_authors()
         if not all_authors and len(authors) > 0:
             authors = authors[:1]
-        print(all_authors, authors)
         return {
             "skip_header": skip_header,
             "authors": authors,

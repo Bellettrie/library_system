@@ -1,7 +1,7 @@
 <tr class="">
     {% if not skip_header %}
         <td class="bg-accent text-xs text-center w-[12em]">
-            {% if item.book_code %}<a href="{% url "work.view" item.publication.pk %}"><b>{{ item.book_code }}</b>
+            {% if item.book_code %}<a  href="{% url "work.view" item.publication.pk %}"><b>{{ item.book_code }}</b>
                 {% if item.book_code_extension %}({{ item.book_code_extension }}){% endif %}</a>
             {% else %}
                 Not In Collection
@@ -10,7 +10,7 @@
     {% endif %}
     <td>
         <dl>
-            <dd class=""><a href="{% url "work.view" item.publication.pk %}">
+            <dd class=""><a class="link link-secondary" href="{% url "work.view" item.publication.pk %}">
                 {% if item.publication.article %}{{ item.publication.article }}{% endif %} <em>{{ item.get_title }}</em></a>
             </dd>
             {% if  item.publication.sub_title %}
@@ -24,7 +24,7 @@
         <dl>
             {% for author in authors %}
                 <dd>
-                    {{ author.role.name }} <a
+                    {{ author.role.name }} <a class="link link-secondary"
                         href="{% url "creator.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}
                 </a>
                 </dd>
