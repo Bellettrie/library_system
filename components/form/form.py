@@ -23,3 +23,13 @@ class CompactForm(Component):
         return {
             "form": form,
         }
+
+
+@register("form/smol")
+class SuperSmallForm(Component):
+    template_name = "form/smol.html"
+
+    def get_context_data(self, form: Form):
+        return {
+            "form": form,
+        }

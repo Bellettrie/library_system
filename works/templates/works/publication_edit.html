@@ -7,7 +7,7 @@
         <div class="flex flex-col lg:flex-row gap-3">
 
 
-            {% component 'tile/tile' root_class_tags="max-w-1/2 lg:basis-2/5  lg:flex-none" %}
+            {% component 'tile/tile' root_class_tags="flex-0" %}
                 {% fill 'title' %}Publication Info{% endfill %}
                 {% fill 'content' %}
                     <dl class="divide-y divide-gray-100">
@@ -24,19 +24,24 @@
                 {% endfill %}
             {% endcomponent %}
 
-            <div class="grow max-w-screen flex flex-col gap-3 ">
-                {% component 'tile/tile' root_class_tags="w-full" %}
+            <div class="grow  flex flex-col gap-3 ">
+                {% component "tile/tile" root_class_tags="flex-0" %}
                     {% fill 'title' %}Creators{% endfill %}
                     {% fill 'content' %}
-                        <h2> Creators</h2>
+                        {% for creator in creators %}
+                            {% component "form/smol" creator / %}
+                            <hr>
+                        {% endfor %}
 
-                        {{ creators.as_div }}
                     {% endfill %}
                 {% endcomponent %}
-                {% component 'tile/tile' root_class_tags="w-full" %}
+                {% component "tile/tile" root_class_tags="flex-0" %}
                     {% fill 'title' %}Series{% endfill %}
                     {% fill 'content' %}
-                        {{ series.as_div }}
+                        {% for serie in series %}
+                            {% component "form/smol" serie / %}
+                            <hr>
+                        {% endfor %}
                     {% endfill %}
                 {% endcomponent %}
             </div>

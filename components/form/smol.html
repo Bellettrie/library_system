@@ -5,11 +5,11 @@
 {% endfor %}
 
 
-{% for field in form %}
+{% for field in form.visible_fields %}
     <div class="form-control">
-        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm/6 font-medium">{{ field.label }}</dt>
-            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0">{{ field }}</dd>
+            <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">{{ field }}</dd>
         </div>
     {% if field.errors %}
         {% for err in field.errors %}
