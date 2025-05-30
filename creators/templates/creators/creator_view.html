@@ -3,53 +3,54 @@
 <!-- bs-example-navbar-collapse-1 -->
 {% load publication_list_to_item_rows %}
 
-{% block title %}{{ creator.given_names}} {{ creator.name }}{% endblock %}
+{% block title %}{{ creator.given_names }} {{ creator.name }}{% endblock %}
 {% block content %}
-{%if perms.creators.change_creator %}
-    <a class="btn btn-primary" href="{% url 'creator.edit' creator.pk %}">Edit</a><a class="btn btn-danger" href="{% url 'creator.delete' creator.pk %}">Delete</a>{%endif%}
+    {% if perms.creators.change_creator %}
+        <a class="btn btn-primary" href="{% url 'creator.edit' creator.pk %}">Edit</a>
+        <a class="btn btn-danger" href="{% url 'creator.delete' creator.pk %}">Delete</a>{% endif %}
     {% get_item_rows_for_publications publications as items %}
- <div class="card  p-3 hidden lg:block bg-base-100 ">
-            <div class="rounded-box ">
-                <table class="table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols rounded-box">
-                    <tr>
-                        {% if not skip_header %}
-                            <th></th>
-                        {% endif %}
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Infos</th>
+    <div class="card  p-3 hidden lg:block bg-base-100 ">
+        <div class="rounded-box ">
+            <table class="table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols rounded-box">
+                <tr>
+                    {% if not skip_header %}
                         <th></th>
-                    </tr>
-                    {% for itemRow in items %}
-                        {% component 'works.table.row' itemRow.get_item skip_header=skip_header %}
-                            {% fill "extra_rows" %}
-                                <td>
-                                    {% if  itemRow.is_item %}
-                                        {% if itemRow.get_item.get_state != "AVAILABLE" %}
-                                            [{{ itemRow.get_item.get_state }}]
+                    {% endif %}ß
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Infos</th>
+                    <th></th>
+                </tr>
+                {% for itemRow in items %}
+                    {% component 'works.table.row' itemRow.get_item skip_header=skip_header %}
+                        {% fill "extra_rows" %}
+                            <td>
+                                {% if  itemRow.is_item %}
+                                    {% if itemRow.get_item.get_state != "AVAILABLE" %}
+                                        [{{ itemRow.get_item.get_state }}]
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td class="join">
+                                {% if  itemRow.is_item %}
+                                    {% component 'lendings/buttons/lend' item perms bonus_classes="btn-sm join-item" / %}
+                                    {% with itemRow.get_item.current_lending as cur_lnd %}
+                                        {% if cur_lnd %}
+                                            {% component 'lendings/buttons/return' cur_lnd member perms bonus_classes="btn-sm join-item" / %}
                                         {% endif %}
-                                    {% endif %}
-                                </td>
-                                <td class="join">
-                                    {% if  itemRow.is_item %}
-                                        {% component 'lendings/buttons/lend' item perms bonus_classes="btn-sm join-item" / %}
-                                        {% with itemRow.get_item.current_lending as cur_lnd %}
-                                            {% if cur_lnd %}
-                                                {% component 'lendings/buttons/return' cur_lnd member perms bonus_classes="btn-sm join-item" / %}
-                                            {% endif %}
-                                        {% endwith %}
-                                    {% endif %}
-                                </td>
-                            {% endfill %}
+                                    {% endwith %}
+                                {% endif %}
+                            </td>
+                        {% endfill %}
 
-                        {% endcomponent %}
-                    {% endfor %}
-                </table>
-            </div>
+                    {% endcomponent %}
+                {% endfor %}
+            </table>
         </div>
-        <div class="lg:hidden flex flex-col gap-5 m-3">
-            {% for item in items %}
-                {% component 'works.item_card' item.get_item perms / %}
-            {% endfor %}
-        </div>
+    </div>
+    <div class="lg:hidden flex flex-col gap-5 m-3">
+        {% for item in items %}
+            {% component 'works.item_card' item.get_item perms / %}
+        {% endfor %}
+    </div>
 {% endblock %}
