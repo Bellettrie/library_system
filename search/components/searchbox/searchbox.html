@@ -23,7 +23,6 @@
                     {% else %}
                         <a role="tab" class="tab" href="{% url 'creator.list' %}">Creator</a>
                     {% endif %}
-
                 </div>
             </div>
         {% endif %}
@@ -34,24 +33,24 @@
             <div class="sm:hidden mt-4 w-full flex place-items-center justify-center ">
                 <div role="tablist" class="tabs tabs-lift">
                     {% if selected_tag == "simple" %}
-                        <a role="tab" class="tab" href="{% url 'works.list' %}">Simple</a>
+                        <a role="tab" class="tab  tab-sm tab-active">Simple</a>
                     {% else %}
-                        <a role="tab" class="tab tab-active">Simple</a>
+                        <a role="tab" class="tab  tab-sm" href="{% url 'works.list' %}">Simple</a>
                     {% endif %}
                     {% if selected_tag == "advanced" %}
-                        <a role="tab" class="tab" href="{% url 'works.list' %}?advanced=True">Advanced</a>
+                        <a role="tab" class="tab  tab-sm tab-active">Advanced</a>
                     {% else %}
-                        <a role="tab" class="tab tab-active">Advanced</a>
+                        <a role="tab" class="tab  tab-sm" href="{% url 'works.list' %}?advanced=True">Advanced</a>
                     {% endif %}
                     {% if selected_tag == "series" %}
-                        <a role="tab" class="tab" href="{% url 'series.list' %}">Series</a>
+                        <a role="tab" class="tab  tab-sm tab-active">Series</a>
                     {% else %}
-                        <a role="tab" class="tab tab-active">Series</a>
+                        <a role="tab" class="tab  tab-sm" href="{% url 'series.list' %}">Series</a>
                     {% endif %}
                     {% if selected_tag == "creator" %}
-                        <a role="tab" class="tab" href="{% url 'creator.list' %}">Creator</a>
+                        <a role="tab" class="tab  tab-sm tab-active">Creator</a>
                     {% else %}
-                        <a role="tab" class="tab tab-active">Creator</a>
+                        <a role="tab" class="tab  tab-sm" href="{% url 'creator.list' %}">Creator</a>
                     {% endif %}
                 </div>
             </div>
