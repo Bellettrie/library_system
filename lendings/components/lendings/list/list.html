@@ -16,7 +16,7 @@
             {% component 'works.table.row' lending.item skip_header=skip_header %}
                 {% fill "extra_rows" %}
                     {% if show_member %}
-                        <td><a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a></td>
+                        <td><a class="link link-neutral"  href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a></td>
                     {% endif %}
                     <td>
                         <dl>

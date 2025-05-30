@@ -22,6 +22,9 @@ class ItemRow(Row):
     def get_item(self) -> Item:
         return self.item
 
+    def is_item(self):
+        return True
+
 
 class NoItemRow(Row):
     def __init__(self, publication: Publication):

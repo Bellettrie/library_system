@@ -1,31 +1,48 @@
-{% extends "base_bootstrap.html" %}
+{% extends "base.html" %}
 {#{% load books_table %}#}
 {% block title %}Series Search{% endblock %}
 {% block content %}
-    <form action="/series/list" method="get">
-        <label for="Query">Query: </label>
-        <input id="q" type="text" name="q" value="{{ request.GET.q }}">
-        <input type="submit" value="Search">
-    </form>
+    <div class="flex flex-col gap-3">
+        {% component 'search.searchbox' selected_tag="series" %}
+            <form class="flex flex-1  w-full place-content-center join" action="/series/list" method="get">
+                <input class="input input-bordered join-item" id="q" type="text" name="q" value="{{ request.GET.q }}" placeholder="Cosmere">
+                <input class="btn btn-primary join-item" type="submit" value="Search">
+            </form>
+        {% endcomponent %}
 
-    {% include 'pagination_bootstrap.html' %}
-    <hr>
-    <table>
-        {% for series in object_list %}
-            <tr>
-                <td colspan="{{ counter.five_minus }}">{% if series.display_number %}[{{ series.display_number }}]{% else %}
-                    *{% endif %}</td>
-                {% with publication=series %}
-                    <td><a href="/series/views/{{ publication.pk }}">
-                        {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}<br/>
-                            <i>-{{ publication.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
-                    </a></td>
-                    <td>
-                        {% for author in publication.get_own_authors %}{% include 'creators/single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
-                        {% endfor %}
-                    </td>
-                {% endwith %}
-            </tr>
-        {% endfor %}
-    </table>
+        {% include 'pagination.html' %}
+
+        {% component 'tile/tile' root_class_tags="max-w-screen flex-0 shrink " %}
+            {% fill 'title' %}Results{% endfill %}
+            {% fill 'content' %}
+                <table class="table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols rounded-box">
+                    {% for series in object_list %}
+                        <tr>
+                            <td colspan="{{ counter.five_minus }}">{% if series.display_number %}[
+                                {{ series.display_number }}
+                                ]{% else %}
+                                *{% endif %}</td>
+                            {% with publication=series %}
+                                <td><a class="link link-secondary" href="/series/views/{{ publication.pk }}">
+                                    {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}
+                                        <br/>
+                                        <i>-{{ publication.sub_title }}</i>{% endif %}{% else %}
+                                        <i>No Title</i> {% endif %}
+                                </a></td>
+                                <td>
+                                    {% for author in publication.get_own_authors %}
+                                        {% include 'creators/single_line_description.html' %}{% if not forloop.last %}
+                                            <br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% endwith %}
+                        </tr>
+                    {% empty %}
+                        <i> No results</i>
+                    {% endfor %}
+                </table>
+            {% endfill %}
+        {% endcomponent %}
+    </div>
 {% endblock %}

@@ -26,8 +26,8 @@ def reserve_finalize(request, work_id, member_id):
             new_reservation(item, member, request.user.member, get_today())
             if item.is_lent_out():
                 mail_member('mails/book_just_got_reserved.tpl',
-                            {'member': item.current_lending().member, 'item': item},
-                            item.current_lending().member,
+                            {'member': item.current_lending_or_404().member, 'item': item},
+                            item.current_lending_or_404().member,
                             True)
 
             return render(request, 'reservations/finalized.html',

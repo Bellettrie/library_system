@@ -7,15 +7,15 @@
         <div class="flex flex-col lg:flex-row gap-3">
 
 
-            {% component 'tile/tile' root_class_tags="max-w-1/2 lg:basis-2/5  lg:flex-none" %}
+            {% component 'tile/tile' root_class_tags="flex-0" %}
                 {% fill 'title' %}Publication Info{% endfill %}
                 {% fill 'content' %}
                     <dl class="divide-y divide-gray-100">
 
                         {% for field in form.visible_fields %}
                             <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm/6 font-medium text-gray-900">{{ field.label }}</dt>
-                                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ field|add_class:"input input-xs border-1 border-bellered" }}</dd>
+                                <dt class=" font-medium ">{{ field.label }}</dt>
+                                <dd class="mt-1  sm:col-span-2 sm:mt-0">{{ field|add_class:"input input-xs border-1 border-bellered" }}</dd>
                             </div>
                         {% endfor %}
                     </dl>
@@ -24,19 +24,24 @@
                 {% endfill %}
             {% endcomponent %}
 
-            <div class="grow max-w-screen flex flex-col gap-3 ">
-                {% component 'tile/tile' root_class_tags="w-full" %}
+            <div class="grow  flex flex-col gap-3 ">
+                {% component "tile/tile" root_class_tags="flex-0" %}
                     {% fill 'title' %}Creators{% endfill %}
                     {% fill 'content' %}
-                        <h2> Creators</h2>
+                        {% for creator in creators %}
+                            {% component "form/smol" creator / %}
+                            <hr>
+                        {% endfor %}
 
-                        {{ creators.as_div }}
                     {% endfill %}
                 {% endcomponent %}
-                {% component 'tile/tile' root_class_tags="w-full" %}
+                {% component "tile/tile" root_class_tags="flex-0" %}
                     {% fill 'title' %}Series{% endfill %}
                     {% fill 'content' %}
-                        {{ series.as_div }}
+                        {% for serie in series %}
+                            {% component "form/smol" serie / %}
+                            <hr>
+                        {% endfor %}
                     {% endfill %}
                 {% endcomponent %}
             </div>

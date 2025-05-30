@@ -1,4 +1,6 @@
 <div class="grow max-w-screen card bg-base-100 {{ root_class_tags }} ">
+    {% slot "direct_into" %}{% endslot %}
+
     <div class="card-body">
         <h5 class="card-title">{% slot "title" %}Title{% endslot %}</h5>
         <div class="content grow w-full">
@@ -6,4 +8,5 @@
         </div>
         {% slot "footer" %}{% endslot %}
     </div>
+
 </div>

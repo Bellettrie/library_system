@@ -8,8 +8,9 @@ from bellettrie_library_system.base_settings import GET_MENU
 @register("members.search_input")
 class SearchInput(Component):
     # The search input for the member page
-    def get_context_data(self, query="", previous: bool = False):
+    def get_context_data(self, query="", previous: bool = False, myUrl="/members"):
         return {
+            "myUrl": myUrl,
             "query": query,
             "previous": previous,
         }

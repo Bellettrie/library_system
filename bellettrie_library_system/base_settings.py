@@ -85,7 +85,6 @@ TEMPLATES = [
                 'bellettrie_library_system.templatetags.menu_data',
                 'tables.templatetags.render_square',
 
-                'tables.templatetags.publications_list_for_member',
                 'tables.templatetags.item_detail_table',
                 'django_components.templatetags.component_tags',
             ],
@@ -225,6 +224,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 COMPONENTS = {
     "dirs": [
         os.path.join(BASE_DIR, "works/components"),
+        os.path.join(BASE_DIR, "search/components"),
         os.path.join(BASE_DIR, "components"),
     ],
 }

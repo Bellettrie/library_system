@@ -17,7 +17,7 @@ def extend(request, work_id, hx_enabled=False):
     extend_template = 'lendings/modals/extend.html'
 
     item = get_object_or_404(Item, pk=work_id)
-    lending = item.current_lending()
+    lending = item.current_lending_or_404()
 
     # Permission checks
     if not request.user.has_perm('lendings.extend'):

@@ -14,4 +14,4 @@ def member_based(request, member_id):
     if q is not None:
         items = get_works(request)
     return render(request, 'lendings/based_on_member.html',
-                  {'items': items, 'member': get_object_or_404(Member, pk=member_id)})
+                  {'object_list': items, 'member': get_object_or_404(Member, pk=member_id)})

@@ -4,7 +4,7 @@
         {% if lending.handed_in %}
             <dl class="mb-2">
                 {% if show_member %}
-                    <dd>Member: <a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a>
+                    <dd>Member: <a class="link link-neutral"  href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a>
                     </dd>
                 {% endif %}
                 <dd><label>Returned:</label> {{ lending.handed_in_on }}</dd>
@@ -12,7 +12,7 @@
         {% else %}
             <dl class="mb-2">
                 {% if show_member %}
-                    <dd>Member: <a href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a>
+                    <dd>Member: <a class="link link-neutral"  href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a>
                     </dd>
                 {% endif %}
                 <dd><label>Due:</label> {{ lending.end_date }}</dd>
