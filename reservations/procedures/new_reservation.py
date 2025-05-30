@@ -50,7 +50,7 @@ def assert_member_can_reserve(item, member, current_date):
         raise ReservationImpossibleException("Member currently not a member, cannot reserve")
     if item.is_reserved():
         raise ReservationImpossibleException("Item is reserved for another member")
-    if item.is_lent_out() and item.current_lending().member.id == member.id:
+    if item.is_lent_out() and item.current_lending_or_404().member.id == member.id:
         raise ReservationImpossibleException("Cannot reserve books you have borrowed.")
     if not item.is_lent_out():
         raise ReservationImpossibleException("Cannot reserve books that are in the room.")

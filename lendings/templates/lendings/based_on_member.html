@@ -1,17 +1,87 @@
 {% extends 'base.html' %}
-{% load publications_list_for_member %}
+{% load publication_list_to_item_rows %}
+
 {% block title %}Select work for lending{% endblock %}
 
 {% block content %}
-    Lending for member: {{ member.name }}
-    <form action="{% url 'lendings.new.member' member.pk %}" method="get">
-        <label for="Query">Query: </label>
-        <input id="q" type="text" name="q">
-        <input type="submit" value="Search" class="btn-primary btn" >
-    </form>
-    <table>
-        {% works_table_for_member items perms member %}
-    </table>
+    <div class="flex flex-col gap-3">
+        <div class="flex flex-col md:flex-row gap-3">
+            {% component "tile/tile" root_class_tags="grow max-w-screen" %}
+                {% fill 'title' %}Member
+                {% endfill %}
+                {% fill "content" %}{{ member.name }}
+                {% endfill %}
+            {% endcomponent %}
+            {% component 'tile/tile' root_class_tags="w-full lg:basis-2/5  lg:flex-none" %}
+                {% fill 'title' %}Search{% endfill %}
+                {% fill 'content' %}
+
+                    <div class="place-content-center mt-4">
+
+                        <form class="flex flex-1  w-full place-content-center  gap-2" action="#" method="get">
+                            <div class="join md:content-center">
+                                <input class="join-item input input-bordered" id="q" type="text" name="q"
+                                       value="{{ request.GET.q }}"
+                                       placeholder="Dune">
+                                <input type="submit" class="join-item btn btn-primary" value="Search">
+                            </div>
+                        </form>
+                    </div>
+                {% endfill %}
+            {% endcomponent %}
+        </div>
+
+        {% get_item_rows_for_publication object_list as items %}
+        <div class="card  p-3 hidden md:block bg-base-100 ">
+            <div class="rounded-box ">
+                <table class="table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols rounded-box">
+                    <tr>
+                        {% if not skip_header %}
+                            <th></th>
+                        {% endif %}
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Infos</th>
+                        <th></th>
+                    </tr>
+                    {% for itemRow in items %}
+                        {% component 'works.table.row' itemRow.get_item skip_header=skip_header %}
+                            {% fill "extra_rows" %}
+
+
+                                <td>
+                                    {% if itemRow.is_item %}
+                                        {% component 'lendings/buttons/finalize' item member perms bonus_classes="btn-sm join-item" / %}
+                                    {% endif %}
+                                </td>
+                            {% endfill %}
+
+                        {% endcomponent %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="lg:hidden flex flex-col gap-5 m-3">
+            {% for itemRow in items %}
+                {% component "works.info_card" itemRow.get_item %}
+                    {% fill "infos" %}
+                        <div class=" flex  justify-end  join">
+                        {% if itemRow.is_item %}
+                            {% component 'lendings/buttons/finalize' itemRow.get_item member perms bonus_classes="btn-sm join-item" / %}
+                        {% endif %}
+                        </div>
+                    {% endfill %}
+                {% endcomponent %}
+            {% endfor %}
+        </div>
+        <div class="flex-1 w-full">
+            <div class="justify-center items-center w-full">
+                {% include 'pagination.html' %}
+            </div>
+        </div>
+    </div>
+
+
 
 
 {% endblock %}

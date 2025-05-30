@@ -75,13 +75,13 @@ def render_trafficlight(markdown_text: str, title: str, layout_overrides: str = 
     return search_template.render(context={"open": get_open(), "layout": layout_overrides})
 
 
-
 def start_row(markdown_text: str, title: str, layout_overrides: str = "", *_):
     return '<div class="grow flex flex-col lg:flex-row gap-3 {layout}">'.format(layout=layout_overrides)
 
 
 def end_row(markdown_text: str, title: str, layout_overrides: str = "", *_):
     return '</div>'
+
 
 def start_column(markdown_text: str, title: str, layout_overrides: str = "", *_):
     return '<div class="grow flex flex-col gap-3 {layout}">'.format(layout=layout_overrides)
@@ -137,8 +137,6 @@ def render_md(markdown_text: str):
                 return cms[0] + " : not a valid keyword"
             lines = ""
             title = ""
-            mdflex = "0"
-            lgflex = "0"
         else:
             lines += "\n" + line
         first_line = False

@@ -1,10 +1,10 @@
-{% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none" %}
+{% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-3/5  lg:flex-1" %}
     {% fill "title" %}
         Members
     {% endfill %}
     {% fill "content" %}
         <div class="place-content-center">
-            <form action="/members" method="get" class="flex flex-1  w-full place-content-center ">
+            <form action="{{ myUrl }}" method="get" class="flex flex-1  w-full place-content-center ">
                 <div class="flex flex-wrap sm:flex-none sm:join gap-y-5 gap-2 sm:gap-0 rounded-none md:content-center">
                     <label class="form-control sm:w-auto">
                         {% component "inputs/text" name="q" placeholder="Who are you looking for" value=query bonus_classes="join-item w-full sm:w-auto" / %}

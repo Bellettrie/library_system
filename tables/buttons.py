@@ -113,7 +113,7 @@ class ReturnBookButton(Button):
         return False
 
     def enabled_render(self, row, perms=None):
-        return render_to_string("buttons/return_item_button_xs.html", {"lending": row.get_item().current_lending()})
+        return render_to_string("buttons/return_item_button_xs.html", {"lending": row.get_item().current_lending_or_404()})
 
     def disabled_render(self, row, perms=None, err=None):
         return render_to_string("buttons/return_item_disabled_button.html", {})
