@@ -15,7 +15,7 @@ class PublicationList(Component):
     # The publication_list component shows an item table for a list of publications.
     # The context data creates dummy Items for Publications without items.
     def get_context_data(self, publications: List[Publication], perms,
-                         small_table: bool = False, skip_header=False):
+                         small_table: bool = False, skip_header=False, show_recode=False):
         if small_table:
             btn_bonus_classes = "join-item btn-xs"
         else:
@@ -37,6 +37,7 @@ class PublicationList(Component):
             "all_authors": True,
             "small_table": small_table,
             "btn_bonus_classes": btn_bonus_classes,
+            "show_recode": show_recode,
         }
 
     template_name = "works/table/publication_list/list.html"

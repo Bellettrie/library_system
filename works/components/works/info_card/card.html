@@ -16,6 +16,11 @@
     </div>
     <div class="flex-1 m-2 ">
         <dl>
+            <dd>
+                {% if show_recode and item.get_recode %}
+                    {{ item.get_recode }}
+                {% endif %}
+            </dd>
             <dd class="text-lg"><a class="link link-secondary" href="{% url "work.view" item.publication.pk %}">
                 {% if item.publication.article %}{{ item.publication.article }}{% endif %} <em>{{ item.get_title }}</em></a>
             </dd>
@@ -24,7 +29,7 @@
             {% for author in authors %}
                 <dd>
                     {{ author.role.name }} <a class="link link-secondary"
-                        href="{% url "creator.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}
+                                              href="{% url "creator.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}
                 </a></dd>
             {% endfor %}
         </dl>
