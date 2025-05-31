@@ -59,7 +59,6 @@ def assert_member_can_reserve(item, member, current_date, with_member_checks=Tru
         raise ReservationImpossibleException("Cannot reserve books that are in the room.")
 
 
-
 def can_reserve(item: Item, member: Member, current_date: datetime.date, with_member_checks=True):
     try:
         assert_member_can_reserve(item, member, current_date, with_member_checks)

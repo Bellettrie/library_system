@@ -103,6 +103,7 @@ class WorkDetail(DetailView):
     template_name = 'works/publication_view.html'
     model = Publication
 
+
 def create_item_state_hx(request, item_id):
     return create_item_state(request, item_id, True)
 
@@ -122,7 +123,8 @@ def create_item_state(request, item_id, hx_enabled=False):
     else:
         form = ItemStateCreateForm()
 
-    return render(request, 'works/modals/item_state_edit.html', {'hx_enabled':hx_enabled,'form': form, 'item': get_object_or_404(Item, pk=item_id)})
+    return render(request, 'works/modals/item_state_edit.html',
+                  {'hx_enabled': hx_enabled, 'form': form, 'item': get_object_or_404(Item, pk=item_id)})
 
 
 @transaction.atomic
@@ -191,7 +193,7 @@ def item_history(request, item_id, hx_enabled=False):
     templ = 'works/modals/item_state.html'
 
     return render(request, templ,
-                  {'hx_enabled':hx_enabled, 'item': item,
+                  {'hx_enabled': hx_enabled, 'item': item,
                    'history': ItemState.objects.filter(item=item).order_by('-date_time')})
 
 
