@@ -1,13 +1,16 @@
 from django.urls import path
 
-from works.views import WorkList, create_item_state, create_item_state_hx, item_edit, publication_edit, publication_new, item_new, \
-    item_history, item_history_hx
+from utils.wrappers import hx_wrap
+from works.views import WorkList, create_item_state, create_item_state_hx, item_edit, publication_edit, publication_new, \
+    item_new, \
+    item_history, item_history_hx, view_item
 from . import views
 
 urlpatterns = [
     path('search', WorkList.as_view(), name='works.list'),
+    path('item/<slug:item_id>', hx_wrap(view_item), name='works.item.view'),
 
-    path('item/<slug:item_id>', item_edit, name='works.item.edit'),
+    path('item/<slug:item_id>/edit', item_edit, name='works.item.edit'),
     path('item/new/<slug:publication_id>', item_new, name='works.item.new'),
 
     path('itemhistory/<slug:item_id>', item_history, name='works.item.states'),

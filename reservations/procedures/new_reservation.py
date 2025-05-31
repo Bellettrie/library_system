@@ -29,7 +29,7 @@ def create_reservation(item, member: Member, edited_member: Member, current_date
     return new_reservation
 
 
-def assert_member_can_reserve(item, member, current_date):
+def assert_member_can_reserve(item, member, current_date, with_member_checks=True):
     """
         Check whether an item can be lent by a member.
         :param item: The item to be reserved
@@ -38,30 +38,31 @@ def assert_member_can_reserve(item, member, current_date):
         :return: None
         :except ReservationImpossibleException: If the reservation-checks fail.
     """
-    if not can_lend_more_of_item(member, item, False):
+    if with_member_checks and not can_lend_more_of_item(member, item, False):
         raise ReservationImpossibleException(
             "Member currently has lent too many items in category {}".format(item.location.category.item_type))
-    if member_has_late_items(member, current_date):
+    if with_member_checks and member_has_late_items(member, current_date):
         raise ReservationImpossibleException(
             "Member currently has items that are late. These need to be returned before it can be reserved.")
-    if member.is_blacklisted:
+    if with_member_checks and member.is_blacklisted:
         raise ReservationImpossibleException("Member currently blacklisted, cannot reserve")
-    if not member.is_currently_member(current_date):
+    if with_member_checks and not member.is_currently_member(current_date):
         raise ReservationImpossibleException("Member currently not a member, cannot reserve")
     if item.is_reserved():
         raise ReservationImpossibleException("Item is reserved for another member")
+    if not item.in_available_state():
+        raise ReservationImpossibleException(
+            "Item is not currently available for reservation, the item is {}.".format(item.get_state()))
     if item.is_lent_out() and item.current_lending_or_404().member.id == member.id:
         raise ReservationImpossibleException("Cannot reserve books you have borrowed.")
     if not item.is_lent_out():
         raise ReservationImpossibleException("Cannot reserve books that are in the room.")
-    if not item.in_available_state():
-        raise ReservationImpossibleException(
-            "Item is not currently available for reservation, the item is {}.".format(item.get_state()))
 
 
-def can_reserve(item: Item, member: Member, current_date: datetime.date):
+
+def can_reserve(item: Item, member: Member, current_date: datetime.date, with_member_checks=True):
     try:
-        assert_member_can_reserve(item, member, current_date)
+        assert_member_can_reserve(item, member, current_date, with_member_checks)
     except ReservationImpossibleException as error:
         return error.__str__()
 

@@ -103,6 +103,11 @@ class WorkDetail(DetailView):
     model = Publication
 
 
+def view_item(request, item_id, hx_enabled=False):
+    item = get_object_or_404(Item, pk=item_id)
+    return render(request, "works/modals/item.html", {"hx_enabled":hx_enabled, 'item': get_object_or_404(Item, pk=item_id)})
+
+
 def create_item_state_hx(request, item_id):
     return create_item_state(request, item_id, True)
 
