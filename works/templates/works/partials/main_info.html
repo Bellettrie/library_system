@@ -1,66 +1,44 @@
 {% component 'tile/tile' root_class_tags="lg:basis-64" %}
     {% fill 'title' %}Publication Details{% endfill %}
     {% fill 'content' %}
-        <table class="table table-striped" style="width: 100%;">
-            <tr>
-                <th>Title</th>
-                <td>
-                    {% if object.title %}{{ object.get_title }} {% if object.sub_title %}<br/>
-                        <i>-{{ object.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
-                </td>
-            </tr>
+        <dl class="w-full divide-y divide-gray-100">
+            {% component "datarow/datarow" "Title" %}
+                {% if object.title %}{{ object.get_title }} {% if object.sub_title %}<br/>
+                    <i>-{{ object.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+            {% endcomponent %}
             {% if object.language %}
-                <tr>
-                    <th>
-                        Language:
-                    </th>
-                    <td>
-                        {{ object.language }}
-                    </td>
-                </tr>
+                {% component "datarow/datarow" "Language" %}
+                    {{ object.language }}
+                {% endcomponent %}
             {% endif %}
             {% if object.original_title or object.original_subtitle %}
-                <tr>
-                    <th>Original Title</th>
-                    <td>
-                        {% if object.get_original_title %}{{ object.get_original_title }}
-                            {% if object.original_subtitle %}<br/>
-                                <i>-{{ object.original_subtitle }}</i>{% endif %}{% else %}
-                            <i>No Title</i> {% endif %}
-                    </td>
-                </tr>
+                {% component "datarow/datarow" "Original Title" %}
+                    {% if object.get_original_title %}{{ object.get_original_title }}
+                        {% if object.original_subtitle %}<br/>
+                            <i>-{{ object.original_subtitle }}</i>{% endif %}{% else %}
+                        <i>No Title</i> {% endif %}
+                {% endcomponent %}
             {% endif %}
-            {% if object.original_language %}
-                <tr>
-                    <th>
-                        Original Language:
-                    </th>
-                    <td>
-                        {{ object.original_language }}
-                    </td>
-                </tr>
-            {% endif %}
-            <tr>
-                <th>Authors</th>
-                <td>{% for author in object.get_authors %}{% include 'creators/single_line_description.html' %}<br>
-                {% endfor %}</td>
-            </tr>
+            {% component "datarow/datarow" "Authors" %}
+                {% for author in object.get_authors %}{% include 'creators/single_line_description.html' %}<br>
+                {% endfor %}
+            {% endcomponent %}
+
             {% if object.comment %}
-                <tr>
-                    <th>Comment</th>
-                    <td>{{ object.comment }}</td>
-                </tr>
+                {% component "datarow/datarow" "Comments" %}
+                    {{ object.comment }}
+                {% endcomponent %}
             {% endif %}
             {% if series %}
-                <tr>
-                    <th>Series</th>
-                    <td>  {% for series in  series %}
-
+                {% component "datarow/datarow" "Series" %}
+                    {% for series in  series %}
                         {% include 'series/part_of_series_name.html' %}{% if not forloop.last %}<br>{% endif %}
-                    {% endfor %}</td>
-                </tr>
+                    {% endfor %}
+                {% endcomponent %}
+
             {% endif %}
-        </table>
+        </dl>
+
 
     {% endfill %}
     {% fill 'footer' %}

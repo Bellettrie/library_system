@@ -5,7 +5,7 @@
     {% with series=object.workinseries_set.all %}
         {% with tbl=object.get_sub_works %}
             <div class="flex flex-col gap-3">
-                <div class="flex lg:flex-row gap-3">
+                <div class="flex flex-col lg:flex-row gap-3">
                     {% include 'works/partials/main_info.html' %}
 
                     {% include 'works/partials/subworks.html' %}
