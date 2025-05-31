@@ -1,7 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+    <div class="flex justify-center">
+        {% component "tile.Tile" root_class_tags="max-w-lg" with_standard_flex=False %}
+            {% fill 'title' %}Login{% endfill %}
+            {% fill 'content' %}
+                {% if next %}
+                    {% if user.is_authenticated %}
+                        <p>Your account doesn't have access to this page. To proceed,
+                            please login with an account that has access.</p>
+                    {% else %}
+                        <p>Please login to see this page.</p>
+                    {% endif %}
+                {% endif %}
 
-  {% if request.META.HTTP_HX_REQUEST %}
-      HX !!
-    {% include "registration/login_hx.html" %}
-    {% else %}
-    {% include "registration/login_regular.html" %}
-    {% endif %}
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <dl>
+                        {% component "form.Compact" form / %}
+                        {% component "datarow.Datarow" "" %}
+                            <div class="join">
+                                <input class="btn btn-primary join-item" type="submit" value="Login">
+                                <a class="btn join-item" href="{% url "members.self_signup" %}">Register</a>
+                            </div>
+                        {% endcomponent %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                    </dl>
+                </form>
+            {% endfill %}
+            {% fill 'footer' %}
+                If you have lost your password, please contact the board, or register a new account.
+            {% endfill %}
+        {% endcomponent %}
+    </div>
+{% endblock %}
