@@ -62,7 +62,7 @@
         </div>
         <div class="lg:hidden flex flex-col gap-5 m-3">
             {% for item in items %}
-                {% component 'works.item_card' item.get_item perms / %}
+                {% component 'works.card.standard_card' item.get_item perms / %}
             {% endfor %}
         </div>
         <div class="flex-1 w-full">

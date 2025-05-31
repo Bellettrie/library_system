@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'public_pages',
     'datamining',
     'search',
-    'tables',
     'tasks',
 ]
 
@@ -83,9 +82,7 @@ TEMPLATES = [
             'builtins': [
                 'bellettrie_library_system.templatetags.paginator_tag',
                 'bellettrie_library_system.templatetags.menu_data',
-                'tables.templatetags.render_square',
 
-                'tables.templatetags.item_detail_table',
                 'django_components.templatetags.component_tags',
             ],
             'context_processors': [

@@ -63,7 +63,7 @@
         </div>
         <div class="lg:hidden flex flex-col gap-5 m-3">
             {% for itemRow in items %}
-                {% component "works.info_card" itemRow.get_item %}
+                {% component "works.card" itemRow.get_item %}
                     {% fill "infos" %}
                         <div class=" flex  justify-end  join">
                         {% if itemRow.is_item %}
