@@ -22,15 +22,21 @@
     {% endcomponent %}
     {% with item.current_lending as cur_lnd %}
         {% component "datarow/datarow" "State" %}
-            {{ item.get_state }}
+            {% if perms.lendings.add_lending %}
+                <a class="link link-secondary" hx-get="{% url 'works.item.states' item.pk %}" hx-target="#dialog"
+                   href="{% url "works.item.states" item.pk %}">{{ item.get_state }}</a>
+            {% else %}
+                {{ item.get_state }}
+            {% endif %}
             {% if cur_lnd %}
                 ( Lent out )
             {% endif %}
-            <div class="join">
-                <button class="btn btn-primary btn-xs join-item">Change state</button>
-                <button class="btn btn-xs join-item">History</button>
+            {% if perms.lendings.add_lending %}
+                <a hx-get="{% url 'works.item_state.create' item.pk %}" hx-target="#dialog"
+                   href="{% url "works.item_state.create" item.pk %}" class="btn btn-primary btn-xs join-item">Change
+                    state</a>
 
-            </div>
+            {% endif %}
         {% endcomponent %}
         {% if request.user.member %}
             {% component "datarow/datarow" "Borrowing" %}
@@ -39,12 +45,10 @@
                     {% if cur_lnd %}
                         {% component 'lendings/buttons/return' cur_lnd member perms bonus_classes="btn-xs join-item" / %}
                     {% endif %}
-                    <button class="btn btn-xs join-item">History</button>
-
+                    <a href="{% url "lendings.history" item.pk %}" class="btn btn-xs join-item">History</a>
                     </div>
                 {% endcomponent %}
         {% endif %}
-
         {% if request.user.member %}
             {% component "datarow/datarow" "Reserving" %}
             {% component 'lendings/buttons/reserve' item request.user.member cur_lnd perms / %}
@@ -52,9 +56,8 @@
         {% endif %}
         {% if perms.works.change_item %}
             {% component "datarow/datarow" "Edit" %}
-                Edit
+                    <a href="{% url "works.item.edit" item.pk %}" class="btn btn-xs btn-primary join-item">Edit</a>
             {% endcomponent %}
         {% endif %}
     {% endwith %}
-
 </dl>

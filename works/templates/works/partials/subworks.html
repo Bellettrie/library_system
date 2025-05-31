@@ -41,7 +41,7 @@
         {% fill 'footer' %}
             {% if perms.works.change_work %}
                 {% component 'tile/footer' %}
-                    <a class="card-link"
+                    <a class=" btn btn-sm  btn-primary join-item"
                        href="{% url 'work.subwork.new' object.pk %}">Add
                         Subwork</a>
                 {% endcomponent %}

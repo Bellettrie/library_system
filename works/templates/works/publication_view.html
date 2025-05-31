@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load item_detail_table %}
 {% block title %}{{ object.get_title }}{% endblock %}
 {% block content %}
     {% with series=object.workinseries_set.all %}

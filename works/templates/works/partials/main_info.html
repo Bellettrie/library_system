@@ -44,9 +44,8 @@
     {% fill 'footer' %}
         {% if perms.works.change_work %}
             {% component 'tile/footer' %}
-                <div class=" d-flex flex-column"></div>
-                <a class="align-self-end card-link" style="margin-top: auto;"
-                   href="{% url 'works.publication.edit' object.pk %}">Edit publication</a><br>
+                <a class="btn btn-sm  btn-primary join-item"
+                   href="{% url 'works.publication.edit' object.pk %}">Edit publication</a>
             {% endcomponent %}
         {% endif %}
     {% endfill %}

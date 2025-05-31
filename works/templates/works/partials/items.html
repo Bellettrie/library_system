@@ -25,8 +25,7 @@
     {% fill 'footer' %}
         {% if perms.works.change_item %}
             {% component 'tile/footer' %}
-                <a href="{% url 'works.item.new' publication.pk %}" class="align-self-end card-link"
-                   style="margin-top: auto;">Add new Item</a>
+                <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-sm btn-primary join-item">Add new Item</a>
             {% endcomponent %}
         {% endif %}
     {% endfill %}
