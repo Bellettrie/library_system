@@ -3,12 +3,11 @@ from django.urls import path
 from utils.wrappers import hx_wrap
 from works.views import WorkList, create_item_state, item_edit, publication_edit, publication_new, \
     item_new, \
-    item_history, view_item
+    item_history
 from . import views
 
 urlpatterns = [
     path('search', WorkList.as_view(), name='works.list'),
-    path('item/<slug:item_id>', hx_wrap(view_item), name='works.item.view'),
 
     path('item/<slug:item_id>/edit', item_edit, name='works.item.edit'),
     path('item/new/<slug:publication_id>', item_new, name='works.item.new'),

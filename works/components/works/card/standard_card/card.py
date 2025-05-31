@@ -10,7 +10,7 @@ from members.models import Member
 from works.models import Item
 
 
-@register("works.item_card")
+@register("works.card.standard_card")
 class Card(Component):
     def get_context_data(self, item: Item, perms) -> dict:
         code = item.book_code
@@ -23,4 +23,4 @@ class Card(Component):
             "split_code": code.split("-"),
         }
 
-    template_name = "works/item_card/card.html"
+    template_name = "works/card/standard_card/card.html"

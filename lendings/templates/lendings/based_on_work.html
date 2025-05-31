@@ -6,7 +6,7 @@
     <div class="flex flex-col gap-3">
         <div class="flex flex-col lg:flex-row gap-3">
             <div class="lg:flex-1 lg:mt-3 lg:mb-3">
-                {% component "works.info_card" item / %}
+                {% component "works.card" item / %}
             </div>
             {% component 'members.search_input' request.GET.q request.GET.previous myUrl="#" / %}
         </div>
