@@ -11,7 +11,7 @@ from bellettrie_library_system.base_settings import GET_MENU
 
 @register("nav.sidebar.Sidebar")
 class Sidebar(Component):
-    template_name = "nav/sidebar.html"
+    template_name = "navbar/sidebar.html"
 
     # The sidebar always shows its own menu, and shows the mobile_only entries only if the sidebar switches to the foldout mode.
     def get_context_data(self, menu=None, mobile_only=None):
@@ -27,4 +27,4 @@ class Sidebar(Component):
         }
 
     class Media:
-        css = "nav/navbar.css"
+        css = "navbar/navbar.css"

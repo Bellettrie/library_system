@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Holiday details for: {{ object.name }}{% endblock %}
 {% block content %}
-    {% component 'tile/tile' root_class_tags="lg:basis-2/5 lg:w-2/5 lg:flex-none" %}
+    {% component 'tile.Tile' root_class_tags="lg:basis-2/5 lg:w-2/5 lg:flex-none" %}
         {% fill 'title' %}Holiday details for: {{ object.name }}{% endfill %}
         {% fill 'content' %}
             <table class="table">

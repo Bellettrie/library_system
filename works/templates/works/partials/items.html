@@ -1,4 +1,4 @@
-{% component 'tile/tile' root_class_tags="" %}
+{% component 'tile.Tile' root_class_tags="" %}
     {% fill 'title' %}Items for this publication{% endfill %}
     {% fill 'content' %}
         {% with object.get_items as items %}
@@ -24,7 +24,7 @@
     {% endfill %}
     {% fill 'footer' %}
         {% if perms.works.change_item %}
-            {% component 'tile/footer' %}
+            {% component 'tile.Footer' %}
                 <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-sm btn-primary join-item">Add new Item</a>
             {% endcomponent %}
         {% endif %}

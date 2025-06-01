@@ -1,5 +1,5 @@
 {% if tbl or perms.works.change_work %}
-    {% component 'tile/tile' root_class_tags="lg:basis-64" %}
+    {% component 'tile.Tile' root_class_tags="lg:basis-64" %}
         {% fill 'title' %}Subworks {% endfill %}
         {% fill 'content' %}
             {% with should_edit=1 %}
@@ -40,7 +40,7 @@
         {% endfill %}
         {% fill 'footer' %}
             {% if perms.works.change_work %}
-                {% component 'tile/footer' %}
+                {% component 'tile.Footer' %}
                     <a class=" btn btn-sm  btn-primary join-item"
                        href="{% url 'work.subwork.new' object.pk %}">Add
                         Subwork</a>

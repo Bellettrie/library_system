@@ -15,14 +15,14 @@
                                 <summary>{{ item.title }}</summary>
                                 <ul>
                                     {% for item in item.sub_items %}
-                                        {% component 'top-item' item.title item.url location="sidebar" perm=item.permission / %}
+                                        {% component 'navbar.Item' item.title item.url location="sidebar" perm=item.permission / %}
 
                                     {% endfor %}
                                 </ul>
                             </details>
                         </li>
                     {% else %}
-                        {% component 'top-item' item.title item.url location="sidebar" perm=item.permission extra_classes="xl:hidden" / %}
+                        {% component 'navbar.Item' item.title item.url location="sidebar" perm=item.permission extra_classes="xl:hidden" / %}
                     {% endif %}
                 {% endfor %}
                 {% if mobile_items and items %}
@@ -35,21 +35,21 @@
                                 <summary>{{ item.title }}</summary>
                                 <ul>
                                     {% for item in item.sub_items %}
-                                        {% component 'top-item' item.title item.url location="sidebar" perm=item.permission / %}
+                                        {% component 'navbar.Item' item.title item.url location="sidebar" perm=item.permission / %}
 
                                     {% endfor %}
                                 </ul>
                             </details>
                         </li>
                     {% else %}
-                        {% component 'top-item' item.title item.url location="sidebar" perm=item.permission / %}
+                        {% component 'navbar.Item' item.title item.url location="sidebar" perm=item.permission / %}
                     {% endif %}
                 {% endfor %}
                 <li class="xl:hidden"></li>
                 {% if user.is_anonymous %}
-                    {% component 'top-item' "Login" 'login' location="sidebar" extra_classes="xl:hidden" / %}
+                    {% component 'navbar.Item' "Login" 'login' location="sidebar" extra_classes="xl:hidden" / %}
                 {% else %}
-                    {% component 'top-item' "Profile" "members.view" user.member.pk 0 location="sidebar" extra_classes="xl:hidden" / %}
+                    {% component 'navbar.Item' "Profile" "members.view" user.member.pk 0 location="sidebar" extra_classes="xl:hidden" / %}
                     <input type="hidden" id="csrfmiddlewaretoken" name="csrfmiddlewaretoken"
                            value="{{ csrf_token }}">
                     <li class="xl:hidden"><a hx-post="{% url 'logout' %}" hx-target="#dialog"

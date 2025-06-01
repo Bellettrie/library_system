@@ -1,4 +1,4 @@
-{% component 'tile/tile' root_class_tags="h-fit" %}
+{% component 'tile.Tile' root_class_tags="h-fit" %}
     {% fill 'title' %}Membership Periods{% endfill %}
     {% fill 'content' %}
         <table class="table table-xs table-zebra">
@@ -28,7 +28,7 @@
         </table>
     {% endfill %}
     {% fill 'footer' %}
-        {% component 'tile/footer' %}
+        {% component 'tile.Footer' %}
             <a class="btn btn-sm btn-primary join-item"
                data-hx-get="{% url 'members.membership_period_new'  member_pk %}" hx-target="#dialog"
                href="{% url 'members.membership_period_new' member_pk %}">New period</a>

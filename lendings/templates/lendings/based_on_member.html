@@ -6,13 +6,13 @@
 {% block content %}
     <div class="flex flex-col gap-3">
         <div class="flex flex-col md:flex-row gap-3">
-            {% component "tile/tile" root_class_tags="grow max-w-screen" %}
+            {% component "tile.Tile" root_class_tags="grow max-w-screen" %}
                 {% fill 'title' %}Member
                 {% endfill %}
                 {% fill "content" %}{{ member.name }}
                 {% endfill %}
             {% endcomponent %}
-            {% component 'tile/tile' root_class_tags="w-full lg:basis-2/5  lg:flex-none" %}
+            {% component 'tile.Tile' root_class_tags="w-full lg:basis-2/5  lg:flex-none" %}
                 {% fill 'title' %}Search{% endfill %}
                 {% fill 'content' %}
 

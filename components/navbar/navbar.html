@@ -16,12 +16,12 @@
     <div class="navbar-start hidden xl:flex xl:ml-5">
         <ul class="menu menu-horizontal px-1">
             {% for but in menu_buttons %}
-                {% component 'top-item' but.title but.url location="top" / %}
+                {% component 'navbar.Item' but.title but.url location="top" / %}
             {% endfor %}
         </ul>
     </div>
     <div class="navbar-center justify-center flex-1 xl:flex-none">
-        {% component "logo" logo_debug logo_name logo_image %} {% endcomponent %}
+        {% component "navbar.Logo" logo_debug logo_name logo_image %} {% endcomponent %}
     </div>
     <div class="navbar-end hidden xl:flex xl:mr-5 gap-5">
         <ul class="menu menu-horizontal px-1">

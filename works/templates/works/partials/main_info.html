@@ -1,36 +1,36 @@
-{% component 'tile/tile' root_class_tags="lg:basis-64" %}
+{% component 'tile.Tile' root_class_tags="lg:basis-64" %}
     {% fill 'title' %}Publication Details{% endfill %}
     {% fill 'content' %}
         <dl class="w-full divide-y divide-gray-100">
-            {% component "datarow/datarow" "Title" %}
+            {% component "datarow.Datarow" "Title" %}
                 {% if object.title %}{{ object.get_title }} {% if object.sub_title %}<br/>
                     <i>-{{ object.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
             {% endcomponent %}
             {% if object.language %}
-                {% component "datarow/datarow" "Language" %}
+                {% component "datarow.Datarow" "Language" %}
                     {{ object.language }}
                 {% endcomponent %}
             {% endif %}
             {% if object.original_title or object.original_subtitle %}
-                {% component "datarow/datarow" "Original Title" %}
+                {% component "datarow.Datarow" "Original Title" %}
                     {% if object.get_original_title %}{{ object.get_original_title }}
                         {% if object.original_subtitle %}<br/>
                             <i>-{{ object.original_subtitle }}</i>{% endif %}{% else %}
                         <i>No Title</i> {% endif %}
                 {% endcomponent %}
             {% endif %}
-            {% component "datarow/datarow" "Authors" %}
+            {% component "datarow.Datarow" "Authors" %}
                 {% for author in object.get_authors %}{% include 'creators/single_line_description.html' %}<br>
                 {% endfor %}
             {% endcomponent %}
 
             {% if object.comment %}
-                {% component "datarow/datarow" "Comments" %}
+                {% component "datarow.Datarow" "Comments" %}
                     {{ object.comment }}
                 {% endcomponent %}
             {% endif %}
             {% if series %}
-                {% component "datarow/datarow" "Series" %}
+                {% component "datarow.Datarow" "Series" %}
                     {% for series in  series %}
                         {% include 'series/part_of_series_name.html' %}{% if not forloop.last %}<br>{% endif %}
                     {% endfor %}
@@ -43,7 +43,7 @@
     {% endfill %}
     {% fill 'footer' %}
         {% if perms.works.change_work %}
-            {% component 'tile/footer' %}
+            {% component 'tile.Footer' %}
                 <a class="btn btn-sm  btn-primary join-item"
                    href="{% url 'works.publication.edit' object.pk %}">Edit publication</a>
             {% endcomponent %}

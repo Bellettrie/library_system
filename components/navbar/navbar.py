@@ -8,9 +8,8 @@ from django_components import Component, register, types
 from bellettrie_library_system import settings
 from bellettrie_library_system.base_settings import GET_MENU
 
-
-@register("top-item")
-class NavItem(Component):
+@register("navbar.Item")
+class Item(Component):
 
     def get_context_data(self, text, my_url, *args, location="aaa", perm=None, extra_classes="", **kwargs):
         # skip absolute urls
@@ -27,15 +26,14 @@ class NavItem(Component):
     def get_template_name(self, context: Context) -> Optional[str]:
         location = context.get("location")
         if location == "top":
-            return "nav/items/top_menu.html"
+            return "navbar/items/top_menu.html"
         if location == "mob":
-            return "nav/items/mobile.html"
-        return "nav/items/sidebar.html"
+            return "navbar/items/mobile.html"
+        return "navbar/items/sidebar.html"
 
-
-@register("nav.navbar.Navbar")
+@register("navbar.Navbar")
 class Navbar(Component):
-    template_name = "nav/navbar.html"
+    template_name = "navbar/navbar.html"
 
     def get_context_data(self, menu=None):
         if menu is None:
@@ -49,10 +47,10 @@ class Navbar(Component):
         }
 
     class Media:
-        css = "nav/navbar.css"
+        css = "navbar/navbar.css"
 
 
-@register("logo")
+@register("navbar.Logo")
 class Logo(Component):
     def get_context_data(self, debug, name, logo):
         return {
@@ -61,7 +59,7 @@ class Logo(Component):
             "logo": logo,
         }
 
-    template_name = "nav/logo.html"
+    template_name = "navbar/logo.html"
     css: types.css = """
 .rotate4{ /*upside down*/
     -webkit-transform:rotate(180deg);

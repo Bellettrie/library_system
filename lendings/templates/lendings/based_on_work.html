@@ -10,7 +10,7 @@
             </div>
             {% component 'members.search_input' request.GET.q request.GET.previous myUrl="#" / %}
         </div>
-        {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none " %}
+        {% component "tile.Tile" root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none " %}
             {% fill "title" %}
                 <div class="hidden sm:block sm:pb-5">Results</div>
                 <div class="sm:absolute top-5 flex w-full justify-center">

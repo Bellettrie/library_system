@@ -1,7 +1,7 @@
 from django_components import Component, register
 
 
-@register("datarow/datarow")
+@register("datarow.Datarow")
 class BaseTile(Component):
     def get_context_data(self, name, root_class_tags=""):
         return {

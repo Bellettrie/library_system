@@ -12,7 +12,7 @@
     {% endif %}
     <form action="#" method="post">
         <div class="max-w-full flex flex-wrap gap-3">
-            {% component "tile/tile" root_class_tags="grow max-w-screen" %}
+            {% component "tile.Tile" root_class_tags="grow max-w-screen" %}
                 {% fill 'title' %}
                     {% if new %}
                         New Member
@@ -23,31 +23,31 @@
                 {% fill "content" %}
                     Verify in all the sub-forms, and finally press the submit button.
                     {% csrf_token %}
-                    {% component 'form/compact' form only / %}
+                    {% component "form.Compact" form only / %}
 
                 {% endfill %}
             {% endcomponent %}
             <div class="grow  flex flex-col gap-3  lg:basis-2/5 lg:flex-none">
-                {% component "tile/tile" root_class_tags="shrink max-w-screen lg:basis-2/5  lg:flex-none" %}
+                {% component "tile.Tile" root_class_tags="shrink max-w-screen lg:basis-2/5  lg:flex-none" %}
                     {% fill 'title' %}
                         Privacy Settings
                     {% endfill %}
                     {% fill "content" %}
-                        {% component 'form/compact' privacy_form only / %}
+                        {% component "form.Compact" privacy_form only / %}
                     {% endfill %}
                 {% endcomponent %}
                 {% if new %}
-                    {% component "tile/tile" root_class_tags="grow md:grow   max-w-screen lg:flex-1  card bg-base-100" %}
+                    {% component "tile.Tile" root_class_tags="grow md:grow   max-w-screen lg:flex-1  card bg-base-100" %}
                         {% fill 'title' %}
                             Membership Type
                         {% endfill %}
                         {% fill "content" %}
-                            {% component 'form/compact' md_form / %}
+                            {% component "form.Compact" md_form / %}
                         {% endfill %}
                     {% endcomponent %}
                 {% endif %}
 
-                {% component "tile/tile" root_class_tags="shrink max-w-screen lg:flex-none" %}
+                {% component "tile.Tile" root_class_tags="shrink max-w-screen lg:flex-none" %}
                     {% fill 'title' %}
                         All Done!
                     {% endfill %}

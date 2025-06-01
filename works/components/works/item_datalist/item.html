@@ -1,27 +1,27 @@
 <dl class="w-full divide-y divide-gray-100 text-xs">
-    {% component "datarow/datarow" "Book Code" %}
+    {% component "datarow.Datarow" "Book Code" %}
         {{ item.book_code }}
     {% endcomponent %}
     {% if item.get_recode %}
         {% with recode=item.get_recode %}
-            {% component "datarow/datarow" "Book Code" %}
+            {% component "datarow.Datarow" "Book Code" %}
                 {% include "works/partials/columns/finish_recode.html" %}
             {% endcomponent %}
         {% endwith %}
     {% endif %}
-    {% component "datarow/datarow" "ISBN" %}
+    {% component "datarow.Datarow" "ISBN" %}
         {% if item.isbn10 %}{{ item.isbn10 }}{% endif %}
         {% if item.isbn10 and item.isbn13 %}<br>{% endif %}
         {% if item.isbn13 %}{{ item.isbn13 }}{% endif %}
     {% endcomponent %}
-    {% component "datarow/datarow" "Pages" %}
+    {% component "datarow.Datarow" "Pages" %}
         {{ item.pages }}
     {% endcomponent %}
-    {% component "datarow/datarow" "Year of Publication" %}
+    {% component "datarow.Datarow" "Year of Publication" %}
         {{ item.publication_year }}
     {% endcomponent %}
     {% with item.current_lending as cur_lnd %}
-        {% component "datarow/datarow" "State" %}
+        {% component "datarow.Datarow" "State" %}
             {% if perms.lendings.add_lending %}
                 <a class="link link-secondary" hx-get="{% url 'works.item.states' item.pk %}" hx-target="#dialog"
                    href="{% url "works.item.states" item.pk %}">{{ item.get_state }}</a>
@@ -39,7 +39,7 @@
             {% endif %}
         {% endcomponent %}
         {% if request.user.member %}
-            {% component "datarow/datarow" "Borrowing" %}
+            {% component "datarow.Datarow" "Borrowing" %}
             <div class="join">
                 {% component 'lendings/buttons/lend' item perms bonus_classes="btn-xs join-item" / %}
                     {% if cur_lnd %}
@@ -50,12 +50,12 @@
                 {% endcomponent %}
         {% endif %}
         {% if request.user.member %}
-            {% component "datarow/datarow" "Reserving" %}
+            {% component "datarow.Datarow" "Reserving" %}
             {% component 'lendings/buttons/reserve' item request.user.member cur_lnd perms / %}
             {% endcomponent %}
         {% endif %}
         {% if perms.works.change_item %}
-            {% component "datarow/datarow" "Edit" %}
+            {% component "datarow.Datarow" "Edit" %}
                     <a href="{% url "works.item.edit" item.pk %}" class="btn btn-xs btn-primary join-item">Edit</a>
             {% endcomponent %}
         {% endif %}
