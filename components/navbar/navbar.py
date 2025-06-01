@@ -8,6 +8,7 @@ from django_components import Component, register, types
 from bellettrie_library_system import settings
 from bellettrie_library_system.base_settings import GET_MENU
 
+
 @register("navbar.Item")
 class Item(Component):
 
@@ -30,6 +31,7 @@ class Item(Component):
         if location == "mob":
             return "navbar/items/mobile.html"
         return "navbar/items/sidebar.html"
+
 
 @register("navbar.Navbar")
 class Navbar(Component):
