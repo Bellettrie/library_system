@@ -3,7 +3,7 @@
     {% fill 'content' %}
         {% with object.get_items as items %}
             {% if items.count == 1 %}
-                {% component "works.item_datalist" items.0 perms / %}
+                {% component "works.item_datalist.Item" items.0 perms / %}
             {% elif items.count == 0 %}
                 <i>No Items</i>
             {% else %}
@@ -13,7 +13,7 @@
                                class="tab"
                                aria-label="{{ item.book_code }}"/>
                         <div class="tab-content  p-10">
-                            {% component "works.item_datalist" item perms / %}
+                            {% component "works.item_datalist.Item" item perms / %}
                         </div>
                     {% endfor %}
                 </div>

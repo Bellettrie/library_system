@@ -10,8 +10,8 @@ from members.models import Member
 from works.models import Item
 
 
-@register("works.item_datalist")
-class Card(Component):
+@register("works.item_datalist.Item")
+class Item(Component):
 
     def get_context_data(self, item: Item, perms):
         return {

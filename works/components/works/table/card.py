@@ -10,22 +10,17 @@ from members.models import Member
 from works.models import Item
 
 
-@register("works.table.row")
+@register("works.table.Card")
 class Card(Component):
-
-    # Renders a table row for a single item.
-    # all_authors is used to tell the table to show more than one author for each item (if more are linked)
-    # skip_header is used to tell the row to not render the item code column.
-    def get_context_data(self, item: Item, all_authors=False, skip_header=False):
+    def get_context_data(self, item: Item, all_authors=False):
         code = item.book_code
         authors = item.publication.get_authors()
-        if not all_authors and len(authors) > 0:
+        if not all_authors:
             authors = authors[:1]
         return {
-            "skip_header": skip_header,
-            "authors": authors,
             "item": item,
+            "authors": authors,
             "split_code": code.split("-"),
         }
 
-    template_name = "works/table/row/row.html"
+    template_name = "works/table/card.html"

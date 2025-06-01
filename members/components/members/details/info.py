@@ -4,7 +4,7 @@ from members.models import Member
 
 
 @register("members.basic_info")
-class BasicInfo(Component):
+class InfoBasic(Component):
     def get_context_data(self, member: Member):
         return {
             "member": member,
@@ -14,7 +14,7 @@ class BasicInfo(Component):
 
 
 @register("members.detailed_info")
-class DetailedInfo(Component):
+class InfoDetailed(Component):
     def get_context_data(self, member: Member):
         return {
             "member": member,
