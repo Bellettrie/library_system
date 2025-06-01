@@ -2,7 +2,7 @@ from django_components import Component, register
 
 
 @register("members.users.no_user")
-class NoUserWidget(Component):
+class NoUser(Component):
     def get_context_data(self, member=""):
         return {
             "member": member,
@@ -12,7 +12,7 @@ class NoUserWidget(Component):
 
 
 @register("members.users.user")
-class UserWidget(Component):
+class User(Component):
     def get_context_data(self, member=""):
         return {
             "member": member,
