@@ -33,10 +33,10 @@
                             </td>
                             <td class="join">
                                 {% if  itemRow.is_item %}
-                                    {% component 'lendings/buttons/lend' item perms bonus_classes="btn-sm join-item" / %}
+                                    {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
                                     {% with itemRow.get_item.current_lending as cur_lnd %}
                                         {% if cur_lnd %}
-                                            {% component 'lendings/buttons/return' cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                                            {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
                                         {% endif %}
                                     {% endwith %}
                                 {% endif %}

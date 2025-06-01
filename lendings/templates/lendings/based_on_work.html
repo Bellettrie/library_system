@@ -33,7 +33,7 @@
                                 {% if member.nickname %}<br/>
                                     <i>{{ member.nickname }}</i>{% endif %}</td>
                             <td class="text-right">
-                                {% component 'lendings/buttons/finalize' item member perms bonus_classes="btn-sm join-item" / %}
+                                {% component "lendings.buttons.Finalize" item member perms bonus_classes="btn-sm join-item" / %}
                             </td>
                         </tr>
                     {% empty %}

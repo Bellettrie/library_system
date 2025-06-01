@@ -41,9 +41,9 @@
         {% if request.user.member %}
             {% component "datarow.Datarow" "Borrowing" %}
             <div class="join">
-                {% component 'lendings/buttons/lend' item perms bonus_classes="btn-xs join-item" / %}
+                {% component "lendings.buttons.Lend" item perms bonus_classes="btn-xs join-item" / %}
                     {% if cur_lnd %}
-                        {% component 'lendings/buttons/return' cur_lnd member perms bonus_classes="btn-xs join-item" / %}
+                        {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-xs join-item" / %}
                     {% endif %}
                     <a href="{% url "lendings.history" item.pk %}" class="btn btn-xs join-item">History</a>
                     </div>
@@ -51,7 +51,7 @@
         {% endif %}
         {% if request.user.member %}
             {% component "datarow.Datarow" "Reserving" %}
-            {% component 'lendings/buttons/reserve' item request.user.member cur_lnd perms / %}
+            {% component "lendings.buttons.Reserve" item request.user.member cur_lnd perms / %}
             {% endcomponent %}
         {% endif %}
         {% if perms.works.change_item %}

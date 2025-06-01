@@ -35,11 +35,11 @@
             {% else %}
                 {% component 'members.users.no_user' member / %}
             {% endif %}
-            {% component 'members.committees' member / %}
+            {% component "members.details.Committees" member / %}
         </div>
         <div class="grow  flex flex-col gap-3  ">
             {% component 'members.membership_periods' member / %}
-            {% component 'members.current_lendings' member / %}
+            {% component 'members.details.LendingHistory' member / %}
             {% include 'members/partials/reservations_card.html' %}
         </div>
     </div>

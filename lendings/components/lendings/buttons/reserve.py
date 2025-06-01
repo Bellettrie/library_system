@@ -9,9 +9,9 @@ from utils.time import get_today
 from works.models import Item
 
 
-@register("lendings/buttons/reserve")
-class Button(Component):
-    template_name = "lendings/buttons/reserve/reserve.html"
+@register("lendings.buttons.Reserve")
+class Reserve(Component):
+    template_name = "lendings/buttons/reserve.html"
 
     def get_context_data(self, item: Item, member: Member, is_lent_out, perms, bonus_classes=""):
         is_visible = perms["lendings"]["change_lending"]

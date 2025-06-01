@@ -6,7 +6,7 @@ from bellettrie_library_system.base_settings import GET_MENU
 from members.models import Member
 
 
-@register("members.committees")
+@register("members.details.Committees")
 class Committees(Component):
 
     # Renders the committees that a member is in

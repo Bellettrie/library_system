@@ -35,8 +35,8 @@
                     </td>
                     <td class="items-center">
                         <div class="join">
-                            {% component 'lendings/buttons/extend' lending user.member perms bonus_classes=btn_bonus_classes / %}
-                            {% component 'lendings/buttons/return' lending user.member perms bonus_classes=btn_bonus_classes / %}
+                            {% component "lendings.buttons.Extend" lending user.member perms bonus_classes=btn_bonus_classes / %}
+                            {% component "lendings.buttons.Return" lending user.member perms bonus_classes=btn_bonus_classes / %}
                         </div>
                     </td>
                 {% endfill %}

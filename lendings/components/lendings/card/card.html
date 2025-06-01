@@ -20,8 +20,8 @@
                     <dd>Fine: €{{ lending.calculate_fine }}</dd>{% endif %}
             </dl>
             <div class=" flex  justify-end  join">
-                {% component 'lendings/buttons/extend' lending user.member perms bonus_classes="btn-sm join-item" / %}
-                {% component 'lendings/buttons/return' lending user.member perms bonus_classes="btn-sm join-item" / %}
+                {% component "lendings.buttons.Extend" lending user.member perms bonus_classes="btn-sm join-item" / %}
+                {% component "lendings.buttons.Return" lending user.member perms bonus_classes="btn-sm join-item" / %}
             </div>
         {% endif %}
     {% endfill %}
