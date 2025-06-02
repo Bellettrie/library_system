@@ -7,19 +7,18 @@
             {% elif items.count == 0 %}
                 <i>No Items</i>
             {% else %}
-                <div role="tablist" class="tabs tabs-lift ">
+                <div role="tablist" class="tabs tabs-lift">
                     {% for item in items %}
-                        <input {% if forloop.first %}checked="checked"{% endif %} type="radio" name="my_tabs_2"
-                               class="tab"
+                        <input {% if forloop.first %}checked="checked"{% endif %} type="radio" name="tab_list"
+                               class="tab" role="tab"
                                aria-label="{{ item.book_code }}"/>
-                        <div class="tab-content  p-10">
+                        <div class="tab-content bg-base-100 border-base-300 p-10">
                             {% component "works.item_datalist.Item" item perms / %}
                         </div>
                     {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
-
 
     {% endfill %}
     {% fill 'footer' %}
