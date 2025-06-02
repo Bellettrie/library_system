@@ -1,5 +1,10 @@
 {% if request.META.HTTP_HX_REQUEST %}
-    <meta http-equiv="refresh" content="0;URL='/'"/>
+    {% extends "hx_modal.html" %}
+    {% block title %}Login{% endblock %}
+    {% block content %}
+        Logging you out, wait a moment
+        <meta http-equiv="refresh" content="0;URL='/'"/>
+    {% endblock %}
 {% else %}
     {% include "registration/login_page.html" %}
 {% endif %}
