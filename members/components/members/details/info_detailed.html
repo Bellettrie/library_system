@@ -1,7 +1,6 @@
 {% component 'tile.Tile' root_class_tags="grow max-w-screen " %}
     {% fill 'title' %}Member Info {% endfill %}
     {% fill 'content' %}
-        <table class="table table-striped table-sm" style="width: 100%;">
         <dl class="divide-y divide-gray-100">
              {% component "datarow.Datarow" "Full Name" %}
                 {{ member.name }}
