@@ -1,9 +1,9 @@
 from django.urls import reverse
-from django_components import Component, register, types
+from django_components import Component, register
 
 
-@register("tile/tile")
-class BaseTile(Component):
+@register("tile.Tile")
+class Tile(Component):
     def get_context_data(self, root_class_tags=""):
         return {
             "root_class_tags": root_class_tags,
@@ -12,8 +12,8 @@ class BaseTile(Component):
     template_name = "tile/tile.html"
 
 
-@register("tile/footer")
-class TileFooter(Component):
+@register("tile.Footer")
+class Footer(Component):
     def get_context_data(self, root_class_tags=""):
         return {
             "root_class_tags": root_class_tags,

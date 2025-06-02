@@ -2,8 +2,8 @@ from django.urls import reverse
 from django_components import Component, register, types
 
 
-@register("inputs/text")
-class TextInput(Component):
+@register("inputs.Text")
+class Text(Component):
     template_name = "inputs/text.html"
 
     def get_context_data(self, name="", placeholder="", value="", bonus_classes=""):

@@ -1,4 +1,4 @@
-{% component 'tile/tile' root_class_tags="flex-1 grow" %}
+{% component 'tile.Tile' root_class_tags="flex-1 grow" %}
     {% fill 'title' %}Committees{% endfill %}
     {% fill 'content' %}
         {% if committees %}
@@ -28,7 +28,7 @@
         {% endif %}
     {% endfill %}
     {% fill 'footer' %}
-        {% component 'tile/footer' %}
+        {% component 'tile.Footer' %}
             {% if perms.members.committee_update %}
 
                 <a class="btn btn-sm btn-primary join-item" data-hx-get="{% url 'members.committee.join'  member.pk %}"

@@ -5,20 +5,20 @@
         {% csrf_token %}
         <div class="min-h-full flex flex-col gap-3 min-h-[80vh] ">
             <div class="max-w-full flex flex-wrap gap-12">
-                {% component "tile/tile" root_class_tags="grow max-w-screen lg:basis-6/12-gap-3 lg:flex-none " %}
+                {% component "tile.Tile" root_class_tags="grow max-w-screen lg:basis-6/12-gap-3 lg:flex-none " %}
                     {% fill 'title' %}
                         Title info
                     {% endfill %}
                     {% fill 'content' %}
-                        {% component 'form/compact' form / %}
+                        {% component "form.Compact" form / %}
                     {% endfill %}
                 {% endcomponent %}
-                {% component "tile/tile" root_class_tags="flex lg:basis-6/12-gap-3 lg:flex-none" %}
+                {% component "tile.Tile" root_class_tags="flex lg:basis-6/12-gap-3 lg:flex-none" %}
                     {% fill 'title' %}
                         Rights info
                     {% endfill %}
                     {% fill 'content' %}
-                        {% component 'form/compact' rights_form / %}
+                        {% component "form.Compact" rights_form / %}
                     {% endfill %}
                 {% endcomponent %}
 

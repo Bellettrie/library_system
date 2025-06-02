@@ -1,0 +1,74 @@
+{% load static %}
+<div class="navbar bg-belleyellow text-bellered flex flex-row w-full shadow-md shadow-bellered z-[7] height-20">
+    <label for="my-drawer-2" aria-label="open sidebar" class="btn btn-square btn-ghost xl:hidden">
+        <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                class="inline-block h-6 w-6 stroke-current">
+            <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </label>
+    <div class="navbar-start hidden xl:flex xl:ml-5">
+        <ul class="menu menu-horizontal px-1">
+            {% for but in menu_buttons %}
+                {% component 'navbar.Item' but.title but.url location="top" / %}
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="navbar-center justify-center flex-1 xl:flex-none">
+        {% component "navbar.Logo" logo_debug logo_name logo_image %} {% endcomponent %}
+    </div>
+    <div class="navbar-end hidden xl:flex xl:mr-5 gap-5">
+        <ul class="menu menu-horizontal px-1">
+            <form method="get" action="{% url 'works.list' %}">
+                <div class="form-control join join-horizontal">
+                    <input name="q" id="q" type="text" placeholder="Search"
+                           class="input input-bordered w-24 md:w-auto join-item input-md"/>
+                    <button class="btn join-item  btn-md">Search</button>
+                    <a href="{% url 'works.list' %}?advanced=True" class="btn join-item btn-md">...</a>
+                </div>
+            </form>
+
+            <div class="dropdown dropdown-end">
+                {% if  user.is_anonymous %}
+                    <a href="{% url 'login' %}">
+                        <div tabindex="0" role="button" class=" ml-5 btn  btn-circle avatar btn-md">
+                            <div class="ring-primary ring-offset-base-100  w-10 rounded-full ring ring-offset-2">
+                                <img
+                                        alt="Login"
+                                        src="{% static 'images/wurm.png' %}">
+                            </div>
+                        </div>
+                    </a>
+                {% else %}
+                    <div tabindex="0" role="button" class=" ml-5 btn  btn-circle avatar btn-md">
+                        <div class="ring-primary ring-offset-base-100  w-10 rounded-full ring ring-offset-2">
+                            <img
+                                    alt="Personal info"
+                                    src="{% static 'images/wurm.png' %}"/>
+                        </div>
+                    </div>
+                    <ul tabindex="0"
+                        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                        <li>
+                            <a class="justify-between" href="{% url 'members.view' user.member.id 0 %}">
+                                Profile
+                            </a>
+                        </li>
+                        <input type="hidden" id="csrfmiddlewaretoken" name="csrfmiddlewaretoken"
+                               value="{{ csrf_token }}">
+                        <li><a hx-post="{% url 'logout' %}" hx-target="#dialog"
+                               hx-afterRequest="window.location.href='/';"
+                               href="{% url 'logout' %}" hx-include="[name='csrfmiddlewaretoken']">Logout</a></li>
+                    </ul>
+                    </div>
+                {% endif %}
+        </ul>
+    </div>
+</div>
+

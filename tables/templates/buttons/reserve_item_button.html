@@ -1,8 +1,0 @@
-{% if perms.reservations.add_reservation %}
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <a href="{% url "reservations.finalize" item.pk member.pk %}" class="btn btn-primary btn-sm" role="button">Reserve</a>
-        <a href="{% url "reservations.item" item.pk %}" class="btn btn-primary btn-sm" role="button">For Other</a>
-    </div>
-{% else %}
-    <a href="{% url "reservations.finalize" item.pk member.pk %}" class="btn btn-primary btn-sm" role="button">Reserve</a>
-{% endif %}

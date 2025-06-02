@@ -1,90 +1,54 @@
-{% component 'tile/tile' root_class_tags="grow max-w-screen " %}
+{% component 'tile.Tile' root_class_tags="grow max-w-screen " %}
     {% fill 'title' %}Member Info {% endfill %}
     {% fill 'content' %}
-        <table class="table table-striped table-sm" style="width: 100%;">
-            <tr>
-                <th>Name</th>
-                <td>{{ member.name }}</td>
-            </tr>
-            <tr>
-                <th>Nickname</th>
-                <td>{{ member.nickname }}</td>
-            </tr>
-            <tr>
-                <th>Adress</th>
-                <td>{{ member.address_line_one }}</td>
-            </tr>
-            <tr>
-                <th></th>
-                <td>{{ member.address_line_two }}</td>
-            </tr>
-            <tr>
-                <th></th>
-                <td>{{ member.address_line_three }}</td>
-            </tr>
-            <tr>
-                <th>Primary e-mail</th>
-                <td>{{ member.primary_email }} {% if member.primary_email_in_use %} &#10004; {% endif %}</td>
-            </tr>
-            <tr>
-                <th>Secondary e-mail</th>
-                <td>{{ member.secondary_email }}{% if member.secondary_email_in_use %} &#10004; {% endif %}</td>
-            </tr>
-            <tr>
-                <th>Phone #</th>
-                <td>{{ member.phone }}</td>
-            </tr>
-            <tr>
-                <th>Student #</th>
-                <td>{{ member.student_number }}</td>
-            </tr>
-            <tr>
-                <th>Notes</th>
-                <td>{{ member.notes | linebreaksbr }}</td>
-            </tr>
-            {% if member.is_anonymous_user %}
-                <tr>
-                    <th>Anonymous user</th>
-                    <td>Yes</td>
-                </tr>
-            {% else %}
-                {% if member.should_be_anonymised %}
-                    <tr>
-                        <th>Anonymous user</th>
-                        <td>Pending anonymisation</td>
-                    </tr>
+        <dl class="divide-y divide-gray-100">
+             {% component "datarow.Datarow" "Full Name" %}
+                {{ member.name }}
+                {% if member.nickname %}
+                    <br><i>~{{ member.nickname }}</i>
                 {% endif %}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Address" %}
+                {% if member.address_line_one %}{{ member.address_line_one }}{% endif %}
+                {% if member.address_line_two %}<br>{{ member.address_line_two }}{% endif %}
+                {% if member.address_line_three %}<br>{{ member.address_line_three }}{% endif %}
+                {% if member.address_line_four %}<br>{{ member.address_line_four }}{% endif %}
+            {% endcomponent %}
+
+            {% component "datarow.Datarow" "Primary Email" %}
+                {{ member.primary_email }} {% if member.primary_email_in_use %} &#10004; {% endif %}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Secondary Email" %}
+                {{ member.secondary_email }} {% if member.secondary_email_in_use %} &#10004; {% endif %}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Phone Number" %}
+                {{ member.phone }}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Student Number" %}
+                {{ member.student_number }}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Current Membership" %}
+                {{ member.get_current_membership_period.membership_type }}
+                {% if member.is_blacklisted %}BLACKLISTED{% endif %}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Notes" %}
+                {{ member.notes | linebreaksbr }}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "DMS Registered" %}
+                {{ member.dms_registered }}
+            {% endcomponent %}
+            {% if member.is_anonymous_user or member.should_be_anonymised %}
+                {% component "datarow.Datarow" "Data Anonimisation Status" %}
+                    {% if member.is_anonymous_user %}
+                        Was Anonymised
+                    {% else %}
+                        Pending Anymisation
+                    {% endif %}
+                {% endcomponent %}
             {% endif %}
-            <tr>
-                <th>Current Membership Period?</th>
-                <td>{{ member.get_current_membership_period.start_date }}
-                    - {{ member.get_current_membership_period.end_date }}</td>
-            </tr>
-
-            <tr>
-                <th>Currently Member?</th>
-                <td>{{ member.is_currently_member }}</td>
-            </tr>
-            <tr>
-                <th>DMS registered?</th>
-                <td>{{ member.dms_registered }}</td>
-            </tr>
-
-        </table>
+        </dl>
     {% endfill %}
-
-
-    {% fill 'footer' %}
-        {% component 'tile/footer' %}
-            <a href="{% url 'members.view' member.id 0 %}" class="btn btn-sm  join-item">Less
-                details</a>
-            <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-primary join-item">Edit</a>
-            <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-secondary join-item">Browse for
-                member</a>
-            {% if member.should_be_anonymised %}
-                <a href="{% url 'members.anonymise' member.id %}"
-                   class="btn btn-sm btn-outline-primary">Anonimyse</a>
-            {% endif %}
-        {% endcomponent %}
-    {% endfill %}
+{% fill 'footer' %}
+    {% component "members.info.footer" member is_on_details_view=True / %}
+{% endfill %}
 {% endcomponent %}

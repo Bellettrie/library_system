@@ -14,6 +14,7 @@ from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text
 
 from utils.get_query_words import get_query_words
+from utils.wrappers import hx_wrap
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
 from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
     Category
@@ -108,12 +109,8 @@ def create_item_state_hx(request, item_id):
 
 
 @transaction.atomic
-@permission_required('works.change_item')
+@permission_required('works.change_itemstate')
 def create_item_state(request, item_id, hx_enabled=False):
-    templ = 'works/item_state_edit.html'
-    if hx_enabled:
-        templ = 'works/item_state_edit_hx.html'
-
     if request.method == 'POST':
         form = ItemStateCreateForm(request.POST)
         if form.is_valid():
@@ -126,7 +123,8 @@ def create_item_state(request, item_id, hx_enabled=False):
     else:
         form = ItemStateCreateForm()
 
-    return render(request, templ, {'form': form, 'item': get_object_or_404(Item, pk=item_id)})
+    return render(request, 'works/modals/item_state_edit.html',
+                  {'hx_enabled': hx_enabled, 'form': form, 'item': get_object_or_404(Item, pk=item_id)})
 
 
 @transaction.atomic
@@ -189,14 +187,13 @@ def item_history_hx(request, item_id):
 
 
 @transaction.atomic
-@permission_required('works.change_item')
+@permission_required('works.view_itemstate')
 def item_history(request, item_id, hx_enabled=False):
     item = get_object_or_404(Item, pk=item_id)
-    templ = 'works/item_state.html'
-    if hx_enabled:
-        templ = 'works/item_state_hx.html'
+    templ = 'works/modals/item_state.html'
+
     return render(request, templ,
-                  {'item': item,
+                  {'hx_enabled': hx_enabled, 'item': item,
                    'history': ItemState.objects.filter(item=item).order_by('-date_time')})
 
 

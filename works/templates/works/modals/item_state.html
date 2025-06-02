@@ -1,0 +1,28 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
+{% block content %}
+    {% component 'modalform.ModalForm' title="Item State History " form_action="close" %}
+        {% fill "modal_body" %}
+<table>
+        <tr>
+            <th>Time</th>
+            <th>State</th>
+            <th>Reason</th>
+        </tr>
+        {% for hist in history %}
+            <tr>
+                <td>{{ hist.date_time }}</td>
+                <td>{{ hist.get_type_display }}</td>
+                <td>{{ hist.reason }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+            {% if perms.works.change_item %}
+                <a hx-get="{% url 'works.item_state.create' item.pk %}" hx-target="#dialog"
+                   href="{% url 'works.item_state.create' item.pk %}" class="card-link">Change state</a>
+            {% endif %}
+        {% endfill %}
+
+    {% endcomponent %}
+{% endblock %}
