@@ -1,7 +1,5 @@
-
-  {% if request.META.HTTP_HX_REQUEST %}
-      HX !!
+{% if request.META.HTTP_HX_REQUEST %}
     {% include "registration/login_hx.html" %}
-    {% else %}
-    {% include "registration/login_regular.html" %}
-    {% endif %}
+{% else %}
+    {% include "registration/login_page.html" %}
+{% endif %}
