@@ -22,7 +22,7 @@
     {% endcomponent %}
     {% with item.current_lending as cur_lnd %}
         {% component "datarow.Datarow" "State" %}
-            {% if perms.lendings.add_lending %}
+            {% if perms.works.view_itemstate %}
                 <a class="link link-secondary" hx-get="{% url 'works.item.states' item.pk %}" hx-target="#dialog"
                    href="{% url "works.item.states" item.pk %}">{{ item.get_state }}</a>
             {% else %}
@@ -31,7 +31,7 @@
             {% if cur_lnd %}
                 ( Lent out )
             {% endif %}
-            {% if perms.lendings.add_lending %}
+            {% if perms.works.change_itemstate %}
                 <a hx-get="{% url 'works.item_state.create' item.pk %}" hx-target="#dialog"
                    href="{% url "works.item_state.create" item.pk %}" class="btn btn-primary btn-xs join-item">Change
                     state</a>

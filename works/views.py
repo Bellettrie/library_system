@@ -109,7 +109,7 @@ def create_item_state_hx(request, item_id):
 
 
 @transaction.atomic
-@permission_required('works.change_item')
+@permission_required('works.change_itemstate')
 def create_item_state(request, item_id, hx_enabled=False):
     if request.method == 'POST':
         form = ItemStateCreateForm(request.POST)
@@ -187,7 +187,7 @@ def item_history_hx(request, item_id):
 
 
 @transaction.atomic
-@permission_required('works.change_item')
+@permission_required('works.view_itemstate')
 def item_history(request, item_id, hx_enabled=False):
     item = get_object_or_404(Item, pk=item_id)
     templ = 'works/modals/item_state.html'
