@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 from config.menu import MenuItem
 
 register = template.Library()
-
+from django.conf import settings
 
 @register.simple_tag
 def menu_data(location, perms, is_anonymous):
@@ -34,24 +34,24 @@ def menu_data(location, perms, is_anonymous):
 def get_menu_item_list():
     my_menu = []
     my_menu.append(MenuItem('Book Search', reverse('works.list'), None, 'top', [], icon='fa fa-book', anonymous=True))
-    my_menu.append(MenuItem("Our Activities", reverse('named_page', args=('basic', 'member',)), None, 'top', [],
+    my_menu.append(MenuItem("Our Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',)), None, 'top', [],
                             icon='fa fa-user', anonymous=True))
     my_menu.append(
-        MenuItem('Become a member', reverse('named_page', args=('basic', 'member',)), None, 'top', [], anonymous=True,
+        MenuItem('Become a member', reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',)), None, 'top', [], anonymous=True,
                  icon='fa fa-user'))
-    my_menu.append(MenuItem("Become Active", reverse('named_page', args=('basic', 'member',)), None, 'top', [],
+    my_menu.append(MenuItem("Become Active", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',)), None, 'top', [],
                             icon='fa fa-user', anonymous=True))
 
     my_menu.append(
-        MenuItem('Board / Committees', reverse('named_page', args=('basic', 'committees',)), None, 'top-left', [],
+        MenuItem('Board / Committees', reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'committees',)), None, 'top-left', [],
                  icon='fa fa-users'))
     my_menu.append(
         MenuItem('Konnichiwa', reverse('named_page', args=('konnichiwa', 'home',)), None, 'top-left', [], icon=''))
 
-    # my_menu.append(MenuItem('Corona', reverse('named_page', args=('basic', 'corona',)), None, 'top-right', [], icon='fa fa-exclamation-circle'))
+    # my_menu.append(MenuItem('Corona', reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'corona',)), None, 'top-right', [], icon='fa fa-exclamation-circle'))
     my_menu.append(
-        MenuItem('About', reverse('named_page', args=('basic', 'about',)), None, 'top-right', [], icon='fa fa-user'))
-    my_menu.append(MenuItem('Contact', reverse('named_page', args=('basic', 'contact',)), None, 'top-right', [],
+        MenuItem('About', reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'about',)), None, 'top-right', [], icon='fa fa-user'))
+    my_menu.append(MenuItem('Contact', reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'contact',)), None, 'top-right', [],
                             icon='fa fa-info'))
 
     my_menu.append(MenuItem('Login', reverse('login'), None, 'top-right', [], anonymous=True, icon='fa fa-sign-in-alt'))
