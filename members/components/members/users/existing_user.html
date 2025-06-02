@@ -1,4 +1,4 @@
-{% component 'tile/tile' root_class_tags="max-w-screen flex-0 shrink " %}
+{% component 'tile.Tile' root_class_tags="max-w-screen flex-0 shrink " %}
     {% fill 'title' %}Login Credentials{% endfill %}
     {% fill 'content' %}
         Username: {{ member.user }}
@@ -7,7 +7,7 @@
         {% endif %}
     {% endfill %}
     {% fill 'footer' %}
-        {% component 'tile/footer' %}
+        {% component 'tile.Footer' %}
             {% if member.user == user %}
                 <a data-hx-get="{% url 'members.change_self' %}"
                    hx-target="#dialog" href="{% url 'members.change_self' %}"

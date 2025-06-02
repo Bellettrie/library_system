@@ -7,7 +7,7 @@
         <div class="flex flex-col lg:flex-row gap-3">
 
 
-            {% component 'tile/tile' root_class_tags="flex-0" %}
+            {% component 'tile.Tile' root_class_tags="flex-0" %}
                 {% fill 'title' %}Publication Info{% endfill %}
                 {% fill 'content' %}
                     <dl class="divide-y divide-gray-100">
@@ -25,21 +25,21 @@
             {% endcomponent %}
 
             <div class="grow  flex flex-col gap-3 ">
-                {% component "tile/tile" root_class_tags="flex-0" %}
+                {% component "tile.Tile" root_class_tags="flex-0" %}
                     {% fill 'title' %}Creators{% endfill %}
                     {% fill 'content' %}
                         {% for creator in creators %}
-                            {% component "form/smol" creator / %}
+                            {% component "form.Smol" creator / %}
                             <hr>
                         {% endfor %}
 
                     {% endfill %}
                 {% endcomponent %}
-                {% component "tile/tile" root_class_tags="flex-0" %}
+                {% component "tile.Tile" root_class_tags="flex-0" %}
                     {% fill 'title' %}Series{% endfill %}
                     {% fill 'content' %}
                         {% for serie in series %}
-                            {% component "form/smol" serie / %}
+                            {% component "form.Smol" serie / %}
                             <hr>
                         {% endfor %}
                     {% endfill %}

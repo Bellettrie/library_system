@@ -1,8 +1,0 @@
-{% if perms.reservations.add_reservation %}
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" style="color:black;" class="btn btn-primary btn-sm disabled" role="button" data-toggle="tooltip" data-placement="bottom" title="{{ err }}">Reserve</button>
-        <button type="button" style="color:black;" class="btn btn-primary btn-sm disabled" role="button" data-toggle="tooltip" data-placement="bottom" title="{{ err }}">For Other</button>
-    </div>
-{% else %}
-    <button type="button" style="color:black;" class="btn btn-primary btn-sm disabled" role="button" data-toggle="tooltip" data-placement="bottom" title="{{ err }}">Reserve</button>
-{% endif %}

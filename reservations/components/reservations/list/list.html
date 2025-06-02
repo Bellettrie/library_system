@@ -13,7 +13,7 @@
             <th></th>
         </tr>
         {% for reservation in reservations %}
-            {% component 'works.table.row' reservation.item skip_header=skip_header %}
+            {% component 'works.table.Row' reservation.item skip_header=skip_header %}
                 {% fill "extra_rows" %}
                     {% if show_member %}
                         <td><a href="{% url 'members.view' reservation.member.pk 0 %}">{{ reservation.member.name }}</a>

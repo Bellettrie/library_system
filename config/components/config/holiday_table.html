@@ -1,4 +1,4 @@
-{% component 'tile/tile' root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none" %}
+{% component 'tile.Tile' root_class_tags="grow max-w-screen lg:basis-2/5  lg:flex-none" %}
     {% fill 'title' %}Holidays{% endfill %}
     {% fill 'content' %}
         <table class="table">
@@ -19,7 +19,6 @@
                         <a href="{% url 'holiday.edit' holiday.id %}" class="btn">Edit</a>
                         <a href="{% url 'holiday.delete' holiday.id %}" class="btn btn-warning">Delete</a>
                     </td>
-
                 </tr>
             {% empty %}
                 <tr>

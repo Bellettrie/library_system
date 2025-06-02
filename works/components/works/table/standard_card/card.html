@@ -1,0 +1,14 @@
+{% component "works.table.Card" item %}
+    {% fill "infos" %}
+        <div class=" flex  justify-end  join">
+            {% if item.pk %}
+                {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
+                {% with item.current_lending as cur_lnd %}
+                    {% if cur_lnd %}
+                        {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+        </div>
+    {% endfill %}
+{% endcomponent %}

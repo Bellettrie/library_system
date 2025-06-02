@@ -1,46 +1,26 @@
-{% component 'tile/tile' root_class_tags="grow max-w-screen " %}
+{% component 'tile.Tile' root_class_tags="grow max-w-screen " %}
     {% fill 'title' %}{% if member.user == user %}My Info {% else %}Member Info{% endif %} {% endfill %}
     {% fill 'content' %}
         <dl class="divide-y divide-gray-100">
-            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm/6 font-medium text-gray-900">Full name</dt>
-                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.name }}</dd>
-            </div>
-            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm/6 font-medium text-gray-900">Nick Name</dt>
-                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.nick_name }}</dd>
-            </div>
-            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm/6 font-medium text-gray-900">Current Membership</dt>
-                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.get_current_membership_period.membership_type }}
-                    {% if member.is_blacklisted %}BLACKLISTED{% endif %}</dd>
-            </div>
-            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm/6 font-medium text-gray-900">Notes</dt>
-                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.notes | linebreaksbr }}</dd>
-            </div>
-            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm/6 font-medium text-gray-900">DMS Registered?</dt>
-                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.dms_registered }}</dd>
-            </div>
+            {% component "datarow.Datarow" "Full Name" %}
+                {{ member.name }}
+                {% if member.nickname %}
+                    <br><i>~{{ member.nickname }}</i>
+                {% endif %}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Current Membership" %}
+                {{ member.get_current_membership_period.membership_type }}
+                {% if member.is_blacklisted %}BLACKLISTED{% endif %}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Notes" %}
+                {{ member.notes | linebreaksbr }}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "DMS Registered" %}
+                {{ member.dms_registered }}
+            {% endcomponent %}
         </dl>
-        <table class="table table-striped table-sm" style="width: 100%;">
-        </table>
-
-
     {% endfill %}
-
     {% fill 'footer' %}
-        {% component 'tile/footer' %}
-            <a href="{% url 'members.view' member.id 1 %}" class="btn btn-sm join-item">More
-                details</a>
-            <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-primary join-item">Edit</a>
-            <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-secondary join-item">Browse for
-                member</a>
-            {% if member.should_be_anonymised %}
-                <a href="{% url 'members.anonymise' member.id %}"
-                   class="btn btn-sm btn-outline-primary">Anonimyse</a>
-            {% endif %}
-        {% endcomponent %}
+        {% component "members.info.footer" member / %}
     {% endfill %}
 {% endcomponent %}

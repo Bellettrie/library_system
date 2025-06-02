@@ -13,7 +13,7 @@
             <th></th>
         </tr>
         {% for lending in lendings %}
-            {% component 'works.table.row' lending.item skip_header=skip_header %}
+            {% component 'works.table.Row' lending.item skip_header=skip_header %}
                 {% fill "extra_rows" %}
                     {% if show_member %}
                         <td><a class="link link-neutral"  href="{% url 'members.view' lending.member.pk 0 %}">{{ lending.member.name }}</a></td>
@@ -35,8 +35,8 @@
                     </td>
                     <td class="items-center">
                         <div class="join">
-                            {% component 'lendings/buttons/extend' lending user.member perms bonus_classes=btn_bonus_classes / %}
-                            {% component 'lendings/buttons/return' lending user.member perms bonus_classes=btn_bonus_classes / %}
+                            {% component "lendings.buttons.Extend" lending user.member perms bonus_classes=btn_bonus_classes / %}
+                            {% component "lendings.buttons.Return" lending user.member perms bonus_classes=btn_bonus_classes / %}
                         </div>
                     </td>
                 {% endfill %}

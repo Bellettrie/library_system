@@ -3,7 +3,7 @@
     {% component 'modalform.ModalForm' title="Change Password" path=request.path %}
         {% fill "modal_body" %}
             {% csrf_token %}
-            {% component 'form/compact' form / %}
+            {% component "form.Compact" form / %}
 
             Observe that after changing your password you will be logged out and redirected to the homepage.
         {% endfill %}

@@ -6,7 +6,7 @@ from lendings.models import Lending
 from members.models import Member
 
 
-@register("members.current_lendings")
+@register("members.details.LendingHistory")
 class LendingHistory(Component):
     def get_context_data(self, member: Member):
         return {
