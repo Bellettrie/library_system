@@ -11,7 +11,7 @@
                 If you are an employee, use your employee number. If you have provided no employee or student number, please ask the board or an opener to send you an account invitation link.<br>
                 Note that only the digits in the number are used, so don't worry about whether to put a 's', 'm' or other letter in front of the number. Feel free to enter them, they are entirely ignored.
                 <p style="color:red">{{ error }}</p>
-                <form action="#" method="post">
+                <form method="post">
                     {% csrf_token %}
                     {% component "form.Compact" form / %}
                     <input type="submit" value="Request account login" class="btn btn-success btn-wide btn-2xl">
