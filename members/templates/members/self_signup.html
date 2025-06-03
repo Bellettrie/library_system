@@ -10,7 +10,7 @@
                 To register for an account on the Bellettrie website, we need your student-number and email address. If these match the information you provided when registering, you will receive an email with a link you can use to create an account.<br>
                 If you are an employee, use your employee number. If you have provided no employee or student number, please ask the board or an opener to send you an account invitation link.<br>
                 Note that only the digits in the number are used, so don't worry about whether to put a 's', 'm' or other letter in front of the number. Feel free to enter them, they are entirely ignored.
-                <p style="color:red">{{ error }}</p>
+                <br><br><hr><br>
                 <form method="post">
                     {% csrf_token %}
                     {% component "form.Compact" form / %}
