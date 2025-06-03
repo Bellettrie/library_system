@@ -1,12 +1,22 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %}Add user for member: {{ member.name }}{% endblock %}
 {% block content %}
-    This this only adds a user to the member it does not give them any special access or make them an opener.
-    <form method="post">
-        {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <button type="submit">Sign up</button>
-    </form>
+    <div class="max-w-full flex flex-wrap gap-3">
+        {% component "tile.Tile" root_class_tags="grow max-w-screen" %}
+            {% fill 'title' %}
+                {% if by_invite %}
+                	Please choose a username and a password to finish creating your account.
+                {% else %}
+                    This only adds a user to the member, it does not give them any special access or make them an opener.
+                {% endif %}
+            {% endfill %}
+            {% fill "content" %}
+                <form method="post">
+                    {% csrf_token %}
+                    {% component "form.Compact" form / %}
+                    <input type="submit" value="Sign Up" class="btn btn-success btn-wide btn-2xl">
+                </form>
+            {% endfill %}
+        {% endcomponent %}
+    </div>
 {% endblock %}

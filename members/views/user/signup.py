@@ -17,6 +17,7 @@ def signup(request, member_id):
     if invitation_code == "":
         if not request.user.has_perm('auth.add_user'):
             raise PermissionDenied
+        by_invite = False
     else:
         if member.invitation_code != invitation_code:
             return HttpResponse("Wrong invite code")
@@ -24,6 +25,7 @@ def signup(request, member_id):
             return HttpResponse("Member has no valid invitation")
         if member.invitation_code_end_date is None or member.invitation_code_end_date < timezone.now():
             return HttpResponse("Invitation code is no longer valid")
+        by_invite = True
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -39,7 +41,10 @@ def signup(request, member_id):
             instance.save()
             if old_user is not None:
                 old_user.delete()
-            return HttpResponseRedirect(reverse('login'))
+            if by_invite:
+                return HttpResponseRedirect(reverse('login'))
+            else:
+                return HttpResponseRedirect(reverse('members.view', args=(member_id, 0,)))
     else:
         form = UserCreationForm()
-    return render(request, 'users/create.html', {'form': form, 'member': member})
+    return render(request, 'users/create.html', {'form': form, 'member': member, 'by_invite': by_invite})
