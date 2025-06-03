@@ -26,8 +26,7 @@ def self_signup(request):
         form = SignupForm(request.POST)
 
         if not form.is_valid():
-            return render(request, 'members/self_signup.html',
-                          {"form": form, "error": "Incorrect form input, you may not have filled in all the fields."})
+            return render(request, 'members/self_signup.html', {"form": form})
 
         # Retrieve incomplete member object as supplied by form
         member_form_data = form.save(commit=False)
@@ -36,18 +35,17 @@ def self_signup(request):
         try:
             member = get_object_or_404(Member, primary_email=member_form_data.primary_email.strip())
         except Http404:
-            return render(request, 'members/self_signup.html',
-                          {"form": form, "error": "Incorrect form input, no such email address."})
+            form.add_error(None, "Email address and/or student number is incorrect.")
+            return render(request, 'members/self_signup.html', {"form": form})
 
         # Verify that the member data is consistent
         if clean(member.student_number) != clean(member_form_data.student_number):
-            return render(request, 'members/self_signup.html',
-                          {"form": form, "error": "Incorrect form input, student number does not match."})
+            form.add_error(None, "Email address and/or student number is incorrect.")
+            return render(request, 'members/self_signup.html', {"form": form})
         if member.user and (member.user.is_staff or member.user.is_superuser):
-            return render(request, 'members/self_signup.html',
-                          {"form": form, "error": """Due to the permissions you have, resetting your account this
-                                                   way would be a security risk. Please contact the web committee for
-                                                   help."""})
+            form.add_error(None, """Due to the permissions you have, resetting your account this way would be
+                                                a security risk. Please contact the web committee for help.""")
+            return render(request, 'members/self_signup.html', {"form": form})
 
         handle_member_invite(member)
 
