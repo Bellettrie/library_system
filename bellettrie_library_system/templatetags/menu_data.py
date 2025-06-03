@@ -4,11 +4,12 @@ from django import template
 from django.urls import reverse
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+from django.conf import settings
 
 from config.menu import MenuItem
 
+
 register = template.Library()
-from django.conf import settings
 
 
 @register.simple_tag
