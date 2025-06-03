@@ -262,9 +262,9 @@ def new_named_page(request, page_name):
         edit_form = EditForm(request.POST)
         if form.is_valid() and rights_form.is_valid() and edit_form.is_valid():
             instance = form.save(commit=False)
-            rights_form.instance=instance
+            rights_form.instance = instance
             rights_form.save()
-            edit_form.instance=instance
+            edit_form.instance = instance
             edit_form.save()
             return HttpResponseRedirect(reverse('named_page', args=(instance.group.name, instance.name)))
         else:
