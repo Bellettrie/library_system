@@ -52,5 +52,5 @@ def self_signup(request):
         return render(request, 'members/self_signup_done.html')
     else:
         # New empty form
-        form = SignupForm(request.POST)
+        form = SignupForm()
         return render(request, 'members/self_signup.html', {"form": form})
