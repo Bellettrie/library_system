@@ -23,6 +23,11 @@
                     {% endfor %}
                 </table>
             {% endfill %}
+            {% fill 'footer' %}
+                {% component 'tile.Footer' %}
+                    <a href="{% url 'members.new' %}" class="btn btn-sm btn-primary join-item">New member</a>
+                {% endcomponent %}
+            {% endfill %}
         {% endcomponent %}
 
     </div>
