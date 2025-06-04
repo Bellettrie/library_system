@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}Add user for member: {{ member.name }}{% endblock %}
 {% block content %}
-    <div class="max-w-full flex flex-wrap gap-3">
-        {% component "tile.Tile" root_class_tags="grow max-w-screen" %}
+    <div class="flex justify-center">
+        {% component "tile.Tile" root_class_tags="max-w-lg" with_standard_flex=False %}
             {% fill 'title' %}
                 {% if by_invite %}
                 	Please choose a username and a password to finish creating your account.
