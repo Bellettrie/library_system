@@ -25,6 +25,3 @@ class Sidebar(Component):
             "logo_name": settings.LIBRARY_NAME,
             "logo_image": settings.LIBRARY_IMAGE_URL,
         }
-
-    class Media:
-        css = "navbar/navbar.css"
