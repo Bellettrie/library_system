@@ -48,9 +48,6 @@ class Navbar(Component):
             "logo_image": settings.LIBRARY_IMAGE_URL,
         }
 
-    class Media:
-        css = "navbar/navbar.css"
-
 
 @register("navbar.Logo")
 class Logo(Component):
@@ -62,12 +59,3 @@ class Logo(Component):
         }
 
     template_name = "navbar/logo.html"
-    css: types.css = """
-.rotate4{ /*upside down*/
-    -webkit-transform:rotate(180deg);
-    -moz-transform:rotate(180deg);
-    -o-transform:rotate(180deg);
-    -ms-transform:rotate(180deg);
-    transform:rotate(180deg);
-}
-"""
