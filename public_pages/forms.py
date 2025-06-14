@@ -54,7 +54,6 @@ class EditForm(ModelForm):
         model = PublicPage
         fields = [
             'text',
-
         ]
 
         widgets = {'text': PageTextWidget}
