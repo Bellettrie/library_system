@@ -1,0 +1,9 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
+{% block title %}Reserved!{% endblock %}
+{% block content %}
+    {% component 'modalform.ModalForm' title='Item reserved successfully' path=request.path form_action="close" %}
+        <a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a> has reserved {{ item.publication.title }}.
+        <br/>
+    {% endcomponent %}
+{% endblock %}
