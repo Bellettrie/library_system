@@ -1,12 +1,6 @@
-from typing import Optional
-
-from django.template.context import Context
-
-from django.urls import reverse
-from django_components import Component, register, types
+from django_components import Component, register
 
 from bellettrie_library_system import settings
-from bellettrie_library_system.base_settings import GET_MENU
 
 
 @register("nav.sidebar.Sidebar")
