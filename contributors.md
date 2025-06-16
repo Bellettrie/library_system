@@ -19,4 +19,5 @@ We hope that we will not have to further specify what being a nice person is.
 - Kylian
 - Remco
 - Lu
-- Nikolas
+- Nikolaos
+
