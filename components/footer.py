@@ -9,4 +9,5 @@ class Footer(Component):
         return {
             "standard_page_group": settings.STANDARD_PAGE_GROUP,
         }
+
     template_name = "footer.html"
