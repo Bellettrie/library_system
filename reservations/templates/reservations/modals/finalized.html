@@ -1,0 +1,7 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
+{% block title %}Reserved!{% endblock %}
+{% block content %}
+
+    <meta http-equiv="refresh" content="0;URL='{% url 'work.view' item.publication.id  %}'">
+{% endblock %}
