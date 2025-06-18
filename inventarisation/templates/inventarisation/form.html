@@ -12,23 +12,25 @@
                 <th width="60px" style="font-size:10px">State</th>
                 <th style="font-size:10px">Selector</th>
             </tr>
-            {% for item in group %}
+            {% for row in rows %}
+                {%with row.item as item %}
                 <tr>
                     <td style="font-size:10px">{{ item.publication.get_authors.0.creator.name|truncatechars:20 }}</td>
                     <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
                     <td style="font-size:10px">{{ item.display_code }}</td>
-                    <td style="font-size:10px">{{  prev_states|get_value_from_dict:item }}{%  if item.is_lent_out %} (LENT){% endif %}</td>
+                    <td style="font-size:10px">{{  row.prev_state }}{%  if item.is_lent_out %} (LENT){% endif %}</td>
 
                     <td style="font-size:10px">
                         <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
-                               {% if defaults|get_value_from_dict:item == "AVAILABLE" %}checked{% else %}autofocus{% endif %}>
+                               {% if row.state == "yes"  %}checked{% else %}autofocus{% endif %}>
                         <label for="yes">Yes</label>
-                        <input type="radio" id="no" name="seen{{ item.pk }}" value="no" {% if defaults|get_value_from_dict:item == "MISSING" %}checked{% endif %}>
+                        <input type="radio" id="no" name="seen{{ item.pk }}" value="no" {% if row.state == "no" %}checked{% endif %}>
                         <label for="no">No</label>
                         <input type="radio" id="maybe" name="seen{{ item.pk }}" value="maybe">
                         <label for="maybe">Skip</label>
                     </td>
                 </tr>
+                {% endwith %}
             {% endfor %}
         </table>
         <input type="submit" name="next" value="Save and Next" class="btn btn-success"><input type="submit" value="Save" class="btn btn-primary">

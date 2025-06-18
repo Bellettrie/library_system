@@ -9,7 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView
 
 from inventarisation.models import Inventarisation
-from works.models import Item, ItemState, Location
+from works.models import Item, ItemState, Location, available_states
 
 
 @permission_required('inventarisation.view_inventarisation')
@@ -47,9 +47,19 @@ class InventarisationCreate(PermissionRequiredMixin, CreateView):
     success_url = reverse_lazy('inventarisation.list')
 
 
+
+
 @transaction.atomic
 @permission_required('inventarisation.change_inventarisation')
 def inventarisation_form(request, inventarisation_id, page_id):
+
+    # Scoped this class here, since it should not be used elsewhere.
+    class InventarisationRow:
+        def __init__(self, item, state, prev_state):
+            self.item = item
+            self.state = state
+            self.prev_state = prev_state
+
     inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     groups = get_groups(inventarisation)
     page_id = max(0, min(len(groups) - 1, int(page_id)))
@@ -84,7 +94,8 @@ def inventarisation_form(request, inventarisation_id, page_id):
                         else:
                             # Otherwise, we remove pre-existing lines that aren't prev, and then create a new one
                             ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
-                            ItemState.objects.create(item=item, type=new_state, inventarisation=inventarisation, reason=description)
+                            ItemState.objects.create(item=item, type=new_state, inventarisation=inventarisation,
+                                                     reason=description)
                     else:
                         # If skip is pressed, remove all rows for this item in this
                         ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
@@ -94,18 +105,29 @@ def inventarisation_form(request, inventarisation_id, page_id):
         if request.POST.get("next"):
             return get_inventarisation_next(request, inventarisation_id, page_id)
 
-    pre_filled = {}
-    prev_states = {}
+    rows = []
     for item in group:
+        prev = item.get_most_recent_state_not_this_inventarisation(inventarisation)
         try:
-            pre_filled[item] = ItemState.objects.get(item=item, inventarisation=inventarisation).type
-
+            state_in_inventarisation = ItemState.objects.get(item=item, inventarisation=inventarisation)
+            if state_in_inventarisation.type in available_states:
+                rows.append(InventarisationRow(item, "yes", prev))
+            else:
+                rows.append(InventarisationRow(item, "no", prev))
         except ItemState.DoesNotExist:
-            pass
-        prev_states[item] = item.get_most_recent_state_not_this_inventarisation(inventarisation)
-    return render(request, "inventarisation/form.html",
-                  {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled,
-                   "counts": len(groups), "prev_states": prev_states})
+            rows.append(InventarisationRow(item, "skip", prev))
+
+    return render(
+        request,
+        "inventarisation/form.html",
+        {
+            'page_id': page_id,
+            'inventarisation': inventarisation,
+            'group': group,
+            "rows": rows,
+            "counts": len(groups)
+        }
+    )
 
 
 def get_next_state_by_action(action, prev_state) -> (str, str):
