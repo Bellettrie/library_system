@@ -5,16 +5,19 @@
                 <a class="btn btn-disabled btn-xs btn-primary join-item">Reserve</a>
             </div>
         {% else %}
-            <a href="{% url "reservations.finalize" item.pk member.pk %}"  class="btn btn-xs btn-primary  join-item">Reserve</a>
+            <a href="{% url "reservations.finalize" item.pk member.pk %}"
+               data-hx-get="{% url 'reservations.finalize' item.pk member.pk %}"
+               hx-target="#dialog"
+               class="btn btn-xs btn-primary  join-item">Reserve</a>
         {% endif %}
     {% endif %}
     {% if is_visible %}
         {% if for_other_reason %}
             <div class="tooltip" data-tip="{{ for_other_reason }}">
-                <a  class="btn btn-xs btn-secondary join-item btn-disabled">For Others</a>
+                <a class="btn btn-xs btn-secondary join-item btn-disabled">For Others</a>
             </div>
         {% else %}
-            <a  href="{% url "reservations.item" item.pk %}"  class="btn btn-xs btn-secondary join-item">For Others</a>
+            <a href="{% url "reservations.item" item.pk %}" class="btn btn-xs btn-secondary join-item">For Others</a>
         {% endif %}
     {% endif %}
 </div>
