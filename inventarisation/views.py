@@ -47,12 +47,9 @@ class InventarisationCreate(PermissionRequiredMixin, CreateView):
     success_url = reverse_lazy('inventarisation.list')
 
 
-
-
 @transaction.atomic
 @permission_required('inventarisation.change_inventarisation')
 def inventarisation_form(request, inventarisation_id, page_id):
-
     # Scoped this class here, since it should not be used elsewhere.
     class InventarisationRow:
         def __init__(self, item, state, prev_state):
