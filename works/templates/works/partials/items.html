@@ -1,12 +1,31 @@
-<div class="card col col-12 col-xl-12">
-    <div class="card-body d-flex flex-column" style="overflow:auto;">
-        <div class="card-title">Items for this publication</div>
-        <div>
-            {% detailed_items object.get_items request.user.member perms %}
-        </div>
+{% component 'tile.Tile' root_class_tags="" %}
+    {% fill 'title' %}Items for this publication{% endfill %}
+    {% fill 'content' %}
+        {% with object.get_items as items %}
+            {% if items.count == 1 %}
+                {% component "works.item_datalist.Item" items.0 perms / %}
+            {% elif items.count == 0 %}
+                <i>No Items</i>
+            {% else %}
+                <div role="tablist" class="tabs tabs-lift">
+                    {% for item in items %}
+                        <input {% if forloop.first %}checked="checked"{% endif %} type="radio" name="tab_list"
+                               class="tab" role="tab"
+                               aria-label="{{ item.book_code }}"/>
+                        <div class="tab-content bg-base-100 border-base-300 p-10">
+                            {% component "works.item_datalist.Item" item perms / %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+    {% endfill %}
+    {% fill 'footer' %}
         {% if perms.works.change_item %}
-            <a href="{% url 'works.item.new' publication.pk %}" class="align-self-end card-link"
-               style="margin-top: auto;">Add new Item</a>
+            {% component 'tile.Footer' %}
+                <a href="{% url 'works.item.new' publication.pk %}" class="btn btn-sm btn-primary join-item">Add new Item</a>
+            {% endcomponent %}
         {% endif %}
-    </div>
-</div>
+    {% endfill %}
+{% endcomponent %}

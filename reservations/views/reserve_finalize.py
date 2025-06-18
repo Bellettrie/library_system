@@ -1,9 +1,6 @@
-from datetime import datetime, timedelta
-
-from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 
 from lendings.procedures.get_end_date import get_end_date
 from mail.models import mail_member
@@ -15,7 +12,7 @@ from utils.time import get_today
 
 
 @transaction.atomic
-def reserve_finalize(request, work_id, member_id):
+def reserve_finalize(request, work_id, member_id, hx_enabled=False):
     if not request.user.has_perm('reservations.add_reservation'):
         if not hasattr(request.user, 'member'):
             raise PermissionDenied
@@ -29,15 +26,16 @@ def reserve_finalize(request, work_id, member_id):
             new_reservation(item, member, request.user.member, get_today())
             if item.is_lent_out():
                 mail_member('mails/book_just_got_reserved.tpl',
-                            {'member': item.current_lending().member, 'item': item},
-                            item.current_lending().member,
+                            {'hx_enabled': hx_enabled, 'member': item.current_lending_or_404().member, 'item': item},
+                            item.current_lending_or_404().member,
                             True)
 
-            return render(request, 'reservations/finalized.html',
-                          {'member': member, 'item': item})
+            return render(request, 'reservations/modals/finalized.html',
+                          {'hx_enabled': hx_enabled, 'member': member, 'item': item})
         except ReservationImpossibleException as error:
-            return render(request, 'reservations/cannot_reserve.html',
-                          {'member': member, 'item': item, 'error': error})
+            return render(request, 'reservations/modals/cannot_reserve.html',
+                          {'hx_enabled': hx_enabled, 'member': member, 'item': item, 'error': error})
 
-    return render(request, 'reservations/finalize.html',
-                  {'member': member, 'item': item, "date": get_end_date(item, member, get_today())})
+    return render(request, 'reservations/modals/finalize.html',
+                  {'hx_enabled': hx_enabled, 'member': member, 'item': item,
+                   "date": get_end_date(item, member, get_today())})

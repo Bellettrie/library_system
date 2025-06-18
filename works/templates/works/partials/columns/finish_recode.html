@@ -1,0 +1,1 @@
+{% if perms.works.change_item %}<a hx-get="{% url 'recode.finish' recode.pk %}" hx-target="#dialog" href="{% url "recode.finish" recode.pk %}" class="btn btn-primary btn-xs">Needs Recode</a>{% endif %}

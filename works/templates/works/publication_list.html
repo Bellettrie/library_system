@@ -1,36 +1,95 @@
 {% extends "base.html" %}
-{% load publication_list_to_items %}
+{% load publication_list_to_item_rows %}
 {#{% load books_table %}#}
-{% block title %}Book Search{% endblock %}
-{% block content %}
-    {% if advanced %}
-            {% include 'works/work_search_field_advanced.html' %}
-        <a href="{% url 'works.list' %}">Simple Search</a>
-        {% else %}
-    {% include 'works/work_search_field_simple.html' %}
-        <a href="?advanced=True">Advanced Search</a>
-    {% endif %}
-    {% include 'pagination.html' %}
-    <hr>
-    {% autoescape off %}
-        {% works_table object_list perms %}
-    {% endautoescape %}
 
-    <h3>How to use Search</h3>
-    The search function tries to match the search query to words in the title of books, series, as well as the names of
-    authors. It also matches on parts of books.<br/>
-    It will display all books that match to <b>all</b> words in the query. <br/>
-    There are two special cases to keep in mind:<br>
-    <b>Book codes:</b> The system will search for book codes, but only if it's fed only one word. So do not put spaces in the
-    query if you want to find something. <br/>
-    It will try to complete though, so, for instance, SF-T-37 will find all Tolkien books, and possibly some more.<br/>
-    The system supports the asterisk at the beginning and end of words to state that the word may be longer on this side.<br>
-    However, if you don't know how to spell "Hitchhiker's Guide to the Galaxy",
-    a simple "Hitch*" will suffice.<br/>
-    Note that other regex commands are not supported. <br>
-    {% if advanced %}
-    In advanced search: press ctrl-> click to remove items from the multi-selects{% endif %}
-    <hr>
-    <a class="btn btn-info" href="{% url 'series.list' %}">Find Series</a>
-        <a class="btn btn-info" href="{% url 'creator.list' %}">Find Authors</a>
+{% block title %}        {% if advanced %}Advanced {% else %} Book {% endif %}Search
+
+{% endblock %}
+{% block content %}
+    <div class="flex flex-col gap-3">
+        {% if advanced %}
+            {% include 'works/work_search_field_advanced.html' %}
+        {% else %}
+            {% include 'works/work_search_field_simple.html' %}
+        {% endif %}
+        <div class="flex-1 w-full">
+            <div class="justify-center items-center w-full">
+                {% include 'pagination.html' %}
+            </div>
+        </div>
+
+
+        {% get_item_rows_for_publications object_list as items %}
+        <div class="card  p-3 hidden lg:block bg-base-100 ">
+            <div class="rounded-box ">
+                <table class="table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols rounded-box">
+                    <tr>
+                        {% if not skip_header %}
+                            <th></th>
+                        {% endif %}
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Infos</th>
+                        <th></th>
+                    </tr>
+                    {% for itemRow in items %}
+                        {% component 'works.table.Row' itemRow.get_item skip_header=skip_header %}
+                            {% fill "extra_rows" %}
+                                <td>
+                                    {% if  itemRow.is_item %}
+                                        {% if itemRow.get_item.get_state != "AVAILABLE" %}
+                                            [{{ itemRow.get_item.get_state }}]
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td class="join">
+                                    {% if  itemRow.is_item %}
+                                        {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
+                                        {% with itemRow.get_item.current_lending as cur_lnd %}
+                                            {% if cur_lnd %}
+                                                {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endif %}
+                                </td>
+                                <td>{{ itemRow.get_item.titleorder }}</td>
+                            {% endfill %}
+
+                        {% endcomponent %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="lg:hidden flex flex-col gap-5 m-3">
+            {% for item in items %}
+                {% component 'works.table.standard_card.Card' item.get_item perms / %}
+            {% endfor %}
+        </div>
+        <div class="flex-1 w-full">
+            <div class="justify-center items-center w-full">
+                {% include 'pagination.html' %}
+            </div>
+        </div>
+    </div>
+
+    {% component 'help_bar' %}
+        The search function tries to match the search query to words in the title of books, series, as well as the names
+        of
+        authors. It also matches on parts of books.<br/>
+        It will display all books that match to <b>all</b> words in the query. <br/>
+        There are two special cases to keep in mind:<br>
+        <b>Book codes:</b> The system will search for book codes, but only if it's fed only one word. So do not put
+        spaces in the
+        query if you want to find something. <br/>
+        It will try to complete though, so, for instance, SF-T-37 will find all Tolkien books, and possibly some more.
+        <br/>
+        The system supports the asterisk at the beginning and end of words to state that the word may be longer on this
+        side.<br>
+        For instance, if you don't know how to spell "Hitchhiker's Guide to the Galaxy",
+        a simple "Hitch*" will suffice.<br/>
+        Note that other regex commands are not supported. <br>
+        {% if advanced %}
+            In advanced search: press ctrl-> click to remove items from the multi-selects{% endif %}
+    {% endcomponent %}
+
 {% endblock %}

@@ -1,33 +1,44 @@
-<form action="/works/search" method="get">
-    <label for="Query">Query: </label>
-    <table>
-        <tr>
-            <td><label for="q">Any Field</label></td>
-            <td><input id="q" type="text" name="q" value="{{ request.GET.q }}"></td>
-        </tr>
-        <tr>
-            <td><label for="q_title">Title Field</label></td>
-            <td><input id="q_title" type="text" name="q_title" value="{{ request.GET.q_title }}"></td>
-        </tr>
-        <tr>
-            <td><label for="q_author">Author Field</label></td>
-            <td><input id="q_author" type="text" name="q_author" value="{{ request.GET.q_author }}"></td>
-        </tr>
-        <tr>
-            <td><label for="q_series">Series Field</label></td>
-            <td><input id="q_series" type="text" name="q_series" value="{{ request.GET.q_series }}"></td>
-        </tr>
-            <tr>
-            <td><label for="q_bookcode">Code Field</label></td>
-            <td><input id="q_bookcode" type="text" name="q_bookcode" value="{{ request.GET.q_bookcode }}"></td>
-        </tr>
-        </tr>
-        <tr>
-            <td>
-                <label for="q_states">States Field</label>
-            </td>
-            <td>
-                <select name="q_states" id="q_states" class="multiselect" multiple="multiple">
+{% component 'search.searchbox' selected_tag="advanced" %}
+    <form action="/works/search" method="get">
+        <label for="Query">Query: </label>
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Any Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1" id="q"
+                                                                     type="text" name="q"
+                                                                     value="{{ request.GET.q }}"></dd>
+        </div>
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Title Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
+                                                                     id="q_title" type="text" name="q_title"
+                                                                     value="{{ request.GET.q_title }}"></dd>
+        </div>
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Author Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
+                                                                     id="q_author" type="text" name="q_author"
+                                                                     value="{{ request.GET.q_author }}"></dd>
+        </div>
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Series Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
+                                                                     id="q_series" type="text" name="q_series"
+                                                                     value="{{ request.GET.q_series }}"></dd>
+        </div>
+
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Book Code Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input input-sm border-1"
+                                                                     id="q_bookcode" type="text"
+                                                                     name="q_bookcode"
+                                                                     value="{{ request.GET.q_bookcode }}"></dd>
+        </div>
+
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Book State Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0">
+                <select class="select border-1" name="q_states" id="q_states" class="multiselect"
+                        multiple="multiple">
                     {% for state in states %}
                         {% if state.0 != "AVAILABLE" %}
                             <option value="{{ state.0 }}"
@@ -36,26 +47,25 @@
 
                     {% endfor %}
                 </select>
+            </dd>
+        </div>
+        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Category Field</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><select class="select border-1"
+                                                                      name="q_categories" id="q_categories"
+                                                                      class="multiselect" multiple="multiple">
+                {% for cat in categories %}
 
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="q_categories">Categories Field</label>
-            </td>
-            <td>
-                <select name="q_categories" id="q_categories" class="multiselect" multiple="multiple">
-                    {% for cat in categories %}
+                    <option value="{{ cat.pk }}"
+                            {% if cat.pk in selected_categories %}SELECTED {% endif %}>{{ cat.name }}</option>
 
-                        <option value="{{ cat.pk }}"
-                                {% if cat.pk in selected_categories %}SELECTED {% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select></dd>
+        </div>
 
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
-    </table>
 
-    <input type="hidden" name="advanced" value="True">
-    <input type="submit" value="Search">
-</form>
+        <input type="hidden" name="advanced" value="True">
+        <input class="btn btn-primary" type="submit" value="Search">
+    </form>
+{% endcomponent %}
+

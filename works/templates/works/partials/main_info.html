@@ -1,77 +1,52 @@
-<div class="card col col-12 {% if tbl or perms.works.change_work %}col-xl-5{% endif %}">
-    <div class="card-body d-flex flex-column">
-        <div class="card-title">Publication Details</div>
+{% component 'tile.Tile' root_class_tags="lg:basis-64" %}
+    {% fill 'title' %}Publication Details{% endfill %}
+    {% fill 'content' %}
+        <dl class="w-full divide-y divide-gray-100">
+            {% component "datarow.Datarow" "Title" %}
+                {% if object.title %}{{ object.get_title }} {% if object.sub_title %}<br/>
+                    <i>-{{ object.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+            {% endcomponent %}
+            {% if object.language %}
+                {% component "datarow.Datarow" "Language" %}
+                    {{ object.language }}
+                {% endcomponent %}
+            {% endif %}
+            {% if object.original_title or object.original_subtitle %}
+                {% component "datarow.Datarow" "Original Title" %}
+                    {% if object.get_original_title %}{{ object.get_original_title }}
+                        {% if object.original_subtitle %}<br/>
+                            <i>-{{ object.original_subtitle }}</i>{% endif %}{% else %}
+                        <i>No Title</i> {% endif %}
+                {% endcomponent %}
+            {% endif %}
+            {% component "datarow.Datarow" "Authors" %}
+                {% for author in object.get_authors %}{% include 'creators/single_line_description.html' %}<br>
+                {% endfor %}
+            {% endcomponent %}
 
-        <div>
-            <table class="table table-striped" style="width: 100%;">
-                <tr>
-                    <th>Title</th>
+            {% if object.comment %}
+                {% component "datarow.Datarow" "Comments" %}
+                    {{ object.comment }}
+                {% endcomponent %}
+            {% endif %}
+            {% if series %}
+                {% component "datarow.Datarow" "Series" %}
+                    {% for series in  series %}
+                        {% include 'series/part_of_series_name.html' %}{% if not forloop.last %}<br>{% endif %}
+                    {% endfor %}
+                {% endcomponent %}
 
-                    <td>
-                        {% if object.title %}{{ object.get_title }} {% if object.sub_title %}<br/>
-                            <i>-{{ object.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
-                    </td>
-                </tr>
-                {% if object.language %}
-                    <tr>
-                        <th>
-                            Language:
-                        </th>
-                        <td>
-                            {{ object.language }}
-                        </td>
-                    </tr>
-                {% endif %}
+            {% endif %}
+        </dl>
 
 
-                {% if object.original_title or object.original_subtitle %}
-                    <tr>
-                        <th>Original Title</th>
-                        <td>
-                            {% if object.get_original_title %}{{ object.get_original_title }}
-                                {% if object.original_subtitle %}<br/>
-                                    <i>-{{ object.original_subtitle }}</i>{% endif %}{% else %}
-                                <i>No Title</i> {% endif %}
-                        </td>
-                    </tr>
-                {% endif %}
-                {% if object.original_language %}
-                    <tr>
-                        <th>
-                            Original Language:
-                        </th>
-                        <td>
-                            {{ object.original_language }}
-                        </td>
-                    </tr>
-                {% endif %}
-                <tr>
-                    <th>Authors</th>
-                    <td>{% for author in object.get_authors %}{% include 'creators/single_line_description.html' %}<br>
-                    {% endfor %}</td>
-                </tr>
-                {% if object.comment %}
-                    <tr>
-                        <th>Comment</th>
-                        <td>{{ object.comment }}</td>
-                    </tr>
-                {% endif %}
-                {% if series %}
-                    <tr>
-                        <th>Series</th>
-                        <td>  {% for series in  series %}
-
-                            {% include 'series/part_of_series_name.html' %}{% if not forloop.last %}<br>{% endif %}
-                        {% endfor %}</td>
-                    </tr>
-                {% endif %}
-            </table>
-        </div>
+    {% endfill %}
+    {% fill 'footer' %}
         {% if perms.works.change_work %}
-            <div class=" d-flex flex-column"></div>
-            <a class="align-self-end card-link" style="margin-top: auto;"
-               href="{% url 'works.publication.edit' object.pk %}">Edit publication</a><br>
-
+            {% component 'tile.Footer' %}
+                <a class="btn btn-sm  btn-primary join-item"
+                   href="{% url 'works.publication.edit' object.pk %}">Edit publication</a>
+            {% endcomponent %}
         {% endif %}
-    </div>
-</div>
+    {% endfill %}
+{% endcomponent %}

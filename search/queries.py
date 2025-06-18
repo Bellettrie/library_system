@@ -1,110 +1,57 @@
 from django.db.models import Q
 
-from search.models import get_words_in_str
-from works.models import Publication, Category
 
-
-class SearchOp:
-    def exec(self):
-        return Publication.objects.none()
-
-
-class BaseSearchQuery(SearchOp):
-    def __init__(self, sentence):
-        self.words = get_words_in_str(sentence)
-
-    def exec(self):
-        if len(self.words) == 0:
-            return Publication.objects.none()
-        res = None
-        for word in self.words:
-            if res is None:
-                res = Publication.objects
-            if word.startswith("*"):
-                res = res.filter(wordmatch__word__word__endswith=word.replace("*", ""))
-            elif word.endswith("*"):
-                res = res.filter(wordmatch__word__word__startswith=word.replace("*", ""))
-            else:
-                res = res.filter(wordmatch__word__word=word)
-        return res
-
-
-class AuthorSearchQuery(SearchOp):
-    def __init__(self, sentence):
-        self.words = get_words_in_str(sentence)
-
-    def exec(self):
-        if len(self.words) == 0:
-            return Publication.objects.none()
-        res = None
-        for word in self.words:
-            if res is None:
-                res = Publication.objects
-            if word.startswith("*"):
-                res = res.filter(Q(wordmatch__word__word__endswith=word.replace("*", "")) & Q(wordmatch__type="AUTHOR"))
-            elif word.endswith("*"):
-                res = res.filter(
-                    Q(wordmatch__word__word__startswith=word.replace("*", "")) & Q(wordmatch__type="AUTHOR"))
-            else:
-                res = res.filter(Q(wordmatch__word__word=word) & Q(wordmatch__type="AUTHOR"))
-        return res
-
-
-class SeriesSearchQuery(SearchOp):
-    def __init__(self, sentence):
-        self.words = get_words_in_str(sentence)
-
-    def exec(self):
-        if len(self.words) == 0:
-            return Publication.objects.none()
-        res = None
-        for word in self.words:
-            if res is None:
-                res = Publication.objects
-            if word.startswith("*"):
-                res = res.filter(Q(wordmatch__word__word__endswith=word.replace("*", "")) & Q(wordmatch__type="SERIES"))
-            elif word.endswith("*"):
-                res = res.filter(
-                    Q(wordmatch__word__word__startswith=word.replace("*", "")) & Q(wordmatch__type="SERIES"))
-            else:
-                res = res.filter(Q(wordmatch__word__word=word) & Q(wordmatch__type="SERIES"))
-        return res
-
-
-class TitleSearchQuery(SearchOp):
-    def __init__(self, sentence):
-        self.words = get_words_in_str(sentence)
-
-    def exec(self):
-        if len(self.words) == 0:
-            return Publication.objects.none()
-        res = None
-        for word in self.words:
-            if res is None:
-                res = Publication.objects
-            if word.startswith("*"):
-                res = res.filter(Q(wordmatch__word__word__endswith=word.replace("*", "")) & Q(
-                    Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
-            elif word.endswith("*"):
-                res = res.filter(Q(wordmatch__word__word__startswith=word.replace("*", "")) & Q(
-                    Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
-            else:
-                res = res.filter(
-                    Q(wordmatch__word__word=word) & Q(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
-        return res
-
-
-def search_state(states):
-    # Shortcut, because 'available' is not a state on which we can search.
-    if "AVAILABLE" in states:
+def filter_basic_text_get_q(words):
+    if len(words) == 0:
         return None
+    queries = []
+    for word in words:
+        if word.startswith("*"):
+            next_query_part = Q(wordmatch__word__word__endswith=word.replace("*", ""))
+
+        elif word.endswith("*"):
+            next_query_part = Q(wordmatch__word__word__startswith=word.replace("*", ""))
+        else:
+            next_query_part = Q(wordmatch__word__word=word)
+        queries = queries + [next_query_part]
+    return queries
+
+
+def filter_basic_text(query, words):
+    for q in filter_basic_text_get_q(words):
+        query = query.filter(q)
+    return query
+
+
+def filter_author_text(query, words):
+    for q in filter_basic_text_get_q(words):
+        query = query.filter(q)
+    return query.filter(wordmatch__type="AUTHOR")
+
+
+def filter_series_text(query, words):
+    for q in filter_basic_text_get_q(words):
+        query = query.filter(q)
+    return query.filter(wordmatch__type="SERIES")
+
+
+def filter_title_text(query, words):
+    for q in filter_basic_text_get_q(words):
+        query = query.filter(q)
+    return query.filter(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK"))
+
+
+def filter_state(q, states):
+    # Shortcut, because 'available' is not a state on which we can search.
+    if "AVAILABLE" in states or len(states) == 0:
+        return q
     # We create a query to (at-once) select all works that have an item in a specific state.
     # Therefore we start by joining works with items
     # And then we join the item on it's most recent itemstate,
     # by using an inner query to fetch the maximum of the itemstate's datetimes.
     query = """
-SELECT
-    works_work.id as work_ptr_id, works_work.id,  works_work.title, works_work.listed_author
+works_work.id IN (SELECT
+    works_work.id
 FROM
     works_work
 INNER JOIN
@@ -117,52 +64,20 @@ INNER JOIN
             MAX(w.date_time)
          FROM works_itemstate as w
          WHERE w.item_id = wx.item_id AND wx.type = any(%s)
-     );"""
-    return Publication.objects.raw(query, params=[states])
+     ))"""
+    return q.extra(where=[query], params=[states])
 
 
-class BookCodeSearchQuery(SearchOp):
-    def __init__(self, states: str):
-        self.states = states
-
-    def exec(self):
-        res = None
-        word = self.states
-        if res is None:
-            res = Publication.objects
-        if word.startswith("*"):
-            res = res.filter(Q(item__book_code_sortable__endswith=self.states.replace("*", "")) | Q(
-                item__book_code__endswith=self.states.replace("*", "")))
-        elif word.endswith("*"):
-            res = res.filter(Q(item__book_code_sortable__startswith=self.states.replace("*", "")) | Q(
-                item__book_code__startswith=self.states.replace("*", "")))
-        else:
-            res = res.filter(Q(item__book_code_sortable=self.states) | Q(item__book_code=self.states))
-
-        return res
+def filter_book_code_get_q(word):
+    if word.startswith("*"):
+        return Q(item__book_code_sortable__endswith=word.replace("*", "")) | Q(
+            item__book_code__endswith=word.replace("*", ""))
+    elif word.endswith("*"):
+        return Q(item__book_code_sortable__startswith=word.replace("*", "")) | Q(
+            item__book_code__startswith=word.replace("*", ""))
+    else:
+        return Q(item__book_code_sortable=word) | Q(item__book_code=word)
 
 
-class LocationSearchQuery(SearchOp):
-    def __init__(self, categories: [Category]):
-        self.categories = categories
-
-    def exec(self):
-        return Publication.objects.filter(item__location__category__in=self.categories)
-
-
-class OrOp(SearchOp):
-    def __init__(self, left, right):
-        self.left = left
-        self.right = right
-
-    def exec(self):
-        return self.left.exec() | self.right.exec()
-
-
-class AndOp(SearchOp):
-    def __init__(self, left, right):
-        self.left = left
-        self.right = right
-
-    def exec(self):
-        return self.left.exec() & self.right.exec()
+def filter_location(query, categories):
+    return query.filter(item__location__category__in=categories)

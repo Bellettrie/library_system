@@ -1,0 +1,26 @@
+{% component 'tile.Tile' root_class_tags="grow max-w-screen " %}
+    {% fill 'title' %}{% if member.user == user %}My Info {% else %}Member Info{% endif %} {% endfill %}
+    {% fill 'content' %}
+        <dl class="divide-y divide-gray-100">
+            {% component "datarow.Datarow" "Full Name" %}
+                {{ member.name }}
+                {% if member.nickname %}
+                    <br><i>~{{ member.nickname }}</i>
+                {% endif %}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Current Membership" %}
+                {{ member.get_current_membership_period.membership_type }}
+                {% if member.is_blacklisted %}BLACKLISTED{% endif %}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "Notes" %}
+                {{ member.notes | linebreaksbr }}
+            {% endcomponent %}
+            {% component "datarow.Datarow" "DMS Registered" %}
+                {{ member.dms_registered }}
+            {% endcomponent %}
+        </dl>
+    {% endfill %}
+    {% fill 'footer' %}
+        {% component "members.info.footer" member / %}
+    {% endfill %}
+{% endcomponent %}

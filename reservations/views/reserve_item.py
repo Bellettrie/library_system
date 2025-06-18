@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, get_object_or_404
 
-from reservations.path_names import RESERVE_FINALIZE
 from works.models import Item
 
 
@@ -12,5 +11,4 @@ def reserve_item(request, item_id):
     words = get_query_words(request.GET.get("q"))
     members = query_members(words)
     return render(request, 'reservations/based_on_work.html',
-                  {'members': members, 'item': get_object_or_404(Item, pk=item_id),
-                   "RESERVE_FINALIZE": RESERVE_FINALIZE})
+                  {'members': members, 'item': get_object_or_404(Item, pk=item_id)})

@@ -32,7 +32,7 @@ def redirect_view(_):
 def ok(_):
     logger = logging.getLogger(__name__)
     logger.debug(settings.HOST)
-    return HttpResponse("OK from " + settings.HOST)
+    return HttpResponse("OK from " + settings.HOST + " running version " + settings.VERSION)
 
 
 urlpatterns = [
@@ -48,8 +48,8 @@ urlpatterns = [
     path('series/', include('series.urls')),
     path('pages/', include('public_pages.urls')),
     path('datamining/', include('datamining.urls')),
-    path('', view_page('basic', 'home'), name='homepage'),
-    path('kickin/', view_page('basic', 'kickin'), name='kick'),
+    path('', view_page(settings.STANDARD_PAGE_GROUP, 'home'), name='homepage'),
+    path('kickin/', view_page(settings.STANDARD_PAGE_GROUP, 'kickin'), name='kick'),
     path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
     path('recode/', include('recode.urls')),
     path('book_code/', include('book_code_generation.urls')),
