@@ -1,6 +1,6 @@
 from works.models import ItemState
 
-yes_states =  ["AVAILABLE", "BROKEN", "FORSALE", "SOLD", "DISPLAY", "OFFSITE", "FEATURED"]
+yes_states =  ["AVAILABLE", "BROKEN", "FORSALE", "DISPLAY", "OFFSITE", "FEATURED"]
 no_states = ["MISSING", "LOST"]
 final_states = ["SOLD"]
 
