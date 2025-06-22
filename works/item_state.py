@@ -24,16 +24,15 @@ def get_item_states():
     return \
         [
             ItemStateType(ItemStateType.AVAILABLE, "Available", True, ItemStateType.AVAILABLE, ItemStateType.MISSING),
-            ItemStateType(ItemStateType.FEATURED, "Featured", True, ItemStateType.FEATURED, ItemStateType.MISSING),
             ItemStateType(ItemStateType.MISSING, "Missing", False, ItemStateType.AVAILABLE, ItemStateType.LOST),
             ItemStateType(ItemStateType.LOST, "Lost", False, ItemStateType.AVAILABLE, ItemStateType.LOST),
             ItemStateType(ItemStateType.BROKEN, "Broken", False, ItemStateType.BROKEN, ItemStateType.MISSING),
             ItemStateType(ItemStateType.OFFSITE, "Off-Site", False, ItemStateType.OFFSITE, ItemStateType.MISSING),
             ItemStateType(ItemStateType.DISPLAY, "On Display", False, ItemStateType.DISPLAY, ItemStateType.MISSING),
-            ItemStateType(ItemStateType.FORSALE, "For Sale", True, ItemStateType.FORSALE, ItemStateType.MISSING),
+            ItemStateType(ItemStateType.FEATURED, "Featured", True, ItemStateType.FEATURED, ItemStateType.MISSING),
             ItemStateType(ItemStateType.SOLD, "Sold", False, ItemStateType.SOLD, ItemStateType.SOLD),
+            ItemStateType(ItemStateType.FORSALE, "For Sale", True, ItemStateType.FORSALE, ItemStateType.MISSING),
         ]
-
 
 def get_state(name):
     for state in get_item_states():
@@ -41,10 +40,8 @@ def get_state(name):
             return state
     return None
 
-
 def is_item_state_available(name):
     return get_state(name).is_available
-
 
 def get_available_states():
     result = []
@@ -52,7 +49,6 @@ def get_available_states():
         if state.is_available():
             result.append(state)
     return result
-
 
 def get_itemstate_choices():
     rez = []
