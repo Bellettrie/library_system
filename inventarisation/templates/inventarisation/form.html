@@ -21,19 +21,18 @@
                         <td style="font-size:10px">{{ row.prev_state }}{% if item.is_lent_out %} (LENT){% endif %}</td>
 
                         <td style="font-size:10px">
-                            {% if row.opts_enabled %}
+                            {% if not row.prev_state.state.is_final %}
                                 <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
-                                       {% if row.state == "yes" %}checked{% else %}autofocus{% endif %}>
+                                       {% if row.option_filled == "yes" %}checked{% else %}autofocus{% endif %}>
                                 <label for="yes">Yes</label>
                                 <input type="radio" id="no" name="seen{{ item.pk }}" value="no"
-                                       {% if row.state == "no" %}checked{% endif %}>
+                                       {% if row.option_filled == "no" %}checked{% endif %}>
                                 <label for="no">No</label>
                                 <input type="radio" id="maybe" name="seen{{ item.pk }}" value="maybe">
                                 <label for="maybe">Skip</label>
                             {% else %}
                                 <i>< not inventarisable state</i>
                                 <input type="hidden" id="no" name="seen{{ item.pk }}" value="yes">
-
                             {% endif %}
                         </td>
                     </tr>
