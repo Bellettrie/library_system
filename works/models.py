@@ -247,7 +247,7 @@ class Item(NamedThing, BookCode):
         return self.book_code + " " + self.book_code_extension
 
     def in_available_state(self):
-        return self.get_state().type in available_states
+        return self.get_state().state.is_available
 
     def is_lent_out(self):
         return Lending.objects.filter(item_id=self.id, handed_in=False).count() > 0

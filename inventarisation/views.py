@@ -24,7 +24,7 @@ def list_inventarisations(request):
 @permission_required('inventarisation.view_inventarisation')
 def print_list(request, inventarisation_id):
     inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
-    groups = get_groups(inventarisation)
+    groups = get_item_pages(inventarisation)
     return render(request, "inventarisation/list_print.html", {'groups': groups})
 
 
