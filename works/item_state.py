@@ -34,14 +34,17 @@ def get_item_states():
             ItemStateType(ItemStateType.FORSALE, "For Sale", True, ItemStateType.FORSALE, ItemStateType.MISSING),
         ]
 
+
 def get_state(name):
     for state in get_item_states():
         if state.state_name == name:
             return state
     return None
 
+
 def is_item_state_available(name):
     return get_state(name).is_available
+
 
 def get_available_states():
     result = []
@@ -49,6 +52,7 @@ def get_available_states():
         if state.is_available():
             result.append(state)
     return result
+
 
 def get_itemstate_choices():
     rez = []
