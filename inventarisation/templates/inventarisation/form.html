@@ -31,7 +31,7 @@
                                 <input type="radio" id="maybe" name="seen{{ item.pk }}" value="maybe">
                                 <label for="maybe">Skip</label>
                             {% else %}
-                                <i>< status no longer tracked by the system </i>
+                                <i><- status no longer tracked by the system </i>
                                 <input type="hidden" id="no" name="seen{{ item.pk }}" value="yes">
                             {% endif %}
                         </td>
