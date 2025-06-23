@@ -12,6 +12,7 @@ from inventarisation.models import Inventarisation
 from lendings.models.lending import Lending
 from reservations.models.reservation import Reservation
 from utils.time import get_now
+from works.item_state import get_itemstate_choices, get_state
 
 
 def simple_search(search_string: str):
@@ -246,7 +247,7 @@ class Item(NamedThing, BookCode):
         return self.book_code + " " + self.book_code_extension
 
     def in_available_state(self):
-        return self.get_state().type in available_states
+        return self.get_state().state.is_available
 
     def is_lent_out(self):
         return Lending.objects.filter(item_id=self.id, handed_in=False).count() > 0
@@ -305,7 +306,8 @@ class Item(NamedThing, BookCode):
         return states[1]
 
     def get_most_recent_state_not_this_inventarisation(self, inventarisation: Inventarisation):
-        states = ItemState.objects.filter(item_id=self.id).exclude(inventarisation=inventarisation).order_by("-date_time")
+        states = ItemState.objects.filter(item_id=self.id).exclude(inventarisation=inventarisation).order_by(
+            "-date_time")
         if len(states) == 0:
             return ItemState(item_id=self.id, date_time=get_now(), type="AVAILABLE")
         return states[0]
@@ -313,7 +315,8 @@ class Item(NamedThing, BookCode):
     def is_seen(self, reason):
         state = self.get_state()
         if state.type != "AVAILABLE":
-            if state.type not in not_switch_to_available:
+            state_type = get_state(state.type)
+            if state_type.next_yes_state_name == "AVAILABLE":
                 ItemState.objects.create(item_id=self.id, type="AVAILABLE",
                                          reason="Automatically switched because of reason: " + reason)
 
@@ -342,19 +345,17 @@ class Item(NamedThing, BookCode):
             return ''
 
 
-not_switch_to_available = ["BROKEN", "FORSALE", "SOLD", "DISPLAY", "OFFSITE", "FEATURED"]
-available_states = ['AVAILABLE', 'FEATURED']
-
-
 class ItemState(models.Model):
-    CHOICES = (("AVAILABLE", "Available"), ("MISSING", "Missing"), ("LOST", "Lost"), ("BROKEN", "Broken"),
-               ("OFFSITE", "Off-Site"), ("DISPLAY", "On Display"), ('FEATURED', "Featured"), ("SOLD", "Sold"),
-               ("FORSALE", "For Sale"))
+    CHOICES = get_itemstate_choices()
     item = models.ForeignKey(Item, on_delete=CASCADE)
     date_time = models.DateTimeField(default=datetime.now)
     type = models.CharField(max_length=64, choices=CHOICES)
     reason = models.TextField(blank=True)
     inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
+
+    @property
+    def state(self):
+        return get_state(self.type)
 
     def __str__(self):
         return self.type

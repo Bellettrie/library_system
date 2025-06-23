@@ -9,6 +9,9 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView
 
 from inventarisation.models import Inventarisation
+from inventarisation.procedures.get_item_rows import get_item_rows
+from inventarisation.procedures.get_item_pages import get_item_pages
+from inventarisation.procedures.get_next_state import get_next_state_by_action
 from works.models import Item, ItemState, Location
 
 
@@ -18,24 +21,10 @@ def list_inventarisations(request):
     return render(request, "inventarisation/list.html", {'inventarisations': inventarisations})
 
 
-def get_groups(inventarisation):
-    items = Item.objects.filter(location=inventarisation.location).order_by('book_code_sortable')
-    groups = []
-    counter = 0
-
-    for item in items:
-        if counter == 0:
-            groups.append([])
-            counter = 10
-        groups[len(groups) - 1].append(item)
-        counter -= 1
-    return groups
-
-
 @permission_required('inventarisation.view_inventarisation')
 def print_list(request, inventarisation_id):
     inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
-    groups = get_groups(inventarisation)
+    groups = get_item_pages(inventarisation)
     return render(request, "inventarisation/list_print.html", {'groups': groups})
 
 
@@ -50,81 +39,51 @@ class InventarisationCreate(PermissionRequiredMixin, CreateView):
 @transaction.atomic
 @permission_required('inventarisation.change_inventarisation')
 def inventarisation_form(request, inventarisation_id, page_id):
+    # Scoped this class here, since it should not be used elsewhere.
     inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
-    groups = get_groups(inventarisation)
-    page_id = max(0, min(len(groups) - 1, int(page_id)))
+    item_pages = get_item_pages(inventarisation)
+    page_id = max(0, min(len(item_pages) - 1, int(page_id)))
 
-    if len(groups) == 0:
+    if len(item_pages) == 0:
         return HttpResponseRedirect(reverse('inventarisation.finish', args=[inventarisation_id]))
-    group = groups[page_id]
+    item_page = item_pages[page_id]
+
+    rows = get_item_rows(inventarisation, item_page)
+    rwz = []
+    for v in rows.values():
+        rwz.append(v)
     if request.method == "POST":
         for z in request.POST:
             if z.startswith('seen'):
-                try:
-                    item_inventarisation_state = request.POST[z]  # yes, no, maybe
-
-                    item = Item.objects.get(pk=int(z[4:]))  # what item is it?
-                    current_state = item.get_state()  # what is the current state of the item?
-                    prev_state = current_state  # the state after the inventarisation action is the current state
-
-                    already_in_current_inventarisation = False  # if the current state is not part of the inventarisation, we can reuse it
-
-                    if current_state.inventarisation == inventarisation:
-                        prev_state = item.get_prev_state()  # if the current state is part of the inventarisation, we need to get the previous state
-                        already_in_current_inventarisation = True  # if the current state is part of the inventarisation, we need to reuse it
-
-                    if item_inventarisation_state == "yes" or item_inventarisation_state == "no":
-                        # The item either goes to yes, or no, so we need to figure out to which state we need to move it
-                        new_state, description = get_next_state_by_action(item_inventarisation_state, prev_state)
-                        if already_in_current_inventarisation:
-                            # If in current inventarisation, update existing line
-                            current_state.type = new_state
-                            current_state.reason = description
-                            current_state.save()
-                        else:
-                            # Otherwise, we remove pre-existing lines that aren't prev, and then create a new one
-                            ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
-                            ItemState.objects.create(item=item, type=new_state, inventarisation=inventarisation, reason=description)
-                    else:
-                        # If skip is pressed, remove all rows for this item in this
-                        ItemState.objects.filter(item=item, inventarisation=inventarisation).delete()
-                except Item.DoesNotExist:
+                item_inventarisation_state = request.POST[z]  # yes, no, maybe
+                row = rows.get(int(z[4:]), None)
+                if row is None:
                     continue
+                if row.current_state is not None:
+                    ItemState.objects.filter(item=row.item, inventarisation=inventarisation).delete()
 
-        if request.POST.get("next"):
-            return get_inventarisation_next(request, inventarisation_id, page_id)
+                if item_inventarisation_state == "yes":
+                    typ = row.prev_state.state.next_yes_state_name
+                    ItemState.objects.create(item=row.item, inventarisation=inventarisation, type=typ)
 
-    pre_filled = {}
-    prev_states = {}
-    for item in group:
-        try:
-            pre_filled[item] = ItemState.objects.get(item=item, inventarisation=inventarisation).type
+                if item_inventarisation_state == "no":
+                    typ = row.prev_state.state.next_no_state_name
+                    ItemState.objects.create(item=row.item, inventarisation=inventarisation, type=typ)
 
-        except ItemState.DoesNotExist:
-            pass
-        prev_states[item] = item.get_most_recent_state_not_this_inventarisation(inventarisation)
-    return render(request, "inventarisation/form.html",
-                  {'page_id': page_id, 'inventarisation': inventarisation, 'group': group, 'defaults': pre_filled,
-                   "counts": len(groups), "prev_states": prev_states})
+    if request.POST.get("next"):
+        return get_inventarisation_next(request, inventarisation_id, page_id)
 
-
-def get_next_state_by_action(action, prev_state) -> (str, str):
-    new_state = prev_state.type
-    description = prev_state.reason  # By default, keep description
-    if action == "yes":
-        if prev_state.type == "MISSING" or prev_state.type == "LOST":
-            new_state = "AVAILABLE"
-            description = "Seen during inventarisation"
-    elif action == "no":
-        if prev_state.type == "SOLD":
-            new_state = "SOLD"
-        elif prev_state.type == "MISSING" or prev_state.type == "LOST":
-            new_state = "LOST"
-            description = "Not seen during inventarisation"
-        else:
-            new_state = "MISSING"
-            description = "Not seen during inventarisation"
-    return new_state, description
+    return render(
+        request,
+        "inventarisation/form.html",
+        {
+            'page_id': page_id,
+            'inventarisation': inventarisation,
+            'group': item_page,
+            "rows": rwz,
+            "counts": len(item_pages)
+        }
+    )
 
 
 def get_cur_block(inventarisation, page_id):
