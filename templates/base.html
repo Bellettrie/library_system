@@ -21,7 +21,7 @@
 
     <div class="grow bg-base-200 flex flex-row w-full justify-content-center">
         {% menu_data 'sidebar' perms user.is_anonymous as sidebar_menu_items %}
-        {% component "nav.sidebar.Sidebar" sidebar_menu_items top_menu_items / %}
+        {% component "nav.sidebar.Sidebar" perms / %}
 
         <section class="grow px-5  mt-6 mb-3 ">
            <div class="flex w-full place-content-center mb-3"><h1 class="text-3xl"> {% block title %}{% endblock %}</h1></div>

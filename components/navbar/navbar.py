@@ -12,7 +12,7 @@ from bellettrie_library_system.base_settings import GET_MENU
 @register("navbar.Item")
 class Item(Component):
 
-    def get_context_data(self, text, my_url, *args, location="aaa", perm=None, extra_classes="", **kwargs):
+    def get_context_data(self, text, my_url, *args, location="aaa", extra_classes="", **kwargs):
         # skip absolute urls
         if not (my_url == "" or my_url.startswith("/") or my_url.startswith("https://")):
             my_url = reverse(my_url, args=args)
@@ -20,7 +20,6 @@ class Item(Component):
             "my_url": my_url,
             "text": text,
             "location": location,
-            "perm": perm,
             "extra_classes": extra_classes,
         }
 

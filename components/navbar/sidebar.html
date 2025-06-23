@@ -9,43 +9,26 @@
                 <!-- Sidebar content here -->
                 <div class="my-2"></div>
                 {% for item in mobile_items %}
-                    {% if item.sub_items %}
-                        <li class="xl:hidden">
-                            <details>
-                                <summary>{{ item.title }}</summary>
-                                <ul>
-                                    {% for item in item.sub_items %}
-                                        {% component 'navbar.Item' item.title item.url location="sidebar" perm=item.permission / %}
-
-                                    {% endfor %}
-                                </ul>
-                            </details>
-                        </li>
+                    {% if item.is_separator %}
+                        <li class="xl:hidden"></li>
                     {% else %}
-                        {% component 'navbar.Item' item.title item.url location="sidebar" perm=item.permission extra_classes="xl:hidden" / %}
+                        {% if item.is_super %}
+                            <li class="xl:hidden">
+                                <details>
+                                    <summary>{{ item.label }}</summary>
+                                    <ul>
+                                        {% for item in item.items %}
+                                            <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </details>
+                            </li>
+                        {% else %}
+                            <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
-                {% if mobile_items and items %}
-                    <li class="xl:hidden"></li>
-                {% endif %}
-                {% for item in items %}
-                    {% if item.sub_items %}
-                        <li>
-                            <details>
-                                <summary>{{ item.title }}</summary>
-                                <ul>
-                                    {% for item in item.sub_items %}
-                                        {% component 'navbar.Item' item.title item.url location="sidebar" perm=item.permission / %}
 
-                                    {% endfor %}
-                                </ul>
-                            </details>
-                        </li>
-                    {% else %}
-                        {% component 'navbar.Item' item.title item.url location="sidebar" perm=item.permission / %}
-                    {% endif %}
-                {% endfor %}
-                <li class="xl:hidden"></li>
                 {% if user.is_anonymous %}
                     {% component 'navbar.Item' "Login" 'login' location="sidebar" extra_classes="xl:hidden" / %}
                 {% else %}
