@@ -8,6 +8,7 @@ import members.views.member_delete
 import members.views.member_edit
 import members.views.member_new
 import members.views.member_show
+import members.views.anon_member_new
 from members.permissions import MEMBERS_LIST, MEMBERS_NEW, MEMBERS_VIEW, MEMBERS_EDIT, MEMBERS_DELETE
 from .views.member_list import MemberList
 from .views.anon_member_list import AnonMemberList
@@ -22,6 +23,7 @@ from .views.auth.by_committee import webcie
 urlpatterns = [
     path('', MemberList.as_view(), name=MEMBERS_LIST),
     path('anon', AnonMemberList.as_view(), name='members.list.anon'),
+    path('anon/new', members.views.anon_member_new.new, name='members.anon_member_new'),
     path('auth/by_committee/webcie', members.views.auth.by_committee.webcie, name='members.view.by_committee'),
 
     path('<int:member_id>/<int:full>', members.views.member_show.show, name=MEMBERS_VIEW),
