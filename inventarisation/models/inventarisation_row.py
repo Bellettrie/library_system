@@ -5,7 +5,6 @@ class InventarisationRow:
             item (Item): The item this row is about
             prev_state (ItemState): The state of this item before this inventarisation
             current_state (ItemState): the current state of this row (optional)
-            option_filled: the data put in the form
     """
 
     def __init__(self, item, prev_state, current_state):
