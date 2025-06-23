@@ -21,7 +21,7 @@
                         <td style="font-size:10px">{{ row.prev_state }}{% if item.is_lent_out %} (LENT){% endif %}</td>
 
                         <td style="font-size:10px">
-                            {% if not row.prev_state.state.is_final %}
+                            {% if not row.prev_state.state.is_final_state %}
                                 <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
                                        {% if row.option_filled == "yes" %}checked{% else %}autofocus{% endif %}>
                                 <label for="yes">Yes</label>
