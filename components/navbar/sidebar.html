@@ -1,5 +1,5 @@
 <div class="xl:h-grow">
-    <div class=" drawer xl:drawer-open absolute xl:static xl:h-full xl:w-full {% if not items %}xl:hidden{% endif %}  z-[6] ">
+    <div class=" drawer xl:drawer-open absolute xl:static xl:h-full xl:w-full {% if hide_sidebar_xl %}xl:hidden{% endif %}  z-[6] ">
         {#    drawer xl:drawer-open absolute  xl:relative xl:flex xl:flex-initial#}
         <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
 
@@ -8,12 +8,12 @@
             <ul class="menu bg-base-100 text-base-content min-h-full w-full pt-[6rem] xl:pt-0 md:w-80 ">
                 <!-- Sidebar content here -->
                 <div class="my-2"></div>
-                {% for item in mobile_items %}
+                {% for item in top_bar %}
                     {% if item.is_separator %}
                         <li class="xl:hidden"></li>
                     {% else %}
                         {% if item.is_super %}
-                            <li class="xl:hidden">
+                            <li>
                                 <details>
                                     <summary>{{ item.label }}</summary>
                                     <ul>
@@ -28,6 +28,32 @@
                         {% endif %}
                     {% endif %}
                 {% endfor %}
+
+                {% if not hide_sidebar_xl %}
+                    <li class="xl:hidden"></li>
+                {% endif %}
+
+                {% for item in sidebar_items %}
+                    {% if item.is_separator %}
+                        <li></li>
+                    {% else %}
+                        {% if item.is_super %}
+                            <li>
+                                <details>
+                                    <summary>{{ item.label }}</summary>
+                                    <ul>
+                                        {% for item in item.items %}
+                                            <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </details>
+                            </li>
+                        {% else %}
+                            <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <li class="xl:hidden"></li>
 
                 {% if user.is_anonymous %}
                     {% component 'navbar.Item' "Login" 'login' location="sidebar" extra_classes="xl:hidden" / %}

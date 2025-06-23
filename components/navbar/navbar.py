@@ -7,6 +7,7 @@ from django_components import Component, register, types
 
 from bellettrie_library_system import settings
 from bellettrie_library_system.base_settings import GET_MENU
+from components.navbar.menu import right_limited_menu, top_bar
 
 
 @register("navbar.Item")
@@ -36,12 +37,9 @@ class Item(Component):
 class Navbar(Component):
     template_name = "navbar/navbar.html"
 
-    def get_context_data(self, menu=None):
-        if menu is None:
-            menu = []
-
+    def get_context_data(self, perms):
         return {
-            "menu_buttons": menu,
+            "menu_buttons": right_limited_menu(top_bar, perms),
             "logo_debug": settings.UPSIDE_DOWN,
             "logo_name": settings.LIBRARY_NAME,
             "logo_image": settings.LIBRARY_IMAGE_URL,

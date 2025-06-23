@@ -23,6 +23,7 @@ class SuperMenu:
 class Separator:
     def is_separator(self):
         return True
+
     def is_visible(self, perms):
         return True
 
@@ -71,22 +72,7 @@ LENDING_STATS = Item("Lending Statistics", reverse("datamining.lending_stats"), 
 MEMBER_LIST = Item("Member Filter", reverse("datamining.members"), visible_perm="members.view_member")
 DATAMINING = SuperMenu("Datamining", ANON_MEMBERS, MEMBER_STATS, LENDING_STATS, MEMBER_LIST)
 
-DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)),visible_perm="docs.view_docs")
-
-mobile_menu = [
-    ITEM_SEARCH,
-    ACTIVITIES,
-    BECOME_MEMBER,
-    Separator(),
-    MEMBERS,
-    LENDINGS,
-    RESERVATIONS,
-    SETTINGS,
-    WEB_MANAGEMENT,
-    CATALOG_MANAGEMENT,
-    DATAMINING,
-    DOCS
-]
+DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), visible_perm="docs.view_docs")
 
 top_bar = [
     ITEM_SEARCH,
@@ -103,6 +89,11 @@ sidebar = [
     CATALOG_MANAGEMENT,
     DATAMINING,
     DOCS
+]
+
+footer = [
+    SuperMenu("Socials", Item("Hyves", None), Item("Insta", None), Item("Facebook", None)),
+    SuperMenu("Legal", Item("Nonsense", None))
 ]
 
 

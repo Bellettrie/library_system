@@ -16,7 +16,7 @@
     <div class="navbar-start hidden xl:flex xl:ml-5">
         <ul class="menu menu-horizontal px-1">
             {% for but in menu_buttons %}
-                {% component 'navbar.Item' but.title but.url location="top" / %}
+                {% component 'navbar.Item' but.label but.url location="top" / %}
             {% endfor %}
         </ul>
     </div>
@@ -28,7 +28,7 @@
             <form method="get" action="{% url 'works.list' %}">
                 <div class="form-control join join-horizontal">
                     <input name="q" id="q" type="text" placeholder="Search"
-                           class="input input-bordered w-24 md:w-auto join-item input-md"/>
+                           class="input input-bordered w-40 2xl:w-auto join-item input-md"/>
                     <button class="btn join-item  btn-md">Search</button>
                     <a href="{% url 'works.list' %}?advanced=True" class="btn join-item btn-md">...</a>
                 </div>
