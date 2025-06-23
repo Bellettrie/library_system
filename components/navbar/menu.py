@@ -33,10 +33,10 @@ class Separator:
 
 
 class Item:
-    def __init__(self, label, url, visible_perm=None):
+    def __init__(self, label, url, perm=None):
         self.label = label
         self.url = url
-        self.perm = visible_perm
+        self.perm = perm
 
     def is_super(self):
         return False
@@ -49,34 +49,34 @@ ITEM_SEARCH = Item("Book Search", reverse('homepage'))
 ACTIVITIES = Item("Our Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',)))
 BECOME_MEMBER = Item("Become Member", reverse('named_page', args=('basic', 'member',)))
 
-MEMBERS = Item("Members", reverse("members.list", ), visible_perm="members.view_member")
-LENDINGS = Item("Lendings", reverse('lendings.list'), visible_perm="lendings.view_lending")
-RESERVATIONS = Item("Reservations", reverse('reservations.list'), visible_perm="reservations.view_reservation", )
+MEMBERS = Item("Members", reverse("members.list", ), perm="members.view_member")
+LENDINGS = Item("Lendings", reverse('lendings.list'), perm="lendings.view_lending")
+RESERVATIONS = Item("Reservations", reverse('reservations.list'), perm="reservations.view_reservation", )
 
-HOLIDAYS = Item("Holidays", reverse("holiday.list"), visible_perm="holidays.view_holiday")
+HOLIDAYS = Item("Holidays", reverse("holiday.list"), perm="holidays.view_holiday")
 SETTINGS = SuperMenu("Settings", HOLIDAYS)
 
-UPLOADS = Item("Uploads", reverse("list_uploads"), visible_perm="public_pages.change_publicpage")
-WEB_PAGES = Item("Pages", reverse("list_pages"), visible_perm="public_pages.view_publicpage")
+UPLOADS = Item("Uploads", reverse("list_uploads"), perm="public_pages.change_publicpage")
+WEB_PAGES = Item("Pages", reverse("list_pages"), perm="public_pages.view_publicpage")
 WEB_MANAGEMENT = SuperMenu("Web Management", UPLOADS, WEB_PAGES)
 
-NEW_WORK = Item("New Work", reverse('works.publication.new'), visible_perm="works.add_publication")
-NEW_SERIES = Item("New Series", reverse("series.new"), visible_perm="series.add_series")
-NEW_CREATOR = Item("New Author", reverse("creator.new"), visible_perm="creator.add_creator")
+NEW_WORK = Item("New Work", reverse('works.publication.new'), perm="works.add_publication")
+NEW_SERIES = Item("New Series", reverse("series.new"), perm="series.add_series")
+NEW_CREATOR = Item("New Author", reverse("creator.new"), perm="creator.add_creator")
 INVENTARISATION = Item("Inventarisations", reverse("inventarisation.list"),
-                       visible_perm="inventarisation.view_inventarisation")
-RECODE_LIST = Item("Recode List", reverse("recode.list"), visible_perm="recode.view_recode")
-CODES = Item("Book Codes", reverse("book_code.code_list"), visible_perm="works.change_work")
+                       perm="inventarisation.view_inventarisation")
+RECODE_LIST = Item("Recode List", reverse("recode.list"), perm="recode.view_recode")
+CODES = Item("Book Codes", reverse("book_code.code_list"), perm="works.change_work")
 CATALOG_MANAGEMENT = SuperMenu("Catalog Management", NEW_WORK, NEW_SERIES, NEW_CREATOR, INVENTARISATION, RECODE_LIST,
                                CODES)
 
-ANON_MEMBERS = Item("Anonymous Users", reverse("members.list.anon"), visible_perm="members.change_member")
-MEMBER_STATS = Item("Member Statistics", reverse("datamining.membership_stats"), visible_perm="members.view_member")
-LENDING_STATS = Item("Lending Statistics", reverse("datamining.lending_stats"), visible_perm="works.view_work")
-MEMBER_LIST = Item("Member Filter", reverse("datamining.members"), visible_perm="members.view_member")
+ANON_MEMBERS = Item("Anonymous Users", reverse("members.list.anon"), perm="members.change_member")
+MEMBER_STATS = Item("Member Statistics", reverse("datamining.membership_stats"), perm="members.view_member")
+LENDING_STATS = Item("Lending Statistics", reverse("datamining.lending_stats"), perm="works.view_work")
+MEMBER_LIST = Item("Member Filter", reverse("datamining.members"), perm="members.view_member")
 DATAMINING = SuperMenu("Datamining", ANON_MEMBERS, MEMBER_STATS, LENDING_STATS, MEMBER_LIST)
 
-DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), visible_perm="docs.view_docs")
+DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), perm="docs.view_docs")
 
 top_bar = [
     ITEM_SEARCH,
