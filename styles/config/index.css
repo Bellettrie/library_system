@@ -1,0 +1,86 @@
+/*import tailwindcss and disable automatic source detection*/
+@import "tailwindcss" source(none);
+/*@import "tailwindcss/typography";*/
+@theme {
+  --color-belleyellow: #FFE430;
+  --color-bellered:#7D0000;
+}
+
+@plugin "daisyui" {
+    themes: light --default,fantasy;
+
+}
+
+@plugin "daisyui/theme" {
+  name: "fantasy";
+  default: false;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(93% 0 0);
+  --color-base-300: oklch(86% 0 0);
+  --color-base-content: oklch(27.807% 0.029 256.847);
+  --color-primary: #FFE430; /* oklch(37.45% 0.189 325.02); */
+  --color-primary-content: #7D0000 ;/* oklch(87.49% 0.037 325.02); */
+  --color-secondary: oklch(60.2% 0.17 255.585);
+  --color-secondary-content: oklch(90.784% 0.032 241.36);
+  --color-accent: oklch(93.2% 0.032 255.585);
+  --color-accent-content: #04557D;
+  --color-neutral: oklch(27.807% 0.029 256.847);
+  --color-neutral-content: oklch(85.561% 0.005 256.847);
+  --color-info: oklch(72.06% 0.191 231.6);
+  --color-info-content: oklch(0% 0 0);
+  --color-success: oklch(64.8% 0.15 160);
+  --color-success-content: oklch(0% 0 0);
+  --color-warning: oklch(84.71% 0.199 83.87);
+  --color-warning-content: oklch(0% 0 0);
+  --color-error: oklch(71.76% 0.221 22.18);
+  --color-error-content: oklch(0% 0 0);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "bellekia";
+  default: false;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(93% 0 0);
+  --color-base-300: oklch(86% 0 0);
+  --color-base-content: oklch(27.807% 0.029 256.847);
+  --color-primary: #FFE430; /* oklch(37.45% 0.189 325.02); */
+  --color-primary-content: #7D0000 ;/* oklch(87.49% 0.037 325.02); */
+  --color-secondary: oklch(60.2% 0.17 255.585);
+  --color-secondary-content: oklch(90.784% 0.032 241.36);
+  --color-accent: oklch(93.2% 0.032 255.585);
+  --color-accent-content: #04557D;
+  --color-neutral: oklch(27.807% 0.029 256.847);
+  --color-neutral-content: oklch(85.561% 0.005 256.847);
+  --color-info: oklch(72.06% 0.191 231.6);
+  --color-info-content: oklch(0% 0 0);
+  --color-success: oklch(64.8% 0.15 160);
+  --color-success-content: oklch(0% 0 0);
+  --color-warning: oklch(84.71% 0.199 83.87);
+  --color-warning-content: oklch(0% 0 0);
+  --color-error: oklch(71.76% 0.221 22.18);
+  --color-error-content: oklch(0% 0 0);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@plugin "@tailwindcss/typography";
+/*register frontend directory*/
+@source "../../**/*.html";

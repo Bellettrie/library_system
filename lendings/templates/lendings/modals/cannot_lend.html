@@ -1,0 +1,21 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+{% block content %}
+    {% component 'modalform.ModalForm' title='Cannot lend item' path=request.path form_action="close" %}
+        {% if member %}
+            {% if item %}
+                Member {{ member.name }} cannot lend {{ item.publication.name }} right now.
+            {% else %}
+                Member {{ member.name }} cannot lend right now.
+            {% endif %}
+        {% else %}
+            {% if item %}
+                Item {{ item.publication.name }} cannot be lentout
+                <hr>
+            {% else %}
+                Something went wrong while lending.
+            {% endif %}
+        {% endif %}
+        <br>
+        {{ error }}
+    {% endcomponent %}
+{% endblock %}

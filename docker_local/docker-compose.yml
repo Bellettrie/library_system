@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-        DUMP_NAME: startup.sql
+        DUMP_NAME: latest_staging.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: UJ68dyavBrY7NCSP

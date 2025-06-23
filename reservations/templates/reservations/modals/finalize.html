@@ -1,0 +1,17 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
+{% block title %}Finalize Reservation{% endblock %}
+{% block content %}
+    {% component 'modalform.ModalForm' title='Reserve Item' path=request.path %}
+        {% fill "modal_body" %}
+            Reserving work: {{ item.get_title }} <br/>
+            Reservation for member: {{ member.name }} <br/>
+            {% csrf_token %}
+
+        {% endfill %}
+        {% fill "modal_submit_button" %}
+            <input type="submit" value="Reserve" class="btn btn-success join-item">
+
+        {% endfill %}
+    {% endcomponent %}
+{% endblock %}

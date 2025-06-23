@@ -59,7 +59,7 @@ class Member(MemberData):
         return None
 
     def get_periods(self):
-        return self.membershipperiod_set.all().order_by('start_date')
+        return self.membershipperiod_set.all().order_by('-start_date')
 
     def get_email(self):
         if self.primary_email_in_use:

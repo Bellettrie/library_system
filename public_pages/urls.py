@@ -1,10 +1,8 @@
 from django.urls import path
 
-from lendings.path_names import LENDING_VIEW, LENDING_LIST, LENDING_NEW_WORK, LENDING_FINALIZE, \
-    LENDING_MY_LENDINGS, LENDING_NEW_MEMBER, LENDING_RETURNBOOK, LENDING_EXTEND, LENDING_FAILED
-
 from . import views
-from .views import view_page, view_named_page, render_page_from_request, test_render_function, edit_named_page, new_named_page, list_named_pages, delete_page, list_uploads, new_upload, delete_upload
+from .views import view_named_page, render_page_from_request, test_render_function, edit_named_page, \
+    new_named_page, list_named_pages, delete_page, list_uploads, new_upload, delete_upload
 
 
 def fun(request):

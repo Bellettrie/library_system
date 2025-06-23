@@ -1,6 +1,4 @@
 {% extends 'base.html' %}
-{% load member_reservation_table %}
-{% load member_lending_table %}
 {% block title %}{% if member.is_blacklisted %}<p style="color:red;">BLACKLISTED</p>{% endif %}Member:
     {{ member.name }}{% endblock %}
 {% block content %}
@@ -9,17 +7,47 @@
             font-size: 12px;
         }
     </style>
-    <div class="container-fluid" style="width:100%">
-        <div class="row justify-content-md-center">
-            {% if extra %}
-                <div class="card col-sm-12">
-                    <div class="card-body">
-                        {{ extra }}
-                    </div>
-                </div>
+    <div class="max-w-full flex flex-wrap gap-3 grow">
+        {% if extra %}
+            <div role="alert" class="alert alert-success" onclick="this.remove()">
+                <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        class="h-6 w-6 shrink-0 stroke-current">
+                    <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>{{ extra }}</span>
+            </div>
+        {% endif %}
+        <div class="grow flex flex-col gap-3 ">
+            {% if detailed %}
+                {% component 'members.detailed_info' member / %}
+            {% else %}
+                {% component 'members.basic_info' member / %}
             {% endif %}
-            {% include 'members/partials/member_card.html' %}
-            {% include 'members/partials/lendings_card.html' %}
+            {% if member.user %}
+                {% component 'members.users.user' member / %}
+            {% else %}
+                {% component 'members.users.no_user' member / %}
+            {% endif %}
+            {% component "members.details.Committees" member / %}
+        </div>
+        <div class="grow  flex flex-col gap-3  ">
+            {% component 'members.membership_periods' member / %}
+            {% component 'members.details.LendingHistory' member / %}
+            {% include 'members/partials/reservations_card.html' %}
         </div>
     </div>
+    {% component 'help_bar' %}
+        You can search for members on this page, by typing their name into the input field.<br>
+        <br>
+        By default, only people who are currently a member are listed; switch to 'also previous' if desired.
+    {% endcomponent %}
+
 {% endblock %}
+

@@ -1,0 +1,47 @@
+<div class="card m-3 p-3 hidden md:block bg-base-100 ">
+    <table class="table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols ">
+        <tr>
+            {% if not skip_header %}
+                <th></th>
+            {% endif %}
+            <th>Title</th>
+            <th>Author</th>
+            {% if show_member %}
+                <th>Member</th>
+            {% endif %}
+            <th>Infos</th>
+            <th></th>
+        </tr>
+        {% for reservation in reservations %}
+            {% component 'works.table.Row' reservation.item skip_header=skip_header %}
+                {% fill "extra_rows" %}
+                    {% if show_member %}
+                        <td><a href="{% url 'members.view' reservation.member.pk 0 %}">{{ reservation.member.name }}</a>
+                        </td>
+                    {% endif %}
+                    {% if reservation.reservation_end_date %}
+                        <td>
+                            {{ reservation.reservation_end_date }}
+                        </td>
+                    {% else %}
+                        <td>
+                            Not available yet
+                        </td>
+                    {% endif %}
+                    <td>
+                        <div class="join">
+                            {% component 'reservations/buttons/cancel' reservation user.member perms bonus_classes=btn_bonus_classes / %}
+                            {% component 'reservations/buttons/lend' reservation user.member perms bonus_classes=btn_bonus_classes / %}
+                        </div>
+                    </td>
+
+                {% endfill %}
+            {% endcomponent %}
+        {% endfor %}
+    </table>
+</div>
+<div class="lg:hidden flex flex-col gap-5 m-3">
+    {% for reservation in reservations %}
+        {% component 'reservations.card.Card' reservation perms show_member=show_member / %}
+    {% endfor %}
+</div>

@@ -2,6 +2,7 @@ from datetime import datetime
 from django.db import models
 
 from django.db.models import PROTECT, CASCADE, Q
+from django.db.models.expressions import RawSQL
 from django.shortcuts import get_object_or_404
 
 from book_code_generation.models import FakeItem, CutterCodeRange, BookCode
@@ -158,7 +159,7 @@ class Publication(Work):
         return len(self.workinpublication_set) == 0
 
     def get_items(self):
-        return Item.objects.filter(publication_id=self.id)
+        return Item.objects.annotate(available=RawSQL("SELECT coalesce(works_itemstate.type, 'AVAILABLE')= 'AVAILABLE' FROM  works_itemstate WHERE works_itemstate.item_id=works_item.id ORDER BY works_itemstate.date_time DESC LIMIT 1", [])).order_by("-available").filter(publication_id=self.id)
 
     def get_lend_item(self):
         for item in self.get_items():
@@ -266,8 +267,14 @@ class Item(NamedThing, BookCode):
         reservations = Reservation.objects.filter(item_id=self.id, member=member)
         return reservations.count() > 0
 
-    def current_lending(self):
+    def current_lending_or_404(self):
         return get_object_or_404(Lending, item_id=self.id, handed_in=False)
+
+    def current_lending(self):
+        lndngs = Lending.objects.filter(item_id=self.id, handed_in=False)
+        if len(lndngs) != 1:
+            return None
+        return lndngs[0]
 
     def get_title(self):
         return self.title or self.publication.title

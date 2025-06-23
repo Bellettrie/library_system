@@ -1,0 +1,12 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
+{% block content %}
+    {% component 'modalform.ModalForm' title="Set Item State" path=request.path form_action="submit" %}
+        {% fill "modal_body" %}
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+        {% endfill %}
+    {% endcomponent %}
+{% endblock %}
