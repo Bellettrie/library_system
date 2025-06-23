@@ -1,4 +1,8 @@
-from pydoc import visiblename
+# In this file we define how the menu works.
+# We first define some classes to structure the menu
+# Then there's a list of some menu-items
+# Finally we define the menus we have.
+from copy import deepcopy
 
 from django.urls import reverse
 
@@ -97,9 +101,17 @@ footer = [
 ]
 
 
-def right_limited_menu(items, perms):
+def menu_with_only_right_permissions(items, perms):
     result = []
     for item in items:
-        if item.is_visible(perms):
+        if item.is_super():
+            it = deepcopy(item)
+            it.items = []
+            for itm in item.items:
+                if itm.is_visible(perms):
+                    it.items.append(itm)
+            if len(it.items) > 0:
+                result.append(it)
+        else:
             result.append(item)
     return result
