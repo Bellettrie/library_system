@@ -33,10 +33,10 @@ class Separator:
 
 
 class Item:
-    def __init__(self, label, url, required_perm=None):
+    def __init__(self, label, url, perm=None):
         self.label = label
         self.url = url
-        self.perm = required_perm
+        self.perm = perm
 
     def is_super(self):
         return False
@@ -49,34 +49,34 @@ ITEM_SEARCH = Item("Book Search", reverse('homepage'))
 ACTIVITIES = Item("Our Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',)))
 BECOME_MEMBER = Item("Become Member", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',)))
 
-MEMBERS = Item("Members", reverse("members.list", ), required_perm="members.view_member")
-LENDINGS = Item("Lendings", reverse('lendings.list'), required_perm="lendings.add_lending")
-RESERVATIONS = Item("Reservations", reverse('reservations.list'), required_perm="reservations.view_reservation", )
+MEMBERS = Item("Members", reverse("members.list", ), perm="members.change_member")
+LENDINGS = Item("Lendings", reverse('lendings.list'), perm="lendings.change_lending")
+RESERVATIONS = Item("Reservations", reverse('reservations.list'), perm="reservations.view_reservation", )
 
-HOLIDAYS = Item("Holidays", reverse("holiday.list"), required_perm="config.view_holiday")
+HOLIDAYS = Item("Holidays", reverse("holiday.list"), perm="config.view_holiday")
 SETTINGS = SuperMenu("Settings", HOLIDAYS)
 
-UPLOADS = Item("Uploads", reverse("list_uploads"), required_perm="public_pages.change_publicpage")
-WEB_PAGES = Item("Pages", reverse("list_pages"), required_perm="public_pages.view_publicpage")
+UPLOADS = Item("Uploads", reverse("list_uploads"), perm="public_pages.change_publicpage")
+WEB_PAGES = Item("Pages", reverse("list_pages"), perm="public_pages.view_publicpage")
 WEB_MANAGEMENT = SuperMenu("Web Management", UPLOADS, WEB_PAGES)
 
-NEW_WORK = Item("New Work", reverse('works.publication.new'), required_perm="works.add_publication")
-NEW_SERIES = Item("New Series", reverse("series.new"), required_perm="series.add_series")
-NEW_CREATOR = Item("New Author", reverse("creator.new"), required_perm="creators.change_creator")
+NEW_WORK = Item("New Work", reverse('works.publication.new'), perm="works.add_publication")
+NEW_SERIES = Item("New Series", reverse("series.new"), perm="series.add_series")
+NEW_CREATOR = Item("New Author", reverse("creator.new"), perm="creators.change_creator")
 INVENTARISATION = Item("Inventarisations", reverse("inventarisation.list"),
-                       required_perm="inventarisation.view_inventarisation")
-RECODE_LIST = Item("Recode List", reverse("recode.list"), required_perm="recode.view_recode")
-CODES = Item("Book Codes", reverse("book_code.code_list"), required_perm="works.change_work")
+                       perm="inventarisation.view_inventarisation")
+RECODE_LIST = Item("Recode List", reverse("recode.list"), perm="recode.view_recode")
+CODES = Item("Book Codes", reverse("book_code.code_list"), perm="works.change_work")
 CATALOG_MANAGEMENT = SuperMenu("Catalog Management", NEW_WORK, NEW_SERIES, NEW_CREATOR, INVENTARISATION, RECODE_LIST,
                                CODES)
 
-ANON_MEMBERS = Item("Anonymous Users", reverse("members.list.anon"), required_perm="members.view_member")
-MEMBER_STATS = Item("Member Statistics", reverse("datamining.membership_stats"), required_perm="members.view_member")
-LENDING_STATS = Item("Lending Statistics", reverse("datamining.lending_stats"), required_perm="works.view_work")
-MEMBER_LIST = Item("Member Filter", reverse("datamining.members"), required_perm="members.view_member")
-DATAMINING = SuperMenu("Datamining", ANON_MEMBERS, MEMBER_STATS, LENDING_STATS, MEMBER_LIST)
+ANON_MEMBERS = Item("Anonymous Users", reverse("members.list.anon"), perm="config.view_lendingsettings")
+MEMBER_STATS = Item("Member Statistics", reverse("datamining.membership_stats"), perm="config.view_lendingsettings")
+LENDING_STATS = Item("Lending Statistics", reverse("datamining.lending_stats"), perm="config.view_lendingsettings")
+MEMBER_LIST = Item("Member Filter", reverse("datamining.members"), perm="config.view_lendingsettings")
+DATAMINING = SuperMenu("Reporting", ANON_MEMBERS, MEMBER_STATS, LENDING_STATS, MEMBER_LIST)
 
-DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), required_perm="docs.view_docs")
+DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), perm="works.view_work")
 
 top_bar = [
     ITEM_SEARCH,
@@ -113,5 +113,6 @@ def menu_with_only_right_permissions(items, perms):
             if len(it.items) > 0:
                 result.append(it)
         else:
-            result.append(item)
+            if item.is_visible(perms):
+                result.append(item)
     return result
