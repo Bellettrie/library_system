@@ -297,6 +297,7 @@ def delete_page(request, pk):
     return redirect('list_pages')
 
 
+@permission_required('public_pages.change_publicpage')
 def list_uploads(request):
     uploads = FileUpload.objects.all()
     return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})

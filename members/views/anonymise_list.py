@@ -22,8 +22,6 @@ def anonymise_list(request):
                 member.delete()
         except AnonymisationException as e:
             errors.append("{} {}".format(member, e))
-        else:
-            errors.append(member)
     if len(errors) > 0:
         return HttpResponse("<br/>".join(errors))
     return HttpResponseRedirect(reverse('members.list.anon'))

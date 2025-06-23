@@ -7,12 +7,13 @@ from django_components import Component, register, types
 
 from bellettrie_library_system import settings
 from bellettrie_library_system.base_settings import GET_MENU
+from components.navbar.menu import menu_with_only_right_permissions, top_bar
 
 
 @register("navbar.Item")
 class Item(Component):
 
-    def get_context_data(self, text, my_url, *args, location="aaa", perm=None, extra_classes="", **kwargs):
+    def get_context_data(self, text, my_url, *args, location="aaa", extra_classes="", **kwargs):
         # skip absolute urls
         if not (my_url == "" or my_url.startswith("/") or my_url.startswith("https://")):
             my_url = reverse(my_url, args=args)
@@ -20,7 +21,6 @@ class Item(Component):
             "my_url": my_url,
             "text": text,
             "location": location,
-            "perm": perm,
             "extra_classes": extra_classes,
         }
 
@@ -37,12 +37,9 @@ class Item(Component):
 class Navbar(Component):
     template_name = "navbar/navbar.html"
 
-    def get_context_data(self, menu=None):
-        if menu is None:
-            menu = []
-
+    def get_context_data(self, perms):
         return {
-            "menu_buttons": menu,
+            "menu_buttons": menu_with_only_right_permissions(top_bar, perms),
             "logo_debug": settings.UPSIDE_DOWN,
             "logo_name": settings.LIBRARY_NAME,
             "logo_image": settings.LIBRARY_IMAGE_URL,
