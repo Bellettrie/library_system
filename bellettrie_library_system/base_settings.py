@@ -81,7 +81,6 @@ TEMPLATES = [
             )],
             'builtins': [
                 'bellettrie_library_system.templatetags.paginator_tag',
-                'bellettrie_library_system.templatetags.menu_data',
 
                 'django_components.templatetags.component_tags',
             ],
@@ -133,6 +132,7 @@ LOGOUT_REDIRECT_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/'
 
 
+# This is still in use in the bootstrap template.
 def GET_MENU():
     from config.menu import MenuItem
 

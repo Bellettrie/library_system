@@ -1,4 +1,4 @@
-/*! tailwindcss v4.1.8 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
@@ -2681,51 +2681,6 @@
       box-shadow: 0 2px 3px -1px color-mix(in oklab, currentColor calc(var(--depth) * 100%), #0000);
     }
   }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: calc(0.25rem * 2);
-    border-radius: var(--radius-selector);
-    vertical-align: middle;
-    color: var(--badge-fg);
-    border: var(--border) solid var(--badge-color, var(--color-base-200));
-    font-size: 0.875rem;
-    width: fit-content;
-    padding-inline: calc(0.25rem * 3 - var(--border));
-    background-size: auto, calc(var(--noise) * 100%);
-    background-image: none, var(--fx-noise);
-    background-color: var(--badge-bg);
-    --badge-bg: var(--badge-color, var(--color-base-100));
-    --badge-fg: var(--color-base-content);
-    --size: calc(var(--size-selector, 0.25rem) * 6);
-    height: var(--size);
-    &.badge-outline {
-      --badge-fg: var(--badge-color);
-      --badge-bg: #0000;
-      background-image: none;
-      border-color: currentColor;
-    }
-    &.badge-dash {
-      --badge-fg: var(--badge-color);
-      --badge-bg: #0000;
-      background-image: none;
-      border-color: currentColor;
-      border-style: dashed;
-    }
-    &.badge-soft {
-      color: var(--badge-color, var(--color-base-content));
-      background-color: var(--badge-color, var(--color-base-content));
-      @supports (color: color-mix(in lab, red, red)) {
-        background-color: color-mix( in oklab, var(--badge-color, var(--color-base-content)) 8%, var(--color-base-100) );
-      }
-      border-color: var(--badge-color, var(--color-base-content));
-      @supports (color: color-mix(in lab, red, red)) {
-        border-color: color-mix( in oklab, var(--badge-color, var(--color-base-content)) 10%, var(--color-base-100) );
-      }
-      background-image: none;
-    }
-  }
   .tabs {
     display: flex;
     flex-wrap: wrap;
@@ -3046,8 +3001,20 @@
   .w-16 {
     width: calc(var(--spacing) * 16);
   }
+  .w-18 {
+    width: calc(var(--spacing) * 18);
+  }
+  .w-20 {
+    width: calc(var(--spacing) * 20);
+  }
   .w-24 {
     width: calc(var(--spacing) * 24);
+  }
+  .w-30 {
+    width: calc(var(--spacing) * 30);
+  }
+  .w-40 {
+    width: calc(var(--spacing) * 40);
   }
   .w-52 {
     width: calc(var(--spacing) * 52);
@@ -3118,6 +3085,9 @@
   .border-collapse {
     border-collapse: collapse;
   }
+  .transform {
+    transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  }
   .link {
     cursor: pointer;
     text-decoration-line: underline;
@@ -3172,9 +3142,6 @@
   }
   .gap-5 {
     gap: calc(var(--spacing) * 5);
-  }
-  .gap-10 {
-    gap: calc(var(--spacing) * 10);
   }
   .gap-12 {
     gap: calc(var(--spacing) * 12);
@@ -3854,6 +3821,11 @@
       height: 100%;
     }
   }
+  .xl\:w-auto {
+    @media (width >= 80rem) {
+      width: auto;
+    }
+  }
   .xl\:w-full {
     @media (width >= 80rem) {
       width: 100%;
@@ -3867,6 +3839,11 @@
   .xl\:pt-0 {
     @media (width >= 80rem) {
       padding-top: calc(var(--spacing) * 0);
+    }
+  }
+  .\32 xl\:w-auto {
+    @media (width >= 96rem) {
+      width: auto;
     }
   }
   .\[\.btn\&\]\:text-black {
@@ -4129,6 +4106,26 @@
     --noise: 0;
   }
 }
+@property --tw-rotate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-z {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-y {
+  syntax: "*";
+  inherits: false;
+}
 @property --tw-divide-y-reverse {
   syntax: "*";
   inherits: false;
@@ -4211,6 +4208,11 @@
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
+      --tw-rotate-x: initial;
+      --tw-rotate-y: initial;
+      --tw-rotate-z: initial;
+      --tw-skew-x: initial;
+      --tw-skew-y: initial;
       --tw-divide-y-reverse: 0;
       --tw-border-style: solid;
       --tw-font-weight: initial;
