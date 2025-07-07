@@ -16,7 +16,7 @@ from search.queries import filter_state, filter_book_code_get_q, \
 from utils.get_query_words import get_query_words
 from utils.wrappers import hx_wrap
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
-from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
+from works.models import Work, Item, ItemState, WorkInPublication, \
     Category
 
 
@@ -36,7 +36,7 @@ def get_works(request):
     categories = request.GET.getlist('q_categories', [])
     states = request.GET.getlist('q_states', [])
 
-    query = Publication.objects
+    query = Work.objects
     any_query = False
     # If one word, also check bookcodes
     if len(words) == 1:
@@ -101,7 +101,7 @@ class WorkList(ListView):
 
 class WorkDetail(DetailView):
     template_name = 'works/publication_view.html'
-    model = Publication
+    model = Work
 
 
 def create_item_state_hx(request, item_id):
@@ -273,7 +273,6 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
     num = 0
     disp_num = ''
     if request.method == 'POST':
-
         if subwork_id is not None:
             publication = get_object_or_404(WorkInPublication, pk=subwork_id)
             num = publication.number_in_publication
