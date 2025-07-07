@@ -6,7 +6,7 @@ from django.db.models import CASCADE
 from book_code_generation.helpers import normalize_str
 from creators.models import Creator
 from series.models import Series
-from works.models import Work, SubWork
+from works.models import Work
 
 
 class SearchWord(models.Model):
@@ -187,14 +187,14 @@ class SeriesWordMatch(WordMatch):
 
 
 class SubWorkWordMatch(WordMatch):
-    sub_work = models.ForeignKey(SubWork, on_delete=CASCADE)
+    sub_work = models.ForeignKey(Work, on_delete=CASCADE)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.type = "SUBWORK"
 
     @staticmethod
-    def get_all_for_subwork(work: Work, sub_work: SubWork, words):
+    def get_all_for_subwork(work: Work, sub_work: Work, words):
         for word in get_words_in_str(sub_work.article):
             SubWorkWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, sub_work=sub_work)
         for word in get_words_in_str(sub_work.original_language):

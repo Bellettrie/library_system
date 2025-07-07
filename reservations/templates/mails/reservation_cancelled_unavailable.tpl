@@ -9,7 +9,7 @@
 
     You had a reservation on the following book:
 
-    {{ item.display_code}}: {{item.publication.title}}
+    {{ item.display_code}}: {{item.work.title}}
 
     However, this item has been registered as unavailable for lending.
     This may be due to the book being either defective, or missing.
@@ -31,7 +31,7 @@ You had a reservation on the following book: <br />
     <table>
         <tr><th>Book Code</th><th>Title</th></tr>
         {%for lending in lendings %}
-            <tr><td>{{item.display_code}}</td><td>{{item.publication.title}} </td></tr>
+            <tr><td>{{item.display_code}}</td><td>{{item.work.title}} </td></tr>
         {% endfor %}
     </table>
     However, this item has been registered as unavailable for lending.<br>

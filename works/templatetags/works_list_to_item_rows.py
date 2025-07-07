@@ -28,25 +28,25 @@ class ItemRow(Row):
 
 
 class NoItemRow(Row):
-    def __init__(self, publication: Work):
+    def __init__(self, work: Work):
         super().__init__()
-        self.publication = publication
+        self.work = work
 
     def get_item(self) -> Item:
-        return Item(publication=self.publication)
+        return Item(work=self.work)
 
     def is_item(self):
         return False
 
 
 @register.simple_tag
-def get_item_rows_for_publications(publications: List[Work]):
+def get_item_rows_for_publications(works: List[Work]):
     rows = []
-    for publication in publications:
+    for work in works:
         its = False
-        for item in publication.item_set.all():
+        for item in work.item_set.all():
             rows.append(ItemRow(item))
             its = True
         if not its:
-            rows.append(NoItemRow(publication))
+            rows.append(NoItemRow(work))
     return rows

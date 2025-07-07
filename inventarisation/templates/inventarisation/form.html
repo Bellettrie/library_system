@@ -15,7 +15,7 @@
             {% for row in rows %}
                 {% with row.item as item %}
                     <tr>
-                        <td style="font-size:10px">{{ item.publication.get_authors.0.creator.name|truncatechars:20 }}</td>
+                        <td style="font-size:10px">{{ item.work.get_authors.0.creator.name|truncatechars:20 }}</td>
                         <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
                         <td style="font-size:10px">{{ item.display_code }}</td>
                         <td style="font-size:10px">{{ row.prev_state }}{% if item.is_lent_out %} (LENT){% endif %}</td>
