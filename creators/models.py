@@ -36,24 +36,24 @@ class Creator(models.Model):
 
     def get_all_items(self):
         result = []
-        from works.models import Item, Publication
+        from works.models import Item, Work
         creators = set(Creator.objects.filter(is_alias_of_id=self.id))
         creators.add(self)
         if self.is_alias_of:
             creators.add(self.is_alias_of)
-        for work in Publication.objects.filter(creatortowork__creator__in=creators):
+        for work in Work.objects.filter(creatortowork__creator__in=creators):
             for item in Item.objects.filter(publication=work):
                 result.append(item)
         return result
 
     def get_all_publications(self):
         result = []
-        from works.models import Item, Publication
+        from works.models import Item
         creators = set(Creator.objects.filter(is_alias_of_id=self.id))
         creators.add(self)
         if self.is_alias_of:
             creators.add(self.is_alias_of)
-        for work in Publication.objects.filter(creatortowork__creator__in=creators):
+        for work in Work.objects.filter(creatortowork__creator__in=creators):
             result.append(work)
         for creator in creators:
             for s in creator.get_all_series():
@@ -99,7 +99,7 @@ class Creator(models.Model):
                     new_recode += 1
                 else:
                     non_automa += 1
-        return (new_recode, old_recode, non_automa)
+        return new_recode, old_recode, non_automa
 
 
 class CreatorRole(models.Model):
@@ -154,13 +154,13 @@ def relabel_creator(creator, location, old_number, old_letter, new_number, new_l
         if creatorn != creator:
             relabel_creator(creatorn, location, old_number, old_letter, new_number, new_letter)
     from series.models import WorkInSeries
-    from works.models import Publication, Item
+    from works.models import Item
     items = creator.get_all_items()
     location_code = location.category.code
     for item in items:
         if item.location != location:
             items.remove(item)
-        if item.publication.get_authors()[0].creator != creator:
+        if item.work.get_authors()[0].creator != creator:
             if item in items:
                 items.remove(item)
     import re
@@ -190,7 +190,7 @@ def relabel_creator(creator, location, old_number, old_letter, new_number, new_l
         for series in series_handle_list:
             to_handle = True
             for work_in_series in WorkInSeries.objects.filter(part_of_series=series, is_primary=True):
-                items = Item.objects.filter(publication__workinseries=work_in_series)
+                items = Item.objects.filter(work__workinseries=work_in_series)
                 for item in items:
                     update_item(item, pattern, old_prefix, new_prefix)
             if series.part_of_series:

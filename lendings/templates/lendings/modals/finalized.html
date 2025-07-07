@@ -2,7 +2,7 @@
 
 {% block content %}
     {% component 'modalform.ModalForm' title='Book lent out' path=request.path form_action="close" %}
-        <a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a> may keep {{ item.publication.title }}
+        <a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a> may keep {{ item.work.title }}
         until: {{ date }}
     {% endcomponent %}
 {% endblock %}

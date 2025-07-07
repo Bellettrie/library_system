@@ -9,7 +9,7 @@
 
     A book you have reserved is now returned, and you can come to pick it up.
 
-    {{ item.display_code}}: {{item.publication.title}}
+    {{ item.display_code}}: {{item.work.title}}
 
     After 14  days this reservation will automatically be cancelled, to give others a chance to read it as well.
 
@@ -30,7 +30,7 @@
     <table>
         <tr><th>Book Code</th><th>Title</th></tr>
         {%for lending in lendings %}
-            <tr><td>{{item.display_code}}</td><td>{{item.publication.title}} </td></tr>
+            <tr><td>{{item.display_code}}</td><td>{{item.work.title}} </td></tr>
         {% endfor %}
     </table><br>
     After 14  days this reservation will automatically be cancelled, to give others a chance to read it as well.<br>

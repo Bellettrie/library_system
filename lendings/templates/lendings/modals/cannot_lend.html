@@ -3,13 +3,13 @@
     {% component 'modalform.ModalForm' title='Cannot lend item' path=request.path form_action="close" %}
         {% if member %}
             {% if item %}
-                Member {{ member.name }} cannot lend {{ item.publication.name }} right now.
+                Member {{ member.name }} cannot lend {{ item.work.name }} right now.
             {% else %}
                 Member {{ member.name }} cannot lend right now.
             {% endif %}
         {% else %}
             {% if item %}
-                Item {{ item.publication.name }} cannot be lentout
+                Item {{ item.work.name }} cannot be lentout
                 <hr>
             {% else %}
                 Something went wrong while lending.

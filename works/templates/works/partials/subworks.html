@@ -15,12 +15,12 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if work.work.title %}{{ work.work.get_title }} {% if work.work.sub_title %}<br/>
-                                        <i>-{{ work.work.sub_title }}</i>{% endif %}{% else %}
+                                    {% if work.child.title %}{{ work.child.get_title }} {% if work.child.sub_title %}<br/>
+                                        <i>-{{ work.child.sub_title }}</i>{% endif %}{% else %}
                                         <i>No Title</i> {% endif %}
                                 </td>
                                 <td>
-                                    {% for author in work.work.get_own_authors %}
+                                    {% for author in work.child.get_own_authors %}
                                         {% include 'creators/single_line_description.html' %}
                                         {% if not forloop.last %}<br/>{% endif %}{% empty %}{% endfor %}
                                 </td>

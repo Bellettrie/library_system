@@ -30,7 +30,7 @@ The modal must always contain the information required for the user to do their 
     {% component 'modalform.ModalForm' title='Extend Item' path=request.path %}
         {% fill "modal_body" %}
 
-            Extending work: {{ item.publication.title }} <br/>
+            Extending work: {{ item.work.title }} <br/>
             Extending for member: {{ member.name }} <br/>
             End date {{ date }} <br/>
         {% endfill %}

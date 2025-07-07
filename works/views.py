@@ -15,7 +15,7 @@ from search.queries import filter_state, filter_book_code_get_q, \
 
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
-from works.models import Work, Item, ItemState, WorkInPublication, \
+from works.models import Work, Item, ItemState, WorkRelation, \
     Category
 
 
@@ -118,7 +118,7 @@ def create_item_state(request, item_id, hx_enabled=False):
             instance.save()
             if hx_enabled:
                 return HttpResponse(status=209, headers={"HX-Refresh": "true"})
-            return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
+            return HttpResponseRedirect(reverse('work.view', args=(instance.item.work.pk,)))
     else:
         form = ItemStateCreateForm()
     return render(request, 'works/modals/item_state_edit.html',
@@ -175,7 +175,7 @@ def item_edit(request, item_id):
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'works/item_edit.html',
-                  {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode,
+                  {'edit': True, 'form': form, 'publication': item.work, 'edit': True, 'recode': recode,
                    'recode_book_code': recode_book_code,
                    'recode_book_code_extension': recode_book_code_extension})
 
@@ -272,7 +272,7 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
     disp_num = ''
     if request.method == 'POST':
         if subwork_id is not None:
-            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+            publication = get_object_or_404(WorkRelation, pk=subwork_id)
             num = publication.number_in_publication
             disp_num = publication.display_number_in_publication
             form = SubWorkCreateForm(request.POST, instance=publication.work)
@@ -298,18 +298,18 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
 
             if subwork_id is None:
                 pub = get_object_or_404(Publication, id=publication_id)
-                publication = WorkInPublication.objects.create(work=instance, publication=pub,
-                                                               number_in_publication=num,
-                                                               display_number_in_publication=disp_num)
+                publication = WorkRelation.objects.create(work=instance, publication=pub,
+                                                          number_in_publication=num,
+                                                          display_number_in_publication=disp_num)
             else:
                 publication.number_in_publication = num
                 publication.display_number_in_publication = disp_num
                 publication.save()
 
-            return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
+            return HttpResponseRedirect(reverse('work.view', args=(publication.work_id,)))
     else:
         if subwork_id is not None:
-            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+            publication = get_object_or_404(WorkRelation, pk=subwork_id)
             num = publication.number_in_publication
             disp_num = publication.display_number_in_publication
             creator_to_works = CreatorToWorkFormSet(instance=publication.work)
@@ -331,11 +331,11 @@ def subwork_new(request, publication_id):
 @transaction.atomic
 @permission_required('works.add_publication')
 def subwork_delete(request, subwork_id):
-    publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+    publication = get_object_or_404(WorkRelation, pk=subwork_id)
 
     if request.GET.get('confirm'):
         work = publication.work
         publication.delete()
         work.delete()
-        return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
+        return HttpResponseRedirect(reverse('work.view', args=(publication.work_id,)))
     return render(request, 'are-you-sure.html', {'what': 'delete the subwork ' + publication.work.get_title() + "?"})

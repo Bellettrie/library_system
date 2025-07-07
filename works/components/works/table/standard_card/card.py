@@ -7,7 +7,7 @@ from works.models import Item
 class Card(Component):
     def get_context_data(self, item: Item, perms) -> dict:
         code = item.book_code
-        authors = item.publication.get_authors()
+        authors = item.work.get_authors()
 
         authors = authors[:1]
         return {

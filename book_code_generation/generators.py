@@ -7,7 +7,7 @@ from creators.models import CreatorLocationNumber
 
 # Generate a book_code for an item (or series).
 def generate_code_from_author(item):
-    pub = item.publication
+    pub = item.work
     auth = pub.get_authors()
     if len(auth) > 0:
         author = auth[0].creator
@@ -27,11 +27,11 @@ def generate_code_from_author(item):
 
 # Generate a code for a translated item.
 def generate_code_from_author_translated(item):
-    pub = item.publication
+    pub = item.work
     prefix = "N"
     if pub.is_translated:
         prefix = "V"
-    auth = item.publication.get_authors()
+    auth = item.work.get_authors()
 
     if len(auth) > 0:
         author = auth[0].creator
@@ -56,7 +56,7 @@ def generate_code_abc(item):
 
 # Get code prefix for ABC-books.
 def generate_code_abc_translated(item):
-    pub = item.publication
+    pub = item.work
     prefix = "N"
     if pub.is_translated:
         prefix = "V"
@@ -65,7 +65,7 @@ def generate_code_abc_translated(item):
 
 # Generate code based on title.
 def generate_code_from_title(item):
-    title = item.publication.title[0:4].upper()
+    title = item.work.title[0:4].upper()
     if item.location.category.code == "":
         return title, True
     else:
