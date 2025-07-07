@@ -103,8 +103,18 @@ class Work(NamedTranslatableThing):
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
 
+    def get_publication_id(self):
+        pub =self.get_pub()
+        if pub:
+            return pub.id
+
+        sw =  WorkInPublication.objects.filter(work=self)
+        if len(sw) > 0:
+            return sw[0].publication_id
+        return None
+
     def get_pub(self):
-        a = Publication.objects.filter(id=self.id)
+        a = Work.objects.filter(id=self.id)
         if len(a) == 1:
             return a[0]
         return None
@@ -127,6 +137,7 @@ class Work(NamedTranslatableThing):
             authors.append(link)
         for serie in WorkInSeries.objects.filter(work_id=self.id, is_primary=True):
             authors = serie.get_authors() + authors
+
         author_set = list()
         for author in authors:
             add = True
@@ -157,13 +168,16 @@ class Work(NamedTranslatableThing):
         author_set.sort(key=lambda a: a.number)
         return author_set
 
+    def is_orphaned(self):
+        return len(self.subwork_set) == 0
 
-class Publication(Work):
-    def is_simple_publication(self):
-        return len(self.workinpublication_set) == 0
+    def is_part_of_multiple(self):
+        return len(self.subwork_set) > 1
 
     def get_items(self):
-        return Item.objects.annotate(available=RawSQL("SELECT coalesce(works_itemstate.type, 'AVAILABLE')= 'AVAILABLE' FROM  works_itemstate WHERE works_itemstate.item_id=works_item.id ORDER BY works_itemstate.date_time DESC LIMIT 1", [])).order_by("-available").filter(publication_id=self.id)
+        items =  Item.objects.annotate(available=RawSQL("SELECT coalesce(works_itemstate.type, 'AVAILABLE')= 'AVAILABLE' FROM  works_itemstate WHERE works_itemstate.item_id=works_item.id ORDER BY works_itemstate.date_time DESC LIMIT 1", [])).order_by("-available").filter(publication_id=self.id)
+        print(items)
+        return items
 
     def get_lend_item(self):
         for item in self.get_items():
@@ -228,7 +242,7 @@ class Publication(Work):
 class Item(NamedThing, BookCode):
     old_id = models.IntegerField(null=True)
     location = models.ForeignKey(Location, on_delete=PROTECT)
-    publication = models.ForeignKey(Publication, on_delete=PROTECT)
+    publication = models.ForeignKey(Work, on_delete=PROTECT)
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
     isbn13 = models.CharField(max_length=64, null=True, blank=True)
     pages = models.CharField(null=True, blank=True, max_length=32)
@@ -275,10 +289,10 @@ class Item(NamedThing, BookCode):
         return get_object_or_404(Lending, item_id=self.id, handed_in=False)
 
     def current_lending(self):
-        lndngs = Lending.objects.filter(item_id=self.id, handed_in=False)
-        if len(lndngs) != 1:
+        lendings = Lending.objects.filter(item_id=self.id, handed_in=False)
+        if len(lendings) != 1:
             return None
-        return lndngs[0]
+        return lendings[0]
 
     def get_title(self):
         return self.title or self.publication.title
@@ -372,22 +386,9 @@ class ItemState(models.Model):
         return self.type
 
 
-class SubWork(Work, TranslatedThing):
-    def is_orphaned(self):
-        return len(self.workinpublication_set) == 0
-
-    def is_part_of_multiple(self):
-        return len(self.workinpublication_set) > 1
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        from search.models import SubWorkWordMatch
-        SubWorkWordMatch.subwork_rename(self)
-
-
 class WorkInPublication(models.Model):
-    publication = models.ForeignKey(Publication, on_delete=PROTECT)
-    work = models.ForeignKey(SubWork, on_delete=PROTECT)
+    publication = models.ForeignKey(Work, on_delete=PROTECT, related_name="parent_set")
+    work = models.ForeignKey(Work, on_delete=PROTECT, related_name="subwork_set")
     number_in_publication = models.IntegerField()
     display_number_in_publication = models.CharField(max_length=64)
     unique_together = ('work', 'publication')

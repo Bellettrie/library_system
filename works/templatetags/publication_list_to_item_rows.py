@@ -1,7 +1,7 @@
 from typing import List
 from bellettrie_library_system.templatetags.paginator_tag import register
 
-from works.models import Item, Publication
+from works.models import Item, Work
 
 
 class Row:
@@ -28,7 +28,7 @@ class ItemRow(Row):
 
 
 class NoItemRow(Row):
-    def __init__(self, publication: Publication):
+    def __init__(self, publication: Work):
         super().__init__()
         self.publication = publication
 
@@ -40,7 +40,7 @@ class NoItemRow(Row):
 
 
 @register.simple_tag
-def get_item_rows_for_publications(publications: List[Publication]):
+def get_item_rows_for_publications(publications: List[Work]):
     rows = []
     for publication in publications:
         its = False
