@@ -52,6 +52,10 @@
                         All Done!
                     {% endfill %}
                     {% fill "content" %}
+                        {% if warning %}
+                            <label style="color:red;font-size:24px;" for="make_anyway">Make anyway?</label>
+                            <input type="checkbox" id="make_anyway" name="make_anyway" value="true"><br>
+                        {% endif %}
                         <input type="submit" value="Save Member" class="btn btn-success btn-wide btn-2xl">
                     {% endfill %}
                 {% endcomponent %}

@@ -46,13 +46,16 @@ def new(request):
                 instance.update_groups()
             return HttpResponseRedirect(reverse('members.view', args=(instance.pk, 0,)))
         else:
-            if member is not None:
+            md_form = MembershipPeriodForm(request.POST)
+            p_form = PrivacyForm(request.POST)
+            if not request.POST.get('end_date'):
+                md_form.add_error('end_date', 'This field is required.')
+            if member is not None and not 'make_anyway' in request.POST:
                 return render(request, 'members/edit.html',
-                              {'form': form, 'warning': member,
-                               'md_form': MembershipPeriodForm(request.POST), 'new': True})
+                              {'form': form, 'warning': member, 'md_form': md_form, 'privacy_form': p_form,
+                                        'new': True})
             return render(request, 'members/edit.html',
-                          {'form': form, 'error': "No end date specified",
-                           'md_form': MembershipPeriodForm(request.POST), 'new': True})
+                          {'form': form, 'md_form': md_form, 'privacy_form': p_form, 'new': True})
     else:
         form = EditForm(can_change, edit_dms)
     md_form = MembershipPeriodForm(initial={'start_date': get_today(),
