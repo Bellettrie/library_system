@@ -50,10 +50,10 @@ def new(request):
             p_form = PrivacyForm(request.POST)
             if not request.POST.get('end_date'):
                 md_form.add_error('end_date', 'This field is required.')
-            if member is not None and not 'make_anyway' in request.POST:
+            if member is not None and 'make_anyway' not in request.POST:
                 return render(request, 'members/edit.html',
                               {'form': form, 'warning': member, 'md_form': md_form, 'privacy_form': p_form,
-                                        'new': True})
+                               'new': True})
             return render(request, 'members/edit.html',
                           {'form': form, 'md_form': md_form, 'privacy_form': p_form, 'new': True})
     else:
