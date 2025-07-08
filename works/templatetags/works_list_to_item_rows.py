@@ -16,12 +16,16 @@ class Row:
 
 
 class ItemRow(Row):
-    def __init__(self, item: Item):
+    def __init__(self, item: Item, work: Work):
         super().__init__()
         self.item = item
+        self.work = work
 
     def get_item(self) -> Item:
         return self.item
+
+    def get_work(self):
+        return self.work
 
     def is_item(self):
         return True
@@ -35,6 +39,9 @@ class NoItemRow(Row):
     def get_item(self) -> Item:
         return Item(work=self.work)
 
+    def get_work(self):
+        return self.work
+
     def is_item(self):
         return False
 
@@ -44,8 +51,8 @@ def get_item_rows_for_publications(works: List[Work]):
     rows = []
     for work in works:
         its = False
-        for item in work.item_set.all():
-            rows.append(ItemRow(item))
+        for item in work.get_items():
+            rows.append(ItemRow(item, work))
             its = True
         if not its:
             rows.append(NoItemRow(work))
