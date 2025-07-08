@@ -84,3 +84,86 @@
 @plugin "@tailwindcss/typography";
 /*register frontend directory*/
 @source "../../**/*.html";
+
+body {
+	background: #f0f0f0;
+	font: normal normal 13px/1.4 Segoe, "Segoe UI", Calibri, Helmet, FreeSans, Sans-Serif;
+}
+
+.series_tree ul {
+	padding: 0;
+	list-style: none;
+	color: #369;
+	position: relative;
+}
+
+.series_tree:before, .series_tree ul:before {
+	content: "";
+	display: block;
+	width: 0px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	border-left: 1px solid;
+	background: #f0f0f0;
+}
+
+.series_tree li {
+	font-weight: bold;
+	line-height: 1.2em;
+	margin: 0;
+	padding: 0.8em 0 0 .5em;
+	position: relative;
+}
+
+.series_tree li:before {
+	border-top: 1px solid;
+	content: "";
+	display: block;
+	height: 100%;
+	left: 0;
+	margin-top: 1em;
+	position: absolute;
+	top: 0.3em;
+	width: .5em;
+}
+
+.series_tree li:last-child:before {
+	background: var(--color-base-100);
+	bottom: 0;
+	height: auto;
+	top: 0.3em;
+}
+
+.series_tree > li:before {
+	border-top: none !important;
+}
+
+.series_tree li div {
+	border-radius: 5px;
+	border: 1px solid #afafaf;
+	margin: 0;
+	max-width: 30em;
+	min-width: 15em;
+	padding: 0.1em 0.2em;
+	background: #f0f0f0;
+	box-shadow: 1px 1px 4px #8F949A;
+	color: #369;
+	font-weight: bold;
+}
+
+ul.series_tree {
+	margin-left: 0px;
+}
+
+ul.series_tree:before {
+	border-left: none;
+}
+
+.sticky {
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0px;
+	width: 100%;
+}
