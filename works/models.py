@@ -1,9 +1,11 @@
 from datetime import datetime
 from django.db import models
 
-from django.db.models import PROTECT, CASCADE, Q
-from django.db.models.expressions import RawSQL
+from django.db.models import PROTECT, CASCADE, Q, IntegerField, TextField
+from django.db.models.expressions import RawSQL, Value, F
+from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
+from django_cte import with_cte, CTE
 
 from book_code_generation.models import FakeItem, CutterCodeRange, BookCode
 from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, \
@@ -175,8 +177,22 @@ class Work(NamedTranslatableThing):
         return len(self.subwork_set) > 1
 
     def get_items(self):
-        items =  Item.objects.annotate(available=RawSQL("SELECT coalesce(works_itemstate.type, 'AVAILABLE')= 'AVAILABLE' FROM  works_itemstate WHERE works_itemstate.item_id=works_item.id ORDER BY works_itemstate.date_time DESC LIMIT 1", [])).order_by("-available").filter(work_id=self.id)
-        print(items)
+        super_work_ids =  WorkRelation.objects.raw('''
+    WITH RECURSIVE works_relation_recursion(id, parent_id, child_id) AS (
+          SELECT id, parent_id, child_id 
+          FROM works_workrelation
+          WHERE child_id = %s
+        UNION ALL
+          SELECT sm.id, sm.parent_id, sm.child_id
+          FROM works_relation_recursion AS sm, works_workrelation AS t
+          WHERE sm.child_id = t.parent_id
+        )
+    SELECT * FROM works_relation_recursion
+''', [self.id])
+        ids = [self.id]
+        for super_work_id in super_work_ids:
+            ids.append(super_work_id.parent_id)
+        items =  Item.objects.annotate(available=RawSQL("SELECT coalesce(works_itemstate.type, 'AVAILABLE')= 'AVAILABLE' FROM  works_itemstate WHERE works_itemstate.item_id=works_item.id ORDER BY works_itemstate.date_time DESC LIMIT 1", [])).order_by("-available").filter(work_id__in=ids)
         return items
 
     def get_lend_item(self):
@@ -388,6 +404,8 @@ class ItemState(models.Model):
 
 
 class WorkRelation(models.Model):
+   
+
     parent = models.ForeignKey(Work, on_delete=PROTECT, related_name="relation_parent_set")
     child = models.ForeignKey(Work, on_delete=PROTECT, related_name="relation_child_set")
     number_in_publication = models.IntegerField()
@@ -417,3 +435,4 @@ class CreatorToWork(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.work.update_listed_author()
+
