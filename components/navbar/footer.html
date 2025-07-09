@@ -1,7 +1,7 @@
 <footer class="footer flex-none flex flex-col lg:flex-row w-full bg-neutral gap-3 lg:gap-10 text-neutral-content p-10 ">
     {% for group  in footer_items %}
         <nav class="flex-1">
-            <h6 class="footer-title">Our Organisation</h6>
+            <h6 class="footer-title">{{ group.label }}</h6>
             {% for  item in group.items %}
                 <a {% if item.url %}href="{{ item.url }}"{% endif %}class="link link-hover">{{ item.label }}</a>
             {% endfor %}

@@ -24,7 +24,7 @@ CROSS_LOGIN_KEY = env("CROSS_LOGIN_KEY", default='XP6kvnD5NQN3lL0zyjPeQumogu8y3Y
 CROSS_LOGIN_SECRET = env("CROSS_LOGIN_SECRET", default="VmYq3t6v")
 CROSS_LOGIN_TIMEOUT = env("CROSS_LOGIN_TIMEOUT", default=3600 * 2)
 
-STANDARD_PAGE_GROUP = env("STANDARD_PAGE_GROUP", default="v2")
+STANDARD_PAGE_GROUP = env("STANDARD_PAGE_GROUP", default="basic")
 
 DEBUG = env("DEBUG", default=True)
 UPSIDE_DOWN = env("UPSIDE_DOWN", default=True)

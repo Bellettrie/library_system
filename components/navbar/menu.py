@@ -96,8 +96,17 @@ sidebar = [
 ]
 
 footer = [
-    SuperMenu("Socials", Item("Hyves", None), Item("Insta", None), Item("Facebook", None)),
-    SuperMenu("Legal", Item("Nonsense", None))
+    SuperMenu(
+        "Our Association",
+        Item("Contact Us", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "home",))),
+        Item("Official Documents", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "about",))),
+        Item("Privacy Policy", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "privacy",)))),
+    SuperMenu(
+        "Internal Documentation",
+        Item("Documentation", reverse('named_page', args=("docs", "home",)), perm="works.view_work"),
+        Item("Website Source Code", "https://github.com/bellettrie/library_system", perm="works.view_work"),
+    ),
+
 ]
 
 
