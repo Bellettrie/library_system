@@ -121,7 +121,7 @@ class AuthorWordMatch(WordMatch):
             words = {}
             for word in SearchWord.objects.all():
                 words[word.word] = word
-        for creator in work.get_authors():
+        for creator in work.get_deduplicated_authors():
             AuthorWordMatch.get_all_for_author(work, creator.creator, words)
 
     @staticmethod
@@ -216,7 +216,7 @@ class SubWorkWordMatch(WordMatch):
                 words[word.word] = word
         for series in list(work.get_sub_works()):
             SubWorkWordMatch.get_all_for_subwork(work, series.work, words)
-            for author in series.get_authors():
+            for author in series.get_deduplicated_authors():
                 AuthorWordMatch.get_all_for_author(work, author.creator, words)
 
     @staticmethod

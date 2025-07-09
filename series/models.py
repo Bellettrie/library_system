@@ -1,3 +1,5 @@
+from typing import List
+
 from django.db import models
 
 # Create your models here.
@@ -31,7 +33,12 @@ class SeriesNode(models.Model):
             return WorkInSeries.objects.get(pk=self.pk)
         except WorkInSeries.DoesNotExist:
             return None
-
+    def __str__(self):
+        sr =  Series.objects.filter(pk=self.pk)
+        if len(sr) == 1:
+            return sr[0].title
+        else:
+            return "--"
 
 class Series(SeriesNode, NamedTranslatableThing, BookCode):
     book_code = models.CharField(max_length=16)  # Where in the library is it?
@@ -119,6 +126,23 @@ class WorkInSeries(SeriesNode):
     def get_authors(self):
         return self.part_of_series.get_authors()
 
+    @staticmethod
+    def get_all_recursive_for_work(work) -> List[SeriesNode]:
+        query = """
+ WITH RECURSIVE series_recursion(id, number, display_number, part_of_series_id)
+                   AS (SELECT id, number, display_number, part_of_series_id
+                       FROM series_seriesnode
+                                LEFT JOIN series_workinseries ON series_seriesnode.id = series_workinseries.seriesnode_ptr_id
+                       WHERE series_workinseries.work_id = %s
+                       UNION ALL
+                       SELECT t.id, t.number, t.display_number, t.part_of_series_id
+                       FROM series_recursion AS sm,
+                            series_seriesnode AS t
+                       WHERE sm.part_of_series_id = t.id)
+SELECT *
+FROM series_recursion
+        """
+        return list(SeriesNode.objects.raw(query, [work.id,]))
 
 class CreatorToSeries(models.Model):
     creator = models.ForeignKey("creators.Creator", on_delete=PROTECT)

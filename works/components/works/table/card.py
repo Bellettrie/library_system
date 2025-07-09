@@ -7,7 +7,7 @@ from works.models import Item
 class Card(Component):
     def get_context_data(self, item: Item, all_authors=False):
         code = item.book_code
-        authors = item.work.get_authors()
+        authors = item.work.get_deduplicated_authors()
         if not all_authors:
             authors = authors[:1]
         return {

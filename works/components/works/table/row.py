@@ -14,7 +14,7 @@ class Row(Component):
     # skip_header is used to tell the row to not render the item code column.
     def get_context_data(self, item: Item, all_authors=False, skip_header=False):
         code = item.book_code
-        authors = item.work.get_authors()
+        authors = item.work.get_deduplicated_authors()
         if not all_authors and len(authors) > 0:
             authors = authors[:1]
         return {
