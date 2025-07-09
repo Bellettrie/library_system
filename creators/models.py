@@ -160,7 +160,7 @@ def relabel_creator(creator, location, old_number, old_letter, new_number, new_l
     for item in items:
         if item.location != location:
             items.remove(item)
-        if item.work.get_authors()[0].creator != creator:
+        if item.work.get_deduplicated_authors()[0].creator != creator:
             if item in items:
                 items.remove(item)
     import re

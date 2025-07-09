@@ -20,7 +20,7 @@
                 {% endcomponent %}
             {% endif %}
             {% component "datarow.Datarow" "Authors" %}
-                {% for author in object.get_authors %}{% include 'creators/single_line_description.html' %}<br>
+                {% for author in object.get_deduplicated_authors %}{% include 'creators/single_line_description.html' %}<br>
                 {% endfor %}
             {% endcomponent %}
 

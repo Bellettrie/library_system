@@ -8,7 +8,7 @@ from creators.models import CreatorLocationNumber
 # Generate a book_code for an item (or series).
 def generate_code_from_author(item):
     pub = item.work
-    auth = pub.get_authors()
+    auth = pub.get_deduplicated_authors()
     if len(auth) > 0:
         author = auth[0].creator
         author_alias = author
@@ -31,7 +31,7 @@ def generate_code_from_author_translated(item):
     prefix = "N"
     if pub.is_translated:
         prefix = "V"
-    auth = item.work.get_authors()
+    auth = item.work.get_deduplicated_authors()
 
     if len(auth) > 0:
         author = auth[0].creator
