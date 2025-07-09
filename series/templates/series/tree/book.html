@@ -1,21 +1,22 @@
 {% with publication=work.work %}
- <li>
-     <div style="overflow:auto;">
-           <a href="/works/publication/{{ publication.pk }}"> {% if work.display_number %}{{ work.display_number }} - {% endif %}
-<a href="{% url 'work.view' publication.pk %}">{% if publication.article  %}{{ publication.article }}{% endif %} <i>{% if publication.title %}{{ publication.title }}{% else %}&lt;No Title&gt;{% endif %}</i></a>
-
-
-         <span style="float:right">   {%  for item in publication.get_pub.get_items%}
-         {{ item.book_code }} {{ item.book_code_extension }}<br>
-             {% endfor %}
+    <li class="ml-1 sm:ml-8">
+        <div style="overflow:auto;">
+            <a class="link link-secondary" href="/works/publication/{{ publication.pk }}">
+                {% if work.display_number %}{{ work.display_number }} - {% endif %}
+                <a class="link link-secondary truncate"  href="{% url 'work.view' publication.pk %}">
+                    {% if publication.article %}{{ publication.article }}{% endif %} <i>
+                    {% if publication.title %}{{ publication.title }}{% else %}&lt;No Title&gt;{% endif %}</i></a>
+                <span style="float:right">   {% for item in publication.get_pub.get_items %}
+                    {{ item.book_code }} {{ item.book_code_extension }}<br>
+                {% endfor %}
          </span>
+                {% for item in publication.get_pub.get_items %}
+                    <br>
+                {% endfor %}
 
-        {%  for item in publication.get_pub.get_items%}
-            <br>
-        {% endfor %}
-
-        {% for author in publication.get_own_authors %}{% include 'creators/single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
-        {% endfor %}
-    </div>
- </li>
+                {% for author in publication.get_own_authors %}{% include 'creators/single_line_description.html' %}
+                    {% if not forloop.last %}<br/>{% endif %}
+                {% endfor %}
+        </div>
+    </li>
 {% endwith %}
