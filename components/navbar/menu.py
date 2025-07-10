@@ -44,9 +44,6 @@ class Item:
     def is_visible(self, perms):
         return self.perm is None or self.perm in perms
 
-
-
-
 DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), perm="works.view_work")
 
 top_bar = [
