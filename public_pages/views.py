@@ -257,18 +257,17 @@ def new_named_page(request, page_name):
     if not can_edit:
         return HttpResponse("cannot edit")
     if request.method == 'POST':
-        form = PageEditForm(request.POST)
-        rights_form = PageAccessForm(request.POST)
-        edit_form = EditForm(request.POST)
+        instance = PublicPage.objects.create(group_id=page_group.id, name=request.POST['name'])
+        form = PageEditForm(request.POST, instance=instance)
+        rights_form = PageAccessForm(request.POST, instance=instance)
+        edit_form = EditForm(request.POST, instance=instance)
         if form.is_valid() and rights_form.is_valid() and edit_form.is_valid():
-            instance = form.save(commit=False)
-            rights_form.instance = instance
+            form.save()
             rights_form.save()
-            edit_form.instance = instance
             edit_form.save()
             return HttpResponseRedirect(reverse('named_page', args=(instance.group.name, instance.name)))
         else:
-            print("ERROR")
+            instance.delete()
     else:
         instance = PublicPage(group=page_group)
         form = PageEditForm(instance=instance)
