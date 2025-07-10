@@ -46,7 +46,6 @@ class Item:
 
 
 ITEM_SEARCH = Item("Book Search", reverse('homepage'))
-ACTIVITIES = Item("Our Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',)))
 BECOME_MEMBER = Item("Become Member", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',)))
 
 MEMBERS = Item("Members", reverse("members.list", ), perm="members.change_member")
@@ -80,7 +79,13 @@ DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), perm="works.v
 
 top_bar = [
     ITEM_SEARCH,
-    ACTIVITIES,
+    SuperMenu(
+        "Activities",
+        Item("Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',))),
+        Item("Writing", reverse('named_page', args=("writing", "home",))),
+        Item("Konnichiwa", reverse('named_page', args=("konnichiwa", "home",))),
+
+    ),
     BECOME_MEMBER,
 ]
 
