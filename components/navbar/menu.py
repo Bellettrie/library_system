@@ -103,7 +103,7 @@ sidebar = [
 footer = [
     SuperMenu(
         "Our Association",
-        Item("Contact Us", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "home",))),
+        Item("Contact Us", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "contact",))),
         Item("Official Documents", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "about",))),
         Item("Privacy Policy", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "privacy",)))),
     SuperMenu(
