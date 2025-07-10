@@ -45,7 +45,7 @@ class Item:
         return self.perm is None or self.perm in perms
 
 
-ITEM_SEARCH = Item("Book Search", reverse('homepage'))
+ITEM_SEARCH = Item("Book Search", reverse('works.list'))
 BECOME_MEMBER = Item("Become Member", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',)))
 
 MEMBERS = Item("Members", reverse("members.list", ), perm="members.change_member")
