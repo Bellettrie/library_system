@@ -44,6 +44,7 @@ class Item:
     def is_visible(self, perms):
         return self.perm is None or self.perm in perms
 
+
 DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), perm="works.view_work")
 
 top_bar = [
@@ -57,7 +58,6 @@ top_bar = [
     ),
     Item("Become Member", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',))),
 ]
-
 
 MEMBERS = Item("Members", reverse("members.list", ), perm="members.change_member")
 LENDINGS = Item("Lendings", reverse('lendings.list'), perm="lendings.change_lending")
