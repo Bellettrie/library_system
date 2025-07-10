@@ -16,7 +16,20 @@
     <div class="navbar-start hidden xl:flex xl:ml-5">
         <ul class="menu menu-horizontal px-1">
             {% for but in menu_buttons %}
-                {% component 'navbar.Item' but.label but.url location="top" / %}
+                {% if but.is_super %}
+                    <li>
+                        <details>
+                            <summary>{{ but.label }}</summary>
+                            <ul class="w-200">
+                                {% for but in but.items %}
+                                    <li><a href="{{ but.url }}">{{ but.label }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </details>
+                    </li>
+                {% else %}
+                    <li><a href="{{ but.url }}">{{ but.label }}</a></li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>

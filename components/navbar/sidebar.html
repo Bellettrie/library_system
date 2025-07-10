@@ -13,7 +13,7 @@
                         <li class="xl:hidden"></li>
                     {% else %}
                         {% if item.is_super %}
-                            <li>
+                            <li class="xl:hidden">
                                 <details>
                                     <summary>{{ item.label }}</summary>
                                     <ul>
@@ -24,7 +24,7 @@
                                 </details>
                             </li>
                         {% else %}
-                            <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+                            <li class="xl:hidden"><a href="{{ item.url }}">{{ item.label }}</a></li>
                         {% endif %}
                     {% endif %}
                 {% endfor %}

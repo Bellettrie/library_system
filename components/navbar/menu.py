@@ -46,7 +46,6 @@ class Item:
 
 
 ITEM_SEARCH = Item("Book Search", reverse('homepage'))
-ACTIVITIES = Item("Our Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',)))
 BECOME_MEMBER = Item("Become Member", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',)))
 
 MEMBERS = Item("Members", reverse("members.list", ), perm="members.change_member")
@@ -80,7 +79,13 @@ DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), perm="works.v
 
 top_bar = [
     ITEM_SEARCH,
-    ACTIVITIES,
+    SuperMenu(
+        "Activities",
+        Item("Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',))),
+        Item("Writing", reverse('named_page', args=("writing", "home",))),
+        Item("Konnichiwa", reverse('named_page', args=("konnichiwa", "home",))),
+
+    ),
     BECOME_MEMBER,
 ]
 
@@ -96,8 +101,17 @@ sidebar = [
 ]
 
 footer = [
-    SuperMenu("Socials", Item("Hyves", None), Item("Insta", None), Item("Facebook", None)),
-    SuperMenu("Legal", Item("Nonsense", None))
+    SuperMenu(
+        "Our Association",
+        Item("Contact Us", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "home",))),
+        Item("Official Documents", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "about",))),
+        Item("Privacy Policy", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "privacy",)))),
+    SuperMenu(
+        "Internal Documentation",
+        Item("Documentation", reverse('named_page', args=("docs", "home",)), perm="works.view_work"),
+        Item("Website Source Code", "https://github.com/bellettrie/library_system", perm="works.view_work"),
+    ),
+
 ]
 
 
