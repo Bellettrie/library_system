@@ -45,8 +45,22 @@ class Item:
         return self.perm is None or self.perm in perms
 
 
-ITEM_SEARCH = Item("Book Search", reverse('works.list'))
-BECOME_MEMBER = Item("Become Member", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',)))
+
+
+DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), perm="works.view_work")
+
+top_bar = [
+    Item("Book Search", reverse('works.list')),
+    SuperMenu(
+        "Activities",
+        Item("Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',))),
+        Item("Writing", reverse('named_page', args=("writing", "home",))),
+        Item("Konnichiwa", reverse('named_page', args=("konnichiwa", "home",))),
+
+    ),
+    Item("Become Member", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',))),
+]
+
 
 MEMBERS = Item("Members", reverse("members.list", ), perm="members.change_member")
 LENDINGS = Item("Lendings", reverse('lendings.list'), perm="lendings.change_lending")
@@ -75,19 +89,6 @@ LENDING_STATS = Item("Lending Statistics", reverse("datamining.lending_stats"), 
 MEMBER_LIST = Item("Member Filter", reverse("datamining.members"), perm="config.view_lendingsettings")
 DATAMINING = SuperMenu("Reporting", ANON_MEMBERS, MEMBER_STATS, LENDING_STATS, MEMBER_LIST)
 
-DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), perm="works.view_work")
-
-top_bar = [
-    ITEM_SEARCH,
-    SuperMenu(
-        "Activities",
-        Item("Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',))),
-        Item("Writing", reverse('named_page', args=("writing", "home",))),
-        Item("Konnichiwa", reverse('named_page', args=("konnichiwa", "home",))),
-
-    ),
-    BECOME_MEMBER,
-]
 
 sidebar = [
     MEMBERS,
