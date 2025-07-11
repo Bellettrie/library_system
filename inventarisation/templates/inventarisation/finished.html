@@ -1,16 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}{% endblock %}
 {% block content %}
-
-        {% component 'tile.Tile' root_class_tags="" %}
-        {% fill 'title' %}Finished inventarisation  {% endfill %}
+    {% component 'tile.Tile' root_class_tags="" %}
+        {% fill 'title' %}Finished inventarisation{% endfill %}
         {% fill 'content' %}
-      Finishing inventarisation for {{ inventarisation.location }} finished!
-    {% endfill %}
-    {% fill 'footer' %}
-        {% component 'tile.Footer' %}
-            <a class="btn  join-item" href="{% url 'inventarisation.list' %}">Return to Inventarisations</a>
-        {% endcomponent %}
-    {% endfill %}
+            Finishing inventarisation for {{ inventarisation.location }} finished!
+        {% endfill %}
+        {% fill 'footer' %}
+            {% component 'tile.Footer' %}
+                <a class="btn  join-item" href="{% url 'inventarisation.list' %}">Return to Inventarisations</a>
+            {% endcomponent %}
+        {% endfill %}
     {% endcomponent %}
 {% endblock %}
