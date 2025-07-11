@@ -1,14 +1,16 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
 {% block title %}
-Start a new Inventarisation
+    Start a new Inventarisation
 {% endblock %}
 {% block content %}
-   <form action="#" method="post">
+    <form action="#" method="post">
         {% csrf_token %}
-        <label for="your_name">Location: </label>
-        {{ form.location }}
-
-        <input type="submit" value="OK">
-    </form><br />
-    <a href="{% url "inventarisation.forAll" %}" class="btn btn-danger">Add for all</a>
+        <div class="join">
+            {{ form.location|add_class:"join-item" }}
+            <input type="submit" class="btn btn-save btn-sm join-item" value="OK">
+        </div>
+    </form><br/>
+    <a href="{% url "inventarisation.forAll" %}" class="btn btn-error">Add for all</a>
 {% endblock %}
