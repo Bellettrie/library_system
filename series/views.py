@@ -117,8 +117,7 @@ def delete_series(request, pk):
     z = SeriesNode.objects.filter(part_of_series=series.first())
     if len(z) > 0:
         return render(request, 'are-you-sure.html', {
-            'what': "to delete " + (
-                        series.first().title or "<No name> ") + ". Note that it has to have no sub-series."})
+            'what': "to delete " + (series.first().title or "<No name> ") + ". Series has to have no subseries."})
     if not request.GET.get('confirm'):
         return render(request, 'are-you-sure.html',
                       {'what': "delete series with name " + (series.first().title or "<No name> ")})
