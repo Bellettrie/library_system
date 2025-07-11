@@ -72,7 +72,7 @@ def get_open():
 # The render trafficlight function creates a trafficlight that shows whether the DK is open
 def render_trafficlight(markdown_text: str, title: str, layout_overrides: str = "", *_):
     search_template = get_template('public_pages/elems/traffic_light.html')
-    return search_template.render(context={"open": get_open(), "layout": layout_overrides})
+    return search_template.render(context={"open": get_open(), "layout": "w-96"})
 
 
 def start_row(markdown_text: str, title: str, layout_overrides: str = "", *_):

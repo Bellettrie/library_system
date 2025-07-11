@@ -1,19 +1,19 @@
 {% load static %}
 
-{% component "tile.Tile" root_class_tags=layout %}
+{% component "tile.Tile" root_class_tags="w-full lg:w-80" with_standard_flex=False %}
     {% fill "title" %}
         Are we Open?
     {% endfill %}
     {% fill "content" %}
-        {% if open %}
-            <h6 class="card-subtitle mb-2 text-muted align-right">The Drakenkelder is open!<br/></h6>
+        <div class="h-full grid place-items-center">
+            {% if open %}
+                <img  class="max-w-60" src="{% static 'images/light/green.png' %}"><br/>
+                <h6 class="card-subtitle mt-4 mb-4 text-muted align-right">We are open!<br/></h6>
+            {% else %}
+                <img class="max-w-60" src="{% static 'images/light/red.png' %}"><br/>
+                <h6 class="card-subtitle mt-4 mb-4 text-muted">We are closed :(.<br/></h6>
+            {% endif %}
 
-            <img style="width:100px;" src="{% static 'images/light/green.png' %}"><br/>
-        {% else %}
-            <h6 class="card-subtitle mb-2 text-muted">The Drakenkelder is closed :(.<br/></h6>
-
-            <img style="width:100px;" src="{% static 'images/light/red.png' %}"><br/>
-        {% endif %}
-
+        </div>
     {% endfill %}
 {% endcomponent %}
