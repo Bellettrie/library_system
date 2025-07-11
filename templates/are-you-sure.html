@@ -1,4 +1,4 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %}Are you sure?{% endblock %}
 {% block content %}
     <script>
@@ -7,6 +7,8 @@
         }
     </script>
     Are you sure you want to {{ what }}
-    <a class="btn btn-danger" href="?confirm=True">Yes</a>
-    <button class="btn btn-primary" onclick="goBack()">No</button>
+    <div class="join">
+        <a class="join-item btn btn-error" href="?confirm=True">Yes</a>
+        <button class="join-item btn" onclick="goBack()">No</button>
+    </div>
 {% endblock %}
