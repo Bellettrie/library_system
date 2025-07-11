@@ -2,15 +2,16 @@
 <script>function loadDoc{{ name|num_get}}() {
     function getSelectedOption(sel) {
         var opt;
-        for ( var i = 0, len = sel.options.length; i < len; i++ ) {
+        for (var i = 0, len = sel.options.length; i < len; i++) {
             opt = sel.options[i];
-            if ( opt.selected === true ) {
+            if (opt.selected === true) {
                 break;
             }
         }
         return opt;
     }
-    var name = document.getElementById('id_name').value + " "+ document.getElementById('id_given_names').value
+
+    var name = document.getElementById('id_name').value + " " + document.getElementById('id_given_names').value
 
     var sel = document.getElementById('id_{{ name|before_last_dash}}-location');
     var opt = getSelectedOption(sel);
@@ -24,10 +25,12 @@
         }
     };
 
-    xhttp.open("GET", "/book_code/generate/creator/" + pk + "/" + loc_sel+"?name="+name, true);
+    xhttp.open("GET", "/book_code/generate/creator/" + pk + "/" + loc_sel + "?name=" + name, true);
     xhttp.send();
 }
 </script>
 <br>
-<button type="button" onclick="loadDoc{{ name|num_get}}()">Find number</button>
-<div id="data_store{{ name|num_get}}"></div>
+<div class="join mt-3 w-full">
+    <button type="button" onclick="loadDoc{{ name|num_get }}()" class="btn btn-sm join-item">Find number</button>
+    <div class="input input-sm grow disabled join-item" id="data_store{{ name|num_get }}"></div>
+</div>
