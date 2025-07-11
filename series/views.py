@@ -117,7 +117,8 @@ def delete_series(request, pk):
     z = SeriesNode.objects.filter(part_of_series=series.first())
     if len(z) > 0:
         return render(request, 'are-you-sure.html', {
-            'what': "to delete " + (series.first().title or "<No name> ") + ". Note that it has to have no sub-series."})
+            'what': "to delete " + (
+                        series.first().title or "<No name> ") + ". Note that it has to have no sub-series."})
     if not request.GET.get('confirm'):
         return render(request, 'are-you-sure.html',
                       {'what': "delete series with name " + (series.first().title or "<No name> ")})
@@ -192,7 +193,8 @@ def location_code_set_form(request, pk, hx_enabled=False):
 
     series = get_object_or_404(Series, pk=pk)
     if series.location_code:
-        return render(request, templ, {"series": series, "error": "Already has a location code." , "hx_enabled":hx_enabled})
+        return render(request, templ,
+                      {"series": series, "error": "Already has a location code.", "hx_enabled": hx_enabled})
     if request.method == "POST":
         prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.title, pk=series.pk)).upper()
         letter = request.POST.get("cutter_letter")
@@ -201,7 +203,8 @@ def location_code_set_form(request, pk, hx_enabled=False):
         try:
             validate_cutter_range(series.location, prefix, letter, number)
         except InvalidCutterRangeError as e:
-            return render(request, templ, {"series": series, "error": e.message, "letter": letter, "number": number, "hx_enabled":hx_enabled})
+            return render(request, templ, {"series": series, "error": e.message, "letter": letter, "number": number,
+                                           "hx_enabled": hx_enabled})
 
         series.location_code = LocationNumber.objects.create(location=series.location, number=number, letter=letter,
                                                              name=prefix)
@@ -211,7 +214,7 @@ def location_code_set_form(request, pk, hx_enabled=False):
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         return HttpResponseRedirect(reverse('series.gen_code', args=(pk,)))
     print(hx_enabled)
-    return render(request, templ, {"series": series, "letter": "UNKNOWN", "hx_enabled":hx_enabled})
+    return render(request, templ, {"series": series, "letter": "UNKNOWN", "hx_enabled": hx_enabled})
 
 
 @permission_required('series.change_series')
