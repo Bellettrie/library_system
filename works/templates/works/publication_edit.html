@@ -28,6 +28,7 @@
                 {% component "tile.Tile" root_class_tags="flex-0" %}
                     {% fill 'title' %}Creators{% endfill %}
                     {% fill 'content' %}
+                        {{ creators.management_form }}
                         {% for creator in creators %}
                             {% component "form.Smol" creator / %}
                             <hr>
@@ -38,6 +39,7 @@
                 {% component "tile.Tile" root_class_tags="flex-0" %}
                     {% fill 'title' %}Series{% endfill %}
                     {% fill 'content' %}
+                        {{ series.management_form }}
                         {% for serie in series %}
                             {% component "form.Smol" serie / %}
                             <hr>
