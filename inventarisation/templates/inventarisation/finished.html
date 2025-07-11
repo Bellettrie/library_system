@@ -1,7 +1,11 @@
- {% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block title %}
     Inventarisation Form {{ page_id }} for {{ inventarisation.location }}{% endblock %}
 {% block content %}
     Finishing inventarisation for {{ inventarisation.location }} finished!<br>
-    <a class="btn btn-primary" href="{% url 'inventarisation.list'   %}">Click here to return</a>
+    {% fill 'footer' %}
+        {% component 'tile.Footer' %}
+            <a class="btn btn-primary join-item" href="{% url 'inventarisation.list' %}">Click here to return</a>
+        {% endcomponent %}
+    {% endfill %}
 {% endblock %}
