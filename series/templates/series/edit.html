@@ -23,6 +23,7 @@
             {% component "tile.Tile" root_class_tags="flex-0 " %}
                 {% fill 'title' %}Creators{% endfill %}
                 {% fill 'content' %}
+                    {{ creators.management_form }}
                     {% for creator in creators %}
                         <div class="mt-5 ">
                             {% component "form.Smol" creator / %}
