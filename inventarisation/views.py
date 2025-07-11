@@ -83,6 +83,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
         "inventarisation/form.html",
         {
             'page_id': page_id,
+            'page_id_plus_1': page_id + 1,
             'inventarisation': inventarisation,
             'group': item_page,
             "rows": rwz,

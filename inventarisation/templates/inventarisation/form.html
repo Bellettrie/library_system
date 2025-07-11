@@ -1,65 +1,74 @@
 {% extends 'base.html' %}
 {% block title %}
-    Inventarisation Form {{ page_id }} (of {{ counts }}) for {{ inventarisation.location }}{% endblock %}
+{% endblock %}
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        <div class="overflow-x-auto">
-            <table class="table table-zebra table-sm overflow-auto">
-                <tr>
-                    <th>Book Code</th>
-                    <th class="hidden xl:table-cell">Title</th>
-                    <th class="hidden xl:table-cell">Author</th>
-                    <th class="hidden md:table-cell">State</th>
-                    <th>Selector</th>
-                </tr>
-                {% for row in rows %}
-                    {% with row.item as item %}
+        {% component 'tile.Tile' root_class_tags="" %}
+            {% fill 'title' %} Inventarisation Form {{ page_id_plus_1 }} (of {{ counts }}) for {{ inventarisation.location }}{% endfill %}
+            {% fill 'content' %}
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra table-sm overflow-auto">
                         <tr>
-                            <td>
-                                <dl>
-                                    <dd><b>{{ item.display_code }}</b></dd>
-                                    <dd class="truncate xl:hidden"> {{ item.get_title }}</dd>
-                                    <dd class="truncate xl:hidden">
-                                        <i> {{ item.publication.get_authors.0.creator.get_name }}</i></dd>
-                                </dl>
-                            </td>
-                            <td class="hidden xl:table-cell">{{ item.get_title }}</td>
-                            <td class="hidden xl:table-cell">
-                                <i> {{ item.publication.get_authors.0.creator.get_name }}</i></dd>
-                            </td>
-                            <td class="hidden md:table-cell">{{ row.prev_state }}{% if item.is_lent_out %} (LENT){% endif %}</td>
-                            <td>
-                                <dl>
-                                    <dd>
-                                        {% if not row.prev_state.state.is_final_state %}
-                                            <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
-                                                   {% if row.option_filled == "yes" %}checked{% else %}autofocus{% endif %}>
-                                            <label for="yes">Yes</label>
-                                            <input type="radio" id="no" name="seen{{ item.pk }}" value="no"
-                                                   {% if row.option_filled == "no" %}checked{% endif %}>
-                                            <label for="no">No</label>
-                                            <input type="radio" id="maybe" name="seen{{ item.pk }}" value="maybe">
-                                            <label for="maybe">Skip</label>
-                                        {% else %}
-                                            <i>Not Applicable</i>
-                                            <input type="hidden" id="no" name="seen{{ item.pk }}" value="yes">
-                                        {% endif %}
-                                    </dd>
-                                    <dd class="md:hidden">
-                                        <i>Was: {{ row.prev_state }}{% if item.is_lent_out %} (LENT)</i>{% endif %}
-                                    </dd>
-                                </dl>
-                            </td>
+                            <th>Book Code</th>
+                            <th class="hidden xl:table-cell">Title</th>
+                            <th class="hidden xl:table-cell">Author</th>
+                            <th class="hidden md:table-cell">State</th>
+                            <th>Selector</th>
                         </tr>
-                    {% endwith %}
-                {% endfor %}
-            </table>
-        </div>
-        <div class="join">
-            <input type="submit" name="next" value="Save and Next" class="btn btn-success join-item">
-            <input type="submit" value="Save" class="btn btn-primary join-item">
-        </div>
-
+                        {% for row in rows %}
+                            {% with row.item as item %}
+                                <tr>
+                                    <td>
+                                        <dl>
+                                            <dd><b>{{ item.display_code }}</b></dd>
+                                            <dd class="truncate xl:hidden"> {{ item.get_title }}</dd>
+                                            <dd class="truncate xl:hidden">
+                                                <i> {{ item.publication.get_authors.0.creator.get_name }}</i></dd>
+                                        </dl>
+                                    </td>
+                                    <td class="hidden xl:table-cell">{{ item.get_title }}</td>
+                                    <td class="hidden xl:table-cell">
+                                        <i> {{ item.publication.get_authors.0.creator.get_name }}</i></dd>
+                                    </td>
+                                    <td class="hidden md:table-cell">
+                                        {{ row.prev_state }}{% if item.is_lent_out %} (LENT){% endif %}</td>
+                                    <td>
+                                        <dl>
+                                            <dd>
+                                                {% if not row.prev_state.state.is_final_state %}
+                                                    <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
+                                                           {% if row.option_filled == "yes" %}checked{% else %}autofocus{% endif %}>
+                                                    <label for="yes">Yes</label>
+                                                    <input type="radio" id="no" name="seen{{ item.pk }}" value="no"
+                                                           {% if row.option_filled == "no" %}checked{% endif %}>
+                                                    <label for="no">No</label>
+                                                    <input type="radio" id="maybe" name="seen{{ item.pk }}"
+                                                           value="maybe">
+                                                    <label for="maybe">Skip</label>
+                                                {% else %}
+                                                    <i>Not Applicable</i>
+                                                    <input type="hidden" id="no" name="seen{{ item.pk }}" value="yes">
+                                                {% endif %}
+                                            </dd>
+                                            <dd class="md:hidden">
+                                                <i>Was:
+                                                    {{ row.prev_state }}{% if item.is_lent_out %} (LENT)</i>{% endif %}
+                                            </dd>
+                                        </dl>
+                                    </td>
+                                </tr>
+                            {% endwith %}
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endfill %}
+            {% fill 'footer' %}
+                {% component 'tile.Footer' %}
+                    <input type="submit" name="next" value="Save and Next" class="btn btn-success join-item">
+                    <input type="submit" value="Save" class="btn btn-primary join-item">
+                {% endcomponent %}
+            {% endfill %}
+        {% endcomponent %}
     </form>
 {% endblock %}
