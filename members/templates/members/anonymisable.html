@@ -1,10 +1,10 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %}Members that can be anonymised{% endblock %}
 {% block content %}
         {% for member in corrects %}
             {% if forloop.first %}
                 Anonymization successful for the following members:
-                <table class="table table-striped" style="width: auto;">
+                <table class="table table-zebra" style="width: auto;">
             {% endif %}
     <tr><td>{{ member.name }}</td></tr>
             {% if forloop.last %}
@@ -14,17 +14,17 @@
    {% for member in errors %}
             {% if forloop.first %}
                 Anonymisation failed for the following members:
-                <table class="table table-striped" style="width: auto;">
+                <table class="table table-zebra" style="width: auto;">
             {% endif %}
     <tr><td>{{ member.name }}</td></tr>
             {% if forloop.last %}
                 </table>
             {% endif %}
         {% endfor %}
-    {% include 'pagination_bootstrap.html' %}
+    {% include 'pagination.html' %}
     <form method="post" action="{% url 'members.anonymise_all' %}">
     {% csrf_token %}
-        <table class="table table-striped" style="width: auto;">
+        <table class="table table-zebra" style="width: auto;">
             {% for member in object_list %}
                 {% if member.should_be_anonymised %}
                 <tr>
@@ -32,16 +32,12 @@
                     <td><a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a>{% if member.nickname %}<br/>
                         <i>{{ member.nickname }}</i>{% endif %}</td>
                 </tr>
-                    {% else %}
-                    <tr><td>Currently Member</td><td><a href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a>{% if member.nickname %}<br/>
-                        <i>{{ member.nickname }}</i>{% endif %}</td>
-                </tr>
                 {% endif %}
             {% empty %}
                 <i> No results</i>
             {% endfor %}
         </table>
-    <button type="submit">Anonymise!</button>
+    <button type="submit" class="btn btn-error">Anonymise!</button>
     </form>
     <hr>
 {% endblock %}
