@@ -1,10 +1,22 @@
- {% extends 'base.html' %}
-{% block title %}
-    Inventarisation Form {{ page_id }} for {{ inventarisation.location }}{% endblock %}
+{% extends 'base.html' %}
 {% block content %}
-    Reached end for inventarisation for  {{ inventarisation.location }}. This was reached before all items were inventarised.<br />
-    There are two options, either continue the inventarisation, or finish it as it is. If you finish it as it is, any books that were not entered will be skipped for this inventarisation. This has no <i>disastrous</i> consequences, but is nevertheless generally not wanted.<br>
-        <a class="btn btn-primary"  href="{% url 'inventarisation.next' inventarisation.pk  -1  %}">Continue</a>
-    <a class="btn btn-primary" href="{% url 'inventarisation.finished' inventarisation.pk   %}">Finish it</a>
+    {% component 'tile.Tile' root_class_tags="" %}
+        {% fill 'title' %}    End of Inventarisation, but not completed{% endfill %}
+        {% fill 'content' %}
+            Reached end for inventarisation for  {{ inventarisation.location }}. This was reached before all items were
+            inventarised.<br/>
+            There are two options, either continue the inventarisation, or finish it as it is. If you finish it as it
+            is, any books that were not entered will be skipped for this inventarisation. This has no <i>disastrous</i>
+            consequences, but is nevertheless generally not wanted.<br>
+
+        {% endfill %}
+        {% fill 'footer' %}
+            {% component 'tile.Footer' %}
+                <a class="btn btn-primary join-item" href="{% url 'inventarisation.next' inventarisation.pk  -1 %}">Continue with Inventarisation</a>
+                <a class="btn btn-success join-item" href="{% url 'inventarisation.finished' inventarisation.pk %}">Finish it anyway</a>
+            {% endcomponent %}
+        {% endfill %}
+    {% endcomponent %}
+
 
 {% endblock %}

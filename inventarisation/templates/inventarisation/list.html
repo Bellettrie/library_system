@@ -13,30 +13,31 @@
             </script>
             <table class="table table-zebra">
                 {% for inv in inventarisations %}
-                    <tr>
-                        <td>
-                            <dl>
-                                <dd><b>{{ inv.location.name }}{{ inv.location.category.name }}</b></dd>
-                                <dd>{{ inv.date_time }}</dd>
-                            </dl>
-                        </td>
+                    {% if inv.is_active %}
 
-                        <script>
-                            var input = document.getElementById("pageNr{{ inv.pk }}");
+                        <tr>
+                            <td>
+                                <dl>
+                                    <dd><b>{{ inv.location.name }}{{ inv.location.category.name }}</b></dd>
+                                    <dd><i>Started</i> {{ inv.date_time }}</dd>
+                                </dl>
+                            </td>
 
-                            // Execute a function when the user releases a key on the keyboard
-                            input.addEventListener("keyup", function (event) {
-                                // Number 13 is the "Enter" key on the keyboard
-                                if (event.keyCode === 13) {
-                                    // Cancel the default action, if needed
-                                    event.preventDefault();
-                                    // Trigger the button element with a click
-                                    doClick({{ inv.pk }})
-                                }
-                            });
-                        </script>
-                        <td class="join">
-                            {% if inv.is_active %}
+                            <script>
+                                var input = document.getElementById("pageNr{{ inv.pk }}");
+
+                                // Execute a function when the user releases a key on the keyboard
+                                input.addEventListener("keyup", function (event) {
+                                    // Number 13 is the "Enter" key on the keyboard
+                                    if (event.keyCode === 13) {
+                                        // Cancel the default action, if needed
+                                        event.preventDefault();
+                                        // Trigger the button element with a click
+                                        doClick({{ inv.pk }})
+                                    }
+                                });
+                            </script>
+                            <td class="join">
                                 <a href="{% url 'inventarisation.print' inv.pk %}" class="btn btn-sm join-item">Print
                                     List</a>
                                 <input type="text" class="input input-bordered input-sm join-item" placeholder="Number"
@@ -50,13 +51,8 @@
                                 <a href="{% url 'inventarisation.next' inv.pk -1 %}"
                                    class="btn-primary btn btn-sm  join-item">Next
                                     Page</a>
-                            {% else %}
-                                <i>
-                                    <div style="align-content: center">Already finished, start new count</div>
-                                </i>
-                            {% endif %}
-                        </td>
-                    </tr>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </table>
             <hr>
@@ -67,6 +63,4 @@
             {% endcomponent %}
         {% endfill %}
     {% endcomponent %}
-
-
 {% endblock %}
