@@ -5,7 +5,7 @@
     <form action="#" method="post">
         {% csrf_token %}
         {% component 'tile.Tile' root_class_tags="" %}
-            {% fill 'title' %} Inventarisation Form {{ page_id_plus_1 }} (of {{ counts }}) for {{ inventarisation.location }}{% endfill %}
+            {% fill 'title' %}Inventarisation Form {{ page_id_plus_1 }} (of {{ counts }}) for {{ inventarisation.location }}{% endfill %}
             {% fill 'content' %}
                 <div class="overflow-x-auto">
                     <table class="table table-zebra table-sm overflow-auto">

@@ -1,13 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
     {% component 'tile.Tile' root_class_tags="" %}
-        {% fill 'title' %}
-            Inventarisation Form {{ page_id }} for {{ inventarisation.location }}
-        {% endfill %}
+        {% fill 'title' %}Inventarisation Form {{ page_id }} for {{ inventarisation.location }}{% endfill %}
         {% fill 'content' %}
             Finishing inventarisation for {{ inventarisation.location }}.<br>
-
-
         {% endfill %}
             {% fill 'footer' %}
         {% component 'tile.Footer' %}

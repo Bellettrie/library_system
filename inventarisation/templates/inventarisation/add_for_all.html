@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     {% component 'tile.Tile' root_class_tags="" %}
-        {% fill 'title' %}       Added a lot of inventarisations
-        {% endfill %}
+        {% fill 'title' %}Added a lot of inventarisations{% endfill %}
         {% fill 'content' %}
             {% for inventarisation in inventarisations %}
                 {{ inventarisation.location }}<br>
