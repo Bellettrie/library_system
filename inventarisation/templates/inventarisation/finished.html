@@ -1,8 +1,7 @@
- {% extends 'base_bootstrap.html' %}
+ {% extends 'base.html' %}
 {% block title %}
     Inventarisation Form {{ page_id }} for {{ inventarisation.location }}{% endblock %}
 {% block content %}
     Finishing inventarisation for {{ inventarisation.location }} finished!<br>
-
     <a class="btn btn-primary" href="{% url 'inventarisation.list'   %}">Click here to return</a>
 {% endblock %}

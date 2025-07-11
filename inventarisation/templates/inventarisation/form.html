@@ -1,45 +1,65 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %}
     Inventarisation Form {{ page_id }} (of {{ counts }}) for {{ inventarisation.location }}{% endblock %}
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        <table class="table table-striped">
-            <tr>
-                <th width="150px" style="font-size:10px">Author</th>
-                <th width="200px" style="font-size:10px">Title</th>
-                <th width="150px" style="font-size:10px">Book Code</th>
-                <th width="60px" style="font-size:10px">State</th>
-                <th style="font-size:10px">Selector</th>
-            </tr>
-            {% for row in rows %}
-                {% with row.item as item %}
-                    <tr>
-                        <td style="font-size:10px">{{ item.publication.get_authors.0.creator.name|truncatechars:20 }}</td>
-                        <td style="font-size:10px">{{ item.get_title|truncatechars:30 }}</td>
-                        <td style="font-size:10px">{{ item.display_code }}</td>
-                        <td style="font-size:10px">{{ row.prev_state }}{% if item.is_lent_out %} (LENT){% endif %}</td>
+        <div class="overflow-x-auto">
+            <table class="table table-zebra table-sm overflow-auto">
+                <tr>
+                    <th>Book Code</th>
+                    <th class="hidden xl:table-cell">Title</th>
+                    <th class="hidden xl:table-cell">Author</th>
+                    <th class="hidden md:table-cell">State</th>
+                    <th>Selector</th>
+                </tr>
+                {% for row in rows %}
+                    {% with row.item as item %}
+                        <tr>
+                            <td>
+                                <dl>
+                                    <dd><b>{{ item.display_code }}</b></dd>
+                                    <dd class="truncate xl:hidden"> {{ item.get_title }}</dd>
+                                    <dd class="truncate xl:hidden">
+                                        <i> {{ item.publication.get_authors.0.creator.get_name }}</i></dd>
+                                </dl>
+                            </td>
+                            <td class="hidden xl:table-cell">{{ item.get_title }}</td>
+                            <td class="hidden xl:table-cell">
+                                <i> {{ item.publication.get_authors.0.creator.get_name }}</i></dd>
+                            </td>
+                            <td class="hidden md:table-cell">{{ row.prev_state }}{% if item.is_lent_out %} (LENT){% endif %}</td>
+                            <td>
+                                <dl>
+                                    <dd>
+                                        {% if not row.prev_state.state.is_final_state %}
+                                            <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
+                                                   {% if row.option_filled == "yes" %}checked{% else %}autofocus{% endif %}>
+                                            <label for="yes">Yes</label>
+                                            <input type="radio" id="no" name="seen{{ item.pk }}" value="no"
+                                                   {% if row.option_filled == "no" %}checked{% endif %}>
+                                            <label for="no">No</label>
+                                            <input type="radio" id="maybe" name="seen{{ item.pk }}" value="maybe">
+                                            <label for="maybe">Skip</label>
+                                        {% else %}
+                                            <i>Not Applicable</i>
+                                            <input type="hidden" id="no" name="seen{{ item.pk }}" value="yes">
+                                        {% endif %}
+                                    </dd>
+                                    <dd class="md:hidden">
+                                        <i>Was: {{ row.prev_state }}{% if item.is_lent_out %} (LENT)</i>{% endif %}
+                                    </dd>
+                                </dl>
+                            </td>
+                        </tr>
+                    {% endwith %}
+                {% endfor %}
+            </table>
+        </div>
+        <div class="join">
+            <input type="submit" name="next" value="Save and Next" class="btn btn-success join-item">
+            <input type="submit" value="Save" class="btn btn-primary join-item">
+        </div>
 
-                        <td style="font-size:10px">
-                            {% if not row.prev_state.state.is_final_state %}
-                                <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
-                                       {% if row.option_filled == "yes" %}checked{% else %}autofocus{% endif %}>
-                                <label for="yes">Yes</label>
-                                <input type="radio" id="no" name="seen{{ item.pk }}" value="no"
-                                       {% if row.option_filled == "no" %}checked{% endif %}>
-                                <label for="no">No</label>
-                                <input type="radio" id="maybe" name="seen{{ item.pk }}" value="maybe">
-                                <label for="maybe">Skip</label>
-                            {% else %}
-                                <i>Not Applicable</i>
-                                <input type="hidden" id="no" name="seen{{ item.pk }}" value="yes">
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endwith %}
-            {% endfor %}
-        </table>
-        <input type="submit" name="next" value="Save and Next" class="btn btn-success"><input type="submit" value="Save"
-                                                                                              class="btn btn-primary">
     </form>
 {% endblock %}
