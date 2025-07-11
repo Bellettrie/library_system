@@ -8,7 +8,7 @@
             <tr>
                 <td><label for="committees">Committees</label></td>
                 <td>{% with list=request.GET|get_list:'committees' %}
-                    <select name="committees" id="committees" multiple="multiple">
+                    <select name="committees" id="committees" multiple="multiple" class="input h-32">
                         {% for committee in committees %}
 
                             <option {% if committee.pk|to_string in list %}selected{% endif %}

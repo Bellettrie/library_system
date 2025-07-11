@@ -1,49 +1,52 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %}Filter Members{% endblock %}
 {% block content %}
-    <div class="card">
-  <div class="card-header">
-    <ul class="nav nav-tabs card-header-tabs">
-      <li class="nav-item">
-        <a class="nav-link {% if dateBased %}active{% endif %}" href="{% url 'datamining.members.date_based' %}">By Date</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {% if groupBased %}active{% endif %}" href="{% url 'datamining.members.groups' %}">By Committee</a>
-      </li>
-    <li class="nav-item">
-        <a class="nav-link {% if specials %}active{% endif %}" href="{% url 'datamining.members.special' %}">Special Queries</a>
-      </li>
-    </ul>
-  </div>
-  <div class="card-body">
-    {% block form %}
+    <div class="flex flex-col gap-3">
+        {% component 'tile.Tile' root_class_tags="w-full lg:basis-2/5  lg:flex-none" %}
+            {% fill "direct_into" %}
+                <div class="hidden mt-8 w-full sm:grid place-items-center absolute ">
+                    <div role="tablist" class="tabs tabs-lift absolute object-top ">
 
-    {% endblock %}
-  </div>
-</div>
+                        <a role="tab" class="tab {% if dateBased %}tab-active{% endif %}"
+                           href="{% url 'datamining.members.date_based' %}">By Date</a>
+                        <a role="tab" class="tab {% if groupBased %}tab-active{% endif %}"
+                           href="{% url 'datamining.members.groups' %}">By Committee</a>
+                        <a role="tab" class="tab {% if specials %}tab-active{% endif %}"
+                           href="{% url 'datamining.members.special' %}">Special Queries</a>
+                    </div>
+                </div>
+            {% endfill %}
+            {% fill 'title' %}Search{% endfill %}
 
-    {% if exec %}
-      <div class="card">
-  <div class="card-header">
-    Found {{ members|length }} members.
-  </div>
+            {% fill 'content' %}
+                {% block form %}
+                {% endblock %}
+            {% endfill %}
+        {% endcomponent %}
+        {% if exec %}
+            {% component 'tile.Tile' root_class_tags="w-full lg:basis-2/5  lg:flex-none" %}
+                {% fill 'title' %}                Found {{ members|length }} members.
+                {% endfill %}
+                {% fill 'content' %}
 
-    {% if mails %}
-        <div class="card-body user-select-all">
-            <p class="user-select-all">{{ member_mail_addresses }}</p>
-        </div>
-    {% else %}
-            <table class="table table-striped" style="width: auto;">
-                {% for member in members %}
-                    {% include 'members/list_item.html' %}
-                {% empty %}
-                    <i> No results</i>
-                {% endfor %}
-            </table>
+                    {% if mails %}
+                        <div class="w-full user-select-all">
+                            <p class="user-select-all">{{ member_mail_addresses }}</p>
+                        </div>
+                    {% else %}
+                        <table class="w-full table table-zebra">
+                            {% for member in members %}
+                                {% include 'members/list_item.html' %}
+                            {% empty %}
+                                <i> No results</i>
+                            {% endfor %}
+                        </table>
 
-    {% endif %}
-      </div>
-{% endif %}
+                    {% endif %}
+                {% endfill %}
+            {% endcomponent %}
+        {% endif %}
+    </div>
 
 {% endblock %}
 
