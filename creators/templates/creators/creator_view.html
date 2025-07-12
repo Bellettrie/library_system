@@ -22,7 +22,7 @@
                     <th></th>
                 </tr>
                 {% for itemRow in items %}
-                    {% component 'works.table.Row' itemRow.get_item skip_header=skip_header %}
+                    {% component 'works.table.Row' itemRow.get_item skip_header=skip_header work=itemRow.get_work %}
                         {% fill "extra_rows" %}
                             <td>
                                 {% if  itemRow.is_item %}
@@ -50,7 +50,7 @@
     </div>
     <div class="lg:hidden flex flex-col gap-5 m-3">
         {% for item in items %}
-            {% component 'works.table.standard_card.Card' item.get_item perms / %}
+            {% component 'works.table.standard_card.Card' item.get_item perms work=work / %}
         {% endfor %}
     </div>
 {% endblock %}

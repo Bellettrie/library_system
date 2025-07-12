@@ -1,7 +1,7 @@
 <tr class="">
     {% if not skip_header %}
         <td class="bg-accent text-xs text-center w-[12em]">
-            {% if item.book_code %}<a href="{% url "work.view" item.work.pk %}"><b>{{ item.book_code }}</b>
+            {% if item.book_code %}<a href="{% url "work.view" work.pk %}"><b>{{ item.book_code }}</b>
                 {% if item.book_code_extension %}({{ item.book_code_extension }}){% endif %}</a>
                 {% if show_recode and item.get_recode %}
                     {{ item.get_recode }}
@@ -13,12 +13,12 @@
     {% endif %}
     <td>
         <dl>
-            <dd class=""><a class="link link-secondary" href="{% url "work.view" item.work.pk %}">
-                {% if item.work.article %}{{ item.work.article }}{% endif %} <em>
-                {% if item.work.title %}{{ item.work.get_title }}{% else %}&lt;No Title&gt;{% endif %}</em></a>
+            <dd class=""><a class="link link-secondary" href="{% url "work.view" work.pk %}">
+                {% if work.article %}{{ work.article }}{% endif %} <em>
+                {% if work.title %}{{ work.get_title }}{% else %}&lt;No Title&gt;{% endif %}</em></a>
             </dd>
-            {% if  item.work.sub_title %}
-                <dd class="text-xs pb-1">{{ item.work.sub_title }}</dd> {% endif %}
+            {% if  work.sub_title %}
+                <dd class="text-xs pb-1">{{ work.sub_title }}</dd> {% endif %}
             {% if skip_header %}
                 <dd class="text-xs pb-2 ml-2">{{ item.book_code }}</dd>
             {% endif %}
