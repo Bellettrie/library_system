@@ -1,8 +1,9 @@
 from datetime import datetime
 from django.db import models
 
-from django.db.models import PROTECT, CASCADE, Q
-from django.db.models.expressions import RawSQL
+from django.db.models import PROTECT, CASCADE, Q, IntegerField, TextField
+from django.db.models.expressions import RawSQL, Value, F
+from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 
 from book_code_generation.models import FakeItem, CutterCodeRange, BookCode
@@ -99,40 +100,20 @@ class Work(NamedTranslatableThing):
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
 
+    def get_publication_id(self):
+        return self.get_pub().id
+
     def get_pub(self):
-        a = Publication.objects.filter(id=self.id)
-        if len(a) == 1:
-            return a[0]
-        return None
+        return self
 
     def update_listed_author(self):
-        authors = self.get_authors()
+        authors = self.get_deduplicated_authors()
         if len(authors) == 0:
             self.listed_author = "ZZZZZZ"
         else:
             self.listed_author = authors[0].creator.name + ", " + authors[0].creator.given_names + str(
                 authors[0].creator.pk)
         self.save()
-
-    def get_authors(self):
-        from series.models import WorkInSeries
-
-        links = CreatorToWork.objects.filter(work_id=self.id)
-        authors = []
-        for link in links:
-            authors.append(link)
-        for serie in WorkInSeries.objects.filter(work_id=self.id, is_primary=True):
-            authors = serie.get_authors() + authors
-        author_set = list()
-        for author in authors:
-            add = True
-            for author_2 in author_set:
-                if author.creator.pk == author_2.creator.pk and author.role.name == author_2.role.name:
-                    add = False
-            if add:
-                author_set.append(author)
-        author_set.sort(key=lambda a: a.number)
-        return author_set
 
     def get_own_authors(self):
         from series.models import WorkInSeries
@@ -141,25 +122,72 @@ class Work(NamedTranslatableThing):
         authors = []
         for link in links:
             authors.append(link)
+        return authors
 
-        author_set = list()
+    def get_authors_through_series(self):
+        from series.models import WorkInSeries, CreatorToSeries
+
+        series = WorkInSeries.get_all_recursive_for_work(self)
+        ids = []
+        for serie in series:
+            ids.append(serie.id)
+        return CreatorToSeries.objects.filter(series_id__in=ids).distinct().prefetch_related("creator")
+
+    def get_deduplicated_authors(self):
+        own_authors = self.get_own_authors()
+        series_authors = self.get_authors_through_series()
+        authors = []
+        for link in own_authors:
+            authors.append(link)
+        for link in series_authors:
+            authors.append(link)
+        dedup = self.deduplicate_work_authors(authors)
+        return dedup
+
+    def get_own_deduplicated_authors(self):
+        authors = self.get_own_authors()
+        return self.deduplicate_work_authors(authors)
+
+    @staticmethod
+    def deduplicate_work_authors(authors):
+        author_set = []
         for author in authors:
             add = True
             for author_2 in author_set:
-                if author.creator.name == author_2.creator.name and author.role.name == author_2.role.name:
+                if author.creator.id == author_2.creator.id and author.role.name == author_2.role.name:
                     add = False
             if add:
                 author_set.append(author)
         author_set.sort(key=lambda a: a.number)
         return author_set
 
+    def is_orphaned(self):
+        return len(self.subwork_set) == 0
 
-class Publication(Work):
-    def is_simple_publication(self):
-        return len(self.workinpublication_set) == 0
+    def is_part_of_multiple(self):
+        return len(self.subwork_set) > 1
 
     def get_items(self):
-        return Item.objects.annotate(available=RawSQL("SELECT coalesce(works_itemstate.type, 'AVAILABLE')= 'AVAILABLE' FROM  works_itemstate WHERE works_itemstate.item_id=works_item.id ORDER BY works_itemstate.date_time DESC LIMIT 1", [])).order_by("-available").filter(publication_id=self.id)
+        super_work_ids = WorkRelation.objects.raw('''
+                                                  WITH RECURSIVE works_relation_recursion(id, parent_id, child_id)
+                                                                     AS (SELECT id, parent_id, child_id
+                                                                         FROM works_workrelation
+                                                                         WHERE child_id = %s
+                                                                         UNION ALL
+                                                                         SELECT sm.id, sm.parent_id, sm.child_id
+                                                                         FROM works_relation_recursion AS sm,
+                                                                              works_workrelation AS t
+                                                                         WHERE sm.child_id = t.parent_id)
+                                                  SELECT *
+                                                  FROM works_relation_recursion
+                                                  ''', [self.id])
+        ids = [self.id]
+        for super_work_id in super_work_ids:
+            ids.append(super_work_id.parent_id)
+        items = Item.objects.annotate(available=RawSQL(
+            "SELECT coalesce(works_itemstate.type, 'AVAILABLE')= 'AVAILABLE' FROM  works_itemstate WHERE works_itemstate.item_id=works_item.id ORDER BY works_itemstate.date_time DESC LIMIT 1",
+            [])).order_by("-available").filter(work_id__in=ids)
+        return items
 
     def get_lend_item(self):
         for item in self.get_items():
@@ -213,7 +241,8 @@ class Publication(Work):
         return generator(FakeItem(self, location))
 
     def get_sub_works(self):
-        return WorkInPublication.objects.filter(publication_id=self.id).order_by('number_in_publication')
+        v = WorkRelation.objects.filter(parent_id=self.id, type="SUBWORK").order_by('number_in_publication')
+        return v
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -224,7 +253,7 @@ class Publication(Work):
 class Item(NamedThing, BookCode):
     old_id = models.IntegerField(null=True)
     location = models.ForeignKey(Location, on_delete=PROTECT)
-    publication = models.ForeignKey(Publication, on_delete=PROTECT)
+    work = models.ForeignKey(Work, on_delete=PROTECT)
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
     isbn13 = models.CharField(max_length=64, null=True, blank=True)
     pages = models.CharField(null=True, blank=True, max_length=32)
@@ -271,34 +300,34 @@ class Item(NamedThing, BookCode):
         return get_object_or_404(Lending, item_id=self.id, handed_in=False)
 
     def current_lending(self):
-        lndngs = Lending.objects.filter(item_id=self.id, handed_in=False)
-        if len(lndngs) != 1:
+        lendings = Lending.objects.filter(item_id=self.id, handed_in=False)
+        if len(lendings) != 1:
             return None
-        return lndngs[0]
+        return lendings[0]
 
     def get_title(self):
-        return self.title or self.publication.title
+        return self.title or self.work.title
 
     def get_article(self):
-        return self.article or self.publication.article
+        return self.article or self.work.article
 
     def get_sub_title(self):
-        return self.sub_title or self.publication.sub_title
+        return self.sub_title or self.work.sub_title
 
     def get_language(self):
-        return self.language or self.publication.language
+        return self.language or self.work.language
 
     def get_original_title(self):
-        return self.publication.original_title
+        return self.work.original_title
 
     def get_original_sub_title(self):
-        return self.publication.original_subtitle
+        return self.work.original_subtitle
 
     def get_original_article(self):
-        return self.publication.original_article
+        return self.work.original_article
 
     def get_original_language(self):
-        return self.publication.original_language
+        return self.work.original_language
 
     def get_state(self):
         states = ItemState.objects.filter(item_id=self.id).order_by("-date_time")
@@ -328,10 +357,10 @@ class Item(NamedThing, BookCode):
                                          reason="Automatically switched because of reason: " + reason)
 
     def generate_code_full(self):
-        return self.publication.generate_code_full(self.location)
+        return self.work.generate_code_full(self.location)
 
     def generate_code_prefix(self):
-        return self.publication.generate_code_prefix(self.location)
+        return self.work.generate_code_prefix(self.location)
 
     def get_isbn10(self):
         if self.isbn10 is not None:
@@ -368,33 +397,21 @@ class ItemState(models.Model):
         return self.type
 
 
-class SubWork(Work, TranslatedThing):
-    def is_orphaned(self):
-        return len(self.workinpublication_set) == 0
-
-    def is_part_of_multiple(self):
-        return len(self.workinpublication_set) > 1
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        from search.models import SubWorkWordMatch
-        SubWorkWordMatch.subwork_rename(self)
-
-
-class WorkInPublication(models.Model):
-    publication = models.ForeignKey(Publication, on_delete=PROTECT)
-    work = models.ForeignKey(SubWork, on_delete=PROTECT)
+class WorkRelation(models.Model):
+    parent = models.ForeignKey(Work, on_delete=PROTECT, related_name="relation_parent_set")
+    child = models.ForeignKey(Work, on_delete=PROTECT, related_name="relation_child_set")
     number_in_publication = models.IntegerField()
     display_number_in_publication = models.CharField(max_length=64)
-    unique_together = ('work', 'publication')
+    unique_together = ('parent', 'child')
+    type = models.CharField(max_length=32, default="SUBWORK")
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         from search.models import SubWorkWordMatch
-        SubWorkWordMatch.subwork_rename(self.work)
+        SubWorkWordMatch.subwork_rename(self.child)
 
     def get_authors(self):
-        return self.work.get_authors()
+        return self.child.get_deduplicated_authors()
 
 
 class CreatorToWork(models.Model):

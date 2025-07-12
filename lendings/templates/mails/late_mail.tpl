@@ -10,7 +10,7 @@ Dear {{member.name}},
 {%if has_late%}You have items that are late. Please hand them in as soon as possible. This will limit the fine.
 
 {%for lending in lendings %}
-{{lending.item.display_code}}:  {{lending.item.publication.title}} -- Due: {{lending.end_date}}
+{{lending.item.display_code}}:  {{lending.item.work.title}} -- Due: {{lending.end_date}}
 {% endfor %}
 {%if has_nearly_late %}
     You also have items that are nearly late:
@@ -21,7 +21,7 @@ Dear {{member.name}},
 
 {%endif %}
 {%for lending in almost_late %}
-- {{lending.item.display_code}}:  {{lending.item.publication.title}} ;  Due: {{lending.end_date}}
+- {{lending.item.display_code}}:  {{lending.item.work.title}} ;  Due: {{lending.end_date}}
 {% endfor %}
 If you have any questions regarding your lendings, feel free to contact us by replying to this email.
 
@@ -42,7 +42,7 @@ You have items that are late. Please hand them in as soon as possible. This will
  <table>
  <tr><th>Book Code</th><th>Title</th><th>Due Date<th></th></tr>
 {%for lending in lendings %}
- <tr><td>{{lending.item.display_code}}</td><td>{{lending.item.publication.title}} </td><td>{{lending.end_date}}</td></tr>
+ <tr><td>{{lending.item.display_code}}</td><td>{{lending.item.work.title}} </td><td>{{lending.end_date}}</td></tr>
 {% endfor %}
 </table>
 {%if has_nearly_late %}
@@ -55,7 +55,7 @@ You have items that are late. Please hand them in as soon as possible. This will
  <table>
  <tr><th>Book Code</th><th>Title</th><th>Due Date<th></th></tr>
 {%for lending in almost_late %}
- <tr><td>{{lending.item.display_code}}</td><td>{{lending.item.publication.title}} </td><td>{{lending.end_date}}</td></tr>
+ <tr><td>{{lending.item.display_code}}</td><td>{{lending.item.work.title}} </td><td>{{lending.end_date}}</td></tr>
 {% endfor %}
 </table>
  If you have any questions regarding your lendings, feel free to contact us by replying to this email. <br />

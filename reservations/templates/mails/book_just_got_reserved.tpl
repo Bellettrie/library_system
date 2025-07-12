@@ -9,7 +9,7 @@
 
     A book you have lent has just been reserved. This means you can no longer extend it.
 
-    {{ item.display_code}}: {{item.publication.title}}
+    {{ item.display_code}}: {{item.work.title}}
 
     If you have any questions, feel free to contact us by replying to this email.
 
@@ -28,7 +28,7 @@
     <table>
         <tr><th>Book Code</th><th>Title</th></tr>
         {%for lending in lendings %}
-            <tr><td>{{item.display_code}}</td><td>{{item.publication.title}} </td></tr>
+            <tr><td>{{item.display_code}}</td><td>{{item.work.title}} </td></tr>
         {% endfor %}
     </table>
 

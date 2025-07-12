@@ -7,18 +7,18 @@ from bellettrie_library_system import settings
 from bellettrie_library_system.base_settings import GET_MENU
 from lendings.models import Lending
 from members.models import Member
-from works.models import Item
-
+from works.models import Work, Item
 
 @register("works.table.Card")
 class Card(Component):
-    def get_context_data(self, item: Item, all_authors=False):
+    def get_context_data(self, item: Item, work: Work, all_authors=False):
         code = item.book_code
-        authors = item.publication.get_authors()
+        authors = item.work.get_deduplicated_authors()
         if not all_authors:
             authors = authors[:1]
         return {
             "item": item,
+            "work": work,
             "authors": authors,
             "split_code": code.split("-"),
         }
