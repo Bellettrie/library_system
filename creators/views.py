@@ -11,7 +11,7 @@ from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
 from creators.procedures.creator_books import get_books_for_author
 from utils.get_query_words import get_query_words
-from works.models import CreatorToWork, Location
+from works.models import CreatorToWork
 
 
 # @permission_required('creators.view_creator')

@@ -1,10 +1,6 @@
-from typing import List
-
-from django.urls import reverse
-from django_components import Component, register, types
+from django_components import Component, register
 
 from lendings.models import Lending
-from members.models import Member
 
 
 @register("lendings.card.Card")

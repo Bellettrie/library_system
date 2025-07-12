@@ -1,5 +1,5 @@
-from django.core.management.base import BaseCommand, CommandError
-from members.models import Member, Committee
+from django.core.management.base import BaseCommand
+from members.models import Member
 
 
 def get_name(x):

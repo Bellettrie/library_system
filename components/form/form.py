@@ -1,8 +1,5 @@
-from typing import List
-
-from django.forms import Field, Form
-from django.urls import reverse
-from django_components import Component, register, types
+from django.forms import  Form
+from django_components import Component, register
 
 
 @register("form.Form")

@@ -1,13 +1,8 @@
 from django.contrib.auth.decorators import permission_required
-from django.db import transaction
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 
-# Create your views here.
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
 
-from book_code_generation.forms import EditForm
-from book_code_generation.models import CutterCodeRange
 from book_code_generation.helpers import normalize_str
 from book_code_generation.procedures.location_number_generation import generate_location_number, get_location_numbers
 from creators.models import Creator

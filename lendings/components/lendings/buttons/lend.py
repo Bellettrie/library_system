@@ -1,8 +1,6 @@
-from django.urls import reverse
-from django_components import Component, register, types
+from django_components import Component, register
 
-from lendings.procedures.extend import can_extend
-from lendings.procedures.new_lending import can_lend, item_can_be_lended
+from lendings.procedures.new_lending import item_can_be_lended
 from utils.time import get_today
 from works.models import Item
 

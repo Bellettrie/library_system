@@ -6,8 +6,6 @@ from django.urls import reverse
 
 from members.models import Member
 from members.permissions import MEMBERS_VIEW
-from utils.wrappers import hx_wrap
-
 
 @transaction.atomic
 @permission_required('auth.delete_user')

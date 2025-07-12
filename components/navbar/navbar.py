@@ -3,7 +3,7 @@ from typing import Optional
 from django.template.context import Context
 
 from django.urls import reverse
-from django_components import Component, register, types
+from django_components import Component, register
 
 from bellettrie_library_system import settings
 from components.navbar.menu import menu_with_only_right_permissions, top_bar

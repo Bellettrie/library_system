@@ -1,5 +1,4 @@
-from django.urls import reverse
-from django_components import Component, register, types
+from django_components import Component, register
 
 
 @register("inputs.Text")

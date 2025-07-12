@@ -1,4 +1,4 @@
-from datetime import timedelta, datetime
+from datetime import timedelta
 
 from lendings.models import Lending
 from mail.models import mail_member

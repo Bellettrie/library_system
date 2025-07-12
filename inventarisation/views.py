@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
@@ -11,7 +11,6 @@ from django.views.generic import CreateView
 from inventarisation.models import Inventarisation
 from inventarisation.procedures.get_item_rows import get_item_rows
 from inventarisation.procedures.get_item_pages import get_item_pages
-from inventarisation.procedures.get_next_state import get_next_state_by_action
 from works.models import Item, ItemState, Location
 
 

@@ -1,7 +1,4 @@
-from typing import List
-
-from django.urls import reverse
-from django_components import Component, register, types
+from django_components import Component, register
 
 from works.models import Item
 

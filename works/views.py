@@ -14,7 +14,6 @@ from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text
 
 from utils.get_query_words import get_query_words
-from utils.wrappers import hx_wrap
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
 from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
     Category

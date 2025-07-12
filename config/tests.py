@@ -4,7 +4,7 @@ from django.test import TestCase
 
 # Create your tests here.
 from config.models import Holiday, LendingSettings
-from works.models import ItemType, Location, Category
+from works.models import ItemType
 
 """ Start date: 28 february 2022
     mo | tu | we | th | fr | sa | su
