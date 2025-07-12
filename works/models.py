@@ -5,7 +5,6 @@ from django.db.models import PROTECT, CASCADE, Q, IntegerField, TextField
 from django.db.models.expressions import RawSQL, Value, F
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
-from django_cte import with_cte, CTE
 
 from book_code_generation.models import FakeItem, CutterCodeRange, BookCode
 from book_code_generation.generators import generate_code_from_author, generate_code_from_author_translated, \
