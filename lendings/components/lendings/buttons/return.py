@@ -1,5 +1,6 @@
 from django_components import Component, register
 
+
 @register("lendings.buttons.Return")
 class Return(Component):
     template_name = "lendings/buttons/return.html"

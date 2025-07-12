@@ -1,4 +1,4 @@
-from django.forms import  Form
+from django.forms import Form
 from django_components import Component, register
 
 

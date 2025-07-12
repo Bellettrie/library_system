@@ -7,6 +7,7 @@ from django.urls import reverse
 from members.models import Member
 from members.permissions import MEMBERS_VIEW
 
+
 @transaction.atomic
 @permission_required('auth.delete_user')
 def delete_user(request, member_id, hx_enabled=False):
@@ -20,4 +21,5 @@ def delete_user(request, member_id, hx_enabled=False):
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         return HttpResponseRedirect(reverse(MEMBERS_VIEW, args=(member.pk, 0,)))
 
-    return render(request, 'users/modals/delete.html', {'member': member, 'member_user': member.user, "hx_enabled": hx_enabled})
+    return render(request, 'users/modals/delete.html',
+                  {'member': member, 'member_user': member.user, "hx_enabled": hx_enabled})
