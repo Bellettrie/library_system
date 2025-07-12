@@ -118,6 +118,7 @@ class Work(NamedTranslatableThing):
             self.listed_author = authors[0].creator.name + ", " + authors[0].creator.given_names + str(
                 authors[0].creator.pk)
         self.save()
+
     def get_own_authors(self):
         from series.models import WorkInSeries
 
@@ -144,7 +145,7 @@ class Work(NamedTranslatableThing):
             authors.append(link)
         for link in series_authors:
             authors.append(link)
-        dedup =  self.deduplicate_work_authors(authors)
+        dedup = self.deduplicate_work_authors(authors)
         return dedup
 
     def get_own_deduplicated_authors(self):
@@ -164,7 +165,6 @@ class Work(NamedTranslatableThing):
         author_set.sort(key=lambda a: a.number)
         return author_set
 
-
     def is_orphaned(self):
         return len(self.subwork_set) == 0
 
@@ -173,17 +173,18 @@ class Work(NamedTranslatableThing):
 
     def get_items(self):
         super_work_ids = WorkRelation.objects.raw('''
-    WITH RECURSIVE works_relation_recursion(id, parent_id, child_id) AS (
-          SELECT id, parent_id, child_id 
-          FROM works_workrelation
-          WHERE child_id = %s
-        UNION ALL
-          SELECT sm.id, sm.parent_id, sm.child_id
-          FROM works_relation_recursion AS sm, works_workrelation AS t
-          WHERE sm.child_id = t.parent_id
-        )
-    SELECT * FROM works_relation_recursion
-''', [self.id])
+                                                  WITH RECURSIVE works_relation_recursion(id, parent_id, child_id)
+                                                                     AS (SELECT id, parent_id, child_id
+                                                                         FROM works_workrelation
+                                                                         WHERE child_id = %s
+                                                                         UNION ALL
+                                                                         SELECT sm.id, sm.parent_id, sm.child_id
+                                                                         FROM works_relation_recursion AS sm,
+                                                                              works_workrelation AS t
+                                                                         WHERE sm.child_id = t.parent_id)
+                                                  SELECT *
+                                                  FROM works_relation_recursion
+                                                  ''', [self.id])
         ids = [self.id]
         for super_work_id in super_work_ids:
             ids.append(super_work_id.parent_id)

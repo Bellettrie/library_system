@@ -67,7 +67,7 @@ def get_works(request):
         query = filter_state(query, states)
 
     if not any_query:
-        return Publication.objects.none()
+        return Work.objects.none()
 
     query = query.annotate(
         titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
@@ -128,7 +128,7 @@ def create_item_state(request, item_id, hx_enabled=False):
 @transaction.atomic
 @permission_required('works.add_item')
 def item_new(request, publication_id=None):
-    publication = get_object_or_404(Publication, pk=publication_id)
+    publication = get_object_or_404(Work, pk=publication_id)
 
     if request.method == 'POST':
         form = ItemCreateForm(request.POST)
@@ -205,7 +205,7 @@ def publication_edit(request, publication_id=None):
     publication = None
     if request.method == 'POST':
         if publication_id is not None:
-            publication = get_object_or_404(Publication, pk=publication_id)
+            publication = get_object_or_404(Work, pk=publication_id)
             form = PublicationCreateForm(request.POST, instance=publication)
         else:
             form = PublicationCreateForm(request.POST)
@@ -242,7 +242,7 @@ def publication_edit(request, publication_id=None):
     else:
         publication = None
         if publication_id is not None:
-            publication = get_object_or_404(Publication, pk=publication_id)
+            publication = get_object_or_404(Work, pk=publication_id)
             creator_to_works = CreatorToWorkFormSet(instance=publication)
             series_to_works = SeriesToWorkFomSet(instance=publication)
             form = PublicationCreateForm(instance=publication)
@@ -297,7 +297,7 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
                     form.add_error(None, str(error))
 
             if subwork_id is None:
-                pub = get_object_or_404(Publication, id=publication_id)
+                pub = get_object_or_404(Work, id=publication_id)
                 publication = WorkRelation.objects.create(work=instance, publication=pub,
                                                           number_in_publication=num,
                                                           display_number_in_publication=disp_num)
