@@ -1,4 +1,3 @@
-from django.urls import reverse
 from django_components import Component, register
 
 

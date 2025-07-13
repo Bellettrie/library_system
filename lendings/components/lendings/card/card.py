@@ -1,12 +1,6 @@
-from typing import List
+from django_components import Component, register
 
-from django.urls import reverse
-from django_components import Component, register, types
-
-from bellettrie_library_system import settings
-from bellettrie_library_system.base_settings import GET_MENU
 from lendings.models import Lending
-from members.models import Member
 
 
 @register("lendings.card.Card")

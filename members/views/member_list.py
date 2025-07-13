@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.views.generic import ListView

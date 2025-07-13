@@ -1,5 +1,4 @@
-from django.urls import reverse
-from django_components import Component, register, types
+from django_components import Component, register
 
 from lendings.procedures.extend import can_extend
 from utils.time import get_today

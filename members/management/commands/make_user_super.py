@@ -1,10 +1,6 @@
-from django.contrib.auth.models import Group, Permission, User
+from django.contrib.auth.models import User
 
 from django.core.management.base import BaseCommand
-
-from members.models import Committee
-from members.permissions import KASCO, BOARD, ADMIN, COMCO, BOOKBUYERS, KICKIN, LENDERS, BOOKS, WEB, KONNICHIWA, \
-    RETRIEVAL
 
 
 class Command(BaseCommand):

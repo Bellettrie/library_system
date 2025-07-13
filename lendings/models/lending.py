@@ -8,7 +8,7 @@ from django.db.models import PROTECT
 from members.models.member import Member
 from datetime import date
 
-from utils.time import get_now, get_today
+from utils.time import get_today
 
 
 class Lending(models.Model):

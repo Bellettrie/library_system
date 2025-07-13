@@ -1,5 +1,3 @@
-from typing import List
-
 from django_components import Component, register
 
 from lendings.models import Lending

@@ -1,6 +1,5 @@
 import json
 from datetime import timedelta
-from operator import truediv
 from typing import Protocol, runtime_checkable
 
 import jsonpickle

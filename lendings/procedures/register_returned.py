@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from lendings.models import Lending
 from members.models import Member
 from reservations.procedures.mail_when_returned import mail_when_returned

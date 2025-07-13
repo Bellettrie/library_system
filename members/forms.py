@@ -1,5 +1,4 @@
 from django import forms
-from django.db.models import Model
 from django.forms import ModelForm
 
 from members.models import Member, MembershipPeriod

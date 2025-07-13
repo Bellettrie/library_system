@@ -1,12 +1,10 @@
 <div class="xl:h-grow">
     <div class=" drawer xl:drawer-open absolute xl:static xl:h-full xl:w-full {% if hide_sidebar_xl %}xl:hidden{% endif %}  z-[6] ">
-        {#    drawer xl:drawer-open absolute  xl:relative xl:flex xl:flex-initial#}
         <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
 
         <div class="drawer-side  h-full">
             <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu bg-base-100 text-base-content min-h-full w-full pt-[6rem] xl:pt-0 md:w-80 ">
-                <!-- Sidebar content here -->
                 <div class="my-2"></div>
                 {% for item in top_bar %}
                     {% if item.is_separator %}

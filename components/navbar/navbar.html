@@ -46,7 +46,6 @@
                     <a href="{% url 'works.list' %}?advanced=True" class="btn join-item btn-md">...</a>
                 </div>
             </form>
-
             <div class="dropdown dropdown-end">
                 {% if  user.is_anonymous %}
                     <a href="{% url 'login' %}">
@@ -79,9 +78,8 @@
                                hx-afterRequest="window.location.href='/';"
                                href="{% url 'logout' %}" hx-include="[name='csrfmiddlewaretoken']">Logout</a></li>
                     </ul>
-                    </div>
                 {% endif %}
+            </div>
         </ul>
     </div>
 </div>
-

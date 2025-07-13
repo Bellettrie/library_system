@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from members.models import Member
 from utils.time import get_now
 

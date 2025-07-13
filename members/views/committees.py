@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse

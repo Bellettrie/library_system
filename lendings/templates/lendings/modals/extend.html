@@ -2,7 +2,6 @@
 {% block content %}
     {% component 'modalform.ModalForm' title='Extend Item' path=request.path %}
         {% fill "modal_body" %}
-
             Extending work: {{ item.publication.title }} <br/>
             Extending for member: {{ member.name }} <br/>
             End date {{ date }} <br/>

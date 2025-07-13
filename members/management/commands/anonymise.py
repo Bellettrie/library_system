@@ -1,7 +1,5 @@
 import datetime
 
-import mysql.connector
-
 from django.core.management.base import BaseCommand
 
 from members.models import Member
@@ -16,7 +14,7 @@ def get_name(x):
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Run automatic anonymisation'
 
     def handle(self, *args, **options):
         counter = 0

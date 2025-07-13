@@ -4,14 +4,12 @@
 from typing import Optional
 import re
 import markdown
-from markdown.inlinepatterns import LinkInlineProcessor, LINK_RE, ImageReferenceInlineProcessor, IMAGE_REFERENCE_RE, \
-    IMAGE_LINK_RE, ImageInlineProcessor
+from markdown.inlinepatterns import LinkInlineProcessor, LINK_RE, IMAGE_LINK_RE, ImageInlineProcessor
 from urllib.parse import urlparse
 
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.urls import reverse, NoReverseMatch
-from markdown.treeprocessors import Treeprocessor
 
 
 class Error(Exception):

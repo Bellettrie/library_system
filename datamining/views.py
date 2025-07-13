@@ -1,6 +1,6 @@
 import datetime
 
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.shortcuts import render
 
@@ -8,7 +8,6 @@ from django.shortcuts import render
 from datamining.procedures.filter_members import filter_members_by_date, filter_members_by_committees, \
     filter_members_by_privacy_option, filter_members_missing_dms
 from datamining.procedures.get_lending_stats import get_lending_stats
-from lendings.models import Lending
 from members.models import Member, Committee, MembershipPeriod, MembershipType, MemberBackground
 from utils.time import get_today
 

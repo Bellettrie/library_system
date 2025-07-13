@@ -1,5 +1,3 @@
-import mysql.connector
-
 from django.core.management.base import BaseCommand
 
 from members.models import Member, MembershipPeriod
