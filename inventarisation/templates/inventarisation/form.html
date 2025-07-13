@@ -20,14 +20,14 @@
                             {% with row.item as item %}
                                 <tr>
                                     <td>
-                                        <dl class=" truncate">
+                                        <dl>
                                             <dd><b>{{ item.display_code }}</b></dd>
-                                            <dd class="truncate xl:hidden"> {{ item.get_title|truncatechars:15 }}</dd>
+                                            <dd class="truncate xl:hidden"> {{ item.get_title }}</dd>
                                             <dd class="truncate xl:hidden">
-                                                <i> {{ item.publication.get_authors.0.creator.get_name|truncatechars:15 }}</i></dd>
+                                                <i> {{ item.publication.get_authors.0.creator.get_name }}</i></dd>
                                         </dl>
                                     </td>
-                                    <td class="hidden xl:table-cell truncate">{{ item.get_title }}</td>
+                                    <td class="hidden xl:table-cell">{{ item.get_title }}</td>
                                     <td class="hidden xl:table-cell">
                                         <i> {{ item.publication.get_authors.0.creator.get_name }}</i></dd>
                                     </td>

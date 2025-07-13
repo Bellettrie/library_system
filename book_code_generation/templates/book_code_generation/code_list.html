@@ -1,26 +1,43 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 <!-- Brand and toggle get grouped for better mobile display -->
 <!-- bs-example-navbar-collapse-1 -->
 {% load creator_helpers %}
 {% block title %}{{ creator.given_names }} {{ creator.name }}{% endblock %}
 {% block content %}
     {% load locations %}
-
-    <form method="get" action="#">
-        {% get_locations location False %}
-        <select name="atoz" id="atoz">
-            {% for letter in letters %}
-                <option value="{{ letter }}" {% if letter == atoz %}selected="selected"{% endif %}>{{ letter }}</option>
-            {% endfor %}
-        </select>
-        <input type="submit" value="Search">
-    </form>
-    <table>
-        {% for entry in entries %}
-            <tr>
-                <td>{{ entry.number }}</td>
-                <td>{% if entry in misses %}<b>Miss</b>{% endif %}{% if entry.author %}<a href="{% url 'creator.view' entry.author.pk %}">{{ entry.name }}</a>{% else %}{{ entry.name }}{% endif %}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="flex flex-col gap-3">
+        {% component 'tile.Tile' root_class_tags="" %}
+            {% fill 'title' %}Find Book Code numbers for letter and location{% endfill %}
+            {% fill 'content' %}
+                <form method="get" action="#">
+                    <div class="join">
+                        {% get_locations location False %}
+                        <select name="atoz" id="atoz" class="select join-item">
+                            {% for letter in letters %}
+                                <option value="{{ letter }}"
+                                        {% if letter == atoz %}selected="selected"{% endif %}>{{ letter }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Search" class="btn join-item">
+                    </div>
+                </form>
+            {% endfill %}
+        {% endcomponent %}
+        {% component 'tile.Tile' root_class_tags="" %}
+            {% fill 'title' %}Results{% endfill %}
+            {% fill 'content' %}
+                <table>
+                    {% for entry in entries %}
+                        <tr>
+                            <td>{{ entry.number }}</td>
+                            <td>
+                                {% if entry in misses %}<b>Miss</b>{% endif %}{% if entry.author %}
+                                <a href="{% url 'creator.view' entry.author.pk %}">{{ entry.name }}</a>{% else %}
+                                {{ entry.name }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endfill %}
+        {% endcomponent %}
+    </div>
 {% endblock %}

@@ -1,50 +1,61 @@
-{% extends "base_bootstrap.html" %}
-{#{% load books_table %}#}
+{% extends "base.html" %}
 {% block title %}Recode List{% endblock %}
 {% block content %}
+    <div class="flex flex-col gap-3">
+        {% component 'tile.Tile' root_class_tags="" %}
+            {% fill 'title' %}Find Book Code numbers for letter and location{% endfill %}
+            {% fill 'content' %}
+                {% load locations %}
+                {% get_locations request.GET.location %}
+            {% endfill %}
+        {% endcomponent %}
+        {% include 'pagination.html' %}
+        <div class="flex flex-col gap-3">
+            {% component 'tile.Tile' root_class_tags="" %}
+                {% fill 'title' %}Find Book Code numbers for letter and location{% endfill %}
+                {% fill 'content' %}
+                    <table class="table table-zebra">
+                        <tr>
+                            <th>Old Code</th>
+                            <th>New Code</th>
+                            <th>ISBN</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Edit</th>
+                        </tr>
+                        {% for recode in object_list %}
+                            {% with item=recode.item %}
+                                <tr>
+                                    <td>{{ item.display_code }}</td>
+                                    <td>{% if recode %}{{ recode.book_code }} :
+                                        {{ recode.book_code_extension }}{% endif %}</td>
+                                    <td>{{ item.get_isbn10 }};{{ item.get_isbn13 }}</td>
 
-    {% include 'pagination_bootstrap.html' %}
-    {% load locations %}
-    {{ request.GET.location }}
-    {% get_locations request.GET.location %}
-    <hr>
-    <table>
-        <tr>
-            <th>Old Code</th>
-            <th>New Code</th>
-            <th>ISBN</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Edit</th>
-        </tr>
-        {% for recode in object_list %}
+                                    <td><a href="{% url 'work.view' item.publication.pk %}">{{ item.get_title }}</a>
+                                    </td>
+                                    <td>{% if item.is_available %}{{ item.get_state.type }}
+                                    {% else %}
+                                        {% if item.get_state.type != 'AVAILABLE' %}
+                                            <p data-toggle="tooltip" data-placement="top"
+                                               title="{{ item.get_state.reason }}">{{ item.get_state.get_type_display }}</p>
+                                        {% else %}
+                                            AVAILABLE
+                                        {% endif %}
+                                    {% endif %}
+                                        {% if item.is_lent_out %}[LENT]
+                                        {% endif %}</td>
+                                    {% if perms.recode.change_recode %}
+                                        <td><a hx-get="{% url 'recode.finish' recode.pk %}" hx-target="#dialog"
+                                               href="{% url 'recode.finish' recode.pk %}"
+                                               class="btn btn-primary btn-sm">Finish
+                                            Recode</a>
+                                        </td>
+                                    {% endif %}
 
-            {% with item=recode.item %}
-                <tr>
-                    <td>{{ item.display_code }}</td>
-                    <td>{% if recode %}{{ recode.book_code }} : {{ recode.book_code_extension }}{% endif %}</td>
-                    <td>{{ item.get_isbn10 }};{{ item.get_isbn13 }}</td>
-
-                    <td><a href="{% url 'work.view' item.publication.pk %}">{{ item.get_title }}</a></td>
-                    <td>{% if item.is_available %}{{ item.get_state.type }}
-                    {% else %}
-                        {% if item.get_state.type != 'AVAILABLE' %}<p data-toggle="tooltip" data-placement="top"
-                                                                      title="{{ item.get_state.reason }}">{{ item.get_state.get_type_display }}</p>
-
-                        {% else %}
-                            AVAILABLE
-                        {% endif %}
-                    {% endif %}
-                        {% if item.is_lent_out %}[LENT]
-                        {% endif %}</td>
-                    {% if perms.recode.change_recode %}
-                        <td><a hx-get="{% url 'recode.finish' recode.pk %}" hx-target="#dialog"
-                               href="{% url 'recode.finish' recode.pk %}" class="btn btn-primary btn-sm">Finish Recode</a>
-                        </td>
-                    {% endif %}
-
-                </tr>
-            {% endwith %}
-        {% endfor %}
-    </table>
+                                </tr>
+                            {% endwith %}
+                        {% endfor %}
+                    </table>
+                {% endfill %}
+            {% endcomponent %}
 {% endblock %}

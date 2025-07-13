@@ -1,15 +1,15 @@
 {% if commits %}
-    <form method="get" action="#">
-        <select id="location" name="location">
+    <form method="get" action="#" class="join">
+        <select id="location" name="location" class="select join-item">
             {% for loc in locations %}
                 <option value="{{ loc.pk }}" {% if loc_id == loc.pk %}selected="selected"{% endif %}>{{ loc.category.name }}
                     -{{ loc.name }} {{ loc.pk }}</option>
             {% endfor %}
         </select>
-        <input type="submit" value="Search">
+        <input type="submit" class="btn join-item" value="Search">
     </form>
 {% else %}
-    <select id="location" name="location">
+    <select id="location" name="location" class="select join-item">
         {% for loc in locations %}
             <option value="{{ loc.pk }}" {% if loc_id == loc.pk %}selected="selected"{% endif %}>{{ loc.category.name }}
                 -{{ loc.name }} {{ loc.pk }}</option>
