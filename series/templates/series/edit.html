@@ -1,15 +1,37 @@
-{% extends "base_bootstrap.html" %}
-{% block title %}{% if series.pk %}Edit {% include 'series/part_of_series_name.html' %}{% else %}New Series{% endif %}{% endblock %}
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}{% if series.pk %}Edit {% include 'series/part_of_series_name.html' %}{% else %}New Series
+{% endif %}{% endblock %}
 {% block content %}
-    <form method="post" action="#">
+    <form action="#" method="post">
         {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <h4>Creators</h4>
-        <table>
-            {{ creators.as_table }}
-        </table>
-        <button type="submit">Save</button>
+        <div class="flex flex-col lg:flex-row gap-3">
+            {% component 'tile.Tile' root_class_tags="flex-0" %}
+                {% fill 'title' %}Publication Info{% endfill %}
+                {% fill 'content' %}
+                    <dl class="divide-y divide-gray-100">
+                        {% for field in form.visible_fields %}
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class=" font-medium ">{{ field.label }}</dt>
+                                <dd class="mt-1  sm:col-span-2 sm:mt-0">{{ field|add_class:"input input-xs border-1 border-bellered" }}</dd>
+                            </div>
+                        {% endfor %}
+                    </dl>
+                {% endfill %}
+            {% endcomponent %}
+            {% component "tile.Tile" root_class_tags="flex-0 " %}
+                {% fill 'title' %}Creators{% endfill %}
+                {% fill 'content' %}
+                    {{ creators.management_form }}
+                    {% for creator in creators %}
+                        <div class="mt-5 ">
+                            {% component "form.Smol" creator / %}
+                        </div>
+                    {% endfor %}
+                    <input class="btn btn-primary" type="submit" value="Save">
+                {% endfill %}
+            {% endcomponent %}
+        </div>
     </form>
 {% endblock %}

@@ -1,93 +1,139 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %} {% if edit %}Edit item for {% else %}
     New item for
 {% endif %}{{ publication.title }}{% endblock %}
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        {{ form.location }} <br/>
-        <label for="last_seen">Location: </label>
-        <hr>
+        <div class="flex flex-col xl:flex-row gap-3">
+            <div class="flex flex-col gap-3 flex-2">
+                {% component 'tile.Tile' root_class_tags="flex-0" %}
+                    {% fill 'title' %}Item Info{% endfill %}
+                    {% fill 'content' %}
+                        {{ form.location }} <br/>
+                        <label for="last_seen">Location: </label>
 
-        {{ form.book_code }} <br/>
-        <label for="book_code">Book code: </label>
-        <hr>
+                        {{ form.book_code }} <br/>
+                        <label for="book_code">Book code: </label>
 
-        {{ form.book_code_extension }} <br/>
-        <label for="book_code_extension">Book Code extension: </label>
+                        {{ form.book_code_extension }} <br/>
+                        <label for="book_code_extension">Book Code extension: </label>
+                        {% if not edit %}
+                            Generate book code: ...
+                            {% with publication_id=publication.pk %}
+                                {% with location_id='id_location' %}
+                                    {% include 'book_code_generation/code_lookup.html' %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endif %}
+                        {% if not edit %}
+                            Generate book code: ...
+                            {% with publication_id=publication.pk %}
+                                {% with location_id='id_location' %}
+                                    {% include 'book_code_generation/code_lookup.html' %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endif %}
+                    {% endfill %}
+                {% endcomponent %}
+                {% component 'tile.Tile' root_class_tags="flex-0" %}
+                    {% fill 'title' %}Data 2{% endfill %}
+                    {% fill 'content' %}
+                        {{ form.isbn10 }} <br/>
+                        <label for="isbn10">ISBN 10: </label>
 
-        {% if not edit %}
-            <hr>
-            Generate book code: ...
-            {% with publication_id=publication.pk %}
-                {% with location_id='id_location' %}
-                    {% include 'book_code_generation/code_lookup.html' %}
-                {% endwith %}
-            {% endwith %}
-        {% endif %}
-        <hr>
+                        {{ form.isbn13 }} <br/>
+                        <label for="isbn13">ISBN 13: </label>
+
+                        {{ form.pages }} <br/>
+                        <label for="pages">Pages: </label>
+                        <br/>
+                        {{ form.hidden }} <br/>
+                        <label for="hidden">Hidden: </label>
+                        {{ form.publication_year }} <br/>
+                        <label for="publication_year">Publication year: </label>
+
+                        {{ form.bought_date }} <br/>
+                        <label for="bought_date">Bought date: </label>
+
+                        {{ form.last_seen }} <br/>
+                        <label for="last_seen">Last seen: </label>
+                    {% endfill %}
+                {% endcomponent %}
+            </div>
+            <div class="flex flex-col gap-3 grow">
+                {% component 'tile.Tile' root_class_tags="grow" %}
+                    {% fill 'title' %}Comments{% endfill %}
+                    {% fill 'content' %}
+                        {{ form.comment }} <br/>
+
+                    {% endfill %}
+                {% endcomponent %}
+                {% if edit %}
+
+                    {% component 'tile.Tile' root_class_tags="grow" %}
+                        {% fill 'title' %}Recode{% endfill %}
+                        {% fill 'content' %}
+                            <div class="form-control">
+                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                    <dt class="text-sm/6 font-medium">Recode?</dt>
+                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
+                                        <input type="checkbox" id="recode_check" name="recode_check"
+                                               {% if recode %}checked{% endif %}>
+                                    </dd>
+                                </div>
+                            </div>
+
+                            <div class="form-control">
+                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                    <dt class="text-sm/6 font-medium">Book code</dt>
+                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
+                                        <input id="recode_book_code" class="input input-bordered input-sm"
+                                               name="recode_book_code"
+                                               value= "{{ recode_book_code }}"><br/>
+                                    </dd>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                    <dt class="text-sm/6 font-medium">Book code Extension</dt>
+                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
+                                        <input id="recode_book_code_extension" class="input input-bordered input-sm"
+                                               name="recode_book_code_extension"
+                                               value= "{{ recode_book_code_extension }}"></dd>
+                                </div>
+                            </div>
 
 
-        {{ form.isbn10 }} <br/>
-        <label for="isbn10">ISBN 10: </label>
-        <hr>
+                            <div class="form-control">
+                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                    <dt class="text-sm/6 font-medium">Generate book code</dt>
+                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
+                                        {% with publication_id=publication.pk %}
+                                            {% with location_id='id_location' %}
+                                                {% include 'book_code_generation/code_lookup.html' %}
+                                            {% endwith %}
+                                        {% endwith %}
+                                    </dd>
+                                </div>
+                            </div>
 
-        {{ form.isbn13 }} <br/>
-        <label for="isbn13">ISBN 13: </label>
-        <hr>
 
-        {{ form.pages }} <br/>
-        <label for="pages">Pages: </label>
-        <hr>
 
-        {{ form.hidden }} <br/>
-        <label for="hidden">Hidden: </label>
-        <hr>
-
-        {{ form.comment }} <br/>
-        <label for="comment">Comment: </label>
-        <hr>
-
-        {{ form.publication_year }} <br/>
-        <label for="publication_year">Publication year: </label>
-        <hr>
-
-        {{ form.bought_date }} <br/>
-        <label for="bought_date">Bought date: </label>
-        <hr>
-
-        {{ form.last_seen }} <br/>
-        <label for="last_seen">Last seen: </label>
-        <hr>
-
-        {% if edit %}
-            <h4>Recode</h4>
-
-            <input type="checkbox" id="recode_check" name="recode_check" {% if recode %}checked{% endif %}><br/>
-            <label for="recode_check">Recode?: </label>
-            <hr>
-
-            <input id="recode_book_code" name="recode_book_code" value= {{ recode_book_code }}><br/>
-            <label for="recode_book_code">Book code: </label>
-            <hr>
-
-            <input id="recode_book_code_extension" name="recode_book_code_extension"
-                   value= {{ recode_book_code_extension }}>
-            <br/>
-            <label for="recode_book_code_extension">Book Code extension: </label>
-            <hr>
-            {% if edit %}
-                <hr>
-                Generate book code: ...
-                {% with publication_id=publication.pk %}
-
-                    {% with location_id='id_location' %}
-                        {% include 'book_code_generation/code_lookup.html' %}
-                    {% endwith %}
-                {% endwith %}
-            {% endif %}
-        {% endif %}
-        <input type="submit" value="OK">
+                        {% endfill %}
+                    {% endcomponent %}
+                {% endif %}
+                {% component 'tile.Tile' root_class_tags="grow" %}
+                    {% fill 'title' %}All done{% endfill %}
+                    {% fill 'content' %}
+                        <input type="submit" value="Save" class="btn btn-success">
+                    {% endfill %}
+                {% endcomponent %}
+            </div>
+        </div>
     </form>
+
+
+
 
 {% endblock %}
