@@ -1,14 +1,21 @@
-{% extends 'base_bootstrap.html' %}
-{% block title %}
-Start a new Inventarisation
-{% endblock %}
+{% extends 'base.html' %}
+{% load widget_tweaks %}
 {% block content %}
-   <form action="#" method="post">
+    <form action="#" method="post">
         {% csrf_token %}
-        <label for="your_name">Location: </label>
-        {{ form.location }}
-
-        <input type="submit" value="OK">
-    </form><br />
-    <a href="{% url "inventarisation.forAll" %}" class="btn btn-danger">Add for all</a>
+        {% component 'tile.Tile' root_class_tags="" %}
+            {% fill 'title' %}Start a new Inventarisation
+            {% endfill %}
+            {% fill 'content' %}
+                {{ form.location }}
+            {% endfill %}
+            {% fill 'footer' %}
+                {% component 'tile.Footer' %}
+                    <input type="submit" class="btn btn-primary  join-item" value="Add One">
+                    <a href="{% url "inventarisation.forAll" %}" class="btn btn-error join-item">Add for All</a>
+                {% endcomponent %}
+            {% endfill %}
+        {% endcomponent %}
+    </form>
 {% endblock %}
+

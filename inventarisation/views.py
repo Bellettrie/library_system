@@ -49,9 +49,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
     item_page = item_pages[page_id]
 
     rows = get_item_rows(inventarisation, item_page)
-    rwz = []
-    for v in rows.values():
-        rwz.append(v)
+
     if request.method == "POST":
         for z in request.POST:
             if z.startswith('seen'):
@@ -73,11 +71,19 @@ def inventarisation_form(request, inventarisation_id, page_id):
     if request.POST.get("next"):
         return get_inventarisation_next(request, inventarisation_id, page_id)
 
+    if request.method == "POST":
+        # We reload the rows if we posted.
+        rows = get_item_rows(inventarisation, item_page)
+
+    rwz = []
+    for v in rows.values():
+        rwz.append(v)
     return render(
         request,
         "inventarisation/form.html",
         {
             'page_id': page_id,
+            'page_id_plus_1': page_id + 1,
             'inventarisation': inventarisation,
             'group': item_page,
             "rows": rwz,
