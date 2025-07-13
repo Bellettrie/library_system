@@ -1,64 +1,65 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% block title %}
-    Inventarisation List
 {% endblock %}
 {% block content %}
-    <script>
-        function doClick(id) {
-            window.location.href = "/inventarisation/list/" + id + "/" + document.getElementById("pageNr" + id).value;
-        }
-    </script>
-    <table>
-        {% for inv in inventarisations %}
-            <tr>
-                <td>{{ inv.location.name }}{{ inv.location.category.name }}</td>
-                <td>{{ inv.date_Time }}</td>
+    {% component 'tile.Tile' root_class_tags="" %}
+        {% fill 'title' %}Inventarisation List{% endfill %}
+        {% fill 'content' %}
+            <script>
+                function doClick(id) {
+                    window.location.href = "/inventarisation/list/" + id + "/" + document.getElementById("pageNr" + id).value;
+                }
+            </script>
+            <table class="table table-zebra">
+                {% for inv in inventarisations %}
+                    {% if inv.is_active %}
 
+                        <tr>
+                            <td>
+                                <dl>
+                                    <dd><b>{{ inv.location.name }}{{ inv.location.category.name }}</b></dd>
+                                    <dd><i>Started</i> {{ inv.date_time }}</dd>
+                                </dl>
+                            </td>
 
-                {% if inv.is_active %}
+                            <script>
+                                var input = document.getElementById("pageNr{{ inv.pk }}");
 
-                    <td><a href="{% url 'inventarisation.print' inv.pk %}" class="btn-primary btn btn-sm">Print List</a></td>
-                    <td><a href="{% url 'inventarisation.next' inv.pk -1 %}" class="btn-primary btn btn-sm">First inactive</a>
-                    </td>
-                    <td>
-
-
-                        <div class="input-group sm-3">
-                            <input type="text" class="form-control" placeholder="Number" style="width:120px"
-                                   aria-label="Page Number" aria-describedby="basic-addon2" id="pageNr{{ inv.pk }}">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" onclick="doClick({{ inv.pk }})" type="button">To
+                                // Execute a function when the user releases a key on the keyboard
+                                input.addEventListener("keyup", function (event) {
+                                    // Number 13 is the "Enter" key on the keyboard
+                                    if (event.keyCode === 13) {
+                                        // Cancel the default action, if needed
+                                        event.preventDefault();
+                                        // Trigger the button element with a click
+                                        doClick({{ inv.pk }})
+                                    }
+                                });
+                            </script>
+                            <td class="join">
+                                <a href="{% url 'inventarisation.print' inv.pk %}" class="btn btn-sm join-item">Print
+                                    List</a>
+                                <input type="text" class="input input-bordered input-sm join-item" placeholder="Number"
+                                       style="width:120px"
+                                       aria-label="Page Number" aria-describedby="basic-addon2" id="pageNr{{ inv.pk }}">
+                                <button class="btn btn-outline-secondary  btn-sm join-item"
+                                        onclick="doClick({{ inv.pk }})"
+                                        type="button">To
                                     page
                                 </button>
-                                <script>
-                                    var input = document.getElementById("pageNr{{ inv.pk }}");
-
-                                    // Execute a function when the user releases a key on the keyboard
-                                    input.addEventListener("keyup", function (event) {
-                                        // Number 13 is the "Enter" key on the keyboard
-                                        if (event.keyCode === 13) {
-                                            // Cancel the default action, if needed
-                                            event.preventDefault();
-                                            // Trigger the button element with a click
-                                            doClick({{ inv.pk }})
-                                        }
-                                    });
-                                </script>
-                            </div>
-
-                        </div>
-
-                    </td>
-
-                {% else %}
-                    <td colspan="3"><i>
-                        <div style="align-content: center">Already finished, start new count</div>
-                    </i></td>
-                {% endif %}
-            </tr>
-        {% endfor %}
-    </table>
-    <hr>
-    <a href="{% url 'inventarisation.new' %}" class="btn-primary btn">New</a>
-
+                                <a href="{% url 'inventarisation.next' inv.pk -1 %}"
+                                   class="btn-primary btn btn-sm  join-item">Next
+                                    Page</a>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <hr>
+        {% endfill %}
+        {% fill 'footer' %}
+            {% component 'tile.Footer' %}
+                <a href="{% url 'inventarisation.new' %}" class="btn-primary btn join-item">New</a>
+            {% endcomponent %}
+        {% endfill %}
+    {% endcomponent %}
 {% endblock %}

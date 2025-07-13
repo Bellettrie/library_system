@@ -1,9 +1,16 @@
- {% extends 'base_bootstrap.html' %}
-{% block title %}
-   Added a lot of inventarisations
-{% endblock %}
+{% extends 'base.html' %}
 {% block content %}
-    {% for inventarisation in inventarisations %}
-        {{ inventarisation.location }}<br>
-    {% endfor %}
+    {% component 'tile.Tile' root_class_tags="" %}
+        {% fill 'title' %}Added a lot of inventarisations{% endfill %}
+        {% fill 'content' %}
+            {% for inventarisation in inventarisations %}
+                {{ inventarisation.location }}<br>
+            {% endfor %}
+        {% endfill %}
+        {% fill 'footer' %}
+            {% component 'tile.Footer' %}
+                <a class="btn btn-primary join-item" href="{% url 'inventarisation.list' %}">Click here to return</a>
+            {% endcomponent %}
+        {% endfill %}
+    {% endcomponent %}
 {% endblock %}
