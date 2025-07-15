@@ -19,8 +19,6 @@
                             </div>
                         {% endfor %}
                     </dl>
-                    <input class="btn btn-primary" type="submit" value="Save">
-
                 {% endfill %}
             {% endcomponent %}
 
@@ -45,7 +43,13 @@
                             <hr>
                         {% endfor %}
                     {% endfill %}
+                    {% fill 'footer' %}
+                        {% component 'tile.Footer' %}
+                            <input class="btn btn-primary join-item" type="submit" value="Save">
+                        {% endcomponent %}
+                    {% endfill %}
                 {% endcomponent %}
+
             </div>
         </div>
     </form>
