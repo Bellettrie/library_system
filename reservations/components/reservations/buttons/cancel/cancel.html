@@ -1,10 +1,4 @@
 {% if is_visible %}
-    {% if  cannot_extend_reason %}
-        <div class="tooltip" data-tip="{{ cannot_extend_reason }}">
-            <a class="btn  {{ bonus_classes }}" disabled="disabled">Cancel</a>
-        </div>
-    {% else %}
-        <a class="btn {{ bonus_classes }}" data-hx-get="{% url 'reservations.delete'  reservation.pk %}"
-           hx-target="#dialog" href="{% url 'reservations.delete'  reservation.pk %}">Cancel</a>
-    {% endif %}
+    <a class="btn {{ bonus_classes }}" data-hx-get="{% url 'reservations.delete'  reservation.pk %}"
+       hx-target="#dialog" href="{% url 'reservations.delete'  reservation.pk %}">Cancel</a>
 {% endif %}

@@ -3,7 +3,7 @@
 {% block content %}
     {% component 'modalform.ModalForm' title="Cancel Reservation" path=request.path  %}
         {% fill "modal_body" %}
-            Lending work: {{ reservation.item.get_title }} <br/>
+            Work: {{ reservation.item.get_title }} <br/>
 
         {% endfill %}
         {% fill "modal_submit_button" %}

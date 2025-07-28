@@ -8,7 +8,7 @@ class Card(Component):
         code = reservation.item.book_code
 
         return {
-            "lendings": reservation,
+            "reservation": reservation,
             "split_code": code.split("-"),
             "perms": perms,
             "show_member": show_member,
