@@ -4,7 +4,7 @@
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        <div class="flex flex-col lg:flex-row gap-3">
+        <div class="flex flex-col 3xl:flex-row gap-3">
 
 
             {% component 'tile.Tile' root_class_tags="flex-0" %}
@@ -19,8 +19,6 @@
                             </div>
                         {% endfor %}
                     </dl>
-                    <input class="btn btn-primary" type="submit" value="Save">
-
                 {% endfill %}
             {% endcomponent %}
 
@@ -45,7 +43,13 @@
                             <hr>
                         {% endfor %}
                     {% endfill %}
+                    {% fill 'footer' %}
+                        {% component 'tile.Footer' %}
+                            <input class="btn btn-primary join-item" type="submit" value="Save">
+                        {% endcomponent %}
+                    {% endfill %}
                 {% endcomponent %}
+
             </div>
         </div>
     </form>

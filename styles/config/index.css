@@ -4,6 +4,7 @@
 @theme {
   --color-belleyellow: #FFE430;
   --color-bellered:#7D0000;
+  --breakpoint-3xl: 120rem;
 }
 
 @plugin "daisyui" {

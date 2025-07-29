@@ -12,7 +12,7 @@
             {% endif %}
     </script>
     <form method="post" action="#">
-       <div class="flex flex-col lg:flex-row gap-3">
+       <div class="flex flex-col 3xl:flex-row gap-3">
     {% csrf_token %}
            {% component 'tile.Tile' root_class_tags="flex-0" %}
                 {% fill 'title' %}Author Info{% endfill %}

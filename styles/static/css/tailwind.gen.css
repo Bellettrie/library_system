@@ -3025,9 +3025,6 @@
   .w-52 {
     width: calc(var(--spacing) * 52);
   }
-  .w-64 {
-    width: calc(var(--spacing) * 64);
-  }
   .w-80 {
     width: calc(var(--spacing) * 80);
   }
@@ -3036,12 +3033,6 @@
   }
   .w-\[12em\] {
     width: 12em;
-  }
-  .w-auto {
-    width: auto;
-  }
-  .w-fit {
-    width: fit-content;
   }
   .w-full {
     width: 100%;
@@ -3836,11 +3827,6 @@
       }
     }
   }
-  .xl\:relative {
-    @media (width >= 80rem) {
-      position: relative;
-    }
-  }
   .xl\:static {
     @media (width >= 80rem) {
       position: static;
@@ -3899,6 +3885,16 @@
   .\32 xl\:w-auto {
     @media (width >= 96rem) {
       width: auto;
+    }
+  }
+  .\32 xl\:flex-row {
+    @media (width >= 96rem) {
+      flex-direction: row;
+    }
+  }
+  .\33 xl\:flex-row {
+    @media (width >= 120rem) {
+      flex-direction: row;
     }
   }
   .\[\.btn\&\]\:text-black {
