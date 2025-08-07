@@ -4,11 +4,10 @@
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        {% component 'tile.Tile' root_class_tags="" %}
+        {% component 'tile.Tile' root_class_tags="min-w-[450px]" %}
             {% fill 'title' %}Inventarisation Form {{ page_id_plus_1 }} (of {{ counts }}) for {{ inventarisation.location }}{% endfill %}
             {% fill 'content' %}
-                <div class="overflow-x-auto">
-                    <table class="table table-zebra table-sm overflow-auto">
+                    <table class="table table-zebra table-sm overflow-auto min-w-[400px]">
                         <tr>
                             <th>Book Code</th>
                             <th class="hidden xl:table-cell">Title</th>
@@ -61,7 +60,6 @@
                             {% endwith %}
                         {% endfor %}
                     </table>
-                </div>
             {% endfill %}
             {% fill 'footer' %}
                 {% component 'tile.Footer' %}

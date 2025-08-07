@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="bellekia" class="text-lg">
-
 {% load static %}
 {% load menu %}
 {% load logo %}
+<!DOCTYPE html>
+<html lang="en" data-theme="bellekia" class="text-lg">
 
 <head>
     {% include 'base_header.html' %}
@@ -12,21 +11,20 @@
 </head>
 
 <body>
-
 {% include 'base_hx_dialog.html' %}
-
-<div class="min-h-screen flex flex-col w-full ">
+<div class="min-h-screen flex flex-col w-fit min-w-full ">
     {% component 'navbar.Navbar' perms / %}
 
-    <div class="grow bg-base-200 flex flex-row w-full justify-content-center">
+    <div class="grow bg-base-200 flex flex-row w-fit min-w-full justify-content-center">
         {% component "navbar.sidebar.Sidebar" perms / %}
-
-        <section class="grow px-5  mt-6 mb-3 ">
-           <div class="flex w-full place-content-center mb-3"><h1 class="text-3xl"> {% block title %}{% endblock %}</h1></div>
-            {% block content %}{% endblock %}
-        </section>
+        <div class="mx-auto max-w-[1800px] grow flex ">
+            <section class="grow px-5  mt-6 mb-3 ">
+                <div class="flex w-full place-content-center mb-3">
+                    <h1 class="text-3xl">{% block title %}{% endblock %}</h1></div>
+                {% block content %}{% endblock %}
+            </section>
+        </div>
     </div>
-
     {% component 'navbar.footer.Footer' perms / %}
     {% component_js_dependencies %}
 </div>

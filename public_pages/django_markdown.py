@@ -95,6 +95,28 @@ class CustomImageLinkProcessor(ImageInlineProcessor):
         return href, title, index, handled
 
 
+from markdown.treeprocessors import Treeprocessor
+
+...
+
+class TailwindTreeProcessor(Treeprocessor):
+    """Walk the root node and modify any discovered tag"""
+
+    classes = {
+        "table": "table-auto overflow-auto table-pin-rows table-zebra",
+    }
+
+    def run(self, root):
+        for node in root.iter():
+            tag_classes = self.classes.get(node.tag)
+            if tag_classes:
+                node.attrib["class"] = tag_classes
+
+
+class ProcessorExtension(markdown.Extension):
+    def extendMarkdown(self, md, *args, **kwargs):
+        md.treeprocessors.register(TailwindTreeProcessor(), 'tailwind_tree', 40)
+
 class DjangoUrlExtension(markdown.Extension):
     def extendMarkdown(self, md, *args, **kwrags):
         md.inlinePatterns.register(DjangoLinkInlineProcessor(LINK_RE, md), 'link', 160)

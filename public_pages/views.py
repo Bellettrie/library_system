@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from members.models import Member
-from public_pages.django_markdown import DjangoUrlExtension
+from public_pages.django_markdown import DjangoUrlExtension, ProcessorExtension
 from public_pages.forms import PageEditForm, UploadFileForm, PageAccessForm, EditForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload
 
@@ -36,7 +36,7 @@ def render_yt(markdown_text: str, title: str, layout_overrides: str = "", *_):
 
 # The base section creates a basic text area with a size. Observe that the title parameter is ignored, but it's kept to keep standardised functions.
 def render_base_section(markdown_text: str, title: str, layout_overrides: str = "", *_):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(),  'tables', 'md_in_html', 'attr_list', ProcessorExtension()])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/basic_area.html')
     return search_template.render(context={"content": html, "layout": layout_overrides})
@@ -44,7 +44,7 @@ def render_base_section(markdown_text: str, title: str, layout_overrides: str = 
 
 # The render square function creates a bootstrap card component.
 def render_square(markdown_text: str, title: str, layout_overrides: str = "", *_):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/square.html')
     return search_template.render(context={"content": html, "layout": layout_overrides, "title": title})
@@ -52,7 +52,8 @@ def render_square(markdown_text: str, title: str, layout_overrides: str = "", *_
 
 # The render find function creates a bootstrap card with a search field for finding books.
 def render_find(markdown_text: str, title: str, layout_overrides: str = "", *_):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list'])
+    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()], )
+
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/search_field.html')
     return search_template.render(context={"content": html, "layout": layout_overrides})
