@@ -44,7 +44,7 @@
                                                     <label for="no{{ item.pk }}">No</label>
                                                     <input type="radio" id="maybe{{ item.pk }}" name="seen{{ item.pk }}"
                                                            value="maybe{{ item.pk }}">
-                                                    <label for="maybe">Skip</label>
+                                                    <label for="maybe{{ item.pk }}">Skip</label>
                                                 {% else %}
                                                     <i>Not Applicable</i>
                                                     <input type="hidden" id="no" name="seen{{ item.pk }}" value="yes">
