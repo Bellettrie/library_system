@@ -29,7 +29,8 @@
     --default-mono-font-family: var(--font-mono);
     --color-belleyellow: #FFE430;
     --color-bellered: #7D0000;
-    --max-w: 2100px;
+    --max-w: 1800px;
+    --max-w-sb: 2120px;
   }
 }
 @layer base {
@@ -3061,6 +3062,9 @@
   }
   .max-w-\[var\(--max-w\)\] {
     max-width: var(--max-w);
+  }
+  .max-w-\[var\(--max-w-sb\)\] {
+    max-width: var(--max-w-sb);
   }
   .max-w-full {
     max-width: 100%;
