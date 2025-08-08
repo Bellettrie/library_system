@@ -17,13 +17,14 @@
 
     <div class="grow bg-base-200 flex flex-row w-fit min-w-full justify-content-center">
         {% component "navbar.sidebar.Sidebar" perms / %}
-        <div class="mx-auto max-w-[1800px] grow flex ">
-            <section class="grow px-5  mt-6 mb-3 ">
-                <div class="flex w-full place-content-center mb-3">
-                    <h1 class="text-3xl">{% block title %}{% endblock %}</h1></div>
-                {% block content %}{% endblock %}
-            </section>
-        </div>
+            <div class="mx-auto max-w-[var(--max-w)] grow flex " {% autoescape off %}{% sidebar_trash %}{% endautoescape %}>
+                <section class="grow px-5  mt-6 mb-3 ">
+                    <div class="flex w-full place-content-center mb-3">
+                        <h1 class="text-3xl">{% block title %}{% endblock %}</h1></div>
+                    {% block content %}{% endblock %}
+                </section>
+
+            </div>
     </div>
     {% component 'navbar.footer.Footer' perms / %}
     {% component_js_dependencies %}

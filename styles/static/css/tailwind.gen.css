@@ -29,6 +29,7 @@
     --default-mono-font-family: var(--font-mono);
     --color-belleyellow: #FFE430;
     --color-bellered: #7D0000;
+    --max-w: 2100px;
   }
 }
 @layer base {
@@ -3055,8 +3056,11 @@
   .max-w-\[1600px\] {
     max-width: 1600px;
   }
-  .max-w-\[1800px\] {
-    max-width: 1800px;
+  .max-w-\[calc\(var\(--max-w\)\+20rem\)\] {
+    max-width: calc(var(--max-w) + 20rem);
+  }
+  .max-w-\[var\(--max-w\)\] {
+    max-width: var(--max-w);
   }
   .max-w-full {
     max-width: 100%;
@@ -3203,9 +3207,6 @@
   }
   .overflow-auto {
     overflow: auto;
-  }
-  .overflow-x-auto {
-    overflow-x: auto;
   }
   .menu-sm {
     :where(li:not(.menu-title) > *:not(ul, details, .menu-title)), :where(li:not(.menu-title) > details > summary:not(.menu-title)) {
