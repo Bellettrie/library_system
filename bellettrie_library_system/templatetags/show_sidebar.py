@@ -12,5 +12,5 @@ def sidebar_trash(context):
     perms = context.get('perms', None)
     print(perms)
     if len(menu_with_only_right_permissions(sidebar, perms)) > 0:
-        return 'class="mx-auto max-w-[var(--max-w-sb)] grow flex" style="padding-right: min(.25rem*80,max(100% - (var(--max-w)),0px))"'
+        return 'class="mx-auto max-w-[var(--max-w-sb)] grow flex" style="padding-right: min(.25rem*80,max(100%-(var(--max-w-sb)),0px))"'
     return 'class="mx-auto max-w-[var(--max-w)] grow flex"'
