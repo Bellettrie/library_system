@@ -7,8 +7,8 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def sidebar_trash(context):
-    print(context.get('perms'), len(menu_with_only_right_permissions(sidebar, context.get('perms')))>0)
+def main_body_classes(context):
+    print(context.get('perms'), len(menu_with_only_right_permissions(sidebar, context.get('perms'))) > 0)
     perms = context.get('perms', None)
     print(perms)
     if len(menu_with_only_right_permissions(sidebar, perms)) > 0:

@@ -99,6 +99,7 @@ from markdown.treeprocessors import Treeprocessor
 
 ...
 
+
 class TailwindTreeProcessor(Treeprocessor):
     """Walk the root node and modify any discovered tag"""
 
@@ -116,6 +117,7 @@ class TailwindTreeProcessor(Treeprocessor):
 class ProcessorExtension(markdown.Extension):
     def extendMarkdown(self, md, *args, **kwargs):
         md.treeprocessors.register(TailwindTreeProcessor(), 'tailwind_tree', 40)
+
 
 class DjangoUrlExtension(markdown.Extension):
     def extendMarkdown(self, md, *args, **kwrags):
