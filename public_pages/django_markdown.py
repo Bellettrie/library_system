@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.urls import reverse, NoReverseMatch
+from markdown.treeprocessors import Treeprocessor
 
 
 class Error(Exception):
@@ -93,11 +94,6 @@ class CustomImageLinkProcessor(ImageInlineProcessor):
         print(href, title, index)
         href = clean_link(href)
         return href, title, index, handled
-
-
-from markdown.treeprocessors import Treeprocessor
-
-...
 
 
 class TailwindTreeProcessor(Treeprocessor):
