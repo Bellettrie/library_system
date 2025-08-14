@@ -1,4 +1,4 @@
-markdown~=3.7
+markdown~=3.8.2
 django~=5.2
 namegenerator~=1.0.6
 names~=0.3.0

@@ -5,6 +5,8 @@
   --color-belleyellow: #FFE430;
   --color-bellered:#7D0000;
   --breakpoint-3xl: 120rem;
+    --max-w: 1800px;
+    --max-w-sb: 2120px;
 }
 
 @plugin "daisyui" {

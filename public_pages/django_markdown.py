@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.urls import reverse, NoReverseMatch
+from markdown.treeprocessors import Treeprocessor
 
 
 class Error(Exception):
@@ -93,6 +94,25 @@ class CustomImageLinkProcessor(ImageInlineProcessor):
         print(href, title, index)
         href = clean_link(href)
         return href, title, index, handled
+
+
+class TailwindTreeProcessor(Treeprocessor):
+    """Walk the root node and modify any discovered tag"""
+
+    classes = {
+        "table": "table-auto overflow-auto table-pin-rows table-zebra",
+    }
+
+    def run(self, root):
+        for node in root.iter():
+            tag_classes = self.classes.get(node.tag)
+            if tag_classes:
+                node.attrib["class"] = tag_classes
+
+
+class ProcessorExtension(markdown.Extension):
+    def extendMarkdown(self, md, *args, **kwargs):
+        md.treeprocessors.register(TailwindTreeProcessor(), 'tailwind_tree', 40)
 
 
 class DjangoUrlExtension(markdown.Extension):

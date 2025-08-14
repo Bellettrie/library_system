@@ -4,11 +4,10 @@
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        {% component 'tile.Tile' root_class_tags="" %}
+        {% component 'tile.Tile' root_class_tags="min-w-[450px]" %}
             {% fill 'title' %}Inventarisation Form {{ page_id_plus_1 }} (of {{ counts }}) for {{ inventarisation.location }}{% endfill %}
             {% fill 'content' %}
-                <div class="overflow-x-auto">
-                    <table class="table table-zebra table-sm overflow-auto">
+                    <table class="table table-zebra table-sm overflow-auto min-w-[400px]">
                         <tr>
                             <th>Book Code</th>
                             <th class="hidden xl:table-cell">Title</th>
@@ -37,15 +36,15 @@
                                         <dl>
                                             <dd>
                                                 {% if not row.prev_state.state.is_final_state %}
-                                                    <input type="radio" id="yes" name="seen{{ item.pk }}" value="yes"
+                                                    <input type="radio" id="yes{{ item.pk }}" name="seen{{ item.pk }}" value="yes"
                                                            {% if row.option_filled == "yes" %}checked{% else %}autofocus{% endif %}>
-                                                    <label for="yes">Yes</label>
-                                                    <input type="radio" id="no" name="seen{{ item.pk }}" value="no"
+                                                    <label for="yes{{ item.pk }}">Yes</label>
+                                                    <input type="radio" id="no{{ item.pk }}" name="seen{{ item.pk }}" value="no"
                                                            {% if row.option_filled == "no" %}checked{% endif %}>
-                                                    <label for="no">No</label>
-                                                    <input type="radio" id="maybe" name="seen{{ item.pk }}"
-                                                           value="maybe">
-                                                    <label for="maybe">Skip</label>
+                                                    <label for="no{{ item.pk }}">No</label>
+                                                    <input type="radio" id="maybe{{ item.pk }}" name="seen{{ item.pk }}"
+                                                           value="maybe{{ item.pk }}">
+                                                    <label for="maybe{{ item.pk }}">Skip</label>
                                                 {% else %}
                                                     <i>Not Applicable</i>
                                                     <input type="hidden" id="no" name="seen{{ item.pk }}" value="yes">
@@ -61,7 +60,6 @@
                             {% endwith %}
                         {% endfor %}
                     </table>
-                </div>
             {% endfill %}
             {% fill 'footer' %}
                 {% component 'tile.Footer' %}

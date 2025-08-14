@@ -81,7 +81,7 @@ TEMPLATES = [
             )],
             'builtins': [
                 'bellettrie_library_system.templatetags.paginator_tag',
-
+                'bellettrie_library_system.templatetags.main_body_classes',
                 'django_components.templatetags.component_tags',
             ],
             'context_processors': [
