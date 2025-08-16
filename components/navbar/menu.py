@@ -51,7 +51,7 @@ top_bar = [
     Item("Book Search", reverse('works.list')),
     SuperMenu(
         "Activities",
-        Item("Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',))),
+        # Item("Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',))),
         Item("Writing", reverse('named_page', args=("writing", "home",))),
         Item("Konnichiwa", reverse('named_page', args=("konnichiwa", "home",))),
 
