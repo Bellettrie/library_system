@@ -34,6 +34,7 @@ jobs:
         # Then it loads a database dump
         # Finally it starts up the site again, using --build to ensure a new build is made.
         script:  |
+          docker image prune --force
           cd /services/staging/src
           git fetch
           git reset --hard ${{ github.sha }}

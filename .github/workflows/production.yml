@@ -24,6 +24,7 @@ jobs:
         # Then we restart the site. Observe that we do *not* throw away the volume here, 
         #     unlike with the staging environment.
         script:  |
+          docker image prune --force
           cd /services/prod
           ./backup.sh
           cd ./src
