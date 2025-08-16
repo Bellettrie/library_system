@@ -2,10 +2,12 @@
     {% fill 'title' %}Book Search{% endfill %}
     {% fill 'content' %}
         <form class="gap-2" action="/works/search" method="get">
-            <div class="join">
-                <input class="join-item input input-bordered" id="q" type="text" name="q" value="{{ request.GET.q }}" placeholder="Dune">
-                <a class="join-item btn " href="/works/search?advanced=True">Advanced Search</a>
+            <div class="join md:content-center">
+                <input class="join-item input input-bordered" id="q" type="text" name="q"
+                       value="{{ request.GET.q }}"
+                       placeholder="Dune">
                 <input type="submit" class="join-item btn btn-primary" value="Search">
+                <a class="join-item btn " href="/works/search?advanced=True">...</a>
             </div>
         </form>
     {% endfill %}
