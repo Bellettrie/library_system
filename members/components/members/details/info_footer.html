@@ -1,0 +1,16 @@
+{% component 'tile.Footer' %}
+    {% if is_on_details_view %}
+        <a href="{% url 'members.view' member.id 0 %}" class="btn btn-sm  join-item">Less
+            details</a>
+    {% else %}
+        <a href="{% url 'members.view' member.id 1 %}" class="btn btn-sm  join-item">More
+            details</a>
+    {% endif %}
+    <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-primary join-item">Edit</a>
+    <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-secondary join-item">Browse for
+        member</a>
+    {% if member.should_be_anonymised %}
+        <a href="{% url 'members.anonymise' member.id %}"
+           class="btn btn-sm btn-outline-primary">Anonimyse</a>
+    {% endif %}
+{% endcomponent %}

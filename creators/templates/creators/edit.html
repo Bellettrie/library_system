@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 <!-- Brand and toggle get grouped for better mobile display -->
 <!-- bs-example-navbar-collapse-1 -->
+{% load widget_tweaks %}
 
-{% block title %}{% if creator.pk %}{{ creator.given_names}} {{ creator.name }}{% else %}New Author{% endif %}{% endblock %}
+{% block title %}{% if creator.pk %}Edit {{ creator.given_names}} {{ creator.name }}{% else %}New Author{% endif %}{% endblock %}
 {% block content %}
     <script>
         {% if creator.pk %}var pk = {{ creator.pk }}
@@ -11,16 +12,29 @@
             {% endif %}
     </script>
     <form method="post" action="#">
+       <div class="flex flex-col 3xl:flex-row gap-3">
     {% csrf_token %}
-        <table>
-{{ form.as_table }}
-        </table>
-        <h4>Set Codes for Locations</h4>
-        <label for="allow_change">Allow recoding of works because of change of codes</label><input type="checkbox" id="allow_change" name="allow_change">
-        <table>
+           {% component 'tile.Tile' root_class_tags="flex-0" %}
+                {% fill 'title' %}Author Info{% endfill %}
+                {% fill 'content' %}
+                    {% component "form.Smol" form / %}
+                    {{ location.hidden_fields }}
+                {% endfill %}
+            {% endcomponent %}
 
-        {{ locations.as_table }}</table>
-    <input type="submit" value="save">
+            {% component "tile.Tile" root_class_tags="flex-0" %}
+                {% fill 'title' %}Locations{% endfill %}
+                {% fill 'content' %}
+                    {{locations.management_form}}
+                    {% for location in locations %}
+                        {% component "form.Smol" location / %}
+                        <hr>
+                    {% endfor %}
+                    <label for="allow_change">Allow recoding of works because of change of codes</label><input type="checkbox" id="allow_change" name="allow_change"><br>
+                    <input class="btn btn-primary" type="submit" value="Save">
+
+                {% endfill %}
+            {% endcomponent %}
+        </div>
     </form>
-{{creator.name}}
 {% endblock %}

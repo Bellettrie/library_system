@@ -1,0 +1,21 @@
+{% load static %}
+<div class="flex items-center -mb-5 min-w-fit">
+    <a class="hidden sm:block flex-none" href="{% url 'homepage' %}">
+        <img  style="height: 4.5rem{% if debug %}; transform: rotate(180deg){% endif %}" src="{% static logo %}"/>
+    </a>
+    <div class="top-bar-logo grow">
+        <a href="{% url 'homepage' %}">
+            {{ name }}
+        </a>
+    </div>
+</div>
+<style>
+    @font-face {
+        font-family: logoFont;
+        src: url("{% static 'Present_Roman.ttf' %}");
+    }
+    .top-bar-logo {
+        font-family: logoFont;
+        font-size: 4rem;
+    }
+</style>

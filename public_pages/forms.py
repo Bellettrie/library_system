@@ -25,19 +25,35 @@ class PageEditForm(ModelForm):
         fields = ['name',
                   'title',
                   'group',
-                  'text',
                   "show_title",
-                  "only_for_logged_in",
-                  "only_for_current_members",
-                  "limited_to_committees",
                   ]
-        labels = {'name': 'Name',
-                  'title': 'Title',
-                  'text': 'Text',
-                  'group': 'Group',
-                  'show_title': 'Show Title?',
-                  "only_for_logged_in": "Only for logged in users?",
-                  "only_for_current_members": "Only for current members?",
-                  "limited_to_committees": "Limit to these committees",
-                  },
+        labels = {
+            "only_for_logged_in": "Only for logged in users?",
+            "only_for_current_members": "Only for current members?",
+            "limited_to_committees": "Limit to these committees",
+        },
+
+
+class PageAccessForm(ModelForm):
+    class Meta:
+        model = PublicPage
+        fields = [
+            "only_for_logged_in",
+            "only_for_current_members",
+            "limited_to_committees",
+        ]
+        labels = {
+            "only_for_logged_in": "Only for logged in users?",
+            "only_for_current_members": "Only for current members?",
+            "limited_to_committees": "Limit to these committees",
+        },
+
+
+class EditForm(ModelForm):
+    class Meta:
+        model = PublicPage
+        fields = [
+            'text',
+        ]
+
         widgets = {'text': PageTextWidget}

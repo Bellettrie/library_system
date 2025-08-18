@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
@@ -11,7 +11,6 @@ from django.views.generic import CreateView
 from inventarisation.models import Inventarisation
 from inventarisation.procedures.get_item_rows import get_item_rows
 from inventarisation.procedures.get_item_pages import get_item_pages
-from inventarisation.procedures.get_next_state import get_next_state_by_action
 from works.models import Item, ItemState, Location
 
 
@@ -49,9 +48,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
     item_page = item_pages[page_id]
 
     rows = get_item_rows(inventarisation, item_page)
-    rwz = []
-    for v in rows.values():
-        rwz.append(v)
+
     if request.method == "POST":
         for z in request.POST:
             if z.startswith('seen'):
@@ -73,11 +70,19 @@ def inventarisation_form(request, inventarisation_id, page_id):
     if request.POST.get("next"):
         return get_inventarisation_next(request, inventarisation_id, page_id)
 
+    if request.method == "POST":
+        # We reload the rows if we posted.
+        rows = get_item_rows(inventarisation, item_page)
+
+    rwz = []
+    for v in rows.values():
+        rwz.append(v)
     return render(
         request,
         "inventarisation/form.html",
         {
             'page_id': page_id,
+            'page_id_plus_1': page_id + 1,
             'inventarisation': inventarisation,
             'group': item_page,
             "rows": rwz,

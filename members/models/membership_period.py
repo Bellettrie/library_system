@@ -14,5 +14,5 @@ class MembershipPeriod(models.Model):
     membership_type = models.ForeignKey(MembershipType, on_delete=PROTECT, null=True)
 
     def clean(self):
-        if self.start_date >= self.end_date:
+        if self.end_date is not None and self.start_date >= self.end_date:
             raise ValidationError({'end_date': 'Start Date is greater than End Date'})

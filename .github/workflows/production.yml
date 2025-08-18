@@ -24,11 +24,13 @@ jobs:
         # Then we restart the site. Observe that we do *not* throw away the volume here, 
         #     unlike with the staging environment.
         script:  |
+          docker image prune --force
           cd /services/prod
           ./backup.sh
           cd ./src
           git fetch
           git reset --hard ${{ github.sha }}
           cd ..
+          echo "VERSION='${{ github.sha  }}'" > "version.env"           
           docker-compose down
           docker-compose up -d --build

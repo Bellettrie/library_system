@@ -1,12 +1,12 @@
-<li>
-     <div style="overflow:auto;">
-           <a href="/series/views/{{ series.pk }}"> {% if work.display_number %}{{ work.display_number }} - {% endif %}
+<li class="ml-1  sm:ml-8">
+     <div>
+           <a class="link link-secondary truncate" href="/series/views/{{ series.pk }}"> {% if work.display_number %}{{ work.display_number }} - {% endif %}
             {{   series.title }}</a><span style="float:right">   {{ series.book_code }}     </span><span></span>
        <br> {% for author in series.get_own_authors %}{% include 'creators/single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
         {% endfor %}
     </div>
 
-    <ul>
+    <ul class="ml-1  sm:ml-8 ">
         {% for  ss in series.things_underneath %}
             {% if ss.is_series %}
                 {% with series=ss.is_series %}

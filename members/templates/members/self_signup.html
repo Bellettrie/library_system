@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
 {% block title %}Request User Login{% endblock %}
 {% block content %}
-    <div style="max-width:1400px">
-    To register for an account on the Bellettrie website, we need your student-number and email address. If these match the information you provided when registering, you will receive an email with a link you can use to create an account.<br>
-    If you are an employee, use your employee number. If you have provided no employee or student number, please ask the board or an opener to send you an account invitation link.<br>
-    Note that only the digits in the number are used, so don't worry about whether to put a 's', 'm' or other letter in front of the number. Feel free to enter them, they are entirely ignored.
-        </div>
-<hr>
-<p style="color:red">{{ error }}</p>
-<form action="#" method="post">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-    </table>
-    <input type="submit" value="Register for account">
-</form>
+    <div class="flex justify-center">
+        {% component "tile.Tile" root_class_tags="max-w-lg" with_standard_flex=False %}
+            {% fill 'title' %}
+                Request an account invitation mail
+            {% endfill %}
+            {% fill 'content' %}
+                To register for an account on the Bellettrie website, we need your student-number and email address. If these match the information you provided when registering, you will receive an email with a link you can use to create an account.<br>
+                If you are an employee, use your employee number. If you have provided no employee or student number, please ask the board or an opener to send you an account invitation link.<br>
+                Note that only the digits in the number are used, so don't worry about whether to put a 's', 'm' or other letter in front of the number. Feel free to enter them, they are entirely ignored.
+                <br><br><hr><br>
+                <form method="post">
+                    {% csrf_token %}
+                    {% component "form.Compact" form / %}
+                    <input type="submit" value="Request account login" class="btn btn-success btn-wide btn-2xl">
+                </form>
+            {% endfill %}
+        {% endcomponent %}
+    </div>
 {% endblock %}

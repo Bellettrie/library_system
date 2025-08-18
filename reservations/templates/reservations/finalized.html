@@ -1,8 +1,0 @@
-{% extends 'base.html' %}
-
-{% block title %}Reserved!{% endblock %}
-{%block content %}
-<a href="{% url 'members.view' member.id 0 %}">{{member.name}}</a> has reserved {{ item.publication.title }}.
-<br/>
-<a href="{% url 'lendings.reserve.member' member.id %}" class="btn btn-primary btn-sm">Reserve an other book</a>
-{% endblock %}

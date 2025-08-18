@@ -4,7 +4,7 @@ from django.core.management.utils import get_random_secret_key
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Generate random secret key for deploying application'
 
     def handle(self, *args, **options):
 

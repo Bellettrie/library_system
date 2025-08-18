@@ -1,0 +1,32 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+{% block content %}
+    {% component 'modalform.ModalForm' title='Returning Book' path=request.path %}
+        {% fill "modal_body" %}
+
+            Returning work: {{ item.get_title }} <br/>
+            From member: {{ lending.member }} <br/>
+            End date {{ today }} <br/>
+            {% if late %}
+                Due date: {{ lending.end_date }} ({{ days_late }} days late) <br/>
+                Fine: &euro;{{ fine }} <br/>
+            {% else %}
+                Due date: {{ lending.end_date }}(on time :)) <br/>
+            {% endif %}
+            {% if reserved %}
+                <br/>
+                Reservation Pending <br/>
+                Member: {{ reservation.member.name }} <br/>
+                Today: {{ today }} <br/>
+                <br/>
+                Please put a sticky note on the book with the member name & date of today, and place the book apart. The
+                member will be notified automatically. <br/>
+            {% endif %}
+            {% if not item.in_available_state %}
+                Book is {{ item.get_state }}, please treat it accordingly. <br/>
+            {% endif %}
+        {% endfill %}
+        {% fill "modal_submit_button" %}
+            <button class="btn btn-success join-item">Return</button>
+        {% endfill %}
+    {% endcomponent %}
+{% endblock %}

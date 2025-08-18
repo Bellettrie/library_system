@@ -44,6 +44,14 @@ def create_lending(item: Item, member: Member, user_member: Member, current_date
     return new_lending
 
 
+def item_lending_checks(item: Item, current_date: datetime.date):
+    if item.is_lent_out():
+        raise LendingImpossibleException("Item is lent out")
+    if not item.in_available_state():
+        raise LendingImpossibleException(
+            "Item is not currently available for lending, the item is {}.".format(item.get_state()))
+
+
 def lending_checks(item: Item, member: Member, current_date: datetime.date, from_reservation=False):
     """
     Check whether an item can be lent by a member.
@@ -53,6 +61,7 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
     :return: None
     :except LendingImpossibleException: If the lending-checks fail.
     """
+
     if not can_lend_more_of_item(member, item, from_reservation):
         raise LendingImpossibleException(
             "Member currently has lent too many items in category {}".format(item.location.category.item_type))
@@ -64,11 +73,8 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
     if item.is_reserved():
         if not item.is_reserved_for(member):
             raise LendingImpossibleException("Item is reserved for another member")
-    if item.is_lent_out():
-        raise LendingImpossibleException("Item is lent out")
-    if not item.in_available_state():
-        raise LendingImpossibleException(
-            "Item is not currently available for lending, the item is {}.".format(item.get_state()))
+
+    item_lending_checks(item, current_date)
 
     end_date = get_end_date(item, member, current_date)
     if end_date < current_date:
@@ -78,6 +84,13 @@ def lending_checks(item: Item, member: Member, current_date: datetime.date, from
 def can_lend(item: Item, member: Member, current_date: datetime.date, from_reservation=False):
     try:
         lending_checks(item, member, current_date, from_reservation)
+    except LendingImpossibleException as error:
+        return error.__str__()
+
+
+def item_can_be_lended(item: Item, current_date: datetime.date):
+    try:
+        item_lending_checks(item, current_date)
     except LendingImpossibleException as error:
         return error.__str__()
 

@@ -2,22 +2,34 @@
 {% load get_list %}
 {% block title %}Lending Stats{% endblock %}
 {% block content %}
-    Please use standard iso date formats (ie. 2020-01-01):
-    <form action="#" method="get">
-        <label for="date">Measuring date </label>
+    <div class="flex flex-col gap-3">
+        {% component 'tile.Tile' root_class_tags="" %}
 
-        <input id="date"  class="datepicker" type="text" name="start_date" value="{{ request.GET.start_date }}">
-        <input id="date" class="datepicker" type="text" name="end_date" value="{{ request.GET.end_date }}">
-
-
-        <input type="submit" name="exec" value="Search" class="btn-primary btn">
-    </form>
-
-    <table class="table table-striped" style="width: auto;">
-
-        {% for k, v in q.items %}
-            <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
-        {% endfor %}
-    </table>
+            {% fill 'title' %}Lending statistics{% endfill %}
+            {% fill 'content' %}
+                Please use standard iso date formats (ie. 2020-01-01).<br>
+                <form action="#" method="get" class="join">
+                    <input id="date" class="input join-item" type="date" name="start_date"
+                           value="{{ request.GET.start_date }}">
+                    <button class="disabled btn ">>></button>
+                    <input id="date" class="input join-item" type="date" name="end_date"
+                           value="{{ request.GET.end_date }}">
+                    <input type="submit" name="exec" value="Search" class="btn-primary btn join-item">
+                </form>
+            {% endfill %}
+        {% endcomponent %}
+        {% component 'tile.Tile' root_class_tags="" %}
+            {% fill 'title' %}Result{% endfill %}
+            {% fill 'content' %}
+                {% for k, v in q.items %}
+                    <dl class="w-full divide-y divide-gray-100">
+                        {% component "datarow.Datarow" k %}
+                            {{ v }}
+                        {% endcomponent %}
+                    </dl>
+                {% endfor %}
+            {% endfill %}
+        {% endcomponent %}
+    </div>
 {% endblock %}
 

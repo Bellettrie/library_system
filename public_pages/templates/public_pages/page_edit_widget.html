@@ -1,16 +1,27 @@
-<textarea name= {{ name }} id="{{ name }}" style="width:80%; height:50%; min-height: 400px;">{{ value }}</textarea> <br/>
+<div class="w-full flex flex-wrap gap-12 min-h-[80vh] ">
+ <textarea class="card bg-base-100 rounded-box w-full" name={{ name }} id="{{ name }}">{{ value }}
+ </textarea>
+</div>
+<div class="divider">
+    <button id="compileButton{{ name }}" type="button" class="btn btn-primary">>></button>
+</div>
+<div class="card w-full" id="compiledContenttext">
+    <div class="grow w-screen "></div>
+</div>
 
-<button id="compileButton{{ name }}" type="button" >Compile</button>
 
 <script>
-    $("#compileButton{{ name }}").click(function () {
+    function func() {
         $.post("/pages/render",
             {
                 text: document.getElementById("{{ name }}").value,
             }).done(
             function (data, status) {
-                document.getElementById('compiledContent{{ name }}').innerHTML = "<div class=\"row mt-3\">"+data+"</div>";
+                document.getElementById('compiledContent{{ name }}').innerHTML = "<div class=\"flex flex-wrap gap-3\">" + data + "</div>";
             });
-    });
+    }
+
+    $("#compileButton{{ name }}").click(func);
+    func();
 
 </script>

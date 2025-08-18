@@ -1,10 +1,8 @@
-{% extends 'base.html' %}
-{% block title %}
-    Set Location Code
-{% endblock %}
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
 {% block content %}
-    <form method="post" action="#">
-        {% csrf_token %}
+    {% component 'modalform.ModalForm' title="Set Custom Code Range"  path=request.path form_action="submit" %}
+        {% fill "modal_body" %}
         Here you can overwrite the book-code range for the series, so the books of the series get placed at a location
         that may be more logical.<br>
         This is intended for rare exceptions (such as Star Trek), so series without clear authors can get a location.
@@ -32,6 +30,7 @@
             </div>
         </div>
 
-        <input class="btn btn-success" type="submit" value="Save">
-    </form>
+        {% endfill %}
+    {% endcomponent %}
 {% endblock %}
+

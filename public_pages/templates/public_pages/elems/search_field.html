@@ -1,11 +1,14 @@
-  <div class="col col-{{ sm }} col-md-{{ md }} col-lg-{{ lg }}">
-<div class="card  h-100" >
-  <div class="card-body">
-    <h5 class="card-title">Find a Book</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Browse our books</h6>
-{% include "works/work_search_field_simple.html" %}
-
-                  {{ content|safe }}
-</div>
-</div>
-</div>
+{% component 'tile.Tile' root_class_tags="flex-1" %}
+    {% fill 'title' %}Book Search{% endfill %}
+    {% fill 'content' %}
+        <form class="gap-2" action="/works/search" method="get">
+            <div class="join md:content-center">
+                <input class="join-item input input-bordered" id="q" type="text" name="q"
+                       value="{{ request.GET.q }}"
+                       placeholder="Dune">
+                <input type="submit" class="join-item btn btn-primary" value="Search">
+                <a class="join-item btn " href="/works/search?advanced=True">...</a>
+            </div>
+        </form>
+    {% endfill %}
+{% endcomponent %}

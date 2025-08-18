@@ -1,34 +1,66 @@
 {% extends 'base.html' %}
 {% block title %}
-    {% if new %}
-        New Member
-    {% else %}
-        Edit Member
-    {% endif %}
+    Edit Member
 {% endblock %}
 {% block content %}
     <p style="color:red">{{ error }}</p>
     {% if warning %}
-        <p style="color:red">The member <a href="{% url 'members.view' warning.id 0 %}">{{ warning.name }}</a> has a similar Student #.
-            You might be making a duplicate member check the <em><b>Make anyway</b></em> checkbox to make a new member anyway.</p>
+        <p style="color:red">The member <a href="{% url 'members.view' warning.id 0 %}">{{ warning.name }}</a> has a
+            similar Student #.
+            You might be making a duplicate member check the <em><b>Make anyway</b></em> checkbox to make a new member
+            anyway.</p>
     {% endif %}
-<form action="#" method="post">
-    {% csrf_token %}
-    <table>
-        {% if warning %}
-            <tr>
-                <th><label style="color:red;font-size:24px;" for="make_anyway">Make anyway?</label></th>
-                <td><input type="checkbox" id="make_anyway" name="make_anyway" value="true"></td>
-            </tr>
-        {% endif %}
-        {{ form.as_table }}
-        {% if new %}
-        {{md_form.as_table}}
-        {%endif %}
-    </table>
-    {% if new %}
-        <br>Remember to tell the new member to sign up in Sports and Culture<br><br>
-    {% endif %}
-    <input type="submit" value="Submit">
-</form>
+    <form action="#" method="post">
+        <div class="max-w-full flex flex-wrap gap-3">
+            {% component "tile.Tile" root_class_tags="grow max-w-screen" %}
+                {% fill 'title' %}
+                    {% if new %}
+                        New Member
+                    {% else %}
+                        Edit info of member {{ member.name }}
+                    {% endif %}
+                {% endfill %}
+                {% fill "content" %}
+                    Verify in all the sub-forms, and finally press the submit button.
+                    {% csrf_token %}
+                    {% component "form.Compact" form only / %}
+
+                {% endfill %}
+            {% endcomponent %}
+            <div class="grow  flex flex-col gap-3  lg:basis-2/5 lg:flex-none">
+                {% component "tile.Tile" root_class_tags="shrink max-w-screen lg:basis-2/5  lg:flex-none" %}
+                    {% fill 'title' %}
+                        Privacy Settings
+                    {% endfill %}
+                    {% fill "content" %}
+                        {% component "form.Compact" privacy_form only / %}
+                    {% endfill %}
+                {% endcomponent %}
+                {% if new %}
+                    {% component "tile.Tile" root_class_tags="grow md:grow   max-w-screen lg:flex-1  card bg-base-100" %}
+                        {% fill 'title' %}
+                            Membership Type
+                        {% endfill %}
+                        {% fill "content" %}
+                            {% component "form.Compact" md_form / %}
+                        {% endfill %}
+                    {% endcomponent %}
+                {% endif %}
+
+                {% component "tile.Tile" root_class_tags="shrink max-w-screen lg:flex-none" %}
+                    {% fill 'title' %}
+                        All Done!
+                    {% endfill %}
+                    {% fill "content" %}
+                        {% if warning %}
+                            <label style="color:red;font-size:24px;" for="make_anyway">Make anyway?</label>
+                            <input type="checkbox" id="make_anyway" name="make_anyway" value="true"><br>
+                        {% endif %}
+                        <input type="submit" value="Save Member" class="btn btn-success btn-wide btn-2xl">
+                    {% endfill %}
+                {% endcomponent %}
+            </div>
+        </div>
+
+    </form>
 {% endblock %}

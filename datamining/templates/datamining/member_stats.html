@@ -2,44 +2,55 @@
 {% load get_list %}
 {% block title %}Filter Members{% endblock %}
 {% block content %}
-    Please use standard iso date formats (ie. 2020-12-31):
-    <form action="#" method="get">
-        <label for="date">Measuring date </label>
-
-        <input id="date"  class="datepicker" type="text" name="date" placeholder="1900-01-01" value="{{ request.GET.date }}">
-
-
-        <input type="submit" name="exec" value="Search" class="btn-primary btn">
-    </form>
-
-    <table class="table table-striped" style="width: auto;">
-
-        {% for k, v in q.items %}
-            {% if forloop.first %}
-                <tr>
-                    <th>..</th>
-                    {% for z,u in v.items %}
-                        <th>{{ z }}</th>
-                    {% endfor %}
-                </tr>
-            {% endif %}
-            <tr>
-                <td>{% if forloop.last %}<b>{{ k }}</b>
-                    {% for z,u in v.items %}
-                        <td><b>{{ u }}</b></td>
-                    {% endfor %}
-
-                {% else %} {{ k }}
-                    {% for z,u in v.items %}
-                        {% if forloop.last %} <td><b>{{ u }}</b></td>
-                        {% else %}
-                        <td>{{ u }}</td>
+    <div class="flex flex-col gap-3">
+        {% component 'tile.Tile' root_class_tags="w-full lg:basis-2/5  lg:flex-none" %}
+            {% fill 'title' %}                Results
+            {% endfill %}
+            {% fill 'content' %}
+                Please use standard iso date formats (ie. 2020-12-31):
+                <form action="#" method="get">
+                    <label for="date">Measuring date </label>
+                    <input id="date" class="input" type="date" name="date" placeholder="1900-01-01"
+                           value="{{ request.GET.date }}">
+                    <input type="submit" name="exec" value="Search" class="btn-primary btn">
+                </form>
+            {% endfill %}
+        {% endcomponent %}
+        {% component 'tile.Tile' root_class_tags="w-full lg:basis-2/5  lg:flex-none" %}
+            {% fill 'title' %}                Results
+            {% endfill %}
+            {% fill 'content' %}
+                <table class="table table-zebra" style="width: auto;">
+                    {% for k, v in q.items %}
+                        {% if forloop.first %}
+                            <tr>
+                                <th>..</th>
+                                {% for z,u in v.items %}
+                                    <th>{{ z }}</th>
+                                {% endfor %}
+                            </tr>
                         {% endif %}
-                    {% endfor %}{% endif %}
-                </td>
+                        <tr>
+                            <td>{% if forloop.last %}<b>{{ k }}</b>
+                                {% for z,u in v.items %}
+                                    <td><b>{{ u }}</b></td>
+                                {% endfor %}
 
-            </tr>
-        {% endfor %}
-    </table>
+                            {% else %} {{ k }}
+                                {% for z,u in v.items %}
+                                    {% if forloop.last %}
+                                        <td><b>{{ u }}</b></td>
+                                    {% else %}
+                                        <td>{{ u }}</td>
+                                    {% endif %}
+                                {% endfor %}{% endif %}
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endfill %}
+        {% endcomponent %}
+    </div>
 {% endblock %}
 

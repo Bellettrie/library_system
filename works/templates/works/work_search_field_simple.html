@@ -1,5 +1,12 @@
-<form action="/works/search" method="get">
-    <label for="Query">Query: </label>
-    <input id="q" type="text" name="q" value="{{ request.GET.q }}">
-    <input type="submit" value="Search">
-</form>
+
+{% component 'search.searchbox' selected_tag="simple" %}
+            <form class="flex flex-1  w-full place-content-center  gap-2" action="/works/search" method="get">
+                <div class="join md:content-center">
+                    <input class="join-item input input-bordered" id="q" type="text" name="q"
+                           value="{{ request.GET.q }}"
+                           placeholder="Dune">
+                    <input type="submit" class="join-item btn btn-primary" value="Search">
+                    <a class="join-item btn " href="/works/search?advanced=True">...</a>
+                </div>
+            </form>
+{% endcomponent %}

@@ -1,12 +1,29 @@
 {% extends 'base.html' %}
+{% block title %}Editing page {{ form.title.value }}{% endblock %}
 {% block content %}
     <form method="POST" action="#">
         {% csrf_token %}
-        <table style="width:100%">
-                {{ form.as_table }}
-                </table>
-                <div id="compiledContenttext">Here be the content</div>
-
-        <button>Save</button>
+        <div class="min-h-full flex flex-col gap-3 min-h-[80vh] ">
+            <div class="max-w-full flex flex-wrap gap-12">
+                {% component "tile.Tile" root_class_tags="grow max-w-screen lg:basis-6/12-gap-3 lg:flex-none " %}
+                    {% fill 'title' %}
+                        Title info
+                    {% endfill %}
+                    {% fill 'content' %}
+                        {% component "form.Compact" form / %}
+                    {% endfill %}
+                {% endcomponent %}
+                {% component "tile.Tile" root_class_tags="flex lg:basis-6/12-gap-3 lg:flex-none" %}
+                    {% fill 'title' %}
+                        Rights info
+                    {% endfill %}
+                    {% fill 'content' %}
+                        {% component "form.Compact" rights_form / %}
+                    {% endfill %}
+                {% endcomponent %}
+            </div>
+            {{ edit_form.text }}
+            <button class="btn btn-success">Save</button>
+        </div>
     </form>
 {% endblock %}

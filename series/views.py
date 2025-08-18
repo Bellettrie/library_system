@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models import Q
@@ -15,7 +17,15 @@ from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
 from series.models import Series, SeriesNode
 from book_code_generation.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
-from works.views import word_to_regex
+
+
+def word_to_regex(word: str):
+    if re.match('^[\\w-]+?$', word.replace("*", "").replace("+", "").replace("?", "")) is None:
+        return ""
+    word = word.replace("*", ".*")
+    word = word.replace("?", ".?")
+    word = word.replace("+", ".+")
+    return "(?<!\\S)" + word + "(?!\\S)"
 
 
 def get_series_by_query(request, search_text):
@@ -33,7 +43,7 @@ def get_series_by_query(request, search_text):
             i = len(zz)
         series = series & zz
     list = []
-    for serie in series:
+    for serie in series.order_by('title'):
         list.append({'id': serie.pk, 'text': serie.get_canonical_title()})
     return JsonResponse({'results': list}, safe=False)
 
@@ -107,7 +117,7 @@ def delete_series(request, pk):
     z = SeriesNode.objects.filter(part_of_series=series.first())
     if len(z) > 0:
         return render(request, 'are-you-sure.html', {
-            'what': "To delete " + (series.first().title or "<No name> ") + ", it has to have no sub-series."})
+            'what': "to delete " + (series.first().title or "<No name> ") + ". Series has to have no subseries."})
     if not request.GET.get('confirm'):
         return render(request, 'are-you-sure.html',
                       {'what': "delete series with name " + (series.first().title or "<No name> ")})
@@ -143,22 +153,23 @@ class SeriesList(ListView):
                                                | Q(sub_title__iregex=word)
                                                | Q(original_title__iregex=word)
                                                | Q(original_subtitle__iregex=word)
-                                               ))
+                                               ).order_by('title'))
             if result is None:
                 result = series
             else:
                 result = series & result
         if result is None:
             return []
-        return list(result)
+        lst = list(result)
+        lst.sort(key=lambda i: i.title)
+        return lst
 
 
 @transaction.atomic
 @permission_required('series.change_series')
 def new_codegen(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/code_gen.html'
-    if hx_enabled:
-        templ = 'series/series_cutter_number/code_gen_hx.html'
+
     series = get_object_or_404(Series, pk=pk)
 
     if request.method == 'POST':
@@ -171,18 +182,18 @@ def new_codegen(request, pk, hx_enabled=False):
             else:
                 return HttpResponseRedirect(reverse('series.views', args=(pk,)))
     return render(request, templ,
-                  {"series": series, "recommended_code": get_book_code_series(series)})
+                  {"series": series, "recommended_code": get_book_code_series(series), "hx_enabled": hx_enabled})
 
 
 @transaction.atomic
 @permission_required('series.change_series')
 def location_code_set_form(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/cutter_gen_form.html'
-    if hx_enabled:
-        templ = 'series/series_cutter_number/cutter_gen_form_hx.html'
+
     series = get_object_or_404(Series, pk=pk)
     if series.location_code:
-        return render(request, templ, {"series": series, "error": "Already has a location code."})
+        return render(request, templ,
+                      {"series": series, "error": "Already has a location code.", "hx_enabled": hx_enabled})
     if request.method == "POST":
         prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.title, pk=series.pk)).upper()
         letter = request.POST.get("cutter_letter")
@@ -191,7 +202,8 @@ def location_code_set_form(request, pk, hx_enabled=False):
         try:
             validate_cutter_range(series.location, prefix, letter, number)
         except InvalidCutterRangeError as e:
-            return render(request, templ, {"series": series, "error": e.message, "letter": letter, "number": number})
+            return render(request, templ, {"series": series, "error": e.message, "letter": letter, "number": number,
+                                           "hx_enabled": hx_enabled})
 
         series.location_code = LocationNumber.objects.create(location=series.location, number=number, letter=letter,
                                                              name=prefix)
@@ -200,8 +212,8 @@ def location_code_set_form(request, pk, hx_enabled=False):
         if hx_enabled:
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         return HttpResponseRedirect(reverse('series.gen_code', args=(pk,)))
-
-    return render(request, templ, {"series": series, "letter": "UNKNOWN"})
+    print(hx_enabled)
+    return render(request, templ, {"series": series, "letter": "UNKNOWN", "hx_enabled": hx_enabled})
 
 
 @permission_required('series.change_series')
@@ -221,8 +233,6 @@ def location_code_set_gen(request, pk):
 @permission_required('series.change_series')
 def location_code_delete_form(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/cutter_delete.html'
-    if hx_enabled:
-        templ = 'series/series_cutter_number/cutter_delete_hx.html'
     series = get_object_or_404(Series, pk=pk)
     if request.POST:
         lc = series.location_code
@@ -234,4 +244,4 @@ def location_code_delete_form(request, pk, hx_enabled=False):
         else:
             return HttpResponseRedirect(reverse('series.views', args=(pk,)))
     return render(request, templ,
-                  {"series": series})
+                  {"series": series, 'hx_enabled': hx_enabled})

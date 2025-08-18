@@ -4,6 +4,18 @@ from django.forms import ModelForm
 from members.models import Member, MembershipPeriod
 
 
+class PrivacyForm(ModelForm):
+    class Meta:
+        model = Member
+
+        fields = ['privacy_activities', 'privacy_publications', 'privacy_reunions']
+        labels = {
+            'privacy_activities': 'Mails for Activities?',
+            'privacy_publications': 'Photos in Publications?',
+            'privacy_reunions': 'Mails for Reunions?'
+        }
+
+
 class EditForm(ModelForm):
     def __init__(self, can_edit=False, dms_edit=False, *args, **kwargs):
         super(EditForm, self).__init__(*args, **kwargs)
@@ -13,6 +25,13 @@ class EditForm(ModelForm):
         if not dms_edit:
             self.fields['dms_registered'].widget.attrs['disabled'] = True
         self.fields['is_anonymous_user'].widget = forms.HiddenInput()
+        self.fields['name'].widget = forms.TextInput(attrs={'placeholder': "Full Name"})
+
+        self.fields['address_line_one'].widget = forms.TextInput(attrs={'placeholder': "Street ##"})
+        self.fields['address_line_two'].widget = forms.TextInput(attrs={'placeholder': "Postal Code + Town Name"})
+        self.fields['address_line_three'].widget = forms.TextInput(attrs={'placeholder': "Country (if not NL)"})
+        self.fields['phone'].widget = forms.TextInput(attrs={'placeholder': "Eg. 06-123 456 78"})
+        self.fields['student_number'].widget = forms.TextInput(attrs={'placeholder': "s1234567"})
 
     class Meta:
         model = Member
@@ -30,11 +49,8 @@ class EditForm(ModelForm):
                   'notes',
                   'is_anonymous_user',
                   'dms_registered',
-                  'committees',
                   'is_blacklisted',
-                  'privacy_activities',
-                  'privacy_publications',
-                  'privacy_reunions',
+
                   ]
         labels = {'name': 'Name',
                   'nickname': 'Nickname',
@@ -50,11 +66,7 @@ class EditForm(ModelForm):
                   'notes': 'Notes',
                   'is_anonymous_user': 'Is anonymous user',
                   'dms_registered': 'Is registered in DMS',
-                  'committees': 'Committees',
                   'is_blacklisted': 'Is Blacklisted?',
-                  'privacy_activities': 'Mails for Activities?',
-                  'privacy_publications': 'Photos in Publications?',
-                  'privacy_reunions': 'Mails for Reunions?'
                   }
         widgets = {
             'end_date': forms.DateInput(attrs={'class': 'datepicker'})

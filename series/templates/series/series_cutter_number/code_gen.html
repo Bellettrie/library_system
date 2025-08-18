@@ -1,9 +1,9 @@
-{% extends 'base.html' %}
-{% block title %}New Book Code{% endblock %}
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
 {% block content %}
-    <form method="post" action="#">
-        {% csrf_token %}
-        <script>
+    {% component 'modalform.ModalForm' title="New Book Code" path=request.path form_action="submit"  %}
+        {% fill "modal_body" %}
+<script>
             function set() {
                 document.getElementById("book_code").value = "{{ recommended_code }}"
             }
@@ -11,28 +11,32 @@
         {% if series.book_code %}
             <div class="form-group">
                 <label for="book_code">Book Code</label>
-                <input type="text" class="form-control" name="book_code" id="book_code" aria-describedby="bookcodehelp"
+                <input type="text" class="form-control input input-bordered" name="book_code" id="book_code" aria-describedby="bookcodehelp"
                        value="{{ series.book_code }}">
             </div>
-            <div class="Recommended code">
+            <div class="mt-3">
                 <label for="book_code">Set to Recommended Code</label>
-                <input type="button" class="form-control" aria-describedby="bookcodehelp"
+                <input type="button" class="form-control btn btn-outline" aria-describedby="bookcodehelp"
                        value="{% if recommended_code %} << {{ recommended_code }} >> {% endif %}" onclick="set();"
                         {% if not recommended_code %} disabled {% endif %}>
             </div>
         {% else %}
             <div class="form-group">
                 <label for="book_code">Book Code</label>
-                <input type="text" class="form-control" name="book_code" id="book_code" aria-describedby="bookcodehelp"
-                       value="{{ recommended_code }}">
+                <input type="text" class="form-control input input-bordered" name="book_code" id="book_code" aria-describedby="bookcodehelp"
+                       value="{{ recommended_code }}"><br>
                 <small id="bookcodehelp" class="form-text text-muted">Please verify and complete the code</small>
             </div>
         {% endif %}
-        {% if not series.location_code %}
-            <a class="card-link" hx-get="{% url 'series.cutter.gen_code' series.pk %}" hx-target="#dialog"
-               hx-swap="innerHTML" href="{% url 'series.cutter.gen_code' series.pk %}">Custom Cutter Number</a>
-        {% endif %}
-        <input class="btn btn-success" type="submit" value="Save">
-
-    </form>
+        <div class="mb-10"></div>
+        {% endfill %}
+        {% fill "modal_submit_button" %}
+            {% if not series.location_code %}
+                <a class="btn join-item" hx-get="{% url 'series.cutter.gen_code' series.pk %}" hx-target="#dialog"
+                hx-swap="innerHTML" href="{% url 'series.cutter.gen_code' series.pk %}">Custom Cutter Number</a>
+            {% endif %}
+            <input type="submit" class="btn btn-success join-item" value="save" >
+        {% endfill %}
+    {% endcomponent %}
 {% endblock %}
+

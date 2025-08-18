@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
-<!-- Brand and toggle get grouped for better mobile display -->
-<!-- bs-example-navbar-collapse-1 -->
 
 {% block title %}All current lendings{% endblock %}
 {% block content %}
     {% include 'pagination.html' %}
-    {% current_lendings object_list perms %}
+    {% component 'lendings.list.List' object_list perms / %}
+    {% include 'pagination.html' %}
 {% endblock %}

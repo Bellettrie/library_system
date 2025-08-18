@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
-{% block title %}
-    Inventarisation Form {{ page_id }} for {{ inventarisation.location }}{% endblock %}
 {% block content %}
-    Finishing inventarisation for {{ inventarisation.location }}.<br>
-
-    <a class="btn btn-success" href="{% url 'inventarisation.finished' inventarisation.pk   %}">Finish it</a>
+    {% component 'tile.Tile' root_class_tags="" %}
+        {% fill 'title' %}Inventarisation Form {{ page_id }} for {{ inventarisation.location }}{% endfill %}
+        {% fill 'content' %}
+            Finishing inventarisation for {{ inventarisation.location }}.<br>
+        {% endfill %}
+            {% fill 'footer' %}
+        {% component 'tile.Footer' %}
+            <a class="btn btn-success join-item" href="{% url 'inventarisation.finished' inventarisation.pk %}">Finish it</a>
+        {% endcomponent %}
+    {% endfill %}
+    {% endcomponent %}
 {% endblock %}

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404
@@ -22,13 +20,9 @@ def finalize_hx(request, work_id, member_id):
 @transaction.atomic
 @permission_required('lendings.add_lending')
 def finalize(request, work_id, member_id, hx_enabled=False):
-    cannot_lend_template = 'lendings/cannot_lend.html'
-    finalize_template = 'lendings/finalize.html'
-    finalized_template = 'lendings/finalized.html'
-    if hx_enabled:
-        cannot_lend_template = 'lendings/cannot_lend_hx.html'
-        finalize_template = 'lendings/finalize_hx.html'
-        finalized_template = 'lendings/finalized_hx.html'
+    cannot_lend_template = 'lendings/modals/cannot_lend.html'
+    finalize_template = 'lendings/modals/finalize.html'
+    finalized_template = 'lendings/modals/finalized.html'
 
     member = get_object_or_404(Member, pk=member_id)
     item = get_object_or_404(Item, pk=work_id)
@@ -40,9 +34,11 @@ def finalize(request, work_id, member_id, hx_enabled=False):
         try:
             lending = new_lending(item, member, request.user.member, get_today())
             return render(request, finalized_template,
-                          {'member': member, 'item': item, "date": lending.end_date, 'fee': fee})
+                          {'member': member, 'item': item, "date": lending.end_date, 'fee': fee,
+                           'hx_enabled': hx_enabled})
         except LendingImpossibleException as error:
             return render(request, cannot_lend_template,
-                          {'member': member, 'item': item, 'error': error, 'fee': fee})
+                          {'member': member, 'item': item, 'error': error, 'fee': fee, 'hx_enabled': hx_enabled})
     return render(request, finalize_template,
-                  {'member': member, 'item': item, "date": get_end_date(item, member, get_today()), 'fee': fee})
+                  {'member': member, 'item': item, "date": get_end_date(item, member, get_today()), 'fee': fee,
+                   'hx_enabled': hx_enabled})

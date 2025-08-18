@@ -1,13 +1,10 @@
-{% extends 'base.html' %}
-{% block title %}
-    Remove Location Code
-{% endblock %}
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
 {% block content %}
-    <form method="post" action="#">
-        {% csrf_token %}
+    {% component 'modalform.ModalForm' title="Remove location code" path=request.path form_action="submit"  %}
+        {% fill "modal_body" %}
         Are you sure you want to remove this location code?
-
-        <input class="btn btn-danger" type="submit" value="Delete">
-
-    </form>
+        {% endfill %}
+    {% endcomponent %}
 {% endblock %}
+

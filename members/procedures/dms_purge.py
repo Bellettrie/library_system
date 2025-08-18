@@ -1,4 +1,4 @@
-from members.models import Member, MembershipPeriod
+from members.models import Member
 from utils.time import get_today
 
 

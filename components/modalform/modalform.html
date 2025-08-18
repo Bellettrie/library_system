@@ -1,0 +1,32 @@
+{% if form_action == 'close' %}
+    <script>
+        $('#dialog').on("close", function (evt) {
+            location.reload();
+        });
+    </script>
+{% endif %}
+<form hx-post="{{ form_path }}" class="modal-content" method="post">
+    {% csrf_token %}
+    <h5 class="modal-title text-2xl">{{ form_title }}</h5>
+    <div class="modal-body">
+        {% slot 'modal_body' default %}
+        {% endslot %}
+    </div>
+
+    <div class="modal-footer join w-full flex flex-row justify-end">
+        {% if form_action == "submit" %}
+              {% slot "modal_submit_button" %}
+                  <button class="btn btn-success join-item">Save</button>
+              {% endslot %}
+        {% endif %}
+        {% if form_action == "close" %}
+            <div class="modal-action">
+                <form method="dialog join">
+                  {% slot "modal_submit_button" %}
+                      <button class="btn join-item">Close</button>
+                  {% endslot %}
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</form>

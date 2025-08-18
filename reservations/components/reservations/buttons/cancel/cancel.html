@@ -1,0 +1,4 @@
+{% if is_visible %}
+    <a class="btn {{ bonus_classes }}" data-hx-get="{% url 'reservations.delete'  reservation.pk %}"
+       hx-target="#dialog" href="{% url 'reservations.delete'  reservation.pk %}">Cancel</a>
+{% endif %}

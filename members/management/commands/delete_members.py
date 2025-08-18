@@ -1,5 +1,3 @@
-import mysql.connector
-
 from django.core.management.base import BaseCommand
 
 from members.models import Member, MembershipPeriod
@@ -24,5 +22,3 @@ class Command(BaseCommand):
                 MembershipPeriod.objects.filter(member=member).delete()
 
                 member.delete()
-
-        print(counter)

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.views.generic import ListView
@@ -13,7 +11,7 @@ class MemberList(PermissionRequiredMixin, ListView):
     permission_required = 'members.view_member'
     model = Member
     template_name = 'members/list.html'
-    paginate_by = 50
+    paginate_by = 10
 
     def get_queryset(self):  # new
         words = get_query_words(self.request.GET.get("q"))
