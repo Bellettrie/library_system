@@ -22,8 +22,7 @@
                 {% endif %}
             </dd>
             <dd class="text-lg"><a class="link link-secondary" href="{% url "work.view" item.publication.pk %}">
-                {% if item.publication.article %}{{ item.publication.article }}{% endif %} <em>
-                {% if item.publication.title %}{{ item.publication.title  }}{% else %}&lt;No Title&gt;{% endif %}</em></a>
+                {% if item.publication.get_title %}{{ item.publication.get_title  }}{% else %}&lt;No Title&gt;{% endif %}</em></a>
             </dd>
             {% if  item.publication.sub_title %}
                 <dd class="text-xs pb-1">{{ item.publication.sub_title }}</dd> {% endif %}

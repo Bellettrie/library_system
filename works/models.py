@@ -30,7 +30,11 @@ class NamedThing(models.Model):
     sub_title = models.CharField(max_length=255, null=True, blank=True)
 
     def get_title(self):
-        return self.article + " " + self.title if self.article else self.title
+        if not self.title:
+            return None
+        if self.article:
+            return self.article + " " + self.title
+        return self.title
 
 
 class TranslatedThing(models.Model):
