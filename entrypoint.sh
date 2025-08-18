@@ -13,7 +13,7 @@ then
 fi
 
 # Make sure the application starts in a consistent state
-if [[ -z "${UPDATE_STATICS}" ]]; then
+if [[ -n "${UPDATE_STATICS}" ]]; then
   rm -rf /statictarget/*
   python manage.py collectstatic
   python manage.py migrate
