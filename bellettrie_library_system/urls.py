@@ -22,7 +22,6 @@ from public_pages.views import view_page
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.conf import settings
-from django.conf import settings
 from django.conf.urls.static import static
 
 
@@ -37,27 +36,28 @@ def ok(_):
     return HttpResponse("OK from " + settings.HOST + " running version " + settings.VERSION)
 
 
-urlpatterns = [
-                  path('admin/', admin.site.urls),
-                  path('members/', include('members.urls')),
-                  path('works/', include('works.urls')),
-                  path('lend/', include('lendings.urls')),
-                  path('reservations/', include('reservations.urls')),
-                  path('config/', include('config.urls')),
-                  path('inventarisation/', include('inventarisation.urls')),
-                  path('accounts/', include('django.contrib.auth.urls')),
-                  path('creators/', include('creators.urls')),
-                  path('series/', include('series.urls')),
-                  path('pages/', include('public_pages.urls')),
-                  path('datamining/', include('datamining.urls')),
-                  path('', view_page(settings.STANDARD_PAGE_GROUP, 'home'), name='homepage'),
-                  path('kickin/', view_page(settings.STANDARD_PAGE_GROUP, 'kickin'), name='kick'),
-                  path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
-                  path('recode/', include('recode.urls')),
-                  path('book_code/', include('book_code_generation.urls')),
+urlpatterns = ([
+                   path('admin/', admin.site.urls),
+                   path('members/', include('members.urls')),
+                   path('works/', include('works.urls')),
+                   path('lend/', include('lendings.urls')),
+                   path('reservations/', include('reservations.urls')),
+                   path('config/', include('config.urls')),
+                   path('inventarisation/', include('inventarisation.urls')),
+                   path('accounts/', include('django.contrib.auth.urls')),
+                   path('creators/', include('creators.urls')),
+                   path('series/', include('series.urls')),
+                   path('pages/', include('public_pages.urls')),
+                   path('datamining/', include('datamining.urls')),
+                   path('', view_page(settings.STANDARD_PAGE_GROUP, 'home'), name='homepage'),
+                   path('kickin/', view_page(settings.STANDARD_PAGE_GROUP, 'kickin'), name='kick'),
+                   path('konnichiwa/', view_page('konnichiwa', 'home'), name='konnichiwa.home'),
+                   path('recode/', include('recode.urls')),
+                   path('book_code/', include('book_code_generation.urls')),
 
-                  # If our service is running, we should return a 200 OK with our liveless checks
-                  path('healthz/', ok),
-                  path('readyz/', ok),
-                  path('livez/', ok),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                   # If our service is running, we should return a 200 OK with our liveless checks
+                   path('healthz/', ok),
+                   path('readyz/', ok),
+                   path('livez/', ok),
+               ]
+               + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
