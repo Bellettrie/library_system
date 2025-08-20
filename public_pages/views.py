@@ -314,9 +314,9 @@ def new_upload(request):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
-            special = "Succesful upload!"
 
-            form = UploadFileForm()
+            return redirect('list_uploads')
+
     else:
         form = UploadFileForm()
 
@@ -327,7 +327,7 @@ def new_upload(request):
 def delete_upload(request, pk):
     pages = FileUpload.objects.filter(pk=pk)
     if not request.GET.get('confirm'):
-        return render(request, 'are-you-sure.html', {'what': "delete attachment with name " + pages.first().name})
+        return render(request, 'are-you-sure.html', {'what': "delete file " + pages.first().file.name})
     for page in pages:
         page.file.delete()
         page.delete()

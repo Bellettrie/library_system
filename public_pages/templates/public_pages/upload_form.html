@@ -4,23 +4,10 @@
 {% endblock %}
 
 {% block content %}
-
-    {% component 'modalform.ModalForm' title="Set Item State" path=request.path form_action="submit" %}
-        {% fill "modal_body" %}
-            {{ special }}
-
-            {% csrf_token %}
-            <table>
-                {{ form.as_table }}
-            </table>
-        {% endfill %}
-    {% endcomponent %}
-    <form action="#" method="post">
+    <form action="#" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <p><input type="submit" value="Upload"/></p>
+        {% component "form.Smol" form=form%}
+        {% endcomponent %}
+        <input type="submit" value="Upload" class="btn btn-primary">
     </form>
-    <hr>
 {% endblock %}
