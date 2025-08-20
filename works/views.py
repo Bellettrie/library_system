@@ -317,7 +317,7 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             form = SubWorkCreateForm(instance=publication.work)
         else:
             creator_to_works = CreatorToWorkFormSet()
-            form = SubWorkCreateForm()ƒprin
+            form = SubWorkCreateForm()
     return render(request, 'works/subwork_edit.html',
                   {'series': series, 'publication': publication, 'form': form, 'creators': creator_to_works, 'num': num,
                    'disp_num': disp_num})
