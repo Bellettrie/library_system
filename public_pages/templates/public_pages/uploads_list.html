@@ -6,7 +6,6 @@
 
         {% for upload in uploads %}
             <tr>
-                <td>{{ upload.name }}</td>
                 <td>{{ upload.get_file_url }}</td>
                 <td><a class="btn btn-primary" href="{{ upload.get_full_url }}">View</a></td>
 

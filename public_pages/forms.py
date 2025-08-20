@@ -10,7 +10,7 @@ from public_pages.models import PublicPage, FileUpload
 class UploadFileForm(forms.ModelForm):
     class Meta:
         model = FileUpload
-        fields = ['name', 'file']
+        fields = ['file']
 
 
 class PageTextWidget(Widget):
