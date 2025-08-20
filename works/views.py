@@ -121,7 +121,6 @@ def create_item_state(request, item_id, hx_enabled=False):
             return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
     else:
         form = ItemStateCreateForm()
-    print(form.as_table())
     return render(request, 'works/modals/item_state_edit.html',
                   {'hx_enabled': hx_enabled, 'form': form, 'item': get_object_or_404(Item, pk=item_id)})
 
@@ -318,7 +317,7 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             form = SubWorkCreateForm(instance=publication.work)
         else:
             creator_to_works = CreatorToWorkFormSet()
-            form = SubWorkCreateForm()
+            form = SubWorkCreateForm()ƒprin
     return render(request, 'works/subwork_edit.html',
                   {'series': series, 'publication': publication, 'form': form, 'creators': creator_to_works, 'num': num,
                    'disp_num': disp_num})
