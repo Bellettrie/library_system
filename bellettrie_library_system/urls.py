@@ -22,6 +22,8 @@ from public_pages.views import view_page
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.conf import settings
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 def redirect_view(_):
@@ -58,4 +60,4 @@ urlpatterns = [
     path('healthz/', ok),
     path('readyz/', ok),
     path('livez/', ok),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
