@@ -4,6 +4,7 @@ from public_pages.models import FileUpload
 
 class SyncUploads:
     def exec(self):
+        print("Hi from file syncer")
         from os import listdir
         from os.path import isfile, join
         onlyfiles = set([f for f in listdir(MEDIA_ROOT) if isfile(join(MEDIA_ROOT, f))])
@@ -22,5 +23,5 @@ class SyncUploads:
                     print(e)
         for f in knownfiles:
             if f.file.name not in onlyfiles:
-                print("Removed file {}".format(f))
+                print("Removed file {}".format(f.file.name))
                 f.delete()
