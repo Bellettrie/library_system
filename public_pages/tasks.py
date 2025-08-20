@@ -15,11 +15,12 @@ class SyncUploads:
 
         for f in onlyfiles:
             if f not in file_names:
+                print("Added file {}".format(f))
                 try:
                     FileUpload.objects.create(file=f)
                 except Exception as e:
                     print(e)
-
         for f in knownfiles:
             if f.file.name not in onlyfiles:
+                print("Removed file {}".format(f))
                 f.delete()

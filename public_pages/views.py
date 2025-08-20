@@ -302,6 +302,9 @@ def delete_page(request, pk):
 @permission_required('public_pages.change_publicpage')
 def list_uploads(request):
     uploads = FileUpload.objects.all()
+
+    uploads = list(uploads)
+    uploads.sort(key=lambda f: f.file.name.upper())
     return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})
 
 
