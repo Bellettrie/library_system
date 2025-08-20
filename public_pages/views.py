@@ -16,6 +16,7 @@ from members.models import Member
 from public_pages.django_markdown import DjangoUrlExtension, ProcessorExtension
 from public_pages.forms import PageEditForm, UploadFileForm, PageAccessForm, EditForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload
+from public_pages.tasks import SyncUploads
 
 
 # These functions are responsible for displaying parts of the webpages. These translate quite directly into bootstrap components
