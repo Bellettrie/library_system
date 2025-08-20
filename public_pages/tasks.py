@@ -13,7 +13,7 @@ class SyncUploads:
         knownfilenames = map(lambda x: x.file.name, knownfiles)
         for f in onlyfiles:
             if f not in knownfilenames:
-                 FileUpload.objects.create(file=f)
+                FileUpload.objects.create(file=f)
 
         for f in knownfiles:
             if f.file.name not in onlyfiles:
