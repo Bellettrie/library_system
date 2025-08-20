@@ -57,5 +57,4 @@ urlpatterns = [
     path("healthz/", ok),
     path("readyz/", ok),
     path("livez/", ok),
-]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
