@@ -324,9 +324,11 @@ def new_upload(request):
 
 @permission_required('public_pages.change_publicpage')
 def delete_upload(request, pk):
-    page = FileUpload.objects.filter(pk=pk)
+    pages = FileUpload.objects.filter(pk=pk)
     if not request.GET.get('confirm'):
-        return render(request, 'are-you-sure.html', {'what': "delete attachment with name " + page.first().name})
-    page.delete()
+        return render(request, 'are-you-sure.html', {'what': "delete attachment with name " + pages.first().name})
+    for page in pages:
+        page.file.delete()
+        page.delete()
 
     return redirect('list_uploads')
