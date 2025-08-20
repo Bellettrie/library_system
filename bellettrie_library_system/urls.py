@@ -35,6 +35,7 @@ def ok(_):
     logger.debug(settings.HOST)
     return HttpResponse("OK from " + settings.HOST + " running version " + settings.VERSION)
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("members/", include("members.urls")),
