@@ -19,9 +19,6 @@ class PrivacyForm(ModelForm):
 class EditForm(ModelForm):
     def __init__(self, can_edit=False, dms_edit=False, *args, **kwargs):
         super(EditForm, self).__init__(*args, **kwargs)
-        if not can_edit:
-            self.fields['committees'].widget.attrs['readonly'] = True
-            self.fields['committees'].widget = forms.MultipleHiddenInput()
         if not dms_edit:
             self.fields['dms_registered'].widget.attrs['disabled'] = True
         self.fields['is_anonymous_user'].widget = forms.HiddenInput()
