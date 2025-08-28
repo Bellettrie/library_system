@@ -61,8 +61,19 @@
             </div>
         </div>
         <div class="lg:hidden flex flex-col gap-5 m-3">
-            {% for item in items %}
-                {% component 'works.table.standard_card.Card' item.get_item perms / %}
+            {% for itemRow in items %}
+                {% component 'works.table.Card' itemRow.get_item False %}
+                    <div class=" flex  justify-end  join">
+                        {% if itemRow.is_item %}
+                            {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
+                            {% with item.current_lending as cur_lnd %}
+                                {% if cur_lnd %}
+                                    {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}
+                    </div>
+                {% endcomponent %}
             {% endfor %}
         </div>
         <div class="flex-1 w-full">
