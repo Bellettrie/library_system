@@ -1,20 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}Uploads{% endblock %}
 {% block content %}
-    <table>
-
-
+    <table class="table table-zebra table-sm" >
         {% for upload in uploads %}
             <tr>
-                <td>{{ upload.name }}</td>
                 <td>{{ upload.get_file_url }}</td>
-                <td><a class="btn btn-primary" href="{{ upload.get_full_url }}">View</a></td>
+                <td class="join"><a class="btn btn-primary btn-sm join-item" href="{{ upload.get_full_url }}">View</a>
 
-                <td><a class="btn btn-danger" href="{% url 'delete_upload' upload.pk %}">Delete</a></td>
+                <a class="btn btn-danger btn-sm  join-item" href="{% url 'delete_upload' upload.pk %}">Delete</a></td>
             </tr>
         {% endfor %}
     </table>
-
     <a class="btn btn-primary" href="{% url "new_upload" %}">New</a>
 
 {% endblock %}

@@ -16,6 +16,7 @@ from members.models import Member
 from public_pages.django_markdown import DjangoUrlExtension, ProcessorExtension
 from public_pages.forms import PageEditForm, UploadFileForm, PageAccessForm, EditForm
 from public_pages.models import PublicPageGroup, PublicPage, FileUpload
+from public_pages.tasks import SyncUploads
 
 
 # These functions are responsible for displaying parts of the webpages. These translate quite directly into bootstrap components
@@ -301,6 +302,9 @@ def delete_page(request, pk):
 @permission_required('public_pages.change_publicpage')
 def list_uploads(request):
     uploads = FileUpload.objects.all()
+
+    uploads = list(uploads)
+    uploads.sort(key=lambda f: f.file.name.upper())
     return render(request, 'public_pages/uploads_list.html', {'uploads': uploads})
 
 
@@ -313,9 +317,9 @@ def new_upload(request):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
-            special = "Succesful upload!"
 
-            form = UploadFileForm()
+            return redirect('list_uploads')
+
     else:
         form = UploadFileForm()
 
@@ -324,9 +328,11 @@ def new_upload(request):
 
 @permission_required('public_pages.change_publicpage')
 def delete_upload(request, pk):
-    page = FileUpload.objects.filter(pk=pk)
+    pages = FileUpload.objects.filter(pk=pk)
     if not request.GET.get('confirm'):
-        return render(request, 'are-you-sure.html', {'what': "delete attachment with name " + page.first().name})
-    page.delete()
+        return render(request, 'are-you-sure.html', {'what': "delete file " + pages.first().file.name})
+    for page in pages:
+        page.file.delete()
+        page.delete()
 
     return redirect('list_uploads')
