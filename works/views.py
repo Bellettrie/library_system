@@ -95,7 +95,10 @@ class WorkList(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         advanced = self.request.GET.get("advanced", False)
+        admin = self.request.GET.get("admin", False)
+
         context['advanced'] = advanced
+        context['admin'] = admin
 
         context['states'] = ItemState.CHOICES
         context['selected_states'] = self.request.GET.getlist("q_states", [])
