@@ -50,11 +50,16 @@
                                 </td>
                                 <td class="join">
                                     {% if  itemRow.is_item %}
-                                        {% if admin and perms.change_work %}
+                                        {% if admin %}
                                                    {% if perms.works.change_itemstate %}
                                                     <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
                                                        href="{% url "works.item_state.create" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Change
                                                         state</a>
+                                                {% endif %}
+                                                {% if perms.works.change_item %}
+                                                    <a hx-get="{% url 'works.item.change_location' itemRow.get_item.pk %}" hx-target="#dialog"
+                                                       href="{% url "works.item.change_location" itemRow.get_item.pk %}" class="btn btn-secondary btn-xs join-item">Change
+                                                        location</a>
                                                 {% endif %}
                                             {% else  %}
                                         {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
@@ -76,14 +81,18 @@
         </div>
         <div class="lg:hidden flex flex-col gap-5 m-3">
             {% for itemRow in items %}
-
                 {% component 'works.table.Card' itemRow.get_item False %}
                     <div class=" flex  justify-end  join">
-                    {% if admin   and perms.change_work %}
+                    {% if admin    %}
                         {% if perms.works.change_itemstate %}
                             <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
                                href="{% url "works.item_state.create" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Change
                                 state</a>
+                        {% endif %}
+                        {% if perms.works.change_item %}
+                            <a hx-get="{% url 'works.item.change_location' itemRow.get_item.pk %}" hx-target="#dialog"
+                               href="{% url "works.item.change_location" itemRow.get_item.pk %}" class="btn btn-secondary btn-xs join-item">Change
+                                location</a>
                         {% endif %}
                     {% else %}
                         {% if itemRow.is_item %}
