@@ -14,9 +14,10 @@ from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text
 
 from utils.get_query_words import get_query_words
-from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
+from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm, \
+    LocationChangeForm
 from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
-    Category
+    Category, Location
 
 
 def get_works(request):
@@ -138,6 +139,20 @@ def create_item_state(request, item_id, hx_enabled=False):
     return render(request, 'works/modals/item_state_edit.html',
                   {'hx_enabled': hx_enabled, 'form': form, 'item': get_object_or_404(Item, pk=item_id)})
 
+
+@transaction.atomic
+@permission_required('works.change_item')
+def change_item_location(request, item_id, hx_enabled=False):
+    item = get_object_or_404(Item, pk=item_id)
+    if request.method == 'POST':
+        LocationChangeForm(request.POST, instance=item).save()
+        if hx_enabled:
+            return HttpResponse(status=209, headers={"HX-Refresh": "true"})
+        return HttpResponseRedirect(reverse('work.view', args=(item.publication.pk,)))
+    else:
+        frm = LocationChangeForm(instance=item)
+        return render(request, 'works/modals/item_location_edit.html',
+                  {'hx_enabled': hx_enabled, 'form': frm, 'item': item})
 
 @transaction.atomic
 @permission_required('works.add_item')
