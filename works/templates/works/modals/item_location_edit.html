@@ -3,6 +3,7 @@
 {% block content %}
     {% component 'modalform.ModalForm' title="Change item location" path=request.path form_action="submit" %}
         {% fill "modal_body" %}
+            Warning, this is highly destructive.
             {% csrf_token %}
             <table>
                 {{ form.as_table }}
