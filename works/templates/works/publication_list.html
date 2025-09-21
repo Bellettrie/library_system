@@ -33,17 +33,30 @@
                         <th></th>
                     </tr>
                     {% for itemRow in items %}
+
                         {% component 'works.table.Row' itemRow.get_item skip_header=skip_header %}
+
                             {% fill "extra_rows" %}
                                 <td>
                                     {% if  itemRow.is_item %}
                                         {% if itemRow.get_item.get_state != "AVAILABLE" %}
                                             [{{ itemRow.get_item.get_state }}]
                                         {% endif %}
+                                        {% if admin and perms.change_work %}
+                                            <br>{{ itemRow.get_item.location.category.name }} {{  itemRow.get_item.location.name }}
+                                        {% endif %}
+
                                     {% endif %}
                                 </td>
                                 <td class="join">
                                     {% if  itemRow.is_item %}
+                                        {% if admin and perms.change_work %}
+                                                   {% if perms.works.change_itemstate %}
+                                                    <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
+                                                       href="{% url "works.item_state.create" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Change
+                                                        state</a>
+                                                {% endif %}
+                                            {% else  %}
                                         {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
                                         {% with itemRow.get_item.current_lending as cur_lnd %}
                                             {% if cur_lnd %}
@@ -51,6 +64,7 @@
                                             {% endif %}
                                         {% endwith %}
                                     {% endif %}
+                                {% endif %}
                                 </td>
                                 <td>{{ itemRow.get_item.titleorder }}</td>
                             {% endfill %}
@@ -62,8 +76,16 @@
         </div>
         <div class="lg:hidden flex flex-col gap-5 m-3">
             {% for itemRow in items %}
+
                 {% component 'works.table.Card' itemRow.get_item False %}
                     <div class=" flex  justify-end  join">
+                    {% if admin   and perms.change_work %}
+                        {% if perms.works.change_itemstate %}
+                            <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
+                               href="{% url "works.item_state.create" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Change
+                                state</a>
+                        {% endif %}
+                    {% else %}
                         {% if itemRow.is_item %}
                             {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
                             {% with item.current_lending as cur_lnd %}
@@ -72,6 +94,7 @@
                                 {% endif %}
                             {% endwith %}
                         {% endif %}
+                    {% endif %}
                     </div>
                 {% endcomponent %}
             {% endfor %}

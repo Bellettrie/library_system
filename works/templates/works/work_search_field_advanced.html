@@ -61,8 +61,19 @@
 
                 {% endfor %}
             </select></dd>
-        </div>
 
+        </div>
+        {% if perms.change_work %}<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium">Admin Mode</dt>
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input checkbox"
+                                                                     id="admin" type="checkbox"
+                                                                           {% if admin %}
+                                                                                checked
+                                                                             {% endif %}
+                                                                     name="admin"
+                                                                     value="True"></dd>
+        </div>
+        {% endif %}
 
         <input type="hidden" name="advanced" value="True">
         <input class="btn btn-primary" type="submit" value="Search">
