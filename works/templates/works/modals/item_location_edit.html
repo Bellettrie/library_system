@@ -6,8 +6,46 @@
             Warning, this is highly destructive.
             {% csrf_token %}
             <table>
-                {{ form.as_table }}
+            {% component 'form.Smol' form /%}
+
+
+                            <div class="form-control">
+                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                    <dt class="text-sm/6 font-medium">Book code</dt>
+                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
+                                        <input id="recode_book_code" class="input input-bordered input-sm"
+                                               name="recode_book_code"
+                                               value= "{{ recode_book_code }}"><br/>
+                                    </dd>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                    <dt class="text-sm/6 font-medium">Book code Extension</dt>
+                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
+                                        <input id="recode_book_code_extension" class="input input-bordered input-sm"
+                                               name="recode_book_code_extension"
+                                               value= "{{ recode_book_code_extension }}"></dd>
+                                </div>
+                            </div>
+
             </table>
+
+                                  <div class="form-control">
+                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                    <dt class="text-sm/6 font-medium">Generate book code</dt>
+                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
+                                        {% with item_id=item_id %}
+                                            {% with publication_id=item.publication.id %}
+                                            {% with location_id='id_location' %}
+                                                {% include 'book_code_generation/code_lookup.html' %}
+                                            {% endwith %}
+                                                {% endwith %}
+                                        {% endwith %}
+                                    </dd>
+                                </div>
+                            </div>
+            TODO: Also do recoding.
         {% endfill %}
     {% endcomponent %}
 {% endblock %}

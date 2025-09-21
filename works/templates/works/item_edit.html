@@ -12,20 +12,12 @@
                     {% fill 'content' %}
                         {{ form.location }} <br/>
                         <label for="last_seen">Location: </label>
-
                         {{ form.book_code }} <br/>
                         <label for="book_code">Book code: </label>
 
                         {{ form.book_code_extension }} <br/>
                         <label for="book_code_extension">Book Code extension: </label>
-                        {% if not edit %}
-                            Generate book code: ...
-                            {% with publication_id=publication.pk %}
-                                {% with location_id='id_location' %}
-                                    {% include 'book_code_generation/code_lookup.html' %}
-                                {% endwith %}
-                            {% endwith %}
-                        {% endif %}
+                        <br>
                         {% if not edit %}
                             Generate book code: ...
                             {% with publication_id=publication.pk %}
