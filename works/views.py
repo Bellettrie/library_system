@@ -146,13 +146,19 @@ def change_item_location(request, item_id, hx_enabled=False):
     item = get_object_or_404(Item, pk=item_id)
     if request.method == 'POST':
         LocationChangeForm(request.POST, instance=item).save()
+
+        book_code =  request.POST.get('recode_book_code', '')
+        book_code_extension = request.POST.get('recode_book_code_extension', '')
+        if book_code and (item.book_code != book_code or item.book_code_extension != book_code_extension):
+            Recode.objects.filter(item=item).delete()
+            Recode.objects.create(item=item, book_code=book_code, book_code_extension=book_code_extension)
         if hx_enabled:
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         return HttpResponseRedirect(reverse('work.view', args=(item.publication.pk,)))
     else:
         frm = LocationChangeForm(instance=item)
         return render(request, 'works/modals/item_location_edit.html',
-                  {'hx_enabled': hx_enabled, 'form': frm, 'item': item})
+                  {'hx_enabled': hx_enabled, 'form': frm, 'item': item, 'item_id': item_id})
 
 @transaction.atomic
 @permission_required('works.add_item')

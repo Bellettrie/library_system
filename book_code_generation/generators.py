@@ -22,7 +22,7 @@ def generate_code_from_author(item):
             author_alias = author_alias.is_alias_of
             if author_alias == author:
                 break
-    return "Lacks info to generate code", True
+    return "Lacks info to generate code, author may be not be set up for selected location.", True
 
 
 # Generate a code for a translated item.
@@ -46,7 +46,7 @@ def generate_code_from_author_translated(item):
             author_alias = author_alias.is_alias_of
             if author_alias == author:
                 break
-    return "Lacks info to generate code", True
+    return "Lacks info to generate code, author may be not be set up for selected location.", True
 
 
 # Get code prefix for ABC-books.
