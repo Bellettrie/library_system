@@ -61,6 +61,9 @@
                                                        href="{% url "works.item.change_location" itemRow.get_item.pk %}" class="btn btn-secondary btn-xs join-item">Change
                                                         location</a>
                                                 {% endif %}
+                                                {% if perms.works.change_item %}
+                                                    <a href="{% url "works.item.edit" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Edit item</a>
+                                                {% endif %}
                                             {% else  %}
                                         {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
                                         {% with itemRow.get_item.current_lending as cur_lnd %}
@@ -90,10 +93,12 @@
                                 state</a>
                         {% endif %}
                         {% if perms.works.change_item %}
-                            <a hx-get="{% url 'works.item.change_location' itemRow.get_item.pk %}" hx-target="#dialog"
-                               href="{% url "works.item.change_location" itemRow.get_item.pk %}" class="btn btn-secondary btn-xs join-item">Change
-                                location</a>
+                            <a hx-get="{% url 'works.item.edit' itemRow.get_item.pk %}" hx-target="#dialog"
+                               href="{% url "works.item.edit" itemRow.get_item.pk %}" class="btn btn-secondary btn-xs join-item">Edit item</a>
                         {% endif %}
+                                                {% if perms.works.change_item %}
+                                                    <a href="{% url "works.item.edit" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Edit item</a>
+                                                {% endif %}
                     {% else %}
                         {% if itemRow.is_item %}
                             {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}

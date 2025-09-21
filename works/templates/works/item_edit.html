@@ -30,7 +30,7 @@
                             {% if not edit %}
                                 Generate book code: ...
                                 {% with publication_id=publication.pk %}
-                                    {% with location_id='id_location' %}
+                                    {% with location_id_field='id_location' %}
                                         {% include 'book_code_generation/code_lookup.html' %}
                                     {% endwith %}
                                 {% endwith %}
