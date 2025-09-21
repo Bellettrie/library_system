@@ -80,10 +80,10 @@ CODES = Item("Book Codes", reverse("book_code.code_list"), perm="works.change_wo
 CATALOG_MANAGEMENT = SuperMenu("Catalog Management", NEW_WORK, NEW_SERIES, NEW_CREATOR, INVENTARISATION, RECODE_LIST,
                                CODES)
 
-ANON_MEMBERS = Item("Anonymous Users", reverse("members.list.anon"), perm="config.view_lendingsettings")
-MEMBER_STATS = Item("Member Statistics", reverse("datamining.membership_stats"), perm="config.view_lendingsettings")
-LENDING_STATS = Item("Lending Statistics", reverse("datamining.lending_stats"), perm="config.view_lendingsettings")
-MEMBER_LIST = Item("Member Filter", reverse("datamining.members"), perm="config.view_lendingsettings")
+ANON_MEMBERS = Item("Anonymous Users", reverse("members.list.anon"), perm="members.view_member")
+MEMBER_STATS = Item("Member Statistics", reverse("datamining.membership_stats"), perm="members.view_member")
+LENDING_STATS = Item("Lending Statistics", reverse("datamining.lending_stats"), perm="works.view_work")
+MEMBER_LIST = Item("Member Filter", reverse("datamining.members"), perm="members.view_member")
 DATAMINING = SuperMenu("Reporting", ANON_MEMBERS, MEMBER_STATS, LENDING_STATS, MEMBER_LIST)
 
 
