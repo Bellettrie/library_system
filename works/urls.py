@@ -3,7 +3,7 @@ from django.urls import path
 from utils.wrappers import hx_wrap
 from works.views import WorkList, create_item_state, item_edit, publication_edit, publication_new, \
     item_new, \
-    item_history
+    item_history, change_item_location
 from . import views
 
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     path('itemhistory/<slug:item_id>', hx_wrap(item_history), name='works.item.states'),
 
     path('itemhistory/new/<slug:item_id>', hx_wrap(create_item_state), name='works.item_state.create'),
+    path('item/<slug:item_id>/location_change', hx_wrap(change_item_location), name='works.item.change_location'),
 
     path('publication/edit/<slug:publication_id>', publication_edit, name='works.publication.edit'),
     path('publication/new', publication_new, name='works.publication.new'),
