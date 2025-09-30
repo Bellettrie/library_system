@@ -75,18 +75,19 @@ def standardize_code(cc: str):
     return_value = ''
 
     if not is_short_code:
-        if len(cc) == 1 and cc[0] == "V":
+        if len(code_parts[0]) == 1 and cc[0] == "V":
             # If the first part is 'V', and we have a longer code, we
             code_parts[0] = "N" + code_parts[0][1:]
         # If the third part is not the last part, we use some special rules for it.
         try:
-            code_parts[2] = str(float("0." + code_parts[2])).split(".")[1]
+            cde = str(float("0." + code_parts[2])).split(".")
+            if len(cde) > 1:
+                code_parts[2] = cde[1]
         except ValueError:
             pass
         return_value = code_parts[0] + '-' + code_parts[1] + '-' + code_parts[2] + '-'
         code_parts = code_parts[3:]
-    else:
-        print(cc)
+
     for i in range(0, len(code_parts)):
         if i > 0:
             return_value += '-'
