@@ -12,8 +12,10 @@ def forwards_func(apps, schema_editor):
     This migration may take some time (tm) because it's implemented in a fairly naive (but very straightforward) way.
     """
     for item in Item.objects.all():
-        item.book_code_sortable = standardize_code(item.book_code).upper()
+        item.book_code_sortable = standardize_code(item.book_code)
         item.save()
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ('works', '0002_rename_datetime_itemstate_date_time'),

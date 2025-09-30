@@ -50,5 +50,5 @@ class BookCode(models.Model):
     book_code_sortable = models.CharField(max_length=128, blank=True)
 
     def save(self, *args, **kwargs):
-        self.book_code_sortable = standardize_code(self.book_code).upper()
+        self.book_code_sortable = standardize_code(self.book_code)
         super().save(*args, **kwargs)
