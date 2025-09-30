@@ -1,5 +1,7 @@
 from django.db.models import Q
 
+from book_code_generation.helpers import standardize_code
+
 
 def filter_basic_text_get_q(words):
     if len(words) == 0:
@@ -69,14 +71,15 @@ INNER JOIN
 
 
 def filter_book_code_get_q(word):
+    ww = standardize_code(word.replace("*", ""))
     if word.startswith("*"):
-        return Q(item__book_code_sortable__endswith=word.replace("*", "")) | Q(
+        return Q(item__book_code_sortable__endswith=ww) | Q(
             item__book_code__endswith=word.replace("*", ""))
     elif word.endswith("*"):
-        return Q(item__book_code_sortable__startswith=word.replace("*", "")) | Q(
+        return Q(item__book_code_sortable__startswith=ww) | Q(
             item__book_code__startswith=word.replace("*", ""))
     else:
-        return Q(item__book_code_sortable=word) | Q(item__book_code=word)
+        return Q(item__book_code_sortable=ww) | Q(item__book_code=word)
 
 
 def filter_location(query, categories):
