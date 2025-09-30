@@ -6,6 +6,10 @@ from works.models import Item
 
 
 def forwards_func(apps, schema_editor):
+    """
+    This is a data-migration where we set all the "sortable book codes" to be fully upper cased. This allows our search to find them in a more adequate way.
+    This migration may take some time (tm) because it's implemented in a fairly naive (but very straightforward) way.
+    """
     for item in Item.objects.all():
         item.book_code_sortable = item.book_code_sortable.upper()
         item.save()
