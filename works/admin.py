@@ -9,4 +9,3 @@ admin.site.register(ItemState)
 
 admin.site.register(Category)
 admin.site.register(Location)
-
