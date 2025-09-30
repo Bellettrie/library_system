@@ -59,38 +59,57 @@ def get_number_for_code(code: str):
                 pass
 
 
+STANDARD_CODE_LENGTH = 4
+
+
 def standardize_code(cc: str):
     """
     Turn code with strange numbers into standardized numbers:
     SF-T-370-lr1 ==> SF-T-37-lr1
     """
-    if len(cc) > 0 and cc[0] == "V":
-        cc = "N" + cc[1:]
-    code = cc.replace(" ", "").replace(".", "")
+    code = cc.replace(" ", "")
     code_parts = code.split("-")
-    if len(code_parts) > 2:
+
+    is_short_code = len(code_parts) < STANDARD_CODE_LENGTH
+
+    return_value = ''
+
+    if not is_short_code:
+        if len(cc) == 1 and cc[0] == "V":
+            # If the first part is 'V', and we have a longer code, we
+            code_parts[0] = "N" + code_parts[0][1:]
+        # If the third part is not the last part, we use some special rules for it.
         try:
             code_parts[2] = str(float("0." + code_parts[2])).split(".")[1]
         except ValueError:
             pass
-    return_value = code_parts[0]
-    for i in range(1, len(code_parts)):
-        c = code_parts[i]
-        if i == len(code_parts) - 1:
-            num = 0
-            c = ""
-            for char in code_parts[i]:
-                if char in "0123456789":
-                    num *= 10
-                    num += int(char)
-                else:
-                    if num > 0:
-                        c += str.rjust(str(num), 6, "0")
-                    c += char
+        return_value = code_parts[0] + '-' + code_parts[1] + '-' + code_parts[2] + '-'
+        code_parts = code_parts[3:]
+    else:
+        print(cc)
+    for i in range(0, len(code_parts)):
+        if i > 0:
+            return_value += '-'
+        return_value += last_code_parts_number_standardising(code_parts[i])
+
+    return return_value.upper()
+
+
+def last_code_parts_number_standardising(code_part):
+    num = 0
+    c = ""
+    for char in code_part:
+        if char in "0123456789":
+            num *= 10
+            num += int(char)
+        else:
             if num > 0:
                 c += str.rjust(str(num), 6, "0")
-        return_value = return_value + "-" + c
-    return return_value
+                num = 0
+            c += char
+    if num > 0:
+        c += str.rjust(str(num), 6, "0")
+    return c
 
 
 def get_numbers_between(start, end):

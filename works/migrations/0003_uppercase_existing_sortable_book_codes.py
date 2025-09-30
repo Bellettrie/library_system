@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+from book_code_generation.helpers import standardize_code
 from works.models import Item
 
 
@@ -11,7 +12,7 @@ def forwards_func(apps, schema_editor):
     This migration may take some time (tm) because it's implemented in a fairly naive (but very straightforward) way.
     """
     for item in Item.objects.all():
-        item.book_code_sortable = item.book_code_sortable.upper()
+        item.book_code_sortable = standardize_code(item.book_code).upper()
         item.save()
 class Migration(migrations.Migration):
     dependencies = [
