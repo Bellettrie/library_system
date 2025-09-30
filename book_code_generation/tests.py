@@ -16,14 +16,14 @@ class TestStandardiseCode(TestCase):
                 self.expected = expected
 
         test_cases = {
-            TestCase('1','000001'),
+            TestCase('1', '000001'),
             TestCase("SF-T-37-si", "SF-T-37-SI"),
             TestCase("SF-T-370-lr1", "SF-T-37-LR000001"),
-            TestCase("SF-S-16-mi399","SF-S-16-MI000399"),
+            TestCase("SF-S-16-mi399", "SF-S-16-MI000399"),
             TestCase("SF-T-370-si", "SF-T-37-SI"),
             TestCase("V-W-11-bo", "N-W-11-BO"),
             TestCase("ASTE 1.7", "ASTE000001.000007"),
-            TestCase("SF-T-370-lr1","SF-T-37-LR000001"),
+            TestCase("SF-T-370-lr1", "SF-T-37-LR000001"),
             TestCase("BoB", "BOB"),
             TestCase("Boeken.Zijn.Relaxed", "BOEKEN.ZIJN.RELAXED"),
             TestCase("M-RENO-1", "M-RENO-000001")
@@ -33,6 +33,7 @@ class TestStandardiseCode(TestCase):
             with self.subTest(test_case.test_case):
                 res = standardize_code(test_case.test_case)
                 self.assertEqual(res, test_case.expected)
+
 
 class TestLocationNumberGenerationHelpers(TestCase):
     def test_get_location_number_bounds(self):
