@@ -70,22 +70,29 @@ def standardize_code(cc: str):
     code = cc.replace(" ", "")
     code_parts = code.split("-")
 
-    is_short_code = len(code_parts) < STANDARD_CODE_LENGTH
+    is_full_code = len(code_parts) >= STANDARD_CODE_LENGTH
 
     return_value = ''
 
-    if not is_short_code:
-        if len(code_parts[0]) == 1 and cc[0] == "V":
+    if is_full_code:
+        location_part = code_parts[0]
+
+        if location_part ==  "V":
             # If the first part is 'V', and we have a longer code, we
-            code_parts[0] = "N" + code_parts[0][1:]
+            location_part = "N"
+
+        first_letter_part = code_parts[1]
+        float_number_part = code_parts[2]
         # If the third part is not the last part, we use some special rules for it.
         try:
-            cde = str(float("0." + code_parts[2])).split(".")
+            cde = str(float("0." + float_number_part)).split(".")
             if len(cde) > 1:
-                code_parts[2] = cde[1]
+                float_number_part = cde[1]
         except ValueError:
             pass
-        return_value = code_parts[0] + '-' + code_parts[1] + '-' + code_parts[2] + '-'
+        return_value = location_part + '-' + first_letter_part + '-' + float_number_part + '-'
+
+        # only handle the rest of the code using the standard algorithm.
         code_parts = code_parts[3:]
 
     for i in range(0, len(code_parts)):
