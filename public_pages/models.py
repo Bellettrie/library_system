@@ -26,8 +26,7 @@ class PublicPage(models.Model):
 
 
 class FileUpload(models.Model):
-    file = models.FileField(upload_to=".")
-    name = models.CharField(max_length=64)
+    file = models.FileField(upload_to=".", unique=True)
 
     def get_file_url(self):
         spl = self.file.name.split("/")

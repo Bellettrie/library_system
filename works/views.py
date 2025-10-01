@@ -121,7 +121,6 @@ def create_item_state(request, item_id, hx_enabled=False):
             return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
     else:
         form = ItemStateCreateForm()
-
     return render(request, 'works/modals/item_state_edit.html',
                   {'hx_enabled': hx_enabled, 'form': form, 'item': get_object_or_404(Item, pk=item_id)})
 
