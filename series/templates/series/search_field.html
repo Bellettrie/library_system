@@ -10,7 +10,7 @@
     $('#{{name}}').select2({
         ajax: {
             url: function (params) {
-                return '{{ BASE_URL }}/series/search/' + params.term;
+                return '{{ BASE_URL }}series/search/' + params.term;
             },
             minimumInputLength: 3,
         },
