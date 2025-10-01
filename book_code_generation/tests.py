@@ -1,11 +1,38 @@
 from django.test import TestCase
 
-from book_code_generation.helpers import normalize_str, normalize_number
+from book_code_generation.helpers import normalize_str, normalize_number, standardize_code
 from book_code_generation.models import CutterCodeResult, CutterCodeRange
 from book_code_generation.procedures.location_number_generation import get_location_number_bounds, \
     get_recommended_result, get_location_numbers, generate_location_number
 from creators.models import Creator, CreatorLocationNumber, LocationNumber
 from works.models import Location, Category, ItemType
+
+
+class TestStandardiseCode(TestCase):
+    def test_cases(self):
+        class TestCase:
+            def __init__(self, test_case, expected):
+                self.test_case = test_case
+                self.expected = expected
+
+        test_cases = {
+            TestCase('1', '000001'),
+            TestCase("SF-T-37-si", "SF-T-37-SI"),
+            TestCase("SF-T-370-lr1", "SF-T-37-LR000001"),
+            TestCase("SF-S-16-mi399", "SF-S-16-MI000399"),
+            TestCase("SF-T-370-si", "SF-T-37-SI"),
+            TestCase("V-W-11-bo", "N-W-11-BO"),
+            TestCase("ASTE 1.7", "ASTE000001.000007"),
+            TestCase("SF-T-370-lr1", "SF-T-37-LR000001"),
+            TestCase("BoB", "BOB"),
+            TestCase("Boeken.Zijn.Relaxed", "BOEKEN.ZIJN.RELAXED"),
+            TestCase("M-RENO-1", "M-RENO-000001")
+        }
+
+        for test_case in test_cases:
+            with self.subTest(test_case.test_case):
+                res = standardize_code(test_case.test_case)
+                self.assertEqual(res, test_case.expected)
 
 
 class TestLocationNumberGenerationHelpers(TestCase):
