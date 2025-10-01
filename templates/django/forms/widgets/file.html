@@ -1,0 +1,8 @@
+<input
+        type="file"
+        class="file-input file-input-sm  file-input-bordered w-full"
+        name="{{ widget.name }}"
+        {% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}
+        {% include "django/forms/widgets/attrs.html" %}>
+
+

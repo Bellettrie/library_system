@@ -5,9 +5,11 @@
 
 {% block content %}
     <form action="#" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% component "form.Smol" form=form%}
-        {% endcomponent %}
-        <input type="submit" value="Upload" class="btn btn-primary">
+        <div class="max-w-[1200px]">
+            {% csrf_token %}
+            {% component "form.Compact" form=form %}
+            {% endcomponent %}
+            <input type="submit" value="Upload" class="btn btn-primary">
+        </div>
     </form>
 {% endblock %}
