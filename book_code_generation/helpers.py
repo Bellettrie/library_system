@@ -77,8 +77,8 @@ def standardize_code(cc: str):
     if is_full_code:
         location_part = code_parts[0]
 
-        if location_part ==  "V":
-            # If the first part is 'V', and we have a longer code, we
+        if location_part == "V":
+            # If the first part is 'V', and we are in a full-code, then it should be treated as being in 'N'.
             location_part = "N"
 
         first_letter_part = code_parts[1]
