@@ -1,3 +1,4 @@
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
 # Create your models here.
@@ -16,6 +17,8 @@ class SearchWord(models.Model):
     def get_word(word):
         return SearchWord.objects.get_or_create(word=word)[0]
 
+    class Meta:
+        indexes = (GinIndex(fields=["word"]),)  # add index
 
 def get_word_from_set(word: str, word_set: dict):
     """

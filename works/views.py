@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.db.models.expressions import RawSQL
+from django.db.models.expressions import RawSQL, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
@@ -69,9 +69,11 @@ def get_works(request):
     if not any_query:
         return Publication.objects.none()
 
-    query = query.annotate(
-        titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
-        "titleorder", "id").order_by("titleorder", "id")
+
+    query = query\
+             .annotate(itemid=F('item__id'), book_code_sortable=F('item__book_code_sortable'))\
+             .order_by("book_code_sortable").distinct("book_code_sortable")
+    print(query.query, query.explain())
     return query
 
 
