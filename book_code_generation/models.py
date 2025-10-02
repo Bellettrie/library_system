@@ -47,7 +47,7 @@ class BookCode(models.Model):
         abstract = True
 
     book_code = models.CharField(max_length=64, blank=True)
-    book_code_sortable = models.CharField(max_length=128, blank=True)
+    book_code_sortable = models.CharField(max_length=128, blank=True, db_index=True)
 
     def save(self, *args, **kwargs):
         self.book_code_sortable = standardize_code(self.book_code)

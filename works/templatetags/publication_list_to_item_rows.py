@@ -43,6 +43,11 @@ class NoItemRow(Row):
 def get_item_rows_for_publications(publications: List[Publication]):
     rows = []
     for publication in publications:
+        if hasattr(publication, 'itemid'):
+            print(publication)
+            it = Item.objects.get(id=publication.itemid)
+            rows.append(ItemRow(it))
+            continue
         its = False
         for item in publication.item_set.all():
             rows.append(ItemRow(item))
