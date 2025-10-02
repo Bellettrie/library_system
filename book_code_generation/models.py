@@ -1,3 +1,4 @@
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
 from book_code_generation.helpers import normalize_str, standardize_code
@@ -45,9 +46,9 @@ class CutterCodeRange(models.Model):
 class BookCode(models.Model):
     class Meta:
         abstract = True
-
+        indexes = [GinIndex(name='search_wordmatch_type_788b882f', fields=['book_code_sortable'],)]
     book_code = models.CharField(max_length=64, blank=True)
-    book_code_sortable = models.CharField(max_length=128, blank=True, db_index=True)
+    book_code_sortable = models.CharField(max_length=128, blank=True)
 
     def save(self, *args, **kwargs):
         self.book_code_sortable = standardize_code(self.book_code)

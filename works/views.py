@@ -69,11 +69,14 @@ def get_works(request):
     if not any_query:
         return Publication.objects.none()
 
+    query = query_annotate_and_sort_bookcodes(query)
+    return query
 
-    query = query\
-             .annotate(itemid=F('item__id'), book_code_sortable=F('item__book_code_sortable'))\
-             .order_by("book_code_sortable").distinct("book_code_sortable")
-    print(query.query, query.explain())
+
+def query_annotate_and_sort_bookcodes(query):
+    query = query \
+        .annotate(itemid=F('item__id'), book_code_sortable=F('item__book_code_sortable')) \
+        .order_by("book_code_sortable").distinct("book_code_sortable")
     return query
 
 
