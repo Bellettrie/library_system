@@ -8,9 +8,7 @@ class Command(BaseCommand):
     help = 'Generate all search words for the current catalog.'
 
     def handle(self, *args, **options):
-        pubs = Publication.objects.all()
         SearchWord.objects.all().delete()
         words = None
-        for pub in pubs:
+        for pub in Publication.objects.all():
             words = WordMatch.create_all_for(pub, words)
-            print(pub.id)
