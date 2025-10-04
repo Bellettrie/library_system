@@ -44,12 +44,10 @@ def get_works(request):
         any_query = True
         fbc = filter_book_code_get_q(words[0])
         fbt = filter_basic_text_get_q(words)[0]
-        query = query.filter( fbc|fbt)
+        query = query.filter(fbc | fbt)
     elif len(words) > 1:
         any_query = True
-
         query = filter_basic_text(query, words)
-
     if len(words_author) > 0:
         any_query = True
         query = filter_author_text(query, words_author)
@@ -75,11 +73,13 @@ def get_works(request):
 
     return query
 
+
 def query_annotate_and_sort_bookcodes(query):
     query = (query \
-        .annotate(itemid=F('item__id'), book_code_sortable=F('item__book_code_sortable'), book_code=F('item__book_code'), book_code_extension=F('item__book_code_extension'))
-        \
-        .order_by("book_code_sortable").distinct("book_code_sortable"))
+             .annotate(itemid=F('item__id'), book_code_sortable=F('item__book_code_sortable'),
+                       book_code=F('item__book_code'), book_code_extension=F('item__book_code_extension')) \
+ \
+             .order_by("book_code_sortable").distinct("book_code_sortable"))
     return query
 
 
