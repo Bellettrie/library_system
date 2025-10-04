@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
+from search.models import WordMatch
 from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
@@ -36,11 +37,15 @@ def get_works(request):
     states = request.GET.getlist('q_states', [])
 
     query = Publication.objects
+    query = query_annotate_and_sort_bookcodes(query)
+
     any_query = False
     # If one word, also check bookcodes
     if len(words) == 1:
         any_query = True
-        query = query.filter(filter_book_code_get_q(words[0]) | filter_basic_text_get_q(words)[0])
+        fbc = filter_book_code_get_q(words[0])
+        fbt = filter_basic_text_get_q(words)[0]
+        query = query.filter( fbc|fbt)
     elif len(words) > 1:
         any_query = True
 
@@ -69,13 +74,12 @@ def get_works(request):
     if not any_query:
         return Publication.objects.none()
 
-    query = query_annotate_and_sort_bookcodes(query)
     return query
 
 
 def query_annotate_and_sort_bookcodes(query):
     query = query \
-        .annotate(itemid=F('item__id'), book_code_sortable=F('item__book_code_sortable')) \
+        .annotate(itemid=F('item__id'), book_code_sortable=F('item__book_code_sortable'), book_code=F('item__book_code'), book_code_extension=F('item__book_code_extension')) \
         .order_by("book_code_sortable").distinct("book_code_sortable")
     return query
 
