@@ -76,11 +76,11 @@ def get_works(request):
 
     return query
 
-
 def query_annotate_and_sort_bookcodes(query):
-    query = query \
-        .annotate(itemid=F('item__id'), book_code_sortable=F('item__book_code_sortable'), book_code=F('item__book_code'), book_code_extension=F('item__book_code_extension')) \
-        .order_by("book_code_sortable").distinct("book_code_sortable")
+    query = (query \
+        .annotate(itemid=F('item__id'), book_code_sortable=F('item__book_code_sortable'), book_code=F('item__book_code'), book_code_extension=F('item__book_code_extension'))
+        \
+        .order_by("book_code_sortable").distinct("book_code_sortable"))
     return query
 
 

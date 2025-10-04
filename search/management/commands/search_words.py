@@ -1,3 +1,5 @@
+import time
+
 from django.core.management.base import BaseCommand
 
 from search.models import WordMatch, SearchWord
@@ -8,7 +10,13 @@ class Command(BaseCommand):
     help = 'Generate all search words for the current catalog.'
 
     def handle(self, *args, **options):
-        SearchWord.objects.all().delete()
         words = None
+        count = 0
+        total = len(Publication.objects.all())
+        start_time=time.time()
         for pub in Publication.objects.all():
+            SearchWord.objects.all().filter(publication=pub).delete()
             words = WordMatch.create_all_for(pub, words)
+            count += 1
+            if count % 100 == 0:
+                print('Processed {}/{} in {}'.format(count, total, time.time()-start_time))
