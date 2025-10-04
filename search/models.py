@@ -11,7 +11,7 @@ from works.models import Publication, SubWork
 
 
 class SearchWord(models.Model):
-    word = models.CharField(max_length=255, db_index=True)
+    word = models.CharField(max_length=255, db_index=True, unique=True)
 
     @staticmethod
     def get_word(word):
