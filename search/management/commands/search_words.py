@@ -15,9 +15,9 @@ class Command(BaseCommand):
         SearchWord.objects.all().delete()
 
         total = len(Publication.objects.all())
-        start_time=time.time()
+        start_time = time.time()
         for pub in Publication.objects.all():
             words = WordMatch.create_all_for(pub, words)
             if count % 100 == 0:
-                print('Processed {}/{} in {}'.format(count, total, time.time()-start_time))
+                print('Processed {}/{} in {}'.format(count, total, time.time() - start_time))
             count += 1
