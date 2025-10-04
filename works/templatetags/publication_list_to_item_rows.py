@@ -50,9 +50,8 @@ def get_item_rows_for_publications(publications: List[Publication]):
         else:
             no_items.append(publication)
 
-    for item in  Item.objects.filter(pk__in=idz).order_by('book_code_sortable'):
+    for item in Item.objects.filter(pk__in=idz).order_by('book_code_sortable'):
         rows.append(ItemRow(item))
     for pub in no_items:
         rows.append(NoItemRow(pub))
     return rows
-
