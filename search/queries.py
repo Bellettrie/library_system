@@ -54,7 +54,7 @@ def filter_state(q, states):
     # by using an inner query to fetch the maximum of the itemstate's datetimes.
     query = """
 works_item.id IN (SELECT
-    works_item.id 
+    works_item.id
     FROM
     works_item
     JOIN works_itemstate as wx
