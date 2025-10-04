@@ -12,10 +12,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         words = None
         count = 0
+        SearchWord.objects.all().delete()
+
         total = len(Publication.objects.all())
         start_time=time.time()
         for pub in Publication.objects.all():
-            SearchWord.objects.all().filter(publication=pub).delete()
             words = WordMatch.create_all_for(pub, words)
             count += 1
             if count % 100 == 0:
