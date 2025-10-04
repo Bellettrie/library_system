@@ -52,7 +52,6 @@ def filter_state(q, states):
     # Therefore we start by joining works with items
     # And then we join the item on it's most recent itemstate,
     # by using an inner query to fetch the maximum of the itemstate's datetimes.
-    print(q.query)
     query = """
 works_item.id IN (SELECT
     works_item.id 
