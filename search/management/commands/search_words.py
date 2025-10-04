@@ -18,6 +18,6 @@ class Command(BaseCommand):
         start_time=time.time()
         for pub in Publication.objects.all():
             words = WordMatch.create_all_for(pub, words)
-            count += 1
             if count % 100 == 0:
                 print('Processed {}/{} in {}'.format(count, total, time.time()-start_time))
+            count += 1
