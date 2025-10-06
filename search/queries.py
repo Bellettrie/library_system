@@ -1,6 +1,6 @@
 from django.db.models import Q
 
-from book_code_generation.helpers import standardize_code
+from book_code_generation.helpers import standardize_code, normalize_str
 
 
 def filter_basic_text_get_q(words):
@@ -8,6 +8,7 @@ def filter_basic_text_get_q(words):
         return None
     queries = []
     for word in words:
+        word = normalize_str(word)
         if word.startswith("*"):
             next_query_part = Q(wordmatch__word__word__endswith=word.replace("*", ""))
 
