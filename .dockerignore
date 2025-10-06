@@ -1,0 +1,4 @@
+.git
+Dockerfile
+styles/config/node_modules
+.venv
