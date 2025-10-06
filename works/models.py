@@ -149,7 +149,7 @@ where works_creatortowork.work_id = %s)
         with connection.cursor() as cursor:
             cursor.execute(query, (self.id, self.id))
             while True:
-                row =  cursor.fetchone()
+                row = cursor.fetchone()
                 if row is None:
                     break
                 ctw = CreatorToWork(
