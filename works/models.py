@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db import models
+from django.db import models, connection
 
 from django.db.models import PROTECT, CASCADE, Q
 from django.db.models.expressions import RawSQL
@@ -119,24 +119,54 @@ class Work(NamedTranslatableThing):
         self.save()
 
     def get_authors(self):
-        from series.models import WorkInSeries
+        query = """
+WITH RECURSIVE series_parents (id, parent_id, depth)
+AS(
+    -- find the series of the work itself.
+    SELECT seriesnode_ptr_id, part_of_series_id, 0 as id FROM series_workinseries
+                                   JOIN series_seriesnode ON seriesnode_ptr_id = series_seriesnode.id
+                                   WHERE work_id=%s and is_primary = true
+    UNION
 
-        links = CreatorToWork.objects.filter(work_id=self.id)
-        authors = []
-        for link in links:
-            authors.append(link)
-        for serie in WorkInSeries.objects.filter(work_id=self.id, is_primary=True):
-            authors = serie.get_authors() + authors
-        author_set = list()
-        for author in authors:
-            add = True
-            for author_2 in author_set:
-                if author.creator.pk == author_2.creator.pk and author.role.name == author_2.role.name:
-                    add = False
-            if add:
-                author_set.append(author)
-        author_set.sort(key=lambda a: a.number)
-        return author_set
+    -- recursive term
+    SELECT s.id, s.part_of_series_id, series_parents.depth+1 FROM series_parents     INNER JOIN series_seriesnode s ON s.id=series_parents.parent_id
+), series_creators
+AS (SELECT depth, number, role_id, creators_creator.id, given_names, name, series_id
+    from series_creatortoseries
+             join public.creators_creator on public.series_creatortoseries.creator_id = public.creators_creator.id
+             join series_parents ON series_parents.id = series_creatortoseries.series_id
+    order by (depth, -number) desc
+)
+SELECT    role_id, creators_creatorrole.name as role_name, series_creators.id, given_names, series_creators.name, series_id, 1000*depth-number as dpth, number from series_creators
+left join creators_creatorrole on series_creators.role_id = creators_creatorrole.id
+UNION ALL (SELECT role_id, creators_creatorrole.name as role_name, creators_creator.id, given_names, creators_creator.name, -1, -1000-number as dpth, number from works_creatortowork join creators_creator on creators_creator.id = works_creatortowork.creator_id
+left join creators_creatorrole on works_creatortowork.role_id = creators_creatorrole.id
+where works_creatortowork.work_id = %s)
+  order by dpth desc;
+  """
+
+        result = []
+        with connection.cursor() as cursor:
+            cursor.execute(query, (self.id, self.id))
+            while True:
+                row =  cursor.fetchone()
+                if row is None:
+                    break
+                ctw = CreatorToWork(
+                    creator=Creator(
+                        id=row[2],
+                        given_names=row[3],
+                        name=row[4]
+                    ),
+                    work=self,
+                    number=-1,
+                    role=CreatorRole(
+                        name=row[1],
+                        id=row[0]
+                    )
+                )
+                result.append(ctw)
+        return result
 
     def get_own_authors(self):
         from series.models import WorkInSeries
