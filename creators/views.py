@@ -9,7 +9,7 @@ from django.views.generic import ListView
 from book_code_generation.helpers import normalize_str, get_number_for_str
 from creators.forms import EditForm, CreatorLocationNumberFormset
 from creators.models import Creator, CreatorLocationNumber, force_relabel
-from creators.procedures.creator_books import get_books_for_author
+from creators.procedures.creator_books import get_works_for_author
 from utils.get_query_words import get_query_words
 from works.models import CreatorToWork
 
@@ -77,7 +77,7 @@ def edit(request, creator_id=None):
 # @permission_required('creators.view_creator')
 def show(request, creator_id):
     creator = Creator.objects.get(pk=creator_id)
-    publications = get_books_for_author(creator)
+    publications = get_works_for_author(creator)
     return render(request, 'creators/creator_view.html', {'creator': creator, 'publications': publications})
 
 

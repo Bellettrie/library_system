@@ -6,12 +6,12 @@ from django.shortcuts import get_object_or_404, render
 from book_code_generation.helpers import normalize_str
 from book_code_generation.procedures.location_number_generation import generate_location_number, get_location_numbers
 from creators.models import Creator
-from works.models import Publication, Location
+from works.models import Work, Location
 
 
 @permission_required('works.change_work')
 def get_book_code(request, publication_id, location_id):
-    publication = get_object_or_404(Publication, pk=publication_id)
+    publication = get_object_or_404(Work, pk=publication_id)
     location = get_object_or_404(Location, pk=location_id)
     title = request.GET.get('title')
     if title:

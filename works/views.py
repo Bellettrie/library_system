@@ -15,7 +15,7 @@ from search.queries import filter_state, filter_book_code_get_q, \
 
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
-from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
+from works.models import Work, Item, ItemState, WorkRelation, \
     Category
 
 
@@ -35,7 +35,7 @@ def get_works(request):
     categories = request.GET.getlist('q_categories', [])
     states = request.GET.getlist('q_states', [])
 
-    query = Publication.objects
+    query = Work.objects
     any_query = False
     # If one word, also check bookcodes
     if len(words) == 1:
@@ -67,7 +67,7 @@ def get_works(request):
         query = filter_state(query, states)
 
     if not any_query:
-        return Publication.objects.none()
+        return Work.objects.none()
 
     query = query.annotate(
         titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
@@ -100,7 +100,7 @@ class WorkList(ListView):
 
 class WorkDetail(DetailView):
     template_name = 'works/publication_view.html'
-    model = Publication
+    model = Work
 
 
 def create_item_state_hx(request, item_id):
@@ -118,7 +118,7 @@ def create_item_state(request, item_id, hx_enabled=False):
             instance.save()
             if hx_enabled:
                 return HttpResponse(status=209, headers={"HX-Refresh": "true"})
-            return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
+            return HttpResponseRedirect(reverse('work.view', args=(instance.item.work.pk,)))
     else:
         form = ItemStateCreateForm()
     return render(request, 'works/modals/item_state_edit.html',
@@ -128,7 +128,7 @@ def create_item_state(request, item_id, hx_enabled=False):
 @transaction.atomic
 @permission_required('works.add_item')
 def item_new(request, publication_id=None):
-    publication = get_object_or_404(Publication, pk=publication_id)
+    publication = get_object_or_404(Work, pk=publication_id)
 
     if request.method == 'POST':
         form = ItemCreateForm(request.POST)
@@ -175,7 +175,7 @@ def item_edit(request, item_id):
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'works/item_edit.html',
-                  {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode,
+                  {'edit': True, 'form': form, 'publication': item.work, 'edit': True, 'recode': recode,
                    'recode_book_code': recode_book_code,
                    'recode_book_code_extension': recode_book_code_extension})
 
@@ -205,7 +205,7 @@ def publication_edit(request, publication_id=None):
     publication = None
     if request.method == 'POST':
         if publication_id is not None:
-            publication = get_object_or_404(Publication, pk=publication_id)
+            publication = get_object_or_404(Work, pk=publication_id)
             form = PublicationCreateForm(request.POST, instance=publication)
         else:
             form = PublicationCreateForm(request.POST)
@@ -242,7 +242,7 @@ def publication_edit(request, publication_id=None):
     else:
         publication = None
         if publication_id is not None:
-            publication = get_object_or_404(Publication, pk=publication_id)
+            publication = get_object_or_404(Work, pk=publication_id)
             creator_to_works = CreatorToWorkFormSet(instance=publication)
             series_to_works = SeriesToWorkFomSet(instance=publication)
             form = PublicationCreateForm(instance=publication)
@@ -271,9 +271,8 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
     num = 0
     disp_num = ''
     if request.method == 'POST':
-
         if subwork_id is not None:
-            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+            publication = get_object_or_404(WorkRelation, pk=subwork_id)
             num = publication.number_in_publication
             disp_num = publication.display_number_in_publication
             form = SubWorkCreateForm(request.POST, instance=publication.work)
@@ -298,19 +297,19 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
                     form.add_error(None, str(error))
 
             if subwork_id is None:
-                pub = get_object_or_404(Publication, id=publication_id)
-                publication = WorkInPublication.objects.create(work=instance, publication=pub,
-                                                               number_in_publication=num,
-                                                               display_number_in_publication=disp_num)
+                pub = get_object_or_404(Work, id=publication_id)
+                publication = WorkRelation.objects.create(work=instance, publication=pub,
+                                                          number_in_publication=num,
+                                                          display_number_in_publication=disp_num)
             else:
                 publication.number_in_publication = num
                 publication.display_number_in_publication = disp_num
                 publication.save()
 
-            return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
+            return HttpResponseRedirect(reverse('work.view', args=(publication.work_id,)))
     else:
         if subwork_id is not None:
-            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+            publication = get_object_or_404(WorkRelation, pk=subwork_id)
             num = publication.number_in_publication
             disp_num = publication.display_number_in_publication
             creator_to_works = CreatorToWorkFormSet(instance=publication.work)
@@ -332,11 +331,11 @@ def subwork_new(request, publication_id):
 @transaction.atomic
 @permission_required('works.add_publication')
 def subwork_delete(request, subwork_id):
-    publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+    publication = get_object_or_404(WorkRelation, pk=subwork_id)
 
     if request.GET.get('confirm'):
         work = publication.work
         publication.delete()
         work.delete()
-        return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
+        return HttpResponseRedirect(reverse('work.view', args=(publication.work_id,)))
     return render(request, 'are-you-sure.html', {'what': 'delete the subwork ' + publication.work.get_title() + "?"})

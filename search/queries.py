@@ -58,7 +58,7 @@ FROM
     works_work
 INNER JOIN
     works_item
-        ON works_work.id = works_item.publication_id
+        ON works_work.id = works_item.work_id
     JOIN works_itemstate as wx
         ON works_item.id = wx.item_id
         WHERE date_time =
