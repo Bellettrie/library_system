@@ -2,7 +2,7 @@
 {% load publication_list_to_item_rows %}
 {#{% load books_table %}#}
 
-{% block title %}        {% if advanced %}Advanced {% else %} Book {% endif %}Search
+{% block title %} {% if advanced %}Advanced {% else %} Book {% endif %}Search
 
 {% endblock %}
 {% block content %}
@@ -17,7 +17,6 @@
                 {% include 'pagination.html' %}
             </div>
         </div>
-
 
         {% get_item_rows_for_publications object_list as items %}
         <div class="card  p-3 hidden lg:block bg-base-100 ">

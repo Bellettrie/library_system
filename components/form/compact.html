@@ -5,15 +5,16 @@
 {% endfor %}
 
 {% for field in form %}
-    <div class="form-control">
-        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm/6 font-medium">{{ field.label }}</dt>
-            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0">{{ field }}</dd>
-        </div>
-    {% if field.errors %}
-        {% for err in field.errors %}
-            <span class=" label label-text-alt text-error">{{ err }}</span>
-        {% endfor %}
-    {% endif %}
+    <div class="form-control w-400">
+        <label class="label cursor-pointer">
+            <span class="label-text w-200 overflow-hidden">{{ field.label }}</span>
+            {{ field }}
+
+        </label>
+        {% if field.errors %}
+            {% for err in field.errors %}
+                <span class=" label label-text-alt text-error">{{ err }}</span>
+            {% endfor %}
+        {% endif %}
     </div>
 {% endfor %}
