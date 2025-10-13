@@ -40,7 +40,7 @@ def render_base_section(markdown_text: str, title: str, layout_overrides: str = 
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/basic_area.html')
-    return search_template.render(context={"content": html, "title":title, "layout": layout_overrides})
+    return search_template.render(context={"content": html, "title": title, "layout": layout_overrides})
 
 
 # The render square function creates a bootstrap card component.
