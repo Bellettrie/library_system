@@ -1,4 +1,4 @@
-/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.14 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
@@ -2748,6 +2748,9 @@
   .-mb-5 {
     margin-bottom: calc(var(--spacing) * -5);
   }
+  .mb-1 {
+    margin-bottom: calc(var(--spacing) * 1);
+  }
   .mb-2 {
     margin-bottom: calc(var(--spacing) * 2);
   }
@@ -3520,15 +3523,6 @@
   .font-medium {
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
-  }
-  .file-input-primary {
-    --btn-color: var(--color-primary);
-    &::file-selector-button {
-      color: var(--color-primary-content);
-    }
-    &, &:focus, &:focus-within {
-      --input-color: var(--color-primary);
-    }
   }
   .checkbox-primary {
     color: var(--color-primary-content);

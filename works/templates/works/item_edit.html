@@ -10,54 +10,65 @@
                 {% component 'tile.Tile' root_class_tags="flex-0" %}
                     {% fill 'title' %}Item Info{% endfill %}
                     {% fill 'content' %}
-                        {{ form.location }} <br/>
-                        <label for="last_seen">Location: </label>
+                        <div class="mb-4">
+                            {{ form.location }} <br/>
+                            <label for="last_seen" class="mb-1">Location: </label>
+                        </div>
 
-                        {{ form.book_code }} <br/>
-                        <label for="book_code">Book code: </label>
+                        <div class="mb-4">
+                            {{ form.book_code }} <br/>
+                            <label for="book_code" class="mb-1">Book code: </label>
+                        </div>
 
-                        {{ form.book_code_extension }} <br/>
-                        <label for="book_code_extension">Book Code extension: </label>
-                        {% if not edit %}
-                            Generate book code: ...
-                            {% with publication_id=publication.pk %}
-                                {% with location_id='id_location' %}
-                                    {% include 'book_code_generation/code_lookup.html' %}
+                        <div class="mb-4">
+
+                            {{ form.book_code_extension }} <br/>
+                            <label for="book_code_extension">Book Code extension: </label>
+                        </div>
+
+                        <div class="mb-4">
+                            {% if not edit %}
+                                Generate book code: ...
+                                {% with publication_id=publication.pk %}
+                                    {% with location_id='id_location' %}
+                                        {% include 'book_code_generation/code_lookup.html' %}
+                                    {% endwith %}
                                 {% endwith %}
-                            {% endwith %}
-                        {% endif %}
-                        {% if not edit %}
-                            Generate book code: ...
-                            {% with publication_id=publication.pk %}
-                                {% with location_id='id_location' %}
-                                    {% include 'book_code_generation/code_lookup.html' %}
-                                {% endwith %}
-                            {% endwith %}
-                        {% endif %}
+                            {% endif %}
+                        </div>
                     {% endfill %}
                 {% endcomponent %}
                 {% component 'tile.Tile' root_class_tags="flex-0" %}
                     {% fill 'title' %}Data 2{% endfill %}
                     {% fill 'content' %}
-                        {{ form.isbn10 }} <br/>
-                        <label for="isbn10">ISBN 10: </label>
-
-                        {{ form.isbn13 }} <br/>
-                        <label for="isbn13">ISBN 13: </label>
-
-                        {{ form.pages }} <br/>
-                        <label for="pages">Pages: </label>
-                        <br/>
-                        {{ form.hidden }} <br/>
-                        <label for="hidden">Hidden: </label>
-                        {{ form.publication_year }} <br/>
-                        <label for="publication_year">Publication year: </label>
-
-                        {{ form.bought_date }} <br/>
-                        <label for="bought_date">Bought date: </label>
-
-                        {{ form.last_seen }} <br/>
-                        <label for="last_seen">Last seen: </label>
+                        <div class="mb-4">
+                            {{ form.isbn10 }} <br/>
+                            <label for="isbn10 " class="mb-1">ISBN 10: </label>
+                        </div>
+                        <div class="mb-4">
+                            {{ form.isbn13 }} <br/>
+                            <label for="isbn13">ISBN 13: </label>
+                        </div>
+                        <div class="mb-4">
+                            {{ form.pages }} <br/>
+                            <label for="pages">Pages: </label>
+                        </div>
+                        <div class="mb-4">
+                            {{ form.hidden }} <br/>
+                            <label for="hidden">Hidden: </label>
+                        </div>
+                        <div class="mb-4">
+                            {{ form.publication_year }}<br/>
+                            <label for="publication_year">Publication year: </label>
+                        </div>
+                        <div class="mb-4">
+                            {{ form.bought_date }}<br/>
+                            <label for="bought_date">Bought date: </label>
+                        </div>
+                        <div class="mb-4">
+                            {{ form.last_seen }}<br/>
+                            <label for="last_seen">Last seen: </label>
+                        </div>
                     {% endfill %}
                 {% endcomponent %}
             </div>
@@ -90,7 +101,7 @@
                                     <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
                                         <input id="recode_book_code" class="input input-bordered input-sm"
                                                name="recode_book_code"
-                                               value= "{{ recode_book_code }}"><br/>
+                                               value="{{ recode_book_code }}"><br/>
                                     </dd>
                                 </div>
                             </div>
@@ -100,7 +111,7 @@
                                     <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
                                         <input id="recode_book_code_extension" class="input input-bordered input-sm"
                                                name="recode_book_code_extension"
-                                               value= "{{ recode_book_code_extension }}"></dd>
+                                               value="{{ recode_book_code_extension }}"></dd>
                                 </div>
                             </div>
 
