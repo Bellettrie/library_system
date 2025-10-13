@@ -21,6 +21,11 @@ def get_book_code(request, publication_id, location_id):
     return HttpResponse(code)
 
 
+@permission_required('works.change_work')
+def get_book_code_no_location(request, publication_id):
+    return HttpResponse("Fill in location first")
+
+
 def get_book_code_series(series):
     location = series.location
     code = series.generate_code_full(location)

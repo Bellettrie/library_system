@@ -8,5 +8,7 @@ urlpatterns = [
 
     path('generate/creator/<slug:creator_id>/<slug:location_id>', views.get_creator_number,
          name='book_code.generate_creator_number'),
+    path('generate/<slug:publication_id>/', views.get_book_code_no_location, name='book_code.generate_no_loc'),
+
     path('codes', views.show_letter_list, name='book_code.code_list'),
 ]
