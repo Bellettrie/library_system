@@ -3,6 +3,7 @@ from django.db.models import Q
 from creators.models import Creator
 from series.models import Series
 from works.models import Publication
+from works.views import query_annotate_and_sort_bookcodes
 
 
 def get_books_for_author(creator: Creator):
