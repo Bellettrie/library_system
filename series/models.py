@@ -117,6 +117,8 @@ class WorkInSeries(SeriesNode):
         SeriesWordMatch.series_rename(self.part_of_series)
 
     def get_authors(self):
+        if self.part_of_series is None:
+            return []
         return self.part_of_series.get_authors()
 
 
