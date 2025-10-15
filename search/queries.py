@@ -76,5 +76,6 @@ def filter_book_code_get_q(word):
     else:
         return Q(book_code=word) | Q(book_code_sortable=ww)
 
+
 def filter_location(query, categories):
     return query.filter(item__location__category__in=categories)
