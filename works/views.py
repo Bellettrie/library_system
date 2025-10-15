@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
+from django.db.models import Q
+from django.db.models.aggregates import Count
 from django.db.models.expressions import RawSQL, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
@@ -12,6 +14,7 @@ from recode.models import Recode
 from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
+from series.views import new_series
 
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
@@ -35,7 +38,7 @@ def get_works(request):
     categories = request.GET.getlist('q_categories', [])
     states = request.GET.getlist('q_states', [])
 
-    query = Publication.objects
+    query = Work.objects
     query = query_annotate_and_sort_bookcodes(query)
     any_query = False
     # If one word, also check bookcodes
@@ -71,10 +74,14 @@ def get_works(request):
 
     if not any_query:
         return Publication.objects.none()
+    query = query.annotate()
 
     query = query.annotate(
         titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
         "titleorder", "id").order_by("titleorder", "id")
+    query = query.filter(newseries__id__isnull=True)
+    query = query.filter(subwork__id__isnull=True)
+
     return query
 
 

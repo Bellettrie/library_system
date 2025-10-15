@@ -7,7 +7,7 @@ from django.db.models import CASCADE
 from book_code_generation.helpers import normalize_str
 from creators.models import Creator
 from series.models import Series
-from works.models import Publication, SubWork
+from works.models import Publication, SubWork, Work
 
 
 class SearchWord(models.Model):
@@ -60,11 +60,11 @@ def get_words_in_str(string):
 
 class WordMatch(models.Model):
     word = models.ForeignKey(SearchWord, on_delete=CASCADE, db_index=True)
-    publication = models.ForeignKey(Publication, on_delete=CASCADE)
+    publication = models.ForeignKey(Work, on_delete=CASCADE)
     type = models.CharField(max_length=8, default="TITLE", db_index=True)
 
     @staticmethod
-    def create_all_for(work: Publication, words=None):
+    def create_all_for(work: Work, words=None):
         if words is None:
             words = {}
             for word in SearchWord.objects.all():
@@ -85,7 +85,7 @@ class WordMatch(models.Model):
             WordMatch.objects.create(word=get_word_from_set(word, words), publication=work)
         AuthorWordMatch.get_all_for_authors(work, words)
         SeriesWordMatch.get_all_for_serieses(work, words)
-        SubWorkWordMatch.get_all_for_subworks(work, words)
+        # SubWorkWordMatch.get_all_for_subworks(work, words)
         return words
 
 

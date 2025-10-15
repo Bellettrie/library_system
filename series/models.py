@@ -5,7 +5,7 @@ from django.db.models import PROTECT
 
 from book_code_generation.models import FakeItem, BookCode
 from creators.models import LocationNumber
-from works.models import NamedTranslatableThing, Location, GENERATORS
+from works.models import NamedTranslatableThing, Location, GENERATORS, Work
 
 
 class SeriesNode(models.Model):
@@ -100,6 +100,8 @@ class Series(SeriesNode, NamedTranslatableThing, BookCode):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
+class NewSeries (Work, BookCode):
+    pass
 
 class WorkInSeries(SeriesNode):
     work = models.ForeignKey("works.Work", on_delete=PROTECT)

@@ -230,7 +230,7 @@ class Publication(Work):
 class Item(NamedThing, BookCode):
     old_id = models.IntegerField(null=True)
     location = models.ForeignKey(Location, on_delete=PROTECT)
-    publication = models.ForeignKey(Publication, on_delete=PROTECT)
+    publication = models.ForeignKey(Work, on_delete=PROTECT)
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
     isbn13 = models.CharField(max_length=64, null=True, blank=True)
     pages = models.CharField(null=True, blank=True, max_length=32)

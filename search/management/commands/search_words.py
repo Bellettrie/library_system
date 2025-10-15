@@ -1,14 +1,14 @@
 from django.core.management.base import BaseCommand
 
 from search.models import WordMatch, SearchWord
-from works.models import Publication
+from works.models import Publication, Work
 
 
 class Command(BaseCommand):
     help = 'Generate all search words for the current catalog.'
 
     def handle(self, *args, **options):
-        pubs = Publication.objects.all()
+        pubs = Work.objects.all()
         SearchWord.objects.all().delete()
         words = None
         for pub in pubs:
