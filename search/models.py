@@ -20,6 +20,7 @@ class SearchWord(models.Model):
     class Meta:
         indexes = (GinIndex(fields=["word"]),)  # add index
 
+
 def get_word_from_set(word: str, word_set: dict):
     """
         Given a dictionary of string -> SearchWord, get the word from the dictionary. This is an optimization for the search word generation function.

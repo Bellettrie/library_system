@@ -77,6 +77,7 @@ def get_works(request):
         "titleorder", "id").order_by("titleorder", "id")
     return query
 
+
 def query_annotate_and_sort_bookcodes(query):
     query = query.annotate(
         itemid=F('item__id'),
@@ -87,6 +88,7 @@ def query_annotate_and_sort_bookcodes(query):
     query = query.order_by("book_code_sortable")
     query = query.distinct("book_code_sortable")
     return query
+
 
 class WorkList(ListView):
     model = Work
