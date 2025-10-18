@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, get_object_or_404
 
 from members.models import Member
-from works.views import get_works
+from works.procedures.find_works import get_works
 
 
 @permission_required('lendings.add_lending')

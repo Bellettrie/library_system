@@ -1,6 +1,8 @@
+from typing import Any
+
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.db.models.aggregates import Count
 from django.db.models.expressions import RawSQL, F
 from django.http import HttpResponseRedirect, HttpResponse
@@ -20,81 +22,7 @@ from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
 from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
     Category
-
-
-def get_works(request):
-    if request.GET.get('q', "").count("*") + \
-            request.GET.get('q_author', "").count("*") + \
-            request.GET.get('q_series', "").count("*") + \
-            request.GET.get('q_title', "").count("*") + \
-            request.GET.get('q_bookcode', "").count("*") > 3:
-        raise ValueError("That's too much for me, senpai")
-
-    words = get_query_words(request.GET.get('q', "").upper())
-    words_author = get_query_words(request.GET.get('q_author', "").upper())
-    words_series = get_query_words(request.GET.get('q_series', "").upper())
-    words_title = get_query_words(request.GET.get('q_title', "").upper())
-    book_code = request.GET.get('q_bookcode', "").upper()
-    categories = request.GET.getlist('q_categories', [])
-    states = request.GET.getlist('q_states', [])
-
-    query = Work.objects
-    query = query_annotate_and_sort_bookcodes(query)
-    any_query = False
-    # If one word, also check bookcodes
-    if len(words) == 1:
-        any_query = True
-        fbc = filter_book_code_get_q(words[0])
-        fbt = filter_basic_text_get_q(words)[0]
-        query = query.filter(fbc | fbt)
-    elif len(words) > 1:
-        any_query = True
-
-        query = filter_basic_text(query, words)
-
-    if len(words_author) > 0:
-        any_query = True
-        query = filter_author_text(query, words_author)
-    if len(words_series) > 0:
-        any_query = True
-        query = filter_series_text(query, words_series)
-    if len(words_title) > 0:
-        any_query = True
-        query = filter_title_text(query, words_title)
-
-    if len(categories) > 0:
-        any_query = True
-        query = filter_location(query, categories)
-    if len(book_code) > 0:
-        any_query = True
-        query = query.filter(filter_book_code_get_q(book_code))
-    if len(states) > 0:
-        any_query = True
-        query = filter_state(query, states)
-
-    if not any_query:
-        return Publication.objects.none()
-    query = query.annotate()
-
-    query = query.annotate(
-        titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
-        "titleorder", "id").order_by("titleorder", "id")
-    query = query.filter(newseries__id__isnull=True)
-    query = query.filter(subwork__id__isnull=True)
-
-    return query
-
-
-def query_annotate_and_sort_bookcodes(query):
-    query = query.annotate(
-        itemid=F('item__id'),
-        book_code_sortable=F('item__book_code_sortable'),
-        book_code=F('item__book_code'),
-        book_code_extension=F('item__book_code_extension')
-    )
-    query = query.order_by("book_code_sortable")
-    query = query.distinct("book_code_sortable")
-    return query
+from works.procedures.find_works import get_works
 
 
 class WorkList(ListView):
