@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.db.models import QuerySet, F, Q
 
 from search.queries import filter_book_code_get_q, filter_basic_text, filter_basic_text_get_q, filter_author_text, \
@@ -23,8 +25,10 @@ def get_works(request):
     states = request.GET.getlist('q_states', [])
 
     query = find_works(book_code, categories, states, words, words_author, words_series, words_title)
+    if query is None:
+        return Work.objects.none()
 
-    query = query.filter(newseries__id__isnull=True)
+    # query = query.filter(newseries__id__isnull=True)
     query = query.filter(subwork__id__isnull=True)
 
     query = query.order_by("book_code_sortable", "book_code_extension")
@@ -33,7 +37,7 @@ def get_works(request):
 
 
 def find_works(book_code: str, categories: list[str], states: list[str], words: str,
-               words_author: str, words_series: str, words_title: str) -> QuerySet[Work]:
+               words_author: str, words_series: str, words_title: str) -> (QuerySet[Work]) | None:
     query = Work.objects
 
     query = query_annotate_bookcodes(query)
@@ -85,8 +89,7 @@ def find_works(book_code: str, categories: list[str], states: list[str], words: 
         query = filter_state(query, states)
 
     if not any_query:
-        return Work.objects.none()
-
+        return None
 
     return query
 
