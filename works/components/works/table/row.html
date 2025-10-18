@@ -1,7 +1,7 @@
 <tr class="">
     {% if not skip_header %}
         <td class="bg-accent text-xs text-center w-[12em]">
-            {% if item.book_code %}<a href="{% url "work.view" item.publication.pk %}"><b>{{ item.book_code }}</b>
+            {% if code %}<a href="{% url "work.view" item.publication.pk %}"><b>{{ code }}</b>
                 {% if item.book_code_extension %}({{ item.book_code_extension }}){% endif %}</a>
                 {% if show_recode and item.get_recode %}
                     {{ item.get_recode }}

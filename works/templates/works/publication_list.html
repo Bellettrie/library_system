@@ -33,7 +33,7 @@
                         <th></th>
                     </tr>
                     {% for itemRow in items %}
-                        {% component 'works.table.Row' itemRow.get_item skip_header=skip_header %}
+                        {% component 'works.table.Row' itemRow.get_item book_code=itemRow.get_book_code skip_header=skip_header %}
                             {% fill "extra_rows" %}
                                 <td>
                                     {% if  itemRow.is_item %}

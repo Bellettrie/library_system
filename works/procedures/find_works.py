@@ -1,6 +1,8 @@
 from typing import Any
 
 from django.db.models import QuerySet, F, Q
+from django.db.models.expressions import RawSQL
+from django.db.models.functions import Coalesce
 
 from search.queries import filter_book_code_get_q, filter_basic_text, filter_basic_text_get_q, filter_author_text, \
     filter_title_text, filter_series_text, filter_location, filter_state
@@ -28,7 +30,7 @@ def get_works(request):
     if query is None:
         return Work.objects.none()
 
-    # query = query.filter(newseries__id__isnull=True)
+    query = query.filter(newseries__id__isnull=True)
     query = query.filter(subwork__id__isnull=True)
 
     query = query.order_by("book_code_sortable", "book_code_extension")
@@ -96,10 +98,14 @@ def find_works(book_code: str, categories: list[str], states: list[str], words: 
 
 def query_annotate_bookcodes(query):
     query = query.annotate(
-        itemid=F('item__id'),
-        book_code_sortable=F('item__book_code_sortable'),
-        book_code=F('item__book_code'),
-        book_code_extension=F('item__book_code_extension')
+        itemida=F('item__id'),
+        book_code_sortableB=F("newseries__book_code_sortable"),
+        book_codeB=F("newseries__book_code_sortable"),
+        book_code_sortableA=F('item__book_code_sortable'),
+        book_codeA=F('item__book_code'),
+        book_code_extension=F('item__book_code_extension'),
+        book_code_sortable=Coalesce("book_code_sortableA", "book_code_sortableB"),
+        book_code=Coalesce('book_codeA', 'book_codeB')
     )
-
     return query
+

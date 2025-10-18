@@ -1,4 +1,5 @@
 from typing import List
+
 from bellettrie_library_system.templatetags.paginator_tag import register
 
 from works.models import Item, Publication
@@ -23,17 +24,31 @@ class ItemRow(Row):
     def get_item(self) -> Item:
         return self.item
 
+    def get_book_code(self):
+        return self.item.book_code
+
+    def get_book_code_extension(self):
+        return self.item.book_code_extension
+
     def is_item(self):
         return True
 
 
 class NoItemRow(Row):
-    def __init__(self, publication: Publication):
+    def __init__(self, publication: Publication, book_code: str):
         super().__init__()
+        self.book_code = book_code
         self.publication = publication
 
     def get_item(self) -> Item:
         return Item(publication=self.publication)
+
+    def get_book_code(self):
+        print("HI")
+        return self.book_code
+
+    def get_book_code_extension(self):
+        return ""
 
     def is_item(self):
         return False
@@ -42,16 +57,14 @@ class NoItemRow(Row):
 @register.simple_tag
 def get_item_rows_for_publications(publications: List[Publication]):
     rows = []
-    idz = list()
-    no_items = list()
     for publication in publications:
         if hasattr(publication, 'itemid') and publication.itemid:
-            idz.append(publication.itemid)
+            item = Item(publication=publication,
+                        book_code_sortable=publication.book_code_sortable,
+                        book_code_extension=publication.book_code_extension,
+                        book_code=publication.book_code)
+            rows.append(ItemRow(item=item))
         else:
-            no_items.append(publication)
-
-    for item in Item.objects.filter(pk__in=idz).order_by('book_code_sortable', 'book_code_extension'):
-        rows.append(ItemRow(item))
-    for pub in no_items:
-        rows.append(NoItemRow(pub))
+            rows.append(NoItemRow(publication=publication, book_code=publication.book_code))
+            print(publication.book_code)
     return rows
