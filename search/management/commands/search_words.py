@@ -18,4 +18,3 @@ class Command(BaseCommand):
             words = WordMatch.create_all_for(pub, words)
             print(pub.id)
         print("That's all folks")
-
