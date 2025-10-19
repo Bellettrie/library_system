@@ -80,11 +80,11 @@ class Publication(Work):
     def get_items(self):
         from works.models.item import Item
         query = """
-        SELECT 
+        SELECT
             coalesce(works_itemstate.type, 'AVAILABLE')
               ='AVAILABLE'
         FROM  works_itemstate
-        WHERE works_itemstate.item_id=works_item.id 
+        WHERE works_itemstate.item_id=works_item.id
         ORDER BY works_itemstate.date_time DESC
         LIMIT 1"""
         return Item.objects. \
