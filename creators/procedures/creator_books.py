@@ -13,13 +13,10 @@ def get_books_for_author(creator: Creator):
         series_len = len(series)
         series = series | set(Series.objects.filter(part_of_series__in=series))
 
-    query = (
-        Publication.objects.filter(
-            Q(creatortowork__creator=creator)
-            | Q(workinseries__part_of_series__in=series)
-            | Q(workinpublication__work__creatortowork__creator=creator)
-        )
-    )
+    query = Publication.objects.filter(
+        Q(creatortowork__creator=creator) | Q(workinseries__part_of_series__in=series) | Q(
+            workrelation__work__creatortowork__creator=creator)).order_by("title", "id").prefetch_related(
+        "item_set").distinct("title", "id")
 
     q = query_annotate_and_sort_bookcodes(query)
     return q.all()

@@ -5,4 +5,6 @@ from works.models.creator_to_work import CreatorToWork
 from works.models.item import Item
 from works.models.item_state import ItemState
 from works.models.location import Location
-from works.models.work import Work, SubWork, Publication, WorkInPublication
+from works.models.work import Work, Publication
+
+from works.models.work_relation import WorkRelation

@@ -75,7 +75,7 @@ class Work(NamedTranslatableThing):
 
 class Publication(Work):
     def is_simple_publication(self):
-        return len(self.workinpublication_set) == 0
+        return len(self.workrelation_set) == 0
 
     def get_items(self):
         from works.models.item import Item
@@ -144,38 +144,10 @@ class Publication(Work):
         return generator(FakeItem(self, location))
 
     def get_sub_works(self):
-        return WorkInPublication.objects.filter(publication_id=self.id).order_by('number_in_publication')
+        from works.models import WorkRelation
+        return WorkRelation.objects.filter(relates_to_id=self.id, relation_type=WorkRelation.RelationType.sub_work).order_by('number_in_relation')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         from search.models import WordMatch
         WordMatch.create_all_for(self)
-
-
-class SubWork(Work, TranslatedThing):
-    def is_orphaned(self):
-        return len(self.workinpublication_set) == 0
-
-    def is_part_of_multiple(self):
-        return len(self.workinpublication_set) > 1
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        from search.models import SubWorkWordMatch
-        SubWorkWordMatch.subwork_rename(self)
-
-
-class WorkInPublication(models.Model):
-    publication = models.ForeignKey(Publication, on_delete=PROTECT)
-    work = models.ForeignKey(SubWork, on_delete=PROTECT)
-    number_in_publication = models.IntegerField()
-    display_number_in_publication = models.CharField(max_length=64)
-    unique_together = ('work', 'publication')
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        from search.models import SubWorkWordMatch
-        SubWorkWordMatch.subwork_rename(self.work)
-
-    def get_authors(self):
-        return self.work.get_authors()
