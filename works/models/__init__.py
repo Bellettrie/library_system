@@ -1,4 +1,4 @@
-from works.models.abstract import  NamedThing, TranslatedThing, NamedTranslatableThing
+from works.models.abstract import NamedThing, TranslatedThing, NamedTranslatableThing
 from works.models.category import Category, ItemType
 from works.models.code_generators import GENERATORS
 from works.models.creator_to_work import CreatorToWork

@@ -70,6 +70,7 @@ def get_itemstate_choices():
 
     return rez
 
+
 class ItemState(models.Model):
     CHOICES = get_itemstate_choices()
     item = models.ForeignKey(Item, on_delete=CASCADE)
