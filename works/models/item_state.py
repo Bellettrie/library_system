@@ -1,3 +1,12 @@
+from datetime import datetime
+
+from django.db import models
+from django.db.models import CASCADE, PROTECT
+
+from inventarisation.models import Inventarisation
+from works.models.item import Item
+
+
 class ItemStateType:
     AVAILABLE = "AVAILABLE"
     FEATURED = "FEATURED"
@@ -60,3 +69,19 @@ def get_itemstate_choices():
         rez.append((state.state_name, state.state_description))
 
     return rez
+
+class ItemState(models.Model):
+    CHOICES = get_itemstate_choices()
+    item = models.ForeignKey(Item, on_delete=CASCADE)
+    date_time = models.DateTimeField(default=datetime.now)
+    type = models.CharField(max_length=64, choices=CHOICES)
+    reason = models.TextField(blank=True)
+    inventarisation = models.ForeignKey(Inventarisation, null=True, blank=True, on_delete=PROTECT)
+
+    @property
+    def state(self):
+        return get_state(self.type)
+
+    def __str__(self):
+        return self.type
+
