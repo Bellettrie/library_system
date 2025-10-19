@@ -5,30 +5,30 @@
             {% with should_edit=1 %}
                 {% if tbl %}
                     <table class="table table-zebra table-sm">
-                        {% for work in tbl %}
+                        {% for subwork_relation in tbl %}
                             <tr>
                                 <td>
-                                    {% if work.display_number_in_publication %}
-                                        {{ work.display_number_in_publication }}
+                                    {% if subwork_relation.display_number_in_relation%}
+                                        {{ subwork_relation.display_number_in_relation }}
                                     {% else %}
-                                        {{ work.number_in_publication }}
+                                        {{ subwork_relation.number_in_relation }}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if work.work.title %}{{ work.work.get_title }} {% if work.work.sub_title %}<br/>
-                                        <i>-{{ work.work.sub_title }}</i>{% endif %}{% else %}
+                                    {% if subwork_relation.work.title %}{{ subwork_relation.work.get_title }} {% if subwork_relation.work.sub_title %}<br/>
+                                        <i>-{{ subwork_relation.work.sub_title }}</i>{% endif %}{% else %}
                                         <i>No Title</i> {% endif %}
                                 </td>
                                 <td>
-                                    {% for author in work.work.get_own_authors %}
+                                    {% for author in subwork_relation.work.get_own_authors %}
                                         {% include 'creators/single_line_description.html' %}
                                         {% if not forloop.last %}<br/>{% endif %}{% empty %}{% endfor %}
                                 </td>
                                 {% if should_edit and perms.works.change_publication %}
                                     <td class="join">
-                                        <a href="{% url 'work.subwork.edit' work.pk %}"
+                                        <a href="{% url 'work.subwork.edit' subwork_relation.work_id %}"
                                            class="btn btn-primary btn-xs join-item">Edit</a>
-                                        <a href="{% url 'work.subwork.delete' work.pk %}"
+                                        <a href="{% url 'work.subwork.delete' subwork_relation.work_id %}"
                                            class="btn btn-error btn-xs join-item">Delete</a>
                                     </td>
                                 {% endif %}
