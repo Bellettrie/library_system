@@ -87,10 +87,10 @@ class Publication(Work):
         WHERE works_itemstate.item_id=works_item.id 
         ORDER BY works_itemstate.date_time DESC
         LIMIT 1"""
-        return Item.objects.\
-                annotate(available=RawSQL(query, [])).\
-                order_by("-available").\
-                filter(publication_id=self.id)
+        return Item.objects. \
+            annotate(available=RawSQL(query, [])). \
+            order_by("-available"). \
+            filter(publication_id=self.id)
 
     def get_lend_item(self):
         for item in self.get_items():
