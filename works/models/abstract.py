@@ -36,4 +36,3 @@ class NamedTranslatableThing(NamedThing, TranslatedThing):
 
     class Meta:
         abstract = True
-
