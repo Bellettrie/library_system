@@ -13,7 +13,7 @@ admin.site.register(Location)
 
 class AdminDta(admin.ModelAdmin):
     list_display = ('id', 'title', 'listed_author')
-    search_fields = ['id', 'title', 'sub_title', 'original_title', 'original_subtitle', 'listed_author']
+    search_fields = ['id', 'title', 'sub_title', 'original_title', 'original_subtitle']
     search_help_text = "Super simple search"
 
 
