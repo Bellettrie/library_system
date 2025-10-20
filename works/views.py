@@ -71,10 +71,7 @@ def get_works(request):
 
     if not any_query:
         return Publication.objects.none()
-
-    query = query.annotate(
-        titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
-        "titleorder", "id").order_by("titleorder", "id")
+    
     return query
 
 
