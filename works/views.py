@@ -71,7 +71,6 @@ def get_works(request):
 
     if not any_query:
         return Publication.objects.none()
-    
     return query
 
 
