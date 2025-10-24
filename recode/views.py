@@ -3,7 +3,6 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
 # Create your views here.
 from django.urls import reverse
 from django.views.generic import ListView
@@ -59,7 +58,6 @@ def recode_edit(request, item_id, hx_enabled=False):
 
     if request.POST:
         form = RecodeForm(request.POST)
-
         if form.is_valid():
             book_code = form.cleaned_data['book_code']
             book_code_extension = form.cleaned_data['book_code_extension']
@@ -75,4 +73,5 @@ def recode_edit(request, item_id, hx_enabled=False):
                 return HttpResponse(status=209, headers={"HX-Refresh": "true"})
             else:
                 return redirect(reverse('recode.list'))
-    return render(request, 'recode/edit.html', {'form': form, 'item': item, "hx_enabled": hx_enabled, "had_recode":len(prev_recodes)>0})
+    return render(request, 'recode/edit.html',
+                  {'form': form, 'item': item, "hx_enabled": hx_enabled, "had_recode": len(prev_recodes) > 0})
