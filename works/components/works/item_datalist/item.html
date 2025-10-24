@@ -1,6 +1,21 @@
 <dl class="w-full divide-y divide-gray-100 text-xs">
+    {% component "datarow.Datarow" "Location" %}
+        {{ item.location }}
+        {% if perms.works.change_item %}
+            <a hx-get="{% url 'works.item.change_location' item.pk %}"
+               hx-target="#dialog"
+               href="{% url "works.item.change_location" item.pk %}"
+               class="btn btn-primary btn-xs join-item">Relocate</a>
+        {% endif %}
+    {% endcomponent %}
     {% component "datarow.Datarow" "Book Code" %}
         {{ item.book_code }}
+        {% if perms.works.change_item %}
+            <a hx-get="{% url 'recode.edit' item.pk %}"
+               hx-target="#dialog"
+               href="{% url "recode.edit" item.pk %}"
+               class="btn btn-secondary btn-xs join-item">Recode</a>
+        {% endif %}
     {% endcomponent %}
     {% if item.get_recode %}
         {% with recode=item.get_recode %}

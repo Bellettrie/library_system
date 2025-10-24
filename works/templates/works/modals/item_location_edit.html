@@ -31,7 +31,7 @@
                     <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
                         {% with item_id=item_id %}
                             {% with publication_id=item.publication.id %}
-                                {% with location_id='id_location' %}
+                                {% with location_id_field='id_location' %}
                                     {% include 'book_code_generation/code_lookup.html' %}
                                 {% endwith %}
                             {% endwith %}
