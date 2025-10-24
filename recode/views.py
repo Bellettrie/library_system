@@ -55,14 +55,20 @@ def recode_edit(request, item_id, hx_enabled=False):
     item = get_object_or_404(Item, pk=item_id)
     prev_recodes = Recode.objects.filter(item=item)
     form = RecodeForm()
-
+    if len(prev_recodes) > 0:
+        form = RecodeForm()
+        form.fields['book_code'].initial = prev_recodes[0].book_code
+        form.fields['book_code_extension'].initial = prev_recodes[0].book_code_extension
+    else:
+        form.fields['book_code'].initial = item.book_code
+        form.fields['book_code_extension'].initial = item.book_code_extension
     if request.POST:
         form = RecodeForm(request.POST)
         if form.is_valid():
             book_code = form.cleaned_data['book_code']
             book_code_extension = form.cleaned_data['book_code_extension']
             Recode.objects.filter(item=item).delete()
-            if request.POST.get("submit") == "apply_recode":
+            if request.POST.get("submit") == "apply_recode" or (item.book_code == book_code and item.book_code_extension == book_code_extension):
                 item.book_code = book_code
                 item.book_code_extension = book_code_extension
                 item.save()
