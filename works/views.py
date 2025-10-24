@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.db.models.expressions import RawSQL
+from django.db.models.expressions import RawSQL, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
@@ -36,11 +36,14 @@ def get_works(request):
     states = request.GET.getlist('q_states', [])
 
     query = Publication.objects
+    query = query_annotate_and_sort_bookcodes(query)
     any_query = False
     # If one word, also check bookcodes
     if len(words) == 1:
         any_query = True
-        query = query.filter(filter_book_code_get_q(words[0]) | filter_basic_text_get_q(words)[0])
+        fbc = filter_book_code_get_q(words[0])
+        fbt = filter_basic_text_get_q(words)[0]
+        query = query.filter(fbc | fbt)
     elif len(words) > 1:
         any_query = True
 
@@ -68,10 +71,18 @@ def get_works(request):
 
     if not any_query:
         return Publication.objects.none()
+    return query
 
+
+def query_annotate_and_sort_bookcodes(query):
     query = query.annotate(
-        titleorder=RawSQL("upper(coalesce(\"works_work\".\"title\",'ZZZZZZZ'))", params=[])).distinct(
-        "titleorder", "id").order_by("titleorder", "id")
+        itemid=F('item__id'),
+        book_code_sortable=F('item__book_code_sortable'),
+        book_code=F('item__book_code'),
+        book_code_extension=F('item__book_code_extension')
+    )
+    query = query.order_by("book_code_sortable")
+    query = query.distinct("book_code_sortable")
     return query
 
 
