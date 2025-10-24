@@ -11,7 +11,8 @@
                     {% fill 'title' %}Item Info{% endfill %}
                     {% fill 'content' %}
                         <div class="mb-4">
-                            {{ form.location }} <br/>
+                            {{ form.location }}
+                            <br/>
                             <label for="last_seen" class="mb-1">Location: </label>
                         </div>
 
@@ -80,60 +81,7 @@
 
                     {% endfill %}
                 {% endcomponent %}
-                {% if edit %}
 
-                    {% component 'tile.Tile' root_class_tags="grow" %}
-                        {% fill 'title' %}Recode{% endfill %}
-                        {% fill 'content' %}
-                            <div class="form-control">
-                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                    <dt class="text-sm/6 font-medium">Recode?</dt>
-                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
-                                        <input type="checkbox" id="recode_check" name="recode_check"
-                                               {% if recode %}checked{% endif %}>
-                                    </dd>
-                                </div>
-                            </div>
-
-                            <div class="form-control">
-                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                    <dt class="text-sm/6 font-medium">Book code</dt>
-                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
-                                        <input id="recode_book_code" class="input input-bordered input-sm"
-                                               name="recode_book_code"
-                                               value="{{ recode_book_code }}"><br/>
-                                    </dd>
-                                </div>
-                            </div>
-                            <div class="form-control">
-                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                    <dt class="text-sm/6 font-medium">Book code Extension</dt>
-                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
-                                        <input id="recode_book_code_extension" class="input input-bordered input-sm"
-                                               name="recode_book_code_extension"
-                                               value="{{ recode_book_code_extension }}"></dd>
-                                </div>
-                            </div>
-
-
-                            <div class="form-control">
-                                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                    <dt class="text-sm/6 font-medium">Generate book code</dt>
-                                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
-                                        {% with publication_id=publication.pk %}
-                                            {% with location_id='id_location' %}
-                                                {% include 'book_code_generation/code_lookup.html' %}
-                                            {% endwith %}
-                                        {% endwith %}
-                                    </dd>
-                                </div>
-                            </div>
-
-
-
-                        {% endfill %}
-                    {% endcomponent %}
-                {% endif %}
                 {% component 'tile.Tile' root_class_tags="grow" %}
                     {% fill 'title' %}All done{% endfill %}
                     {% fill 'content' %}

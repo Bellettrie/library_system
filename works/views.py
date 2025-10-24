@@ -182,38 +182,17 @@ def item_new(request, publication_id=None):
 @permission_required('works.change_item')
 def item_edit(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
-    recode_book_code = ''
-    recode_book_code_extension = ''
-    recode = False
-    recodes = Recode.objects.filter(item=item)
-    if len(recodes) == 1:
-        recode_obj = recodes[0]
-        recode_book_code = recode_obj.book_code
-        recode_book_code_extension = recode_obj.book_code_extension
-        recode = True
     if request.method == 'POST':
         form = ItemCreateForm(request.POST, instance=item)
-        recode = request.POST.get('recode_check')
-        recode_book_code = request.POST.get('recode_book_code')
-        recode_book_code_extension = request.POST.get('recode_book_code_extension')
+
         if form.is_valid():
             instance = form.save(commit=False)
-
             instance.save()
-            recodes = Recode.objects.filter(item=item)
-            for rr in recodes:
-                rr.delete()
-            if recode:
-                Recode.objects.create(item=instance, book_code=recode_book_code,
-                                      book_code_extension=recode_book_code_extension)
-
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'works/item_edit.html',
-                  {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode,
-                   'recode_book_code': recode_book_code,
-                   'recode_book_code_extension': recode_book_code_extension})
+                  {'edit': True, 'form': form, 'publication': item.publication, "item": item})
 
 
 def item_history_hx(request, item_id):

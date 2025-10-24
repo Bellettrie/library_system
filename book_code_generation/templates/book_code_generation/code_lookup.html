@@ -1,5 +1,9 @@
 <script>function loadDoc() {
-    var y = document.getElementById('{{ location_id }}').value
+    {% if location_id_field %}
+    var y = document.getElementById('{{ location_id_field }}').value
+    {% else %}
+        var y = "{{ location_id_direct }}"
+    {% endif %}
     {% if title_id %}
         var title = document.getElementById('{{ title_id }}').value
     {% endif %}
