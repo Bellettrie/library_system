@@ -9,6 +9,7 @@ from django.views.generic import ListView
 
 from recode.forms import RecodeForm
 from recode.models import Recode
+from recode.procedures.update_recode import update_recode_for_item
 from works.models import Item
 
 
@@ -67,17 +68,12 @@ def recode_edit(request, item_id, hx_enabled=False):
         if form.is_valid():
             book_code = form.cleaned_data['book_code']
             book_code_extension = form.cleaned_data['book_code_extension']
-            Recode.objects.filter(item=item).delete()
-            if request.POST.get("submit") == "apply_recode" or (item.book_code == book_code and item.book_code_extension == book_code_extension):
-                item.book_code = book_code
-                item.book_code_extension = book_code_extension
-                item.save()
-            else:
-                Recode.objects.create(item=item, book_code=book_code, book_code_extension=book_code_extension)
-
+            update_recode_for_item(item, book_code, book_code_extension, request.POST.get("submit") == "apply_recode")
             if hx_enabled:
                 return HttpResponse(status=209, headers={"HX-Refresh": "true"})
             else:
                 return redirect(reverse('recode.list'))
     return render(request, 'recode/edit.html',
                   {'form': form, 'item': item, "hx_enabled": hx_enabled, "had_recode": len(prev_recodes) > 0})
+
+
