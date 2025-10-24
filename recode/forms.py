@@ -12,6 +12,6 @@ class RecodeForm(ModelForm):
         cleaned_data = super().clean()
         book_code = cleaned_data.get("book_code")
 
-        if len(book_code) ==0:
+        if len(book_code) == 0:
             msg = "Book Code cannot be empty"
             self.add_error("book_code", msg)

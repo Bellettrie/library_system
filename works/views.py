@@ -3,7 +3,6 @@ from django.db import transaction
 from django.db.models.expressions import RawSQL, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
-
 # Create your views here.
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
@@ -12,12 +11,11 @@ from recode.models import Recode
 from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
-
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm, \
     LocationChangeForm
 from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
-    Category, Location
+    Category
 
 
 def get_works(request):
@@ -158,7 +156,7 @@ def change_item_location(request, item_id, hx_enabled=False):
     else:
         frm = LocationChangeForm(instance=item)
         return render(request, 'works/modals/item_location_edit.html',
-                  {'hx_enabled': hx_enabled, 'form': frm, 'item': item, 'item_id': item_id})
+                      {'hx_enabled': hx_enabled, 'form': frm, 'item': item, 'item_id': item_id})
 
 
 @transaction.atomic
@@ -279,7 +277,6 @@ def publication_new(request):
 @permission_required('works.change_publication')
 def subwork_edit(request, subwork_id=None, publication_id=None):
     from works.forms import CreatorToWorkFormSet
-    from works.forms import SeriesToWorkFomSet
     creator_to_works = None
     series = None
     publication = None
