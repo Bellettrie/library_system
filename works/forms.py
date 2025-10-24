@@ -83,6 +83,8 @@ class SubWorkCreateForm(ModelForm):
 
 
 class LocationChangeForm(ModelForm):
+    book_code = forms.CharField(required=True)
+    book_code_extension = forms.CharField(required=False)
     class Meta:
         model = Item
         fields = ['location']
