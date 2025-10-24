@@ -1,6 +1,7 @@
 def get_query_words(query):
     if query is None:
         return None
+    query = query.replace("'", " ")
     p_words = query.split(" ")
     words = []
     for word in p_words:
