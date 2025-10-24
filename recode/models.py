@@ -9,4 +9,4 @@ from works.models import Item
 
 class Recode(BookCode):
     item = models.ForeignKey(Item, on_delete=CASCADE)
-    book_code_extension = models.CharField(max_length=16)  # Where in the library is it?
+    book_code_extension = models.CharField(max_length=16, blank=True)  # Where in the library is it?

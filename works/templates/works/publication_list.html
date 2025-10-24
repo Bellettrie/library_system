@@ -43,36 +43,43 @@
                                             [{{ itemRow.get_item.get_state }}]
                                         {% endif %}
                                         {% if admin and perms.change_work %}
-                                            <br>{{ itemRow.get_item.location.category.name }} {{  itemRow.get_item.location.name }}
+                                            <br>{{ itemRow.get_item.location.category.name }}
+                                            {{ itemRow.get_item.location.name }}
                                         {% endif %}
 
                                     {% endif %}
                                 </td>
-                                <td class="join">
+                                <td>
                                     {% if  itemRow.is_item %}
                                         {% if admin %}
-                                                   {% if perms.works.change_itemstate %}
-                                                    <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
-                                                       href="{% url "works.item_state.create" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Change
-                                                        state</a>
-                                                {% endif %}
-                                                {% if perms.works.change_item %}
-                                                    <a hx-get="{% url 'works.item.change_location' itemRow.get_item.pk %}" hx-target="#dialog"
-                                                       href="{% url "works.item.change_location" itemRow.get_item.pk %}" class="btn btn-secondary btn-xs join-item">Change
-                                                        location</a>
-                                                {% endif %}
-                                                {% if perms.works.change_item %}
-                                                    <a href="{% url "works.item.edit" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Edit item</a>
-                                                {% endif %}
-                                            {% else  %}
-                                        {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
-                                        {% with itemRow.get_item.current_lending as cur_lnd %}
-                                            {% if cur_lnd %}
-                                                {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                                            {% if perms.works.change_itemstate %}
+                                                <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}"
+                                                   hx-target="#dialog"
+                                                   href="{% url "works.item_state.create" itemRow.get_item.pk %}"
+                                                   class="btn btn-primary btn-xs join-item">Change
+                                                    state</a>
                                             {% endif %}
-                                        {% endwith %}
+                                            <div class="join">
+                                                {% if perms.works.change_item %}
+                                                    <a hx-get="{% url 'recode.edit' itemRow.get_item.pk %}"
+                                                       hx-target="#dialog"
+                                                       href="{% url "recode.edit" itemRow.get_item.pk %}"
+                                                       class="btn btn-secondary btn-xs join-item">Recode</a>
+                                                    <a hx-get="{% url 'works.item.change_location' itemRow.get_item.pk %}"
+                                                       hx-target="#dialog"
+                                                       href="{% url "works.item.change_location" itemRow.get_item.pk %}"
+                                                       class="btn btn-primary btn-xs join-item">Relocate</a>
+                                                {% endif %}
+                                            </div>
+                                        {% else %}
+                                            {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
+                                            {% with itemRow.get_item.current_lending as cur_lnd %}
+                                                {% if cur_lnd %}
+                                                    {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
                                 </td>
                                 <td>{{ itemRow.get_item.titleorder }}</td>
                             {% endfill %}
@@ -85,30 +92,38 @@
         <div class="lg:hidden flex flex-col gap-5 m-3">
             {% for itemRow in items %}
                 {% component 'works.table.Card' itemRow.get_item False %}
-                    <div class=" flex  justify-end  join">
-                    {% if admin    %}
-                        {% if perms.works.change_itemstate %}
-                            <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
-                               href="{% url "works.item_state.create" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Change
-                                state</a>
-                        {% endif %}
-                        {% if perms.works.change_item %}
-                            <a hx-get="{% url 'works.item.edit' itemRow.get_item.pk %}" hx-target="#dialog"
-                               href="{% url "works.item.edit" itemRow.get_item.pk %}" class="btn btn-secondary btn-xs join-item">Edit item</a>
-                        {% endif %}
-                                                {% if perms.works.change_item %}
-                                                    <a href="{% url "works.item.edit" itemRow.get_item.pk %}" class="btn btn-primary btn-xs join-item">Edit item</a>
-                                                {% endif %}
-                    {% else %}
-                        {% if itemRow.is_item %}
-                            {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
-                            {% with item.current_lending as cur_lnd %}
-                                {% if cur_lnd %}
-                                    {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                    <div class=" flex  justify-end gap-2">
+                        {% if admin %}
+                            {% if perms.works.change_itemstate %}
+                                <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
+                                   href="{% url "works.item_state.create" itemRow.get_item.pk %}"
+                                   class="btn btn-primary btn-xs join-item">Change
+                                    state</a>
+                            {% endif %}
+                            <div class="join">
+                                {% if perms.works.change_item %}
+                                    {% if perms.works.change_item %}
+                                        <a hx-get="{% url 'recode.edit' itemRow.get_item.pk %}"
+                                           hx-target="#dialog"
+                                           href="{% url "recode.edit" itemRow.get_item.pk %}"
+                                           class="btn btn-secondary btn-xs join-item">Recode</a>
+                                        <a hx-get="{% url 'works.item.change_location' itemRow.get_item.pk %}"
+                                           hx-target="#dialog"
+                                           href="{% url "works.item.change_location" itemRow.get_item.pk %}"
+                                           class="btn btn-primary btn-xs join-item">Relocate</a>
+                                    {% endif %}
                                 {% endif %}
-                            {% endwith %}
+                            </div>
+                        {% else %}
+                            {% if itemRow.is_item %}
+                                {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
+                                {% with item.current_lending as cur_lnd %}
+                                    {% if cur_lnd %}
+                                        {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
                     </div>
                 {% endcomponent %}
             {% endfor %}

@@ -1,0 +1,34 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
+{% block content %}
+    {% component 'modalform.ModalForm' title="Recode" path=request.path form_action="submit" %}
+        {% fill "modal_body" %}
+            <b>Previous code:</b>
+            {{ item.book_code }} {% if item.book_code_extension %} ({{ item.book_code_extension }}{% endif %}<br>
+            {% if had_recode %}Editing existing recode{% endif %}
+            {% csrf_token %}
+            {% component 'form.Smol' form / %}
+
+            <div class="form-control">
+                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt class="text-sm/6 font-medium">Generate book code</dt>
+                    <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">
+                        {% with item_id=item_id %}
+                            {% with publication_id=item.publication.id %}
+                                {% with location_id_direct=item.location.id %}
+                                    {% include 'book_code_generation/code_lookup.html' %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endwith %}
+                    </dd>
+                </div>
+            </div>
+        {% endfill %}
+        {% fill 'modal_submit_button' %}
+            <button type="submit" class="btn btn-success join-item">Save for Later</button>
+            <button name="submit" type="submit" class="btn btn-primary join-item" value="apply_recode">Save and Apply
+            </button>
+
+        {% endfill %}
+    {% endcomponent %}
+{% endblock %}

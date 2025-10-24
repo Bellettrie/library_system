@@ -8,7 +8,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic import ListView
 
+from recode.forms import RecodeForm
 from recode.models import Recode
+from works.models import Item
 
 
 class RecodeList(PermissionRequiredMixin, ListView):
@@ -46,3 +48,31 @@ def recode_finish(request, pk, hx_enabled=False):
         else:
             return redirect(alt)
     return render(request, templ, {'recode': recode, "hx_enabled": hx_enabled})
+
+
+@transaction.atomic
+@permission_required('works.change_item')
+def recode_edit(request, item_id, hx_enabled=False):
+    item = get_object_or_404(Item, pk=item_id)
+    prev_recodes = Recode.objects.filter(item=item)
+    form = RecodeForm()
+
+    if request.POST:
+        form = RecodeForm(request.POST)
+
+        if form.is_valid():
+            book_code = form.cleaned_data['book_code']
+            book_code_extension = form.cleaned_data['book_code_extension']
+            Recode.objects.filter(item=item).delete()
+            if request.POST.get("submit") == "apply_recode":
+                item.book_code = book_code
+                item.book_code_extension = book_code_extension
+                item.save()
+            else:
+                Recode.objects.create(item=item, book_code=book_code, book_code_extension=book_code_extension)
+
+            if hx_enabled:
+                return HttpResponse(status=209, headers={"HX-Refresh": "true"})
+            else:
+                return redirect(reverse('recode.list'))
+    return render(request, 'recode/edit.html', {'form': form, 'item': item, "hx_enabled": hx_enabled, "had_recode":len(prev_recodes)>0})
