@@ -9,7 +9,7 @@
         {% endif %}
     {% endcomponent %}
     {% component "datarow.Datarow" "Book Code" %}
-        {{ item.book_code }}
+        {{ item.book_code }} {% if item.book_code_extension %} ({{ item.book_code_extension  }}) {% endif %}
         {% if perms.works.change_item %}
             <a hx-get="{% url 'recode.edit' item.pk %}"
                hx-target="#dialog"

@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
+from recode.procedures.update_recode import update_recode_for_item
 from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
@@ -148,8 +149,8 @@ def change_item_location(request, item_id, hx_enabled=False):
         book_code = request.POST.get('recode_book_code', '')
         book_code_extension = request.POST.get('recode_book_code_extension', '')
         if book_code and (item.book_code != book_code or item.book_code_extension != book_code_extension):
-            Recode.objects.filter(item=item).delete()
-            Recode.objects.create(item=item, book_code=book_code, book_code_extension=book_code_extension)
+            update_recode_for_item(item, book_code, book_code_extension, False)
+
         if hx_enabled:
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         return HttpResponseRedirect(reverse('work.view', args=(item.publication.pk,)))
