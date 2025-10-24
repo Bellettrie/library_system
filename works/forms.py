@@ -4,7 +4,7 @@ from django.forms import ModelForm, inlineformset_factory
 from creators.forms import CreatorWidget
 from series.forms import SeriesWidget
 from series.models import WorkInSeries
-from works.models import ItemState, Item, Publication, CreatorToWork, Work, SubWork, Location
+from works.models import ItemState, Item, Publication, CreatorToWork, Work, SubWork
 
 
 class SimpleWorkSearch(forms.Form):
@@ -85,6 +85,7 @@ class SubWorkCreateForm(ModelForm):
 class LocationChangeForm(ModelForm):
     book_code = forms.CharField(required=True)
     book_code_extension = forms.CharField(required=False)
+
     class Meta:
         model = Item
         fields = ['location']
