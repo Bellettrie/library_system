@@ -75,5 +75,3 @@ def recode_edit(request, item_id, hx_enabled=False):
                 return redirect(reverse('recode.list'))
     return render(request, 'recode/edit.html',
                   {'form': form, 'item': item, "hx_enabled": hx_enabled, "had_recode": len(prev_recodes) > 0})
-
-
