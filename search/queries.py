@@ -53,13 +53,9 @@ def filter_state(q, states):
     # And then we join the item on it's most recent itemstate,
     # by using an inner query to fetch the maximum of the itemstate's datetimes.
     query = """
-works_work.id IN (SELECT
-    works_work.id
-FROM
-    works_work
-INNER JOIN
-    works_item
-        ON works_work.id = works_item.publication_id
+works_item.id IN (SELECT
+    works_item.id
+    FROM
     JOIN works_itemstate as wx
         ON works_item.id = wx.item_id
         WHERE date_time =
@@ -74,13 +70,11 @@ INNER JOIN
 def filter_book_code_get_q(word):
     ww = standardize_code(word.replace("*", ""))
     if word.startswith("*"):
-        return Q(item__book_code_sortable__endswith=ww) | Q(
-            item__book_code__endswith=word.replace("*", ""))
+        return Q(book_code__endswith=word) | Q(book_code_sortable__endswith=ww)
     elif word.endswith("*"):
-        return Q(item__book_code_sortable__startswith=ww) | Q(
-            item__book_code__startswith=word.replace("*", ""))
+        return Q(book_code__startswith=word) | Q(book_code_sortable__startswith=ww)
     else:
-        return Q(item__book_code_sortable=ww) | Q(item__book_code=word)
+        return Q(book_code=word) | Q(book_code_sortable=ww)
 
 
 def filter_location(query, categories):

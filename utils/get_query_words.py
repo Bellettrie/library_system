@@ -4,6 +4,7 @@ def get_query_words(query):
     p_words = query.split(" ")
     words = []
     for word in p_words:
-        if len(word) > 0:
+        # Skip single letter words.
+        if len(word) > 1:
             words.append(word)
     return words
