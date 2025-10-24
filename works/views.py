@@ -147,7 +147,7 @@ def change_item_location(request, item_id, hx_enabled=False):
     if request.method == 'POST':
         LocationChangeForm(request.POST, instance=item).save()
 
-        book_code =  request.POST.get('recode_book_code', '')
+        book_code = request.POST.get('recode_book_code', '')
         book_code_extension = request.POST.get('recode_book_code_extension', '')
         if book_code and (item.book_code != book_code or item.book_code_extension != book_code_extension):
             Recode.objects.filter(item=item).delete()
@@ -159,6 +159,7 @@ def change_item_location(request, item_id, hx_enabled=False):
         frm = LocationChangeForm(instance=item)
         return render(request, 'works/modals/item_location_edit.html',
                   {'hx_enabled': hx_enabled, 'form': frm, 'item': item, 'item_id': item_id})
+
 
 @transaction.atomic
 @permission_required('works.add_item')
