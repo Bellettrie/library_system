@@ -17,20 +17,20 @@ class WorkRelationTests(TestCase):
         self.work7 = create_work('Work7')
         self.work8 = create_work('Work8')
         self.rel1 = WorkRelation.objects.create(source_work=self.work1, target_work=self.work2,
-                                                relation_kind=WorkRelation.RelationType.sub_work_of, relation_index=1)
+                                                relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=1)
         self.rel2 = WorkRelation.objects.create(source_work=self.work2, target_work=self.work3,
-                                                relation_kind=WorkRelation.RelationType.sub_work_of, relation_index=2)
+                                                relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=2)
         self.rel3 = WorkRelation.objects.create(source_work=self.work4, target_work=self.work2,
-                                                relation_kind=WorkRelation.RelationType.sub_work_of, relation_index=3)
+                                                relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=3)
         self.rel4 = WorkRelation.objects.create(source_work=self.work4, target_work=self.work5,
-                                                relation_kind=WorkRelation.RelationType.sub_work_of, relation_index=4)
+                                                relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=4)
         self.rel5 = WorkRelation.objects.create(source_work=self.work1, target_work=self.work5,
-                                                relation_kind=WorkRelation.RelationType.part_of_series,
+                                                relation_kind=WorkRelation.RelationKind.part_of_series,
                                                 relation_index=1)
         self.rel6 = WorkRelation.objects.create(source_work=self.work6, target_work=self.work7, relation_index=1,
-                                                relation_kind=WorkRelation.RelationType.sub_work_of)
+                                                relation_kind=WorkRelation.RelationKind.sub_work_of)
         self.rel7 = WorkRelation.objects.create(source_work=self.work8, target_work=self.work7, relation_index=2,
-                                                relation_kind=WorkRelation.RelationType.sub_work_of)
+                                                relation_kind=WorkRelation.RelationKind.sub_work_of)
 
     def assertSameRelations(self, first: RawQuerySet, second: List[WorkRelation]):
         fst_set = set(map(lambda x: x.id, first))
@@ -39,7 +39,7 @@ class WorkRelationTests(TestCase):
         self.assertEqual(fst_set, snd_set)
 
     def test_relations_no_start(self):
-        sub_kind = WorkRelation.RelationType.sub_work_of
+        sub_kind = WorkRelation.RelationKind.sub_work_of
         rels = WorkRelation.traverse_relations([], [sub_kind], [])
         self.assertSameRelations(rels, [])
 
@@ -49,37 +49,37 @@ class WorkRelationTests(TestCase):
 
     def test_relations_1_jump(self):
         """Work 2 only has one up-relation with sub_work type, so we expect to find only that relation."""
-        sub_kind = WorkRelation.RelationType.sub_work_of
+        sub_kind = WorkRelation.RelationKind.sub_work_of
         rels = WorkRelation.traverse_relations([self.work2.id], [sub_kind], [])
         self.assertSameRelations(rels, [self.rel2])
 
     def test_relations_2_jump(self):
         """Work 1 has an up-relation to work2, from where another up-relation can be picked up."""
-        sub_kind = WorkRelation.RelationType.sub_work_of
+        sub_kind = WorkRelation.RelationKind.sub_work_of
         rels = WorkRelation.traverse_relations([self.work1.id], [sub_kind], [])
         self.assertSameRelations(rels, [self.rel1, self.rel2])
 
     def test_relations_2_jump_multiple(self):
         """If we go up from work1 using both sub_work and series-relations, then we expect to find three results."""
-        sub_kind = WorkRelation.RelationType.sub_work_of
-        series_kind = WorkRelation.RelationType.part_of_series
+        sub_kind = WorkRelation.RelationKind.sub_work_of
+        series_kind = WorkRelation.RelationKind.part_of_series
         rels = WorkRelation.traverse_relations([self.work1.id], [sub_kind, series_kind], [])
         self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel5])
 
     def test_relations_reverse(self):
         """Traversing in reverse should also work"""
-        sub_kind = WorkRelation.RelationType.sub_work_of
+        sub_kind = WorkRelation.RelationKind.sub_work_of
         rels = WorkRelation.traverse_relations([self.work2.id], [], [sub_kind])
         self.assertSameRelations(rels, [self.rel1, self.rel3])
 
     def test_relations_bidirectional(self):
         """We should be able to traverse both ways at the same time."""
-        sub_kind = WorkRelation.RelationType.sub_work_of
+        sub_kind = WorkRelation.RelationKind.sub_work_of
         rels = WorkRelation.traverse_relations([self.work2.id], [sub_kind], [sub_kind])
         self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel3, self.rel4])
 
     def test_relations_from_multiple_starting_points(self):
-        sub_kind = WorkRelation.RelationType.sub_work_of
+        sub_kind = WorkRelation.RelationKind.sub_work_of
         rels = WorkRelation.traverse_relations([self.work1.id, self.work7.id], [sub_kind], [sub_kind])
         self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel3, self.rel4, self.rel6, self.rel7])
 
