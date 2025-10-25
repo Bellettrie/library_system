@@ -7,7 +7,7 @@ from works.models import Work
 
 
 class WorkRelation(models.Model):
-    class RelationType(models.IntegerChoices):
+    class RelationKind(models.IntegerChoices):
         sub_work_of = 1
         part_of_series = 2
 
@@ -17,13 +17,13 @@ class WorkRelation(models.Model):
     relation_index = models.IntegerField()
     relation_index_label = models.CharField(max_length=64)
 
-    relation_kind = models.IntegerField(choices=RelationType.choices, db_index=True)
+    relation_kind = models.IntegerField(choices=RelationKind.choices, db_index=True)
 
     class RelationTraversal:
         @staticmethod
         def for_search_words(work_id: int):
-            up_types = [WorkRelation.RelationType.part_of_series]
-            down_types = [WorkRelation.RelationType.sub_work_of]
+            up_types = [WorkRelation.RelationKind.part_of_series]
+            down_types = [WorkRelation.RelationKind.sub_work_of]
             return WorkRelation.traverse_relations([work_id], up_types, down_types)
 
     @staticmethod
