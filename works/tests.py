@@ -53,28 +53,33 @@ class WorkTests(TestCase):
         self.assertEqual(len(first), len(second))
         self.assertEqual(fst_set, snd_set)
 
+    def test_relations_1_jump(self):
+        """Work 2 only has one up-relation with sub_work type, so we expect to find only that relation."""
+        sub_kind = WorkRelation.RelationType.sub_work_of
+        rels = WorkRelation.traverse_relations([self.work2.id], [sub_kind], [])
+        self.assertSameRelations(rels, [self.rel2])
+
     def test_relations_2_jump(self):
+        """Work 1 has an up-relation to work2, from where another up-relation can be picked up."""
         sub_kind = WorkRelation.RelationType.sub_work_of
         rels = WorkRelation.traverse_relations([self.work1.id], [sub_kind], [])
         self.assertSameRelations(rels, [self.rel1, self.rel2])
 
     def test_relations_2_jump_multiple(self):
+        """If we go up from work1 using both sub_work and series-relations, then we expect to find three results."""
         sub_kind = WorkRelation.RelationType.sub_work_of
         series_kind = WorkRelation.RelationType.part_of_series
         rels = WorkRelation.traverse_relations([self.work1.id], [sub_kind, series_kind], [])
         self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel5])
 
-    def test_relations_1_jump(self):
-        sub_kind = WorkRelation.RelationType.sub_work_of
-        rels = WorkRelation.traverse_relations([self.work2.id], [sub_kind], [])
-        self.assertSameRelations(rels, [self.rel2])
-
     def test_relations_reverse(self):
+        """Traversing in reverse should also work"""
         sub_kind = WorkRelation.RelationType.sub_work_of
         rels = WorkRelation.traverse_relations([self.work2.id], [], [sub_kind])
         self.assertSameRelations(rels, [self.rel1, self.rel3])
 
     def test_relations_bidirectional(self):
+        """We should be able to traverse both ways at the same time."""
         sub_kind = WorkRelation.RelationType.sub_work_of
         rels = WorkRelation.traverse_relations([self.work2.id], [sub_kind], [sub_kind])
         self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel3, self.rel4])
