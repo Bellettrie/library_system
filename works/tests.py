@@ -1,5 +1,7 @@
 import time
+from typing import List
 
+from django.db.models.query import RawQuerySet
 from django.test import TestCase
 from works.models import Publication, Item, Category, Location, ItemType, WorkRelation
 
@@ -34,34 +36,40 @@ class WorkTests(TestCase):
         self.work6 = create_work('Work6')
         self.work7 = create_work('Work7')
         self.work8 = create_work('Work8')
-        self.w1 = WorkRelation.objects.create(work=self.work1, relates_to=self.work2,
-                                              relation_type=WorkRelation.RelationType.sub_work, number_in_relation=1)
-        self.w2 = WorkRelation.objects.create(work=self.work2, relates_to=self.work3,
-                                              relation_type=WorkRelation.RelationType.sub_work, number_in_relation=2)
-        self.w3 = WorkRelation.objects.create(work=self.work4, relates_to=self.work2,
-                                              relation_type=WorkRelation.RelationType.sub_work, number_in_relation=3)
-        self.w4 = WorkRelation.objects.create(work=self.work4, relates_to=self.work5,
-                                              relation_type=WorkRelation.RelationType.sub_work, number_in_relation=4)
+        self.rel1 = WorkRelation.objects.create(source_work=self.work1, target_work=self.work2,
+                                                relation_kind=WorkRelation.RelationType.sub_work_of, relation_index=1)
+        self.rel2 = WorkRelation.objects.create(source_work=self.work2, target_work=self.work3,
+                                                relation_kind=WorkRelation.RelationType.sub_work_of, relation_index=2)
+        self.rel3 = WorkRelation.objects.create(source_work=self.work4, target_work=self.work2,
+                                                relation_kind=WorkRelation.RelationType.sub_work_of, relation_index=3)
+        self.rel4 = WorkRelation.objects.create(source_work=self.work4, target_work=self.work5,
+                                                relation_kind=WorkRelation.RelationType.sub_work_of, relation_index=4)
+        self.rel5 = WorkRelation.objects.create(source_work=self.work1, target_work=self.work5,
+                                                relation_kind=WorkRelation.RelationType.part_of_series, relation_index=1)
 
-        self.w5 = WorkRelation.objects.create(work=self.work1, relates_to=self.work5,
-                                              relation_type=WorkRelation.RelationType.series, number_in_relation=1)
+    def assertSameRelations(self, first: RawQuerySet, second: List[WorkRelation]):
+        fst_set = set(map(lambda x: x.id, first))
+        snd_set = set(map(lambda x: x.id, second))
+        self.assertEqual(len(first), len(second))
+        self.assertEqual(fst_set, snd_set)
 
     def test_relations_2_jump(self):
-        rels = WorkRelation.recursive_work_relations_from([self.work1.id], [1], [])
-        self.assertEqual(len(rels), 2)
+        rels = WorkRelation.traverse_relations([self.work1.id], [1], [])
+        self.assertSameRelations(rels, [self.rel1, self.rel2])
 
     def test_relations_2_jump_multiple(self):
-        rels = WorkRelation.recursive_work_relations_from([self.work1.id], [1, 2], [])
-        self.assertEqual(len(rels), 3)
+        rels = WorkRelation.traverse_relations([self.work1.id], [1, 2], [])
+        self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel5])
 
     def test_relations_1_jump(self):
-        rels = WorkRelation.recursive_work_relations_from([self.work2.id], [1], [])
-        self.assertEqual(len(rels), 1)
+        rels = WorkRelation.traverse_relations([self.work2.id], [1], [])
+        self.assertSameRelations(rels, [self.rel2])
 
     def test_relations_reverse(self):
-        rels = WorkRelation.recursive_work_relations_from([self.work2.id], [], [1])
-        self.assertEqual(len(rels), 2)
+        rels = WorkRelation.traverse_relations([self.work2.id], [], [1])
+        self.assertSameRelations(rels, [self.rel1, self.rel3])
 
     def test_relations_bidirectional(self):
-        rels = WorkRelation.recursive_work_relations_from([self.work2.id], [1], [1])
-        self.assertEqual(len(rels), 4)
+        rels = WorkRelation.traverse_relations([self.work2.id], [1], [1])
+        self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel3, self.rel4])
+
