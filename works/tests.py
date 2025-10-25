@@ -54,22 +54,28 @@ class WorkTests(TestCase):
         self.assertEqual(fst_set, snd_set)
 
     def test_relations_2_jump(self):
-        rels = WorkRelation.traverse_relations([self.work1.id], [1], [])
+        sub_kind = WorkRelation.RelationType.sub_work_of
+        rels = WorkRelation.traverse_relations([self.work1.id], [sub_kind], [])
         self.assertSameRelations(rels, [self.rel1, self.rel2])
 
     def test_relations_2_jump_multiple(self):
-        rels = WorkRelation.traverse_relations([self.work1.id], [1, 2], [])
+        sub_kind = WorkRelation.RelationType.sub_work_of
+        series_kind = WorkRelation.RelationType.part_of_series
+        rels = WorkRelation.traverse_relations([self.work1.id], [sub_kind, series_kind], [])
         self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel5])
 
     def test_relations_1_jump(self):
-        rels = WorkRelation.traverse_relations([self.work2.id], [1], [])
+        sub_kind = WorkRelation.RelationType.sub_work_of
+        rels = WorkRelation.traverse_relations([self.work2.id], [sub_kind], [])
         self.assertSameRelations(rels, [self.rel2])
 
     def test_relations_reverse(self):
-        rels = WorkRelation.traverse_relations([self.work2.id], [], [1])
+        sub_kind = WorkRelation.RelationType.sub_work_of
+        rels = WorkRelation.traverse_relations([self.work2.id], [], [sub_kind])
         self.assertSameRelations(rels, [self.rel1, self.rel3])
 
     def test_relations_bidirectional(self):
-        rels = WorkRelation.traverse_relations([self.work2.id], [1], [1])
+        sub_kind = WorkRelation.RelationType.sub_work_of
+        rels = WorkRelation.traverse_relations([self.work2.id], [sub_kind], [sub_kind])
         self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel3, self.rel4])
 
