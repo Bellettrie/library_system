@@ -27,12 +27,25 @@ class WorkRelationTests(TestCase):
         self.rel5 = WorkRelation.objects.create(source_work=self.work1, target_work=self.work5,
                                                 relation_kind=WorkRelation.RelationType.part_of_series,
                                                 relation_index=1)
+        self.rel6 = WorkRelation.objects.create(source_work=self.work6, target_work=self.work7, relation_index=1,
+                                                relation_kind=WorkRelation.RelationType.sub_work_of)
+        self.rel7 = WorkRelation.objects.create(source_work=self.work8, target_work=self.work7, relation_index=2,
+                                                relation_kind=WorkRelation.RelationType.sub_work_of)
 
     def assertSameRelations(self, first: RawQuerySet, second: List[WorkRelation]):
         fst_set = set(map(lambda x: x.id, first))
         snd_set = set(map(lambda x: x.id, second))
         self.assertEqual(len(first), len(second))
         self.assertEqual(fst_set, snd_set)
+
+    def test_relations_no_start(self):
+        sub_kind = WorkRelation.RelationType.sub_work_of
+        rels = WorkRelation.traverse_relations([], [sub_kind], [])
+        self.assertSameRelations(rels, [])
+
+    def test_relations_no_traversal(self):
+        rels = WorkRelation.traverse_relations([self.work2.id], [], [])
+        self.assertSameRelations(rels, [])
 
     def test_relations_1_jump(self):
         """Work 2 only has one up-relation with sub_work type, so we expect to find only that relation."""
@@ -64,6 +77,11 @@ class WorkRelationTests(TestCase):
         sub_kind = WorkRelation.RelationType.sub_work_of
         rels = WorkRelation.traverse_relations([self.work2.id], [sub_kind], [sub_kind])
         self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel3, self.rel4])
+
+    def test_relations_from_multiple_starting_points(self):
+        sub_kind = WorkRelation.RelationType.sub_work_of
+        rels = WorkRelation.traverse_relations([self.work1.id, self.work7.id], [sub_kind], [sub_kind])
+        self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel3, self.rel4, self.rel6, self.rel7])
 
 
 def create_work(title: str):
