@@ -8,36 +8,40 @@ from works.models import Work
 
 class WorkRelation(models.Model):
     class RelationType(models.IntegerChoices):
-        sub_work = 1
-        series = 2
+        sub_work_of = 1
+        part_of_series = 2
 
-    work = models.ForeignKey(Work, on_delete=models.CASCADE)
-    relates_to = models.ForeignKey(Work, on_delete=models.CASCADE, related_name='related_to')
+    source_work = models.ForeignKey(Work, on_delete=models.CASCADE, related_name='outgoing_relations')
+    target_work = models.ForeignKey(Work, on_delete=models.CASCADE, related_name='incoming_relations')
 
-    number_in_relation = models.IntegerField()
-    display_number_in_relation = models.CharField(max_length=64)
+    relation_index = models.IntegerField()
+    relation_index_label = models.CharField(max_length=64)
 
-    relation_type = models.IntegerField(choices=RelationType.choices)
+    relation_kind = models.IntegerField(choices=RelationType.choices, db_index=True)
 
-    class RecursiveRelations:
+    class RelationTraversal:
         @staticmethod
-        def search_words_relations(work_id: int):
-            series_list = list(WorkRelation.recursive_work_relations_from([work_id], [WorkRelation.RelationType.series], []))
-            subwork_list = list(WorkRelation.recursive_work_relations_from([work_id], [], [WorkRelation.RelationType.sub_work]))
-            return series_list + subwork_list
+        def for_search_words(work_id: int):
+            up_types = [WorkRelation.RelationType.part_of_series]
+            down_types = [WorkRelation.RelationType.sub_work_of]
+            return WorkRelation.traverse_relations([work_id], up_types, down_types)
 
     @staticmethod
-    def recursive_work_relations_from(work_ids: List[int], up_types: List[int], down_types: List[int]) -> RawQuerySet:
+    def traverse_relations(work_ids: List[int], up_types: List[int], down_types: List[int]) -> RawQuerySet:
         """
-        This function is the main load-bearing function of the whole work relation setup.
-        It starts from some specific work_ids and traverses the WorkRelations as a graph.
-        The up_types and down_types define whether a work-relation can be added, either in forward or reverse direction.
+        Traverse the WorkRelation model as a graph, recursively finding related WorkRelation rows.
 
+        Starts from the given work_ids and traverses WorkRelation edges. The up_types and down_types control allowed traversal directions: a relation is followed forward if its relation_type is in up_types and its work_id matches; it's followed backward if its relation_type is in down_types and its relates_to_id matches.
 
-        @param work_id: the ID of the work that we are trying to find the relations for
-        @param up_types: the list of type_ids (as per RelationType). WorkRelations match if the work_id matches & up_type matches
-        @param down_types: the list of type_ids (as per RelationType). WorkRelations match if the relates_to_id matches & down_type matches
+        Args:
+             work_ids: list of IDs of the works to start traversal from.
+             up_types: relation type IDs that allow traversal forward (match on source_work_id).
+             down_types: relation type IDs that allow traversal backward (match on target_work_id).
+
+        Returns:
+            A RawQuerySet of WorkRelation objects (prefetched with 'work' and 'relates_to').
         """
+
         # The main query is a bit of a monstrous recursive query.
         # Like any recursive query, it has an initial step (the first main select), and a recursive step (the select after the UNION).
         query = """
@@ -47,71 +51,71 @@ class WorkRelation(models.Model):
                     cte_workrelations
                         (
                          id,
-                         number_in_relation,
-                         display_number_in_relation,
-                         relation_type,
-                         relates_to_id,
-                         work_id,
+                         relation_index,
+                         relation_index_label,
+                         relation_kind,
+                         target_work_id,
+                         source_work_id,
                          depth
                             )
                         AS
                         (SELECT id,
-                                number_in_relation,
-                                display_number_in_relation,
-                                relation_type,
-                                relates_to_id,
-                                work_id,
+                                relation_index,
+                                relation_index_label,
+                                relation_kind,
+                                target_work_id,
+                                source_work_id,
                                 1
                          FROM works_workrelation
-                         WHERE (work_id       = ANY(%s::int[]) AND relation_type IN (select * from up_types))
-                            OR (relates_to_id = ANY(%s::int[]) AND relation_type IN (select * from down_types))
+                         WHERE (source_work_id    = ANY(%s::int[]) AND relation_kind IN (select * from up_types))
+                            OR (target_work_id = ANY(%s::int[]) AND relation_kind IN (select * from down_types))
                          UNION
                          SELECT DISTINCT on (w.id)-- We recursively traverse over the relations
                                                   w.id,
-                                                  w.number_in_relation,
-                                                  w.display_number_in_relation,
-                                                  w.relation_type,
-                                                  w.relates_to_id,
-                                                  w.work_id,
+                                                  w.relation_index,
+                                                  w.relation_index_label,
+                                                  w.relation_kind,
+                                                  w.target_work_id,
+                                                  w.source_work_id,
                                                   c.depth + 1
                          FROM works_workrelation w
                                   INNER JOIN cte_workrelations c
                                              ON -- use both ends of the already-found WorkRelations to find new ones if they match with the directions we are looking.
                                                  (
                                                      (
-                                                         c.work_id = w.work_id AND
-                                                         w.relation_type IN (select * from up_types)
+                                                         c.source_work_id = w.source_work_id AND
+                                                         w.relation_kind IN (select * from up_types)
                                                          )
                                                          OR
                                                      (
-                                                         c.relates_to_id = w.work_id and
-                                                         w.relation_type IN (select * from up_types)
+                                                         c.target_work_id = w.source_work_id and
+                                                         w.relation_kind IN (select * from up_types)
                                                          )
                                                          OR
                                                      (
-                                                         c.relates_to_id = w.relates_to_id AND
-                                                         w.relation_type IN (select * from down_types)
+                                                         c.target_work_id = w.target_work_id AND
+                                                         w.relation_kind IN (select * from down_types)
                                                          )
                                                          OR
                                                      (
-                                                         c.work_id = w.relates_to_id AND
-                                                         w.relation_type IN (select * from down_types)
+                                                         c.source_work_id = w.target_work_id AND
+                                                         w.relation_kind IN (select * from down_types)
                                                          )
                                                      )
                         ) CYCLE id SET is_cycle USING path_cycle -- This prevents us from crashing the database if loops exist ;).
                 SELECT distinct on (id) id,
-                                        number_in_relation,
-                                        display_number_in_relation,
-                                        relation_type,
-                                        relates_to_id,
-                                        work_id,
+                                        relation_index,
+                                        relation_index_label,
+                                        relation_kind,
+                                        target_work_id,
+                                        source_work_id,
                                         depth,
                                         path_cycle
                 FROM cte_workrelations
                 order by id, depth"""
 
         rel = WorkRelation.objects.raw(query, [up_types, down_types, work_ids, work_ids])
-        rel = rel.prefetch_related('work', 'relates_to')
+        rel = rel.prefetch_related('source_work', 'target_work')
         return rel
 
     def __str__(self):
@@ -121,4 +125,4 @@ class WorkRelation(models.Model):
 
         if hasattr(self, 'path_cycle'):
             lvl += "cycle : " + str(self.path_cycle)
-        return f'{self.work.title} -> {self.relates_to.title}: {self.display_number_in_relation} -> {self.relation_type} {lvl}'
+        return f'{self.source_work.title} -> {self.target_work.title}: {self.relation_index_label} -> {self.relation_kind} {lvl}'
