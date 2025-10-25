@@ -82,6 +82,15 @@ class SubWorkCreateForm(ModelForm):
             fields.append(field)
 
 
+class LocationChangeForm(ModelForm):
+    book_code = forms.CharField(required=True)
+    book_code_extension = forms.CharField(required=False)
+
+    class Meta:
+        model = Item
+        fields = ['location']
+
+
 CreatorToWorkFormSet = inlineformset_factory(Work, CreatorToWork, can_delete=True, fields=['creator', 'number', 'role'],
                                              widgets={'creator': CreatorWidget})
 SeriesToWorkFomSet = inlineformset_factory(Work, WorkInSeries, can_delete=True,

@@ -3,18 +3,18 @@ from django.db import transaction
 from django.db.models.expressions import RawSQL, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
-
 # Create your views here.
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
+from recode.procedures.update_recode import update_recode_for_item
 from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
-
 from utils.get_query_words import get_query_words
-from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm
+from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm, \
+    LocationChangeForm
 from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
     Category
 
@@ -95,7 +95,10 @@ class WorkList(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         advanced = self.request.GET.get("advanced", False)
+        admin = self.request.GET.get("admin", False)
+
         context['advanced'] = advanced
+        context['admin'] = admin
 
         context['states'] = ItemState.CHOICES
         context['selected_states'] = self.request.GET.getlist("q_states", [])
@@ -137,6 +140,27 @@ def create_item_state(request, item_id, hx_enabled=False):
 
 
 @transaction.atomic
+@permission_required('works.change_item')
+def change_item_location(request, item_id, hx_enabled=False):
+    item = get_object_or_404(Item, pk=item_id)
+    if request.method == 'POST':
+        form = LocationChangeForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            book_code = form.cleaned_data['book_code']
+            book_code_extension = form.cleaned_data['book_code_extension']
+            update_recode_for_item(item, book_code, book_code_extension, False)
+
+            if hx_enabled:
+                return HttpResponse(status=209, headers={"HX-Refresh": "true"})
+            return HttpResponseRedirect(reverse('work.view', args=(item.publication.pk,)))
+    else:
+        form = LocationChangeForm(instance=item)
+    return render(request, 'works/modals/item_location_edit.html',
+                  {'hx_enabled': hx_enabled, 'form': form, 'item': item, 'item_id': item_id})
+
+
+@transaction.atomic
 @permission_required('works.add_item')
 def item_new(request, publication_id=None):
     publication = get_object_or_404(Publication, pk=publication_id)
@@ -157,38 +181,17 @@ def item_new(request, publication_id=None):
 @permission_required('works.change_item')
 def item_edit(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
-    recode_book_code = ''
-    recode_book_code_extension = ''
-    recode = False
-    recodes = Recode.objects.filter(item=item)
-    if len(recodes) == 1:
-        recode_obj = recodes[0]
-        recode_book_code = recode_obj.book_code
-        recode_book_code_extension = recode_obj.book_code_extension
-        recode = True
     if request.method == 'POST':
         form = ItemCreateForm(request.POST, instance=item)
-        recode = request.POST.get('recode_check')
-        recode_book_code = request.POST.get('recode_book_code')
-        recode_book_code_extension = request.POST.get('recode_book_code_extension')
+
         if form.is_valid():
             instance = form.save(commit=False)
-
             instance.save()
-            recodes = Recode.objects.filter(item=item)
-            for rr in recodes:
-                rr.delete()
-            if recode:
-                Recode.objects.create(item=instance, book_code=recode_book_code,
-                                      book_code_extension=recode_book_code_extension)
-
             return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'works/item_edit.html',
-                  {'edit': True, 'form': form, 'publication': item.publication, 'edit': True, 'recode': recode,
-                   'recode_book_code': recode_book_code,
-                   'recode_book_code_extension': recode_book_code_extension})
+                  {'edit': True, 'form': form, 'publication': item.publication, "item": item})
 
 
 def item_history_hx(request, item_id):
@@ -275,7 +278,6 @@ def publication_new(request):
 @permission_required('works.change_publication')
 def subwork_edit(request, subwork_id=None, publication_id=None):
     from works.forms import CreatorToWorkFormSet
-    from works.forms import SeriesToWorkFomSet
     creator_to_works = None
     series = None
     publication = None
