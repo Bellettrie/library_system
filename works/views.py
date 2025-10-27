@@ -81,8 +81,8 @@ def query_annotate_and_sort_bookcodes(query):
         book_code=F('item__book_code'),
         book_code_extension=F('item__book_code_extension')
     )
-    query = query.order_by("book_code_sortable", "id")
-    query = query.distinct("book_code_sortable", "id")
+    query = query.order_by("book_code_sortable", "id", 'itemid')
+    query = query.distinct("book_code_sortable", "id", 'itemid')
     return query
 
 
