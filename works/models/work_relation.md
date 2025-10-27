@@ -34,10 +34,24 @@ classDiagram
 ## Traversing the WorkRelations
 Since the WorkRelation class has a source and a target, we can "walk" from work to work by following WorkRelation arrows. These "walking" options can be interpreted as a graph, where a node describes a specific work, every arrow a relationship between them.
 Lets consider this example graph.  
+
 ```mermaid
-
-
+classDiagram
+    Ultimate_Hitchhikers_Guide <-- Hitchhikers_Guide:subwork_of
+    Ultimate_Hitchhikers_Guide <-- Restaurant_end_Universe:subwork_of
+    Ultimate_Hitchhikers_Guide <-- Life_Universe_Everything:subwork_of
+    Ultimate_Hitchhikers_Guide <-- So_Long_Thanks_Fish:subwork_of
+    Ultimate_Hitchhikers_Guide <-- Young_Zaphod_Plays_Safe:subwork_of
+    Ultimate_Hitchhikers_Guide <-- Mostly_Harmless:subwork_of
+    
+    Hitchhikers_Guide_Series --> Hitchhikers_Guide:part_of_series
+    Hitchhikers_Guide_Series --> Restaurant_end_Universe:part_of_series
+    Hitchhikers_Guide_Series --> Life_Universe_Everything:part_of_series
+    Hitchhikers_Guide_Series --> So_Long_Thanks_Fish:part_of_series
+    Hitchhikers_Guide_Series --> Young_Zaphod_Plays_Safe:part_of_series
+    Hitchhikers_Guide_Series --> Mostly_Harmless:part_of_series
 ```
+
 We have multiple use-cases that require recursively traversing this graph. To facilitate this, the WorkRelation class has a method called `traverse_relations`.
 
 Here's some examples of how it works.
