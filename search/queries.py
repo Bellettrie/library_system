@@ -56,8 +56,7 @@ def filter_state(q, states):
 works_item.id IN (SELECT
     works_item.id
     FROM
-    JOIN works_itemstate as wx
-        ON works_item.id = wx.item_id
+     works_itemstate as wx
         WHERE date_time =
         (SELECT
             MAX(w.date_time)
