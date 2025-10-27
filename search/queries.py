@@ -53,16 +53,13 @@ def filter_state(q, states):
     # And then we join the item on it's most recent itemstate,
     # by using an inner query to fetch the maximum of the itemstate's datetimes.
     query = """
-works_item.id IN (SELECT
-    works_item.id
+     (SELECT DISTINCT ON (wx.item_id)
+        wx.type
     FROM
-     works_itemstate as wx
-        WHERE date_time =
-        (SELECT
-            MAX(w.date_time)
-         FROM works_itemstate as w
-         WHERE w.item_id = wx.item_id AND wx.type = any(%s)
-     ))"""
+     works_itemstate as wx        
+        WHERE works_item.id = wx.item_id
+         ORDER BY wx.item_id ASC, date_time DESC
+     ) = ANY(%s)"""
     return q.extra(where=[query], params=[states])
 
 
