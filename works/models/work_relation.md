@@ -16,16 +16,20 @@ classDiagram
     Work <|-- Series
     Work <-- Item:copy_of
     Item: BookCode
+    Item: moreData
     Series: BookCode
     Work : Title
     Work : SubTitle
+    Work:  MoreData
     Work <-- CreatorToWork
+    CreatorToWork: numberInfo
+    CreatorToWork: role
     CreatorToWork --> Creator
     Creator: FirstName
     Creator: LastName
-    Work <-- WorkRelation:source_work
-    Work <-- WorkRelation:target_work
-    WorkRelation: Type
+    Work <-- WorkRelation:from_work
+    Work <-- WorkRelation:to_work
+    WorkRelation: relationKind
     WorkRelation: positionNumeric
     WorkRelation: positionText
 ```
@@ -44,14 +48,21 @@ classDiagram
     Ultimate_Hitchhikers_Guide <-- Young_Zaphod_Plays_Safe:subwork_of
     Ultimate_Hitchhikers_Guide <-- Mostly_Harmless:subwork_of
     
-    Hitchhikers_Guide_Series --> Hitchhikers_Guide:part_of_series
-    Hitchhikers_Guide_Series --> Restaurant_end_Universe:part_of_series
-    Hitchhikers_Guide_Series --> Life_Universe_Everything:part_of_series
-    Hitchhikers_Guide_Series --> So_Long_Thanks_Fish:part_of_series
-    Hitchhikers_Guide_Series --> Young_Zaphod_Plays_Safe:part_of_series
-    Hitchhikers_Guide_Series --> Mostly_Harmless:part_of_series
+    Hitchhikers_Guide --> Hitchhikers_Guide_Series:part_of_series
+    Restaurant_end_Universe --> Hitchhikers_Guide_Series:part_of_series
+    Life_Universe_Everything --> Hitchhikers_Guide_Series:part_of_series
+    So_Long_Thanks_Fish --> Hitchhikers_Guide_Series:part_of_series
+    Young_Zaphod_Plays_Safe --> Hitchhikers_Guide_Series:part_of_series
+    Mostly_Harmless --> Hitchhikers_Guide_Series:part_of_series
 ```
 
 We have multiple use-cases that require recursively traversing this graph. To facilitate this, the WorkRelation class has a method called `traverse_relations`.
 
 Here's some examples of how it works.
+### Example 1: Finding search terms for the Ultimate Hitchhikers Guide
+When finding search terms for a book, we want to traverse both the subwork-relation, as well as the part_of_series relation.
+We need to traverse the part_of_series relation in forwards direction, but the subwork_of relation in reverse.
+
+### Example 2: All works authored by Douglas Adams
+This query starts from all works directly linked to douglas adams, and follows the part_of_series relationship in reverse. 
+Hence, in this example it would start from Hitchhikers Guide Series to the middle row of works.
