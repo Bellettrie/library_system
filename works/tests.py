@@ -16,20 +16,20 @@ class WorkRelationTests(TestCase):
         self.work6 = create_work('Work6')
         self.work7 = create_work('Work7')
         self.work8 = create_work('Work8')
-        self.rel1 = WorkRelation.objects.create(source_work=self.work1, target_work=self.work2,
+        self.rel1 = WorkRelation.objects.create(from_work=self.work1, to_work=self.work2,
                                                 relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=1)
-        self.rel2 = WorkRelation.objects.create(source_work=self.work2, target_work=self.work3,
+        self.rel2 = WorkRelation.objects.create(from_work=self.work2, to_work=self.work3,
                                                 relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=2)
-        self.rel3 = WorkRelation.objects.create(source_work=self.work4, target_work=self.work2,
+        self.rel3 = WorkRelation.objects.create(from_work=self.work4, to_work=self.work2,
                                                 relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=3)
-        self.rel4 = WorkRelation.objects.create(source_work=self.work4, target_work=self.work5,
+        self.rel4 = WorkRelation.objects.create(from_work=self.work4, to_work=self.work5,
                                                 relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=4)
-        self.rel5 = WorkRelation.objects.create(source_work=self.work1, target_work=self.work5,
+        self.rel5 = WorkRelation.objects.create(from_work=self.work1, to_work=self.work5,
                                                 relation_kind=WorkRelation.RelationKind.part_of_series,
                                                 relation_index=1)
-        self.rel6 = WorkRelation.objects.create(source_work=self.work6, target_work=self.work7, relation_index=1,
+        self.rel6 = WorkRelation.objects.create(from_work=self.work6, to_work=self.work7, relation_index=1,
                                                 relation_kind=WorkRelation.RelationKind.sub_work_of)
-        self.rel7 = WorkRelation.objects.create(source_work=self.work8, target_work=self.work7, relation_index=2,
+        self.rel7 = WorkRelation.objects.create(from_work=self.work8, to_work=self.work7, relation_index=2,
                                                 relation_kind=WorkRelation.RelationKind.sub_work_of)
 
     def assertSameRelations(self, first: RawQuerySet, second: List[WorkRelation]):
