@@ -37,7 +37,7 @@
         <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm/6 font-medium">Book State Field</dt>
             <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0">
-                <select class="select border-1" name="q_states" id="q_states" class="multiselect"
+                <select class="select border-1 h-32" name="q_states" id="q_states" class="multiselect"
                         multiple="multiple">
                     {% for state in states %}
                         {% if state.0 != "AVAILABLE" %}
@@ -51,7 +51,7 @@
         </div>
         <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm/6 font-medium">Category Field</dt>
-            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><select class="select border-1"
+            <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><select class="select border-1 h-32"
                                                                       name="q_categories" id="q_categories"
                                                                       class="multiselect" multiple="multiple">
                 {% for cat in categories %}
