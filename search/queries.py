@@ -56,7 +56,7 @@ def filter_state(q, states):
      (SELECT DISTINCT ON (wx.item_id)
         wx.type
     FROM
-     works_itemstate as wx        
+     works_itemstate as wx
         WHERE works_item.id = wx.item_id
          ORDER BY wx.item_id ASC, date_time DESC
      ) = ANY(%s)"""
