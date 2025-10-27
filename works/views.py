@@ -100,7 +100,10 @@ class WorkList(ListView):
         context['advanced'] = advanced
         context['admin'] = admin
 
-        context['states'] = ItemState.CHOICES
+        choices = ItemState.CHOICES
+        choices.sort(key=lambda x: x[0])
+
+        context['states'] = choices
         context['selected_states'] = self.request.GET.getlist("q_states", [])
         context['categories'] = Category.objects.all()
         context['selected_categories'] = list(map(lambda val: int(val), self.request.GET.getlist("q_categories", [])))
