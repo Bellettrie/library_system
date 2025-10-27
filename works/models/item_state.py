@@ -67,7 +67,7 @@ def get_itemstate_choices():
     rez = []
     for state in get_item_states():
         rez.append((state.state_name, state.state_description))
-
+    rez.sort(key=lambda x: x[0])
     return rez
 
 
