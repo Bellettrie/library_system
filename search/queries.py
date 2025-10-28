@@ -45,10 +45,8 @@ def filter_title_text(query, words):
 
 
 def filter_state(q, states):
-    # We create a query to (at-once) select all works that have an item in a specific state.
-    # Therefore we start by joining works with items
-    # And then we join the item on it's most recent itemstate,
-    # by using an inner query to fetch the maximum of the itemstate's datetimes.
+    # We find the type of the latest itemstate for the item. 
+    # If there's none, then the coalesce takes the second value: 'AVAILABLE'.
     query = """
      COALESCE(
      (
