@@ -45,21 +45,20 @@ def filter_title_text(query, words):
 
 
 def filter_state(q, states):
-    # Shortcut, because 'available' is not a state on which we can search.
-    if "AVAILABLE" in states or len(states) == 0:
-        return q
     # We create a query to (at-once) select all works that have an item in a specific state.
     # Therefore we start by joining works with items
     # And then we join the item on it's most recent itemstate,
     # by using an inner query to fetch the maximum of the itemstate's datetimes.
     query = """
-     (SELECT DISTINCT ON (wx.item_id)
+     COALESCE(
+     (
+     SELECT DISTINCT ON (wx.item_id)
         wx.type
     FROM
      works_itemstate as wx
         WHERE works_item.id = wx.item_id
          ORDER BY wx.item_id ASC, date_time DESC
-     ) = ANY(%s)"""
+     ), 'AVAILABLE') = ANY(%s)"""
     return q.extra(where=[query], params=[states])
 
 

@@ -40,11 +40,8 @@
                 <select class="select border-1 h-32" name="q_states" id="q_states" class="multiselect"
                         multiple="multiple">
                     {% for state in states %}
-                        {% if state.0 != "AVAILABLE" %}
                             <option value="{{ state.0 }}"
                                     {% if state.0 in selected_states %}SELECTED {% endif %}>{{ state.1 }}</option>
-                        {% endif %}
-
                     {% endfor %}
                 </select>
             </dd>
