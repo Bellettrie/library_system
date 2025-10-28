@@ -45,7 +45,7 @@ def filter_title_text(query, words):
 
 
 def filter_state(q, states):
-    # We find the type of the latest itemstate for the item. 
+    # We find the type of the latest itemstate for the item.
     # If there's none, then the coalesce takes the second value: 'AVAILABLE'.
     query = """
      COALESCE(
