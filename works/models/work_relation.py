@@ -7,9 +7,15 @@ from works.models import Work
 
 
 class WorkRelation(models.Model):
+    """
+    The WorkRelation model is used to represent the relations between Works in the system.
+
+    """
     class RelationKind(models.IntegerChoices):
         sub_work_of = 1
         part_of_series = 2
+        part_of_secondary_series = 3
+        translation_of = 4
 
     from_work = models.ForeignKey(Work, on_delete=models.CASCADE, related_name='outgoing_relations')
     to_work = models.ForeignKey(Work, on_delete=models.CASCADE, related_name='incoming_relations')
@@ -21,10 +27,10 @@ class WorkRelation(models.Model):
 
     class RelationTraversal:
         @staticmethod
-        def for_search_words(work_id: int):
+        def for_search_words(work_ids: List[int]):
             up_types = [WorkRelation.RelationKind.part_of_series]
             down_types = [WorkRelation.RelationKind.sub_work_of]
-            return WorkRelation.traverse_relations([work_id], up_types, down_types)
+            return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
     @staticmethod
     def traverse_relations(work_ids: List[int], forward_kinds: List[int], reverse_kinds: List[int]) -> RawQuerySet:
