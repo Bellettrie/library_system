@@ -1,8 +1,8 @@
-{% with publication=work.work %}
-    <li class="ml-1 sm:ml-8">
+{% with publication=series_graph.wr.from_work %}
+    <li class="ml-1 sm:ml-8 series_tree_other">
         <div style="overflow:auto;">
             <a class="link link-secondary" href="/works/publication/{{ publication.pk }}">
-                {% if work.display_number %}{{ work.display_number }} - {% endif %}
+                {% if series_graph.wr.relation_index_label %}{{ series_graph.wr.relation_index_label }} - {% endif %}
                 <a class="link link-secondary truncate"  href="{% url 'work.view' publication.pk %}">
                     {% if publication.article %}{{ publication.article }}{% endif %} <i>
                     {% if publication.title %}{{ publication.title }}{% else %}&lt;No Title&gt;{% endif %}</i></a>
@@ -14,7 +14,7 @@
                     <br>
                 {% endfor %}
 
-                {% for author in publication.get_own_authors %}{% include 'creators/single_line_description.html' %}
+                {% for author in series_graph.creators %}{% include 'creators/single_line_description.html' %}
                     {% if not forloop.last %}<br/>{% endif %}
                 {% endfor %}
         </div>

@@ -12,7 +12,7 @@
                     {% endif %}
                 </div>
                 {% if perms.works.change_workrelation %}
-                    {% component 'works.relations.Relations' object / %}
+                    {% component 'works.relations.Relations' work / %}
                 {% endif %}
                 {% if not series %}
                     {% include 'works/partials/items.html' %}

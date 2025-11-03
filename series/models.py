@@ -1,139 +1,134 @@
+from typing import List
+
 from django.db import models
 
 # Create your models here.
-from django.db.models import PROTECT
+from django.db.models import PROTECT, CASCADE
 
-from book_code_generation.models import FakeItem, BookCode
+from book_code_generation.models import BookCode
 from creators.models import LocationNumber
-from works.models import NamedTranslatableThing, Location, GENERATORS
+from works.models import NamedTranslatableThing, Location, WorkRelation, Work
 
 
-class SeriesNode(models.Model):
-    class Meta:
-        unique_together = [['number', 'part_of_series']]
+class SeriesV2(BookCode):
+    work = models.OneToOneField("works.Work", on_delete=CASCADE)
 
-    part_of_series = models.ForeignKey("Series", on_delete=PROTECT, related_name="part", null=True, blank=True)
-    number = models.DecimalField(null=True, blank=True, decimal_places=1, max_digits=5)
-    display_number = models.CharField(max_length=255, blank=True)
-    old_id = models.IntegerField(null=True, blank=True)
-
-    def things_underneath(self):
-        return SeriesNode.objects.filter(part_of_series_id=self.id).order_by('number')
-
-    def is_series(self):
-        try:
-            return Series.objects.get(pk=self.pk)
-        except Series.DoesNotExist:
-            return None
-
-    def is_work(self):
-        try:
-            return WorkInSeries.objects.get(pk=self.pk)
-        except WorkInSeries.DoesNotExist:
-            return None
-
-
-class Series(SeriesNode, NamedTranslatableThing, BookCode):
-    book_code = models.CharField(max_length=16)  # Where in the library is it?
     location = models.ForeignKey(Location, on_delete=PROTECT, null=True, blank=True)
     location_code = models.ForeignKey(LocationNumber, on_delete=PROTECT, null=True, blank=True)
 
-    def get_authors(self):
-        authors = []
-        for author in CreatorToSeries.objects.filter(series_id=self.id):
-            authors.append(author)
-        if self.part_of_series is None:
-            return authors
-        else:
-            authors = self.part_of_series.get_authors() + authors
-            return authors
+    def relation_index_label(self):
+        wr = self.work.part_of_series()
+        if wr:
+            return wr.relation_index_label
+        return None
 
-    def get_own_authors(self):
-        authors = []
-        for author in CreatorToSeries.objects.filter(series_id=self.id):
-            authors.append(author)
-        return authors
+    def relation_index(self):
+        wr = self.work.part_of_series()
+        if wr:
+            return wr.relation_index
+        return None
 
-    def get_canonical_title(self):
-        str = ""
-        if self.part_of_series:
-            str = self.part_of_series.get_canonical_title() + " > "
-        return str + (self.title or '<no title>')
 
-    def part_of_series_update(self):
-        from search.models import SeriesWordMatch
-        SeriesWordMatch.series_rename(self)
+class Graph:
+    def new_parent(self, wr):
+        gph = Graph(wr, '_')
+        gph.below['_'] = self
+        return gph
 
-    def generate_code_full(self, location):
-        first_letters = self.title[0:2].lower()
+    @staticmethod
+    def new_from_work(work: Work):
+        graph_data = WorkRelation.RelationTraversal.series_down([work.id])
+        graph_data = graph_data.prefetch_related(
+            "from_work",
+            "to_work",
+            "from_work__item_set",
+            "to_work__item_set")
+        graph_data_up = WorkRelation.RelationTraversal.series_up([work.id])
+        graph_data_up = graph_data_up.prefetch_related(
+            "from_work",
+            "to_work",
+            "from_work__item_set",
+            "to_work__item_set")
+        works = [work]
+        for rel in graph_data:
+            works.append(rel.from_work)
+            works.append(rel.to_work)
 
-        if self.location_code is not None:
-            # If the series is bound to a specific location letter+number, we use these to generate a code for the series
-            return self.location.category.code + "-" + self.location_code.letter + "-" + str(
-                self.location_code.number) + "-"
+        for rel in graph_data_up:
+            works.append(rel.from_work)
+            works.append(rel.to_work)
 
-        # If the series is part of a series and this superseries has a bookcode, base the code on the superseries.
-        if self.part_of_series and self.part_of_series.book_code:
-            pos = self.part_of_series.book_code
-            if self.number is None:
-                return pos + first_letters
+        from works.models import CreatorToWork
+        c2ws = CreatorToWork.objects.filter(work__in=set(works)).select_related('creator')
 
-            if self.number == float(int(self.number)):
-                return pos + str(int(self.number))
+        graph_result = None
+        for graph in graph_data_up:
+            if graph_result is None:
+                graph_result = Graph(graph, '_')
             else:
-                return pos + str(self.number)
-
-        # Finally, try to generate a code, which will be based on the rules of the category
-        # For instance, this could be by author, or by title.
-        if not location:
-            return None
-        generator = GENERATORS[location.sig_gen]
-        val, should_not_add = generator(FakeItem(self, location))
-        if should_not_add:
-            return val
+                graph_result = graph_result.new_parent(graph)
+        if len(graph_data_up) == 0:
+            graph_result = Graph(WorkRelation(from_work=work, to_work=work), [work.id])
         else:
-            return val + first_letters
+            graph_result = graph_result.new_parent(
+                WorkRelation(from_work=graph_data_up[-1].to_work, to_work=graph_data_up[-1].to_work))
+        for graph in graph_data:
+            graph_result.add_relation(graph)
 
-    def get_all_items(self):
-        pass
+        for c2w in c2ws:
+            graph_result.bubble_creator(c2w)
+        return graph_result
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def __init__(self, wr, path, creators=None):
+        self.wr = wr
+        self.path = path
+        self.below = {}
+        self.creators = creators or []
 
+    def bubble_creator(self, creator_to_work):
+        if self.wr.from_work_id == creator_to_work.work_id:
+            self.creators.append(creator_to_work)
+        for x in self.below:
+            self.below[x].bubble_creator(creator_to_work)
 
-class WorkInSeries(SeriesNode):
-    work = models.ForeignKey("works.Work", on_delete=PROTECT)
-    is_primary = models.BooleanField(default=True)
+    def get_children(self):
+        child_list = list(self.below.values())
+        sorted_children = sorted(child_list, key=lambda x: x.wr.relation_index)
+        return sorted_children
 
-    def save(self, *args, **kwargs):
-        required_length = 0
-        if len(WorkInSeries.objects.filter(id=self.pk)) > 0:
-            required_length = 1
-        if self.is_primary and len(WorkInSeries.objects.filter(work=self.work, is_primary=True)) > required_length:
-            raise RuntimeError("Cannot Save")
-        super().save(*args, **kwargs)
+    @staticmethod
+    def path_to_string(pth: List[int]):
+        pt = list(map(str, pth))
+        return ",".join(pt)
 
-        from search.models import SeriesWordMatch
-        SeriesWordMatch.series_rename(self.part_of_series)
+    def add_relation(self, wr: WorkRelation):
+        if not hasattr(wr, "path"):
+            raise Exception("Tree building failed")
 
-    def get_authors(self):
-        if self.part_of_series is None:
-            return []
-        return self.part_of_series.get_authors()
+        if self.below.get('_') and len(self.below) == 1:
+            self.below['_'].add_relation(wr)
+            return
 
+        if len(wr.path) <= len(self.path):
+            raise Exception("Tree building failed")
 
-class CreatorToSeries(models.Model):
-    creator = models.ForeignKey("creators.Creator", on_delete=PROTECT)
-    series = models.ForeignKey(Series, on_delete=PROTECT)
-    number = models.IntegerField(blank=True)
+        bl = self.below.get(Graph.path_to_string(wr.path))
+        if bl is not None:
+            return
+        if len(wr.path) == len(self.path) + 1:
+            pth = Graph.path_to_string(wr.path)
+            self.below[pth] = Graph(wr, wr.path)
+            return
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        lstlim = []
+        for x in range(0, len(self.path) + 1):
+            lstlim.append(wr.path[x])
 
-        from search.models import SeriesWordMatch
-        SeriesWordMatch.series_rename(self.series)
+        blz = Graph.path_to_string(lstlim)
+        bl = self.below.get(blz)
 
-    class Meta:
-        unique_together = ("creator", "series", "number")
+        if bl is not None:
+            bl.add_relation(wr)
+            return
 
-    role = models.ForeignKey("creators.CreatorRole", on_delete=PROTECT)
+        raise Exception("Tree building failed")

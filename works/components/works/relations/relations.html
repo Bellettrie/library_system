@@ -34,24 +34,18 @@
                     <td class="join">
                         {% if relation.from_work == work %}
                             <a
-                                    href="{% url 'works.relation.edit' object.id relation.id %}"
-                                    class="btn btn-xs btn-primary join-item">
-                                Edit
-                            </a>
+                                    href="{% url 'works.relation.edit' work.id relation.id %}"
+                                    class="btn btn-xs btn-primary join-item">Edit</a>
                         {% else %}
                             <a
-                                    href="{% url 'works.relation.edit.rev' object.id relation.id %}"
-                                    class="btn btn-xs btn-primary join-item">
-                                Edit
-                            </a>
+                                    href="{% url 'works.relation.edit.rev' work.id relation.id %}"
+                                    class="btn btn-xs btn-primary join-item">Edit</a>
                         {% endif %}
-                        <a
-                                hx-get="{% url 'works.relation.remove' object.id relation.id %}"
-                                hx-target="#dialog"
-                                href="{% url 'works.relation.remove' object.id relation.id %}"
-                                class="btn btn-xs btn-error join-item">
-                            Remove
-                        </a>
+                        <a hx-get="{% url 'works.relation.remove' work.id relation.id %}"
+                           hx-target="#dialog"
+                           href="{% url 'works.relation.remove' work.id relation.id %}"
+                           class="btn btn-xs btn-error join-item">Remove</a>
+
                     </td>
                 </tr>
             {% endfor %}
@@ -60,16 +54,11 @@
     {% fill 'footer' %}
         {% if perms.works.change_workrelation %}
             {% component 'tile.Footer' %}
-                <a
-                        class="btn btn-sm  btn-secondary join-item"
-                        href="{% url 'works.relation.edit.rev' object.id -1 %}">
-                    New (x -> this)
-                </a>
-                <a
-                        class="btn btn-sm  btn-primary join-item"
-                        href="{% url 'works.relation.edit' object.id -1 %}">
-                    New (this -> x)
-                </a>
+                   <a class="btn btn-sm  btn-secondary join-item"
+                   href="{% url 'works.relation.edit.rev' work.id -1 %}">New (x -> this)</a>
+
+                <a class="btn btn-sm  btn-primary join-item"
+                   href="{% url 'works.relation.edit' work.id -1 %}">New (this -> x)</a>
             {% endcomponent %}
         {% endif %}
     {% endfill %}

@@ -3562,6 +3562,9 @@
   .text-base-content {
     color: var(--color-base-content);
   }
+  .text-bellered {
+    color: var(--color-bellered);
+  }
   .text-error {
     color: var(--color-error);
   }
@@ -4045,7 +4048,7 @@ body {
   color: #369;
   position: relative;
 }
-.series_tree:before, .series_tree ul:before {
+.series_tree ul:before {
   content: "";
   display: block;
   width: 0px;
@@ -4083,6 +4086,12 @@ body {
 .series_tree > li:before {
   border-top: none !important;
 }
+.series_tree_self {
+  color: #FF0000;
+}
+.series_tree_other {
+  color: #369;
+}
 .series_tree li div {
   border-radius: 5px;
   border: 1px solid #afafaf;
@@ -4092,7 +4101,6 @@ body {
   padding: 0.1em 0.2em;
   background: #f0f0f0;
   box-shadow: 1px 1px 4px #8F949A;
-  color: #369;
   font-weight: bold;
 }
 ul.series_tree {
