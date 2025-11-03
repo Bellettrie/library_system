@@ -6,8 +6,9 @@ from django.db.models import CASCADE
 
 from book_code_generation.helpers import normalize_str
 from creators.models import Creator
+from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from series.models import Series
-from works.models import Publication, SubWork
+from works.models import Publication, SubWork, WorkRelation, Work
 
 
 class SearchWord(models.Model):
@@ -62,6 +63,8 @@ class WordMatch(models.Model):
     word = models.ForeignKey(SearchWord, on_delete=CASCADE, db_index=True)
     publication = models.ForeignKey(Publication, on_delete=CASCADE)
     type = models.CharField(max_length=8, default="TITLE", db_index=True)
+    def __str__(self):
+        return f"{self.word.word} {self.publication} {self.type}"
 
     @staticmethod
     def create_all_for(work: Publication, words=None):
@@ -71,41 +74,69 @@ class WordMatch(models.Model):
                 words[word.word] = word
 
         WordMatch.objects.filter(publication=work).delete()
-        for word in get_words_in_str(work.article):
-            WordMatch.objects.create(word=get_word_from_set(word, words), publication=work)
-        for word in get_words_in_str(work.title):
-            WordMatch.objects.create(word=get_word_from_set(word, words), publication=work)
-        for word in get_words_in_str(work.sub_title):
-            WordMatch.objects.create(word=get_word_from_set(word, words), publication=work)
-        for word in get_words_in_str(work.original_article):
-            WordMatch.objects.create(word=get_word_from_set(word, words), publication=work)
-        for word in get_words_in_str(work.original_title):
-            WordMatch.objects.create(word=get_word_from_set(word, words), publication=work)
-        for word in get_words_in_str(work.original_subtitle):
-            WordMatch.objects.create(word=get_word_from_set(word, words), publication=work)
+
+        # start with all the words directly belonging to the title etc. of the work
+        matches = WordMatch.get_wordmatches_for_work(words, work, work)
+        relevant_related_works = [work]
+
+        # Now traverse the tree to find
+        work_relations = WorkRelation.RelationTraversal.for_search_words([work.id])
+
+
+        for relation in work_relations:
+            if relation.relation_kind == WorkRelation.RelationKind.sub_work_of:
+                relation_kind = "SUBWORK"
+                related_work = relation.from_work
+            elif relation.relation_kind == WorkRelation.RelationKind.part_of_series:
+                relation_kind = "SERIES"
+                related_work = relation.to_work
+            elif relation.relation_kind == WorkRelation.RelationKind.part_of_secondary_series:
+                relation_kind = "SERIES"
+                related_work = relation.to_work
+            else:
+                # We don't know in which direction it was picked up, so we can't use it.
+                continue
+
+            relevant_related_works.append(related_work)
+
+            for match in WordMatch.get_wordmatches_for_work(words, work, related_work, relation_kind):
+                matches.append(match)
+
+        creator_ids = []
+        for creator in Creator.objects.filter(creatortowork__work__in=relevant_related_works).all():
+            creator_ids.append(creator.id)
+
+        creators = get_all_author_aliases_by_ids(creator_ids)
+        for creator in creators:
+            for word in get_words_in_str(creator.given_names):
+                matches.append(WordMatch(word=get_word_from_set(word, words), publication=work, type="CREATOR"))
+            for word in get_words_in_str(creator.name):
+                matches.append(WordMatch(word=get_word_from_set(word, words), publication=work, type="CREATOR"))
+
+        WordMatch.objects.bulk_create(matches)
+
+        # TODO: These two will be history when the subworks and series are migrated.
         AuthorWordMatch.get_all_for_authors(work, words)
         SeriesWordMatch.get_all_for_serieses(work, words)
         SubWorkWordMatch.get_all_for_subworks(work, words)
         return words
 
-
-def get_all_given_names(creator: Creator):
-    names = set()
-    creators = set()
-    handle = [creator]
-    for crea in handle:
-        if crea in creators:
-            continue
-        if crea.is_alias_of is not None:
-            handle.append(crea.is_alias_of)
-        for news in Creator.objects.filter(is_alias_of=crea):
-            handle.append(news)
-        for name in get_words_in_str(crea.name):
-            names.add(name)
-        for name in get_words_in_str(crea.given_names):
-            names.add(name)
-        creators.add(crea)
-    return names
+    @staticmethod
+    def get_wordmatches_for_work(words, pub: Publication, work_for_words: Work, role="TITLE"):
+        matches = []
+        for word in get_words_in_str(work_for_words.article):
+            matches.append(WordMatch(word=get_word_from_set(word, words), publication=pub, type=role))
+        for word in get_words_in_str(work_for_words.title):
+            matches.append(WordMatch(word=get_word_from_set(word, words), publication=pub, type=role))
+        for word in get_words_in_str(work_for_words.sub_title):
+            matches.append(WordMatch(word=get_word_from_set(word, words), publication=pub, type=role))
+        for word in get_words_in_str(work_for_words.original_article):
+            matches.append(WordMatch(word=get_word_from_set(word, words), publication=pub, type=role))
+        for word in get_words_in_str(work_for_words.original_title):
+            matches.append(WordMatch(word=get_word_from_set(word, words), publication=pub, type=role))
+        for word in get_words_in_str(work_for_words.original_subtitle):
+            matches.append(WordMatch(word=get_word_from_set(word, words), publication=pub, type=role))
+        return matches
 
 
 class AuthorWordMatch(WordMatch):
@@ -117,8 +148,13 @@ class AuthorWordMatch(WordMatch):
 
     @staticmethod
     def get_all_for_author(work: Publication, creator: Creator, words):
-        for name in get_all_given_names(creator):
-            AuthorWordMatch.objects.create(word=get_word_from_set(name, words), publication=work, creator=creator)
+        names = set()
+        for creator in get_all_author_aliases_by_ids([creator.id]):
+            for name in get_words_in_str(creator.name):
+                AuthorWordMatch.objects.create(word=get_word_from_set(name, words), publication=work, creator=creator)
+            for name in get_words_in_str(creator.given_names):
+                AuthorWordMatch.objects.create(word=get_word_from_set(name, words), publication=work, creator=creator)
+        return names
 
     @staticmethod
     def get_all_for_authors(work: Publication, words=None):
