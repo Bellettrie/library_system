@@ -1,0 +1,49 @@
+{% component 'tile.Tile' root_class_tags="lg:basis-64" %}
+    {% fill 'title' %}Relations{% endfill %}
+    {% fill 'content' %}
+        <table class="table table-sm table-zebra">
+            {% for relation in relations %}
+                <tr>
+                    {% if relation.from_work == work %}
+                        <td class="p-2">{{ relation.relation_kind_description }}</td>
+                    {% else %}
+                        <td class="p-2">{{ relation.relation_kind_reverse }}</td>
+                    {% endif %}
+                    <td class="p-2">{% if relation.relation_index.label %}{{ relation.relation_index_label }}{% endif %} {% if relation.relation_index or relation.relation_index == 0 %} [ {{ relation.relation_index }} ]{% endif %}</td>
+                    {% if relation.from_work == work %}
+                        <td class="p-2"><a class="link link-secondary" href="{% url "work.view" relation.to_work.id %}">{{ relation.to_work.get_title }}</a></td>
+                    {% else %}
+                        <td class="p-2"><a  class="link link-secondary"  href="{% url "work.view" relation.from_work.id %}">{{ relation.from_work.get_title }}</a></td>
+                    {% endif %}
+                    <td class="join">
+                        {% if relation.from_work == work %}
+                            <a
+                                    href="{% url 'works.relation.edit' object.id relation.id %}"
+                                    class="btn btn-xs btn-primary join-item">Edit</a>
+                        {% else %}
+                            <a
+                                    href="{% url 'works.relation.edit.rev' object.id relation.id %}"
+                                    class="btn btn-xs btn-primary join-item">Edit</a>
+                        {% endif %}
+                        <a hx-get="{% url 'works.relation.remove' object.id relation.id %}"
+                           hx-target="#dialog"
+                           href="{% url 'works.relation.remove' object.id relation.id %}"
+                           class="btn btn-xs btn-error join-item">Remove</a>
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endfill %}
+    {% fill 'footer' %}
+        {% if perms.works.change_work %}
+            {% component 'tile.Footer' %}
+                   <a class="btn btn-sm  btn-secondary join-item"
+                   href="{% url 'works.relation.edit.rev' object.id -1 %}">New (x -> this)</a>
+
+                <a class="btn btn-sm  btn-primary join-item"
+                   href="{% url 'works.relation.edit' object.id -1 %}">New (this -> x)</a>
+            {% endcomponent %}
+        {% endif %}
+    {% endfill %}
+{% endcomponent %}

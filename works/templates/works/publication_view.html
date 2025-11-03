@@ -1,15 +1,35 @@
 {% extends "base.html" %}
-{% block title %}{{ object.get_title }}{% endblock %}
+
+{% block title %}{{ work.get_title }}{% endblock %}
 {% block content %}
-    {% with series=object.workinseries_set.all %}
-        {% with tbl=object.get_sub_works %}
+
+    {% with wis=work.workinseries_set.all %}
+        {% with tbl=work.get_sub_works %}
             <div class="flex flex-col gap-3">
                 <div class="flex flex-col lg:flex-row gap-3">
                     {% include 'works/partials/main_info.html' %}
-
-                    {% include 'works/partials/subworks.html' %}
+                    {% if not series %}
+                        {% include 'works/partials/subworks.html' %}
+                    {% endif %}
                 </div>
-                {% include 'works/partials/items.html' %}
+                {% if perms.works.change_workrelation %}
+                    {% component 'works.relations.Relations' object / %}
+                {% endif %}
+                {% if not series %}
+                    {% include 'works/partials/items.html' %}
+                {% endif %}
+                {% if series %}
+                    {% component 'tile.Tile' root_class_tags="lg:basis-64" %}
+                        {% fill 'title' %}Series Structure{% endfill %}
+                        {% fill 'content' %}
+                            <div class="series_tree">
+                                <ul>
+                                    {% include 'series/tree/series.html' %}
+                                </ul>
+                            </div>
+                        {% endfill %}
+                    {% endcomponent %}
+                {% endif %}
             </div>
         {% endwith %}
     {% endwith %}

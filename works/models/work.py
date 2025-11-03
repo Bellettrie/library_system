@@ -17,6 +17,12 @@ class Work(NamedTranslatableThing):
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
 
+    def __str__(self):
+        return self.get_description_title()
+
+    def get_description_title(self):
+        return f"{self.get_title()} | {self.pk}"
+
     def get_pub(self):
         return self
 

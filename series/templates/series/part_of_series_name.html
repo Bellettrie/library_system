@@ -2,4 +2,4 @@
     {% with series=series.part_of_series %}
     <a href="{% url 'series.views' series.pk %}">{% include 'series/part_of_series_name.html' %} </a> >
     {% endwith %}
-{% endif %} <a href="{% url 'series.views' series.pk %}">{{ series.title }} </a>{% if series.display_number %}[{{ series.display_number }}]{% endif %}{% if also_show_number %}{% if series.number %}({{ series.number }}){% endif %} {% endif %}
+{% endif %} <a class="link link-secondary" href="{% url 'series.views' series.pk %}">{{ series.title }} </a>{% if series.display_number %}[{{ series.display_number }}]{% endif %}{% if also_show_number %}{% if series.number %}({{ series.number }}){% endif %} {% endif %}

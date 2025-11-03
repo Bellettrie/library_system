@@ -4,14 +4,21 @@
 {% block content %}
     <script>
         function goBack() {
-            window.history.back();
+            {% if not hx_enabled %}
+                window.history.back();
+            {% else %}
+                dialog.hideModal();
+            {% endif %}
+
         }
     </script>
 
     Are you sure you want to {{ what }}?
     <br>
     <div class="join">
-    <a class="btn btn-error join-item" href="?confirm=True">Yes</a>
-    <button class="btn join-item" onclick="goBack()">No</button>
+        <a class="btn btn-error join-item" href="{{ requestpath }}?confirm=True">Yes</a>
+
+        <button class="btn join-item" onclick="goBack">No</button>
+
     </div>
 {% endblock %}
