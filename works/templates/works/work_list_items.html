@@ -1,0 +1,114 @@
+{% get_item_rows_for_publications object_list as items %}
+<div class="flex-1 w-full">
+    <div class="justify-center items-center w-full">
+        {% include 'pagination.html' %}
+    </div>
+</div>
+<div class="card  p-3 hidden lg:block bg-base-100 ">
+    <div class="rounded-box ">
+        <table class="table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols rounded-box">
+            <tr>
+                {% if not skip_header %}
+                    <th></th>
+                {% endif %}
+                <th>Title</th>
+                <th>Author</th>
+                <th></th>
+                <th></th>
+            </tr>
+            {% for itemRow in items %}
+                {% component 'works.table.Row' row=itemRow skip_header=skip_header %}
+                    {% fill "extra_rows" %}
+                        <td>
+                            {% if itemRow.item %}
+                                {% if advanced and itemRow.item.get_state != "AVAILABLE" %}
+                                    [{{ itemRow.get_item.get_state }}]
+                                {% endif %}
+                                {% if admin and perms.change_work %}
+                                    <br>{{ itemRow.item.location.category.name }}
+                                    {{ itemRow.item.location.name }}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if  itemRow.item %}
+                                {% if admin %}
+                                    {% if perms.works.change_itemstate %}
+                                        <a hx-get="{% url 'works.item_state.create' itemRow.item.pk %}"
+                                           hx-target="#dialog"
+                                           href="{% url "works.item_state.create" itemRow.item.pk %}"
+                                           class="btn btn-primary btn-xs join-item">Change
+                                            state</a>
+                                    {% endif %}
+                                    <div class="join">
+                                        {% if perms.works.change_item %}
+                                            <a hx-get="{% url 'recode.edit' itemRow.item.pk %}"
+                                               hx-target="#dialog"
+                                               href="{% url "recode.edit" itemRow.item.pk %}"
+                                               class="btn btn-secondary btn-xs join-item">Recode</a>
+                                            <a hx-get="{% url 'works.item.change_location' itemRow.item.pk %}"
+                                               hx-target="#dialog"
+                                               href="{% url "works.item.change_location" itemRow.item.pk %}"
+                                               class="btn btn-primary btn-xs join-item">Relocate</a>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
+                                    {% with itemRow.item.current_lending as cur_lnd %}
+                                        {% if cur_lnd %}
+                                            {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    {% endfill %}
+                {% endcomponent %}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<div class="lg:hidden flex flex-col gap-5 m-3">
+    {% for itemRow in items %}
+        {% component 'works.table.Card' itemRow all_authors=False %}
+            <div class=" flex  justify-end gap-2">
+                {% if admin %}
+                    {% if perms.works.change_itemstate %}
+                        <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
+                           href="{% url "works.item_state.create" itemRow.get_item.pk %}"
+                           class="btn btn-primary btn-xs join-item">Change
+                            state</a>
+                    {% endif %}
+                    <div class="join">
+                        {% if perms.works.change_item %}
+                            {% if perms.works.change_item %}
+                                <a hx-get="{% url 'recode.edit' itemRow.get_item.pk %}"
+                                   hx-target="#dialog"
+                                   href="{% url "recode.edit" itemRow.get_item.pk %}"
+                                   class="btn btn-secondary btn-xs join-item">Recode</a>
+                                <a hx-get="{% url 'works.item.change_location' itemRow.get_item.pk %}"
+                                   hx-target="#dialog"
+                                   href="{% url "works.item.change_location" itemRow.get_item.pk %}"
+                                   class="btn btn-primary btn-xs join-item">Relocate</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% else %}
+                    {% if itemRow.is_item %}
+                        {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}
+                        {% with item.current_lending as cur_lnd %}
+                            {% if cur_lnd %}
+                                {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-sm join-item" / %}
+                            {% endif %}
+                        {% endwith %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endcomponent %}
+    {% endfor %}
+</div>
+<div class="flex-1 w-full">
+    <div class="justify-center items-center w-full">
+        {% include 'pagination.html' %}
+    </div>
+</div>

@@ -12,10 +12,14 @@
                     {% endif %}
                 </div>
                 {% if perms.works.change_workrelation %}
-                    {% component 'works.relations.Relations' object / %}
+                    {% component 'works.relations.Relations' work / %}
                 {% endif %}
                 {% if not series %}
-                    {% include 'works/partials/items.html' %}
+                    {% with work.get_items as items %}
+                        {% if perms.works.change_lending or items %}
+                            {% include 'works/partials/items.html' %}
+                        {% endif %}
+                    {% endwith %}
                 {% endif %}
                 {% if series %}
                     {% component 'tile.Tile' root_class_tags="lg:basis-64" %}

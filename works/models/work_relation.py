@@ -47,6 +47,24 @@ class WorkRelation(models.Model):
 
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
+        @staticmethod
+        def series_down(work_ids: List[int]):
+            up_types = []
+            down_types = [WorkRelation.RelationKind.part_of_series]
+            return WorkRelation.traverse_relations(work_ids, up_types, down_types)
+
+        @staticmethod
+        def series_up(work_ids: List[int], further_away_first=False):
+            up_types = [WorkRelation.RelationKind.part_of_series]
+            down_types = []
+            return WorkRelation.traverse_relations(work_ids, up_types, down_types, further_away_first=further_away_first)
+
+        @staticmethod
+        def author_matches(work_ids: List[int]):
+            up_types = [WorkRelation.RelationKind.sub_work_of]
+            down_types = [WorkRelation.RelationKind.part_of_series]
+            return WorkRelation.traverse_relations(work_ids, up_types, down_types)
+
     def relation_kind_description(self):
         if self.relation_kind == self.RelationKind.sub_work_of:
             return 'is Sub Work of'
@@ -110,7 +128,7 @@ class WorkRelation(models.Model):
                                 from_work_id,
                                 to_work_id,
                                 1,
-                                array[case when from_work_id = ANY(%(work_ids)s::int[]) then from_work_id else to_work_id end, %(mul)s * relation_index] as path,
+                                array[(case when from_work_id = ANY(%(work_ids)s::int[]) then from_work_id else to_work_id end, relation_kind), (%(mul)s * relation_index, relation_kind)] as path,
                                 from_work_id = ANY(%(work_ids)s::int[]) as fwd
                          FROM works_workrelation
                          WHERE (from_work_id    = ANY(%(work_ids)s::int[]) AND relation_kind IN (select * from forward_kinds))
@@ -124,7 +142,7 @@ class WorkRelation(models.Model):
                                                   w.from_work_id,
                                                   w.to_work_id,
                                                   c.depth + 1,
-                                                  c.path || %(mul)s * w.relation_index,
+                                                  c.path || (%(mul)s * w.relation_index, w.relation_kind),
                                                   ( c.from_work_id = w.from_work_id or c.to_work_id = w.from_work_id ) as fwd
                          FROM works_workrelation w
                                   INNER JOIN cte_workrelations c
@@ -173,7 +191,6 @@ class WorkRelation(models.Model):
 
         rel = WorkRelation.objects.raw(query, {"forward_kinds": forward_kinds, "reverse_kinds": reverse_kinds,
                                                "work_ids": work_ids, "mul": -1 if further_away_first else 1})
-        rel = rel.prefetch_related('from_work', 'to_work')
         return rel
 
     def __str__(self):

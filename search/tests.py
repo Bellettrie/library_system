@@ -24,7 +24,7 @@ class WorkRelationTests(TestCase):
         self.c2w = CreatorToWork.objects.create(creator=crea, work=self.work3, number=1, role=role)
 
     def matches_equal(self, matches):
-        wms = WordMatch.objects.filter(publication=self.work1)
+        wms = list(WordMatch.objects.filter(publication=self.work1))
         self.assertEqual(len(matches), len(wms))
 
         for match in matches:

@@ -1,22 +1,25 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.db.models.expressions import RawSQL, F
+from django.db.models import QuerySet
+from django.db.models.expressions import F
+from django.db.models.expressions import RawSQL
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 # Create your views here.
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.views.generic import DetailView, ListView
+from django.views.generic import ListView
 
-from recode.models import Recode
 from recode.procedures.update_recode import update_recode_for_item
 from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
+from series.models import Graph
 from utils.get_query_words import get_query_words
 from utils.time import get_now
-from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkForm, \
-    LocationChangeForm, RelationForm, RelationFormRev
+from works.forms import ItemStateCreateForm, ItemCreateForm, WorkForm, \
+    LocationChangeForm
+from works.forms import RelationForm, RelationFormRev, SubWorkForm
 from works.models import Work, Item, ItemState, \
     Category, WorkRelation, CreatorToWork
 from works.models.item_state import get_available_states
@@ -138,7 +141,7 @@ class SearchQuery:
 
         return queries
 
-    def search(self):
+    def search(self) -> QuerySet[Work]:
         query_fragments = self.get_subqueries()
         if len(query_fragments) == 0:
             return Work.objects.none()
@@ -148,7 +151,7 @@ class SearchQuery:
         for fragment in query_fragments:
             query = fragment(query)
 
-        return query
+        return query.prefetch_related('creatortowork_set', "creatortowork_set__creator")
 
 
 def query_annotate_and_sort_bookcodes(query):
@@ -156,10 +159,12 @@ def query_annotate_and_sort_bookcodes(query):
         itemid=F('item__id'),
         book_code_sortable=F('item__book_code_sortable'),
         book_code=F('item__book_code'),
-        book_code_extension=F('item__book_code_extension')
+        book_code_extension=F('item__book_code_extension'),
+        is_series_bookcode_sortable=F('seriesv2__book_code_sortable'),
+        book_codeX=RawSQL('coalesce(works_item.book_code_sortable,series_seriesv2.book_code_sortable)', []),
     )
-    query = query.order_by("book_code_sortable", "id", 'itemid')
-    query = query.distinct("book_code_sortable", "id", 'itemid')
+    query = query.order_by("book_codeX", "id", 'itemid')
+    query = query.distinct("book_codeX", "id", 'itemid')
     return query
 
 
@@ -203,9 +208,22 @@ def search_works_json(request):
         return JsonResponse({'results': []})
 
 
-class WorkDetail(DetailView):
+def publication_view(request, pk):
+    work = get_object_or_404(Work, pk=pk)
     template_name = 'works/publication_view.html'
-    model = Work
+    series = work.as_series
+    part_of_series = WorkRelation.objects.filter(from_work=work,
+                                                 relation_kind__in=[WorkRelation.RelationKind.part_of_series,
+                                                                    WorkRelation.RelationKind.part_of_secondary_series]).all()
+    data = {
+        "work": work,
+        "part_of_series": part_of_series,
+    }
+    if series:
+        data['series'] = series
+        data['series_graph'] = Graph.new_from_work(work)
+
+    return render(request, template_name, data)
 
 
 def create_item_state_hx(request, item_id):
@@ -304,16 +322,14 @@ def item_history(request, item_id, hx_enabled=False):
 @permission_required('works.change_publication')
 def publication_edit(request, publication_id=None):
     from works.forms import CreatorToWorkFormSet
-    from works.forms import SeriesToWorkFomSet
     creator_to_works = None
-    series_to_works = None
     publication = None
     if request.method == 'POST':
         if publication_id is not None:
             publication = get_object_or_404(Work, pk=publication_id)
-            form = PublicationCreateForm(request.POST, instance=publication)
+            form = WorkForm(request.POST, instance=publication)
         else:
-            form = PublicationCreateForm(request.POST)
+            form = WorkForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.is_translated = instance.original_language is not None
@@ -331,32 +347,18 @@ def publication_edit(request, publication_id=None):
                 for error in creator_to_works.errors:
                     form.add_error(None, str(error))
 
-            series_to_works = SeriesToWorkFomSet(request.POST, request.FILES, instance=instance)
-
-            if series_to_works.is_valid():
-                instances = series_to_works.save(commit=False)
-                for inst in series_to_works.deleted_objects:
-                    inst.delete()
-                for i in instances:
-                    i.work = instance
-                    i.save()
-            else:
-                for error in series_to_works.errors:
-                    form.add_error(None, str(error))
             return HttpResponseRedirect(reverse('work.view', args=(instance.pk,)))
     else:
         publication = None
         if publication_id is not None:
             publication = get_object_or_404(Work, pk=publication_id)
             creator_to_works = CreatorToWorkFormSet(instance=publication)
-            series_to_works = SeriesToWorkFomSet(instance=publication)
-            form = PublicationCreateForm(instance=publication)
+            form = WorkForm(instance=publication)
         else:
             creator_to_works = CreatorToWorkFormSet()
-            series_to_works = SeriesToWorkFomSet()
-            form = PublicationCreateForm(initial={'date_added': get_now()})
+            form = WorkForm(initial={'date_added': get_now()})
     return render(request, 'works/publication_edit.html',
-                  {'series': series_to_works, 'publication': publication, 'form': form, 'creators': creator_to_works})
+                  {'publication': publication, 'form': form, 'creators': creator_to_works})
 
 
 @transaction.atomic

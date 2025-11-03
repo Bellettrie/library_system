@@ -1,7 +1,6 @@
 {% component 'tile.Tile' root_class_tags="" %}
     {% fill 'title' %}Items for this publication{% endfill %}
     {% fill 'content' %}
-        {% with object.get_items as items %}
             {% if items.count == 1 %}
                 {% component "works.item_datalist.Item" items.0 perms / %}
             {% elif items.count == 0 %}
@@ -18,13 +17,12 @@
                     {% endfor %}
                 </div>
             {% endif %}
-        {% endwith %}
 
     {% endfill %}
     {% fill 'footer' %}
         {% if perms.works.change_item %}
             {% component 'tile.Footer' %}
-                <a href="{% url 'works.item.new' object.pk %}" class="btn btn-sm btn-primary join-item">Add new Item</a>
+                <a href="{% url 'works.item.new' work.pk %}" class="btn btn-sm btn-primary join-item">Add new Item</a>
             {% endcomponent %}
         {% endif %}
     {% endfill %}

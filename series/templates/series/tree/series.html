@@ -1,24 +1,27 @@
-<li class="ml-1  sm:ml-8">
-     <div>
-           <a class="link link-secondary truncate" href="/series/views/{{ series.pk }}"> {% if work.display_number %}{{ work.display_number }} - {% endif %}
-            {{   series.title }}</a><span style="float:right">   {{ series.book_code }}     </span><span></span>
-       <br> {% for author in series.get_own_authors %}{% include 'creators/single_line_description.html' %}{% if not forloop.last %}<br/>{% endif %}
-        {% endfor %}
-    </div>
+{% if not series_graph.wr.from_work.as_series %}
+    {% include 'series/tree/book.html' %}
 
-    <ul class="ml-1  sm:ml-8 ">
-        {% for  ss in series.things_underneath %}
-            {% if ss.is_series %}
-                {% with series=ss.is_series %}
+{% else %}
+    <li class="ml-1  sm:ml-8 {% if series.work_id == series_graph.wr.from_work.pk %}text-bellered{% else %}series_tree_other{% endif %}">
+        <div >
+            <a class="link {% if series.work_id == series_graph.wr.from_work.pk %}text-bellered{% else %}link-secondary{% endif %} truncate "
+               href="/works/publication/{{ series_graph.wr.from_work.pk }}">
+                {% if series_graph.wr.relation_index_label %}{{ series_graph.wr.relation_index_label }} - {% endif %}
+                {{ series_graph.wr.from_work.title }} </a>
+            <span style="float:right">  {{ series_graph.wr.from_work.as_series.book_code }}</span>
+            <br> {% for author in series_graph.creators %}
+            {% include 'creators/single_line_description.html' %}
+            {% if not forloop.last %}<br/>{% endif %}
+        {% endfor %}
+        </div>
+
+        <ul class="ml-1  sm:ml-8 ">
+            {% for  child in series_graph.get_children %}
+                {% with series_graph=child %}
                     {% include 'series/tree/series.html' %}
                 {% endwith %}
-            {% else %}
-                {% with work=ss.is_work %}
-                    {% if work %}
-                       {% include 'series/tree/book.html' %}
-                    {% endif %}
-                {% endwith %}
-            {% endif %}
-        {% endfor %}
-    </ul>
-</li>
+
+            {% endfor %}
+        </ul>
+    </li>
+{% endif %}

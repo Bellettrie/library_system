@@ -8,7 +8,6 @@ from django.utils.safestring import mark_safe
 
 from creators.forms import CreatorWidget
 from series.forms import SeriesWidget
-from series.models import WorkInSeries
 from works.models import ItemState, Item, CreatorToWork, Work, WorkRelation
 
 
@@ -47,7 +46,7 @@ NAMED_TRANSLATED_LIST = ['title', 'article', 'sub_title', 'language', 'original_
                          'original_subtitle', 'original_language']
 
 
-class PublicationCreateForm(ModelForm):
+class WorkForm(ModelForm):
     class Meta:
         model = Work
         z_fields = [
@@ -98,9 +97,6 @@ class LocationChangeForm(ModelForm):
 
 CreatorToWorkFormSet = inlineformset_factory(Work, CreatorToWork, can_delete=True, fields=['creator', 'number', 'role'],
                                              widgets={'creator': CreatorWidget})
-SeriesToWorkFomSet = inlineformset_factory(Work, WorkInSeries, can_delete=True,
-                                           fields=['part_of_series', 'number', 'display_number', 'is_primary'],
-                                           widgets={'part_of_series': SeriesWidget})
 
 
 class WorkFindWidget(Widget):
@@ -126,8 +122,8 @@ class ReadOnlyText(TextInput):
 
 relation_choices = [
     (1, 'Is Subwork Of'),
-    # (2, "Is Part of Series"),
-    # (3, "Is Part of Secondary Series"),
+    (2, "Is Part of Series"),
+    (3, "Is Part of Secondary Series"),
     # (4, "Is Translation of"),
 ]
 
