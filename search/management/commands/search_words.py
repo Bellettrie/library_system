@@ -12,8 +12,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("Started deleting")
         SearchWord.objects.all().delete()
-        words = None
         print("finished deleting")
+        word_matches = WordMatch.objects.all()
+        words = {}
+        for word in word_matches:
+            words[word.word] = word
         for pub in Publication.objects.all():
             words = WordMatch.create_all_for(pub, words)
             print(pub.id)
