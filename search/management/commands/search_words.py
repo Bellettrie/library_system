@@ -13,11 +13,7 @@ class Command(BaseCommand):
         print("Started deleting")
         SearchWord.objects.all().delete()
         print("finished deleting")
-        word_matches = WordMatch.objects.all()
-        words = {}
-        for word in word_matches:
-            words[word.word] = word
         for pub in Publication.objects.all():
-            words = WordMatch.create_all_for(pub, words)
+            WordMatch.create_all_for(pub)
             print(pub.id)
         print("That's all folks")
