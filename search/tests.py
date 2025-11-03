@@ -19,7 +19,7 @@ class WorkRelationTests(TestCase):
         self.rel2 = WorkRelation.objects.create(from_work=self.work1, to_work=self.work3,
                                                 relation_kind=WorkRelation.RelationKind.part_of_series, relation_index=2)
         crea = Creator.objects.create(given_names="Bob", name="Bouwer")
-        Creator.objects.create(given_names="", name="Builder", is_alias_of=crea)
+        Creator.objects.create(given_names="Bob", name="Builder", is_alias_of=crea)
         role = CreatorRole.objects.create(name='builder')
         CreatorToWork.objects.create(creator=crea, work=self.work3, number=1, role=role )
 
@@ -35,6 +35,7 @@ class WorkRelationTests(TestCase):
                    WordMatch(word=words["WORK3"], publication=self.work1, type='SERIES'),
                    WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
                    WordMatch(word=words["BOUWER"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
                    WordMatch(word=words["BUILDER"], publication=self.work1, type='CREATOR')]
 
         self.assertEqual(len(matches), len(wms))

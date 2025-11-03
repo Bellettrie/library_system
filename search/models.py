@@ -70,18 +70,15 @@ class WordMatch(models.Model):
     def create_all_for(work: Publication, words=None):
         if words is None:
             words = {}
-            for word in SearchWord.objects.all():
-                words[word.word] = word
 
         WordMatch.objects.filter(publication=work).delete()
 
         # start with all the words directly belonging to the title etc. of the work
         matches = WordMatch.get_wordmatches_for_work(words, work, work)
-        relevant_related_works = [work]
+        related_works = [work]
 
         # Now traverse the tree to find
         work_relations = WorkRelation.RelationTraversal.for_search_words([work.id])
-
 
         for relation in work_relations:
             if relation.relation_kind == WorkRelation.RelationKind.sub_work_of:
@@ -97,13 +94,13 @@ class WordMatch(models.Model):
                 # We don't know in which direction it was picked up, so we can't use it.
                 continue
 
-            relevant_related_works.append(related_work)
+            related_works.append(related_work)
 
             for match in WordMatch.get_wordmatches_for_work(words, work, related_work, relation_kind):
                 matches.append(match)
 
         creator_ids = []
-        for creator in Creator.objects.filter(creatortowork__work__in=relevant_related_works).all():
+        for creator in Creator.objects.filter(creatortowork__work__in=related_works).all():
             creator_ids.append(creator.id)
 
         creators = get_all_author_aliases_by_ids(creator_ids)
