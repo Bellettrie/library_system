@@ -8,6 +8,11 @@ from search.models.search_word import SearchWord
 from series.models import Series
 from works.models import SubWork, Work, WorkRelation
 
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
+
+from creators.models import Creator
+from works.models import Work, WorkRelation, CreatorToWork
 
 class WordMatch(models.Model):
     word = models.ForeignKey(SearchWord, on_delete=CASCADE, db_index=True)
@@ -21,6 +26,10 @@ class WordMatch(models.Model):
     def create_all_for(work: Work, words=None):
         if words is None:
             words = {}
+        pubs = Publication.objects.filter(id=work.id)
+        if len(pubs) == 0:
+            return []
+        work = pubs[0]
 
         WordMatch.objects.filter(publication=work).delete()
 
@@ -216,3 +225,55 @@ class SubWorkWordMatch(WordMatch):
             words[word.word] = word
         for pub in subwork.workinpublication_set.all():
             WordMatch.create_all_for(pub.publication, words)
+
+
+@receiver(post_save, sender=Work)
+def work_updated_receiver(sender, instance, created, **kwargs):
+    WordMatch.create_all_for(instance)
+
+
+@receiver(post_save, sender=WorkRelation)
+def work_relation_updated_receiver(sender, instance, created, **kwargs):
+    WordMatch.create_all_for(instance.from_work)
+    WordMatch.create_all_for(instance.to_work)
+
+
+@receiver(post_save, sender=Creator)
+def creator_updated_receiver(sender, instance, created, **kwargs):
+    base_works = Work.objects.filter(creatortowork__creator=instance)
+    ids = []
+    for base_work in base_works:
+        ids.append(base_work.id)
+    works = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
+    for work in works:
+        WordMatch.create_all_for(work)
+
+
+@receiver(post_save, sender=CreatorToWork)
+def creator_to_work_updated_receiver(sender, instance, **kwargs):
+    works = Work.objects.filter(creatortowork=instance)
+    ids = []
+    for work in works:
+        ids.append(work.id)
+
+    works = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
+    for work in works:
+        WordMatch.create_all_for(work)
+
+
+@receiver(pre_delete, sender=WorkRelation)
+def work_relation_deleted_receiver(sender, instance, **kwargs):
+    pass
+    #TODO: Implement me
+
+
+@receiver(pre_delete, sender=Creator)
+def creator_deleted_receiver(sender, instance, **kwargs):
+    pass
+    #TODO: Implement me
+
+
+@receiver(pre_delete, sender=Creator)
+def creator_to_work_deleted_receiver(sender, instance, **kwargs):
+    pass
+    #TODO: Implement me
