@@ -141,11 +141,6 @@ class Work(NamedTranslatableThing):
     def get_sub_works(self):
         return WorkInPublication.objects.filter(publication_id=self.id).order_by('number_in_publication')
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        from search.models import WordMatch
-        WordMatch.create_all_for(self)
-
 
 class SubWork(Work, TranslatedThing):
     def is_orphaned(self):

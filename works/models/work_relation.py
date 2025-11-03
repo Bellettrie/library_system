@@ -32,6 +32,13 @@ class WorkRelation(models.Model):
             down_types = [WorkRelation.RelationKind.sub_work_of]
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
+        @staticmethod
+        def for_search_words_inverse(work_ids: List[int]):
+            up_types = [WorkRelation.RelationKind.sub_work_of]
+            down_types = [WorkRelation.RelationKind.part_of_series]
+
+            return WorkRelation.traverse_relations(work_ids, up_types, down_types)
+
     @staticmethod
     def traverse_relations(work_ids: List[int], forward_kinds: List[int], reverse_kinds: List[int]) -> RawQuerySet:
         """
