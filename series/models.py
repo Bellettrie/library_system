@@ -137,3 +137,6 @@ class CreatorToSeries(models.Model):
         unique_together = ("creator", "series", "number")
 
     role = models.ForeignKey("creators.CreatorRole", on_delete=PROTECT)
+
+class WorkSeries(BookCode):
+    work = models.ForeignKey("works.Work", on_delete=PROTECT)

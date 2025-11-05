@@ -17,6 +17,9 @@ class Work(NamedTranslatableThing):
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
 
+    # Temporary field for migration
+    based_on_series = models.ForeignKey("series.Series", on_delete=PROTECT, null=True, blank=True, unique=True)
+
     def get_pub(self):
         return self
 

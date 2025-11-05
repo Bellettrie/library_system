@@ -46,7 +46,7 @@ class CutterCodeRange(models.Model):
 class BookCode(models.Model):
     class Meta:
         abstract = True
-        indexes = [GinIndex(name='search_wordmatch_type_788b882f', fields=['book_code_sortable'],)]
+        indexes = [GinIndex(name='%(app_label)s_%(class)s_book_code', fields=['book_code_sortable'],)]
 
     book_code = models.CharField(max_length=64, blank=True)
     book_code_sortable = models.CharField(max_length=128, blank=True)
