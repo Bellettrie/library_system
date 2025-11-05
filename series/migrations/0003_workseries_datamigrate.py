@@ -60,6 +60,23 @@ seriesnode_ptr_id
         """
         cursor.execute(query2, [])
 
+        query_creators = """
+        INSERT INTO works_creatortowork
+        (
+        number,
+        creator_id,
+        role_id,
+        work_id
+        ) SELECT 
+        series_creatortoseries.number,
+        series_creatortoseries.creator_id,
+        series_creatortoseries.role_id,
+        works_work.id
+        FROM series_creatortoseries
+        JOIN works_work ON works_work.based_on_series_id = series_creatortoseries.series_id
+        """
+        cursor.execute(query_creators, [])
+
 
 class Migration(migrations.Migration):
 
