@@ -2,7 +2,7 @@ from typing import List
 
 from django.db.models.query import RawQuerySet
 from django.test import TestCase
-from works.models import Publication, Item, Category, Location, ItemType, WorkRelation
+from works.models import Item, Category, Location, ItemType, WorkRelation, Work
 
 
 class WorkRelationTests(TestCase):
@@ -85,7 +85,7 @@ class WorkRelationTests(TestCase):
 
 
 def create_work(title: str):
-    return Publication.objects.create(
+    return Work.objects.create(
         title=title,
         is_translated=False,
         date_added='1900-01-01',

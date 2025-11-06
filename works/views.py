@@ -15,7 +15,7 @@ from search.queries import filter_state, filter_book_code_get_q, \
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm, \
     LocationChangeForm
-from works.models import Work, Publication, Item, ItemState, WorkInPublication, \
+from works.models import Work, Item, ItemState, WorkInPublication, \
     Category
 
 
@@ -35,7 +35,7 @@ def get_works(request):
     categories = request.GET.getlist('q_categories', [])
     states = request.GET.getlist('q_states', [])
 
-    query = Publication.objects
+    query = Work.objects
     query = query_annotate_and_sort_bookcodes(query)
     any_query = False
     # If one word, also check bookcodes
@@ -70,7 +70,7 @@ def get_works(request):
         query = filter_state(query, states)
 
     if not any_query:
-        return Publication.objects.none()
+        return Work.objects.none()
     return query
 
 
@@ -117,7 +117,7 @@ class WorkList(ListView):
 
 class WorkDetail(DetailView):
     template_name = 'works/publication_view.html'
-    model = Publication
+    model = Work
 
 
 def create_item_state_hx(request, item_id):
@@ -166,7 +166,7 @@ def change_item_location(request, item_id, hx_enabled=False):
 @transaction.atomic
 @permission_required('works.add_item')
 def item_new(request, publication_id=None):
-    publication = get_object_or_404(Publication, pk=publication_id)
+    publication = get_object_or_404(Work, pk=publication_id)
 
     if request.method == 'POST':
         form = ItemCreateForm(request.POST)
@@ -222,7 +222,7 @@ def publication_edit(request, publication_id=None):
     publication = None
     if request.method == 'POST':
         if publication_id is not None:
-            publication = get_object_or_404(Publication, pk=publication_id)
+            publication = get_object_or_404(Work, pk=publication_id)
             form = PublicationCreateForm(request.POST, instance=publication)
         else:
             form = PublicationCreateForm(request.POST)
@@ -259,7 +259,7 @@ def publication_edit(request, publication_id=None):
     else:
         publication = None
         if publication_id is not None:
-            publication = get_object_or_404(Publication, pk=publication_id)
+            publication = get_object_or_404(Work, pk=publication_id)
             creator_to_works = CreatorToWorkFormSet(instance=publication)
             series_to_works = SeriesToWorkFomSet(instance=publication)
             form = PublicationCreateForm(instance=publication)
@@ -314,7 +314,7 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
                     form.add_error(None, str(error))
 
             if subwork_id is None:
-                pub = get_object_or_404(Publication, id=publication_id)
+                pub = get_object_or_404(Work, id=publication_id)
                 publication = WorkInPublication.objects.create(work=instance, publication=pub,
                                                                number_in_publication=num,
                                                                display_number_in_publication=disp_num)

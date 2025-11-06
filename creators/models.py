@@ -36,24 +36,24 @@ class Creator(models.Model):
 
     def get_all_items(self):
         result = []
-        from works.models import Item, Publication
+        from works.models import Item, Work
         creators = set(Creator.objects.filter(is_alias_of_id=self.id))
         creators.add(self)
         if self.is_alias_of:
             creators.add(self.is_alias_of)
-        for work in Publication.objects.filter(creatortowork__creator__in=creators):
+        for work in Work.objects.filter(creatortowork__creator__in=creators):
             for item in Item.objects.filter(publication=work):
                 result.append(item)
         return result
 
     def get_all_publications(self):
         result = []
-        from works.models import Item, Publication
+        from works.models import Item, Work
         creators = set(Creator.objects.filter(is_alias_of_id=self.id))
         creators.add(self)
         if self.is_alias_of:
             creators.add(self.is_alias_of)
-        for work in Publication.objects.filter(creatortowork__creator__in=creators):
+        for work in Work.objects.filter(creatortowork__creator__in=creators):
             result.append(work)
         for creator in creators:
             for s in creator.get_all_series():
@@ -154,7 +154,7 @@ def relabel_creator(creator, location, old_number, old_letter, new_number, new_l
         if creatorn != creator:
             relabel_creator(creatorn, location, old_number, old_letter, new_number, new_letter)
     from series.models import WorkInSeries
-    from works.models import Publication, Item
+    from works.models import Item
     items = creator.get_all_items()
     location_code = location.category.code
     for item in items:
