@@ -63,6 +63,7 @@ class WordMatch(models.Model):
     word = models.ForeignKey(SearchWord, on_delete=CASCADE, db_index=True)
     publication = models.ForeignKey(Publication, on_delete=CASCADE)
     type = models.CharField(max_length=8, default="TITLE", db_index=True)
+
     def __str__(self):
         return f"{self.word.word} {self.publication} {self.type}"
 

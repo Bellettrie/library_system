@@ -21,7 +21,7 @@ class WorkRelationTests(TestCase):
         crea = Creator.objects.create(given_names="Bob", name="Bouwer")
         Creator.objects.create(given_names="Bob", name="Builder", is_alias_of=crea)
         role = CreatorRole.objects.create(name='builder')
-        CreatorToWork.objects.create(creator=crea, work=self.work3, number=1, role=role )
+        CreatorToWork.objects.create(creator=crea, work=self.work3, number=1, role=role)
 
     def test_word_match_gen(self):
         WordMatch.objects.all().delete()
