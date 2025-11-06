@@ -6,8 +6,8 @@ from django.db.models import CASCADE
 
 from book_code_generation.helpers import normalize_str
 from creators.models import Creator
-from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from series.models import Series
+from works.models import SubWork, Work
 from works.models import SubWork, Work, WorkRelation
 
 from django.db.models.signals import post_save, pre_delete
