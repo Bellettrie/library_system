@@ -18,10 +18,7 @@ class Work(NamedTranslatableThing):
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
 
     def get_pub(self):
-        a = Publication.objects.filter(id=self.id)
-        if len(a) == 1:
-            return a[0]
-        return None
+        return self
 
     def update_listed_author(self):
         authors = self.get_authors()
@@ -72,8 +69,6 @@ class Work(NamedTranslatableThing):
         author_set.sort(key=lambda a: a.number)
         return author_set
 
-
-class Publication(Work):
     def is_simple_publication(self):
         return len(self.workinpublication_set) == 0
 
@@ -166,7 +161,7 @@ class SubWork(Work, TranslatedThing):
 
 
 class WorkInPublication(models.Model):
-    publication = models.ForeignKey(Publication, on_delete=PROTECT)
+    publication = models.ForeignKey(Work, on_delete=PROTECT, related_name='work_in_publication_root')
     work = models.ForeignKey(SubWork, on_delete=PROTECT)
     number_in_publication = models.IntegerField()
     display_number_in_publication = models.CharField(max_length=64)

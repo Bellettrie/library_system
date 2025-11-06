@@ -9,13 +9,13 @@ from reservations.models import Reservation
 from utils.time import get_now
 from works.models.abstract import NamedThing
 from works.models.location import Location
-from works.models.work import Publication
+from works.models.work import Work
 
 
 class Item(NamedThing, BookCode):
     old_id = models.IntegerField(null=True)
     location = models.ForeignKey(Location, on_delete=PROTECT)
-    publication = models.ForeignKey(Publication, on_delete=PROTECT)
+    publication = models.ForeignKey(Work, on_delete=PROTECT)
     isbn10 = models.CharField(max_length=64, null=True, blank=True)
     isbn13 = models.CharField(max_length=64, null=True, blank=True)
     pages = models.CharField(null=True, blank=True, max_length=32)

@@ -6,9 +6,8 @@ from django.db.models import CASCADE
 
 from book_code_generation.helpers import normalize_str
 from creators.models import Creator
-from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from series.models import Series
-from works.models import Publication, SubWork, WorkRelation, Work
+from works.models import SubWork, Work
 
 
 class SearchWord(models.Model):
@@ -61,14 +60,14 @@ def get_words_in_str(string):
 
 class WordMatch(models.Model):
     word = models.ForeignKey(SearchWord, on_delete=CASCADE, db_index=True)
-    publication = models.ForeignKey(Publication, on_delete=CASCADE)
+    publication = models.ForeignKey(Work, on_delete=CASCADE)
     type = models.CharField(max_length=8, default="TITLE", db_index=True)
 
     def __str__(self):
         return f"{self.word.word} {self.publication} {self.type}"
 
     @staticmethod
-    def create_all_for(work: Publication, words=None):
+    def create_all_for(work: Work, words=None):
         if words is None:
             words = {}
 
@@ -145,7 +144,7 @@ class AuthorWordMatch(WordMatch):
         self.type = "AUTHOR"
 
     @staticmethod
-    def get_all_for_author(work: Publication, creator: Creator, words):
+    def get_all_for_author(work: Work, creator: Creator, words):
         names = set()
         for creator in get_all_author_aliases_by_ids([creator.id]):
             for name in get_words_in_str(creator.name):
@@ -155,7 +154,7 @@ class AuthorWordMatch(WordMatch):
         return names
 
     @staticmethod
-    def get_all_for_authors(work: Publication, words=None):
+    def get_all_for_authors(work: Work, words=None):
         if words is None:
             words = {}
             for word in SearchWord.objects.all():
@@ -177,7 +176,7 @@ class SeriesWordMatch(WordMatch):
         self.type = "SERIES"
 
     @staticmethod
-    def get_all_for_series(work: Publication, series: Series, words):
+    def get_all_for_series(work: Work, series: Series, words):
         if series is None:
             return
         for word in get_words_in_str(series.article):
@@ -194,7 +193,7 @@ class SeriesWordMatch(WordMatch):
             SeriesWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, series=series)
 
     @staticmethod
-    def get_all_for_serieses(work: Publication, words=None):
+    def get_all_for_serieses(work: Work, words=None):
         if words is None:
             words = {}
             for word in SearchWord.objects.all():
@@ -219,7 +218,7 @@ class SeriesWordMatch(WordMatch):
 
         serieses = [series]
         for s in serieses:
-            for pub in Publication.objects.filter(workinseries__part_of_series_id=s.pk):
+            for pub in Work.objects.filter(workinseries__part_of_series_id=s.pk):
                 WordMatch.create_all_for(pub, words)
             for ss in Series.objects.filter(part_of_series_id=s.pk):
                 serieses.append(ss)
@@ -233,7 +232,7 @@ class SubWorkWordMatch(WordMatch):
         self.type = "SUBWORK"
 
     @staticmethod
-    def get_all_for_subwork(work: Publication, sub_work: SubWork, words):
+    def get_all_for_subwork(work: Work, sub_work: SubWork, words):
         for word in get_words_in_str(sub_work.article):
             SubWorkWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, sub_work=sub_work)
         for word in get_words_in_str(sub_work.original_language):
@@ -248,7 +247,7 @@ class SubWorkWordMatch(WordMatch):
             SubWorkWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, sub_work=sub_work)
 
     @staticmethod
-    def get_all_for_subworks(work: Publication, words=None):
+    def get_all_for_subworks(work: Work, words=None):
         if words is None:
             words = {}
             for word in SearchWord.objects.all():

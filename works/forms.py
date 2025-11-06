@@ -4,7 +4,7 @@ from django.forms import ModelForm, inlineformset_factory
 from creators.forms import CreatorWidget
 from series.forms import SeriesWidget
 from series.models import WorkInSeries
-from works.models import ItemState, Item, Publication, CreatorToWork, Work, SubWork
+from works.models import ItemState, Item, CreatorToWork, Work, SubWork
 
 
 class SimpleWorkSearch(forms.Form):
@@ -44,7 +44,7 @@ NAMED_TRANSLATED_LIST = ['title', 'article', 'sub_title', 'language', 'original_
 
 class PublicationCreateForm(ModelForm):
     class Meta:
-        model = Publication
+        model = Work
         z_fields = [
             'hidden',
             'sorting',
