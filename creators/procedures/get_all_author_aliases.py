@@ -18,7 +18,7 @@ def get_all_author_aliases_by_ids(creator_ids: List[int]):
                              depth
                                 )
                             AS
-                            (SELECT  id,
+                            (SELECT id,
                              given_names,
                              name,
                              is_alias_of_id,
@@ -47,7 +47,7 @@ def get_all_author_aliases_by_ids(creator_ids: List[int]):
                                         w.is_alias_of_id = c.id
                                      )
                             ) CYCLE id SET is_cycle USING path_cycle -- This prevents us from crashing the database if loops exist ;).
-                    SELECT distinct on (id) 
+                    SELECT distinct on (id)
                         id,
                         given_names,
                         name,
