@@ -9,42 +9,43 @@ def data_migrate(apps, schema_editor):
     with connection.cursor() as cursor:
         worksQ = """
         INSERT INTO works_work (
-language,
-article,
-title,
-sub_title,
-original_language,
-original_article,
-original_title,
-original_subtitle,
-is_translated,
-date_added,
-sorting,
-comment,
-internal_comment,
-hidden,
-listed_author,
-based_on_series_id
+            language,
+            article,
+            title,
+            sub_title,
+            original_language,
+            original_article,
+            original_title,
+            original_subtitle,
+            is_translated,
+            date_added,
+            sorting,
+            comment,
+            internal_comment,
+            hidden,
+            listed_author,
+            based_on_series_id
         ) SELECT 
-language,
-article,
-title,
-sub_title,
-original_language,
-original_article,
-original_title,
-original_subtitle,
-is_translated,
-'2000-01-01',
-'TITLE',
-'',
-seriesnode_ptr_id::text,
-false,
-'ZZZZZZZZ',
-seriesnode_ptr_id
-         FROM series_series ON CONFLICT DO NOTHING RETURNING internal_comment::int, id
+            language,
+            article,
+            title,
+            sub_title,
+            original_language,
+            original_article,
+            original_title,
+            original_subtitle,
+            is_translated,
+            '2000-01-01',
+            'TITLE',
+            '',
+            seriesnode_ptr_id::text,
+            false,
+            'ZZZZZZZZ',
+            seriesnode_ptr_id
+        FROM series_series ON CONFLICT DO NOTHING RETURNING internal_comment::int, id
         """
         cursor.execute(worksQ, [])
+
         query2 = """
         INSERT INTO series_workseries 
         (
@@ -52,10 +53,10 @@ seriesnode_ptr_id
             book_code_sortable,
             work_id
         ) SELECT 
-        series_series.book_code,
-        series_series.book_code_sortable,
-        works_work.id
-        FROM series_series
+            series_series.book_code,
+            series_series.book_code_sortable,
+            works_work.id
+            FROM series_series
         LEFT JOIN works_work ON series_series.seriesnode_ptr_id = works_work.based_on_series_id
         """
         cursor.execute(query2, [])
@@ -63,19 +64,46 @@ seriesnode_ptr_id
         query_creators = """
         INSERT INTO works_creatortowork
         (
-        number,
-        creator_id,
-        role_id,
-        work_id
+            number,
+            creator_id,
+            role_id,
+            work_id
         ) SELECT 
-        series_creatortoseries.number,
-        series_creatortoseries.creator_id,
-        series_creatortoseries.role_id,
-        works_work.id
+            series_creatortoseries.number,
+            series_creatortoseries.creator_id,
+            series_creatortoseries.role_id,
+            works_work.id
         FROM series_creatortoseries
         JOIN works_work ON works_work.based_on_series_id = series_creatortoseries.series_id
         """
         cursor.execute(query_creators, [])
+
+        query_relations = """
+        INSERT INTO works_workrelation
+        (
+            relation_index,
+            relation_index_label,
+            relation_kind,
+            from_work_id,
+            to_work_id
+        ) 
+        SELECT 
+            coalesce(number, -6),
+            display_number,
+             CASE
+                WHEN coalesce(series_workinseries.is_primary, false) = TRUE THEN 2
+                ELSE 3
+            END,
+            coalesce(from_work.id, wwork.id),
+            to_work.id
+        FROM series_seriesnode
+            LEFT JOIN series_workinseries ON series_seriesnode.id = series_workinseries.seriesnode_ptr_id
+            LEFT JOIN works_work as from_work ON series_seriesnode.id = from_work.based_on_series_id
+            LEFT JOIN works_work as wwork ON series_workinseries.work_id = wwork.id
+            JOIN works_work as to_work ON series_seriesnode.part_of_series_id = to_work.based_on_series_id
+        """
+        cursor.execute(query_relations, [])
+
 
 
 class Migration(migrations.Migration):
