@@ -27,51 +27,123 @@ def get_works(request):
             request.GET.get('q_bookcode', "").count("*") > 3:
         raise ValueError("That's too much for me, senpai")
 
+    query = SearchQuery()
     words = get_query_words(request.GET.get('q', "").upper())
+    if len(words) > 0:
+        query.words = words
     words_author = get_query_words(request.GET.get('q_author', "").upper())
-    words_series = get_query_words(request.GET.get('q_series', "").upper())
-    words_title = get_query_words(request.GET.get('q_title', "").upper())
-    book_code = request.GET.get('q_bookcode', "").upper()
-    categories = request.GET.getlist('q_categories', [])
-    states = request.GET.getlist('q_states', [])
-
-    query = Work.objects
-    query = query_annotate_and_sort_bookcodes(query)
-    any_query = False
-    # If one word, also check bookcodes
-    if len(words) == 1:
-        any_query = True
-        fbc = filter_book_code_get_q(words[0])
-        fbt = filter_basic_text_get_q(words)[0]
-        query = query.filter(fbc | fbt)
-    elif len(words) > 1:
-        any_query = True
-
-        query = filter_basic_text(query, words)
-
     if len(words_author) > 0:
-        any_query = True
-        query = filter_author_text(query, words_author)
+        query.words_author = words_author
+    words_series = get_query_words(request.GET.get('q_series', "").upper())
     if len(words_series) > 0:
-        any_query = True
-        query = filter_series_text(query, words_series)
+        query.words_series = words_series
+    words_title = get_query_words(request.GET.get('q_title', "").upper())
     if len(words_title) > 0:
-        any_query = True
-        query = filter_title_text(query, words_title)
-
-    if len(categories) > 0:
-        any_query = True
-        query = filter_location(query, categories)
+        query.words_title = words_title
+    book_code = request.GET.get('q_bookcode', "").upper()
     if len(book_code) > 0:
-        any_query = True
-        query = query.filter(filter_book_code_get_q(book_code))
+        query.book_code = book_code
+    categories = request.GET.getlist('q_categories', [])
+    if len(categories) > 0:
+        query.categories = categories
+    states = request.GET.getlist('q_states', [])
     if len(states) > 0:
-        any_query = True
-        query = filter_state(query, states)
+        query.states = states
 
-    if not any_query:
-        return Work.objects.none()
-    return query
+    if len(query.get_subqueries()) > 0 and request.GET.get('advanced', 'False') != 'True':
+        query.only_with_items = True
+        query.states = ['AVAILABLE', 'FEATURED']
+
+    return query.search()
+
+
+class SearchQuery:
+    def __init__(self,
+                 book_code=None,
+                 only_with_items=None,
+                 categories=None,
+                 states=None,
+                 words=None,
+                 words_author=None,
+                 words_series=None,
+                 words_title=None):
+        self.book_code = book_code
+        self.only_with_items = only_with_items
+        self.categories = categories
+        self.states = states
+        self.words = words
+        self.words_author = words_author
+        self.words_series = words_series
+        self.words_title = words_title
+
+    def get_subqueries(self):
+        queries = []
+        if self.book_code:
+            def book_code_query(query):
+                return query.filter(filter_book_code_get_q(self.book_code))
+
+            queries.append(book_code_query)
+
+        if self.categories is not None and len(self.categories) > 0:
+            def categories_query(query):
+                return filter_location(query, self.categories)
+
+            queries.append(categories_query)
+
+        if self.states is not None and len(self.states) > 0:
+            def states_query(query):
+                return filter_state(query, self.states)
+
+            queries.append(states_query)
+
+        if self.words is not None and len(self.words) > 0:
+            def words_query(query):
+                if len(self.words) == 1:
+                    fbc = filter_book_code_get_q(self.words[0])
+                    fbt = filter_basic_text_get_q(self.words)[0]
+                    return query.filter(fbc | fbt)
+                else:
+                    return filter_basic_text(query, self.words)
+
+            queries.append(words_query)
+
+        if self.words_author is not None and len(self.words_author) > 0:
+            def author_query(query):
+                return filter_author_text(query, self.words_author)
+
+            queries.append(author_query)
+
+        if self.words_series is not None and len(self.words_series) > 0:
+            def series_query(query):
+                return filter_series_text(query, self.words_series)
+
+            queries.append(series_query)
+
+        if self.words_title is not None and len(self.words_title) > 0:
+            def title_query(query):
+                return filter_title_text(query, self.words_title)
+
+            queries.append(title_query)
+
+        if self.only_with_items:
+            def only_items_query(query):
+                return query.filter(itemid__isnull=False)
+
+            queries.append(only_items_query)
+
+        return queries
+
+    def search(self):
+        query_fragments = self.get_subqueries()
+        if len(query_fragments) == 0:
+            return Work.objects.none()
+        print(query_fragments)
+        query = Work.objects
+        query = query_annotate_and_sort_bookcodes(query)
+        for fragment in query_fragments:
+            query = fragment(query)
+
+        return query
 
 
 def query_annotate_and_sort_bookcodes(query):
