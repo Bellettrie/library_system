@@ -17,6 +17,7 @@ from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateFo
     LocationChangeForm
 from works.models import Work, Item, ItemState, WorkInPublication, \
     Category
+from works.models.item_state import get_available_states
 
 
 def get_works(request):
@@ -52,7 +53,8 @@ def get_works(request):
 
     if len(query.get_subqueries()) > 0 and request.GET.get('advanced', 'False') != 'True':
         query.only_with_items = True
-        query.states = ['AVAILABLE', 'FEATURED']
+        statz = get_available_states()
+        query.states =list(map( lambda state: state.state_name, statz))
 
     return query.search()
 
