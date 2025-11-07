@@ -58,7 +58,7 @@ def is_item_state_available(name):
 def get_available_states():
     result = []
     for state in get_item_states():
-        if state.is_available():
+        if state.is_available:
             result.append(state)
     return result
 

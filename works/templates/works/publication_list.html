@@ -2,8 +2,8 @@
 {% load publication_list_to_item_rows %}
 {#{% load books_table %}#}
 
-{% block title %}        {% if advanced %}Advanced {% else %} Book {% endif %}Search
-
+{% block title %}
+    {% if advanced %}Advanced {% else %} Book {% endif %}Search
 {% endblock %}
 {% block content %}
     <div class="flex flex-col gap-3">
@@ -17,8 +17,6 @@
                 {% include 'pagination.html' %}
             </div>
         </div>
-
-
         {% get_item_rows_for_publications object_list as items %}
         <div class="card  p-3 hidden lg:block bg-base-100 ">
             <div class="rounded-box ">
@@ -29,24 +27,21 @@
                         {% endif %}
                         <th>Title</th>
                         <th>Author</th>
-                        <th>Infos</th>
+                        <th></th>
                         <th></th>
                     </tr>
                     {% for itemRow in items %}
-
                         {% component 'works.table.Row' itemRow.get_item skip_header=skip_header %}
-
                             {% fill "extra_rows" %}
                                 <td>
                                     {% if  itemRow.is_item %}
-                                        {% if itemRow.get_item.get_state != "AVAILABLE" %}
+                                        {% if advanced and itemRow.get_item.get_state != "AVAILABLE" %}
                                             [{{ itemRow.get_item.get_state }}]
                                         {% endif %}
                                         {% if admin and perms.change_work %}
                                             <br>{{ itemRow.get_item.location.category.name }}
                                             {{ itemRow.get_item.location.name }}
                                         {% endif %}
-
                                     {% endif %}
                                 </td>
                                 <td>
@@ -83,7 +78,6 @@
                                 </td>
                                 <td>{{ itemRow.get_item.titleorder }}</td>
                             {% endfill %}
-
                         {% endcomponent %}
                     {% endfor %}
                 </table>
