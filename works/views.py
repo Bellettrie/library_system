@@ -54,7 +54,7 @@ def get_works(request):
     if len(query.get_subqueries()) > 0 and request.GET.get('advanced', 'False') != 'True':
         query.only_with_items = True
         statz = get_available_states()
-        query.states =list(map( lambda state: state.state_name, statz))
+        query.states = list(map(lambda state: state.state_name, statz))
 
     return query.search()
 
