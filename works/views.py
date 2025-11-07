@@ -139,7 +139,7 @@ class SearchQuery:
         query_fragments = self.get_subqueries()
         if len(query_fragments) == 0:
             return Work.objects.none()
-        print(query_fragments)
+
         query = Work.objects
         query = query_annotate_and_sort_bookcodes(query)
         for fragment in query_fragments:
