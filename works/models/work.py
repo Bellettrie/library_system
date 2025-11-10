@@ -1,8 +1,8 @@
 from django.db import models
-from django.db.models import PROTECT
+from django.db.models import PROTECT, CASCADE
 from django.db.models.expressions import RawSQL
 
-from book_code_generation.models import FakeItem
+from book_code_generation.models import FakeItem, BookCode
 from lendings.models import Lending
 from works.models.abstract import TranslatedThing, NamedTranslatableThing
 from works.models.code_generators import GENERATORS
@@ -19,6 +19,7 @@ class Work(NamedTranslatableThing):
 
     # Temporary field for migration
     based_on_series = models.OneToOneField("series.Series", on_delete=PROTECT, null=True, blank=True)
+
 
     def get_pub(self):
         return self

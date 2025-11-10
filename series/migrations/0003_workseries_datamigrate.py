@@ -47,7 +47,7 @@ def data_migrate(apps, schema_editor):
         cursor.execute(worksQ, [])
 
         query2 = """
-        INSERT INTO series_workseries
+        INSERT INTO series_seriesv2
         (
             book_code,
             book_code_sortable,
@@ -107,7 +107,7 @@ def data_migrate(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('series', '0002_workseries'),
+        ('series', '0002_seriesv2'),
         ('works', '0006_work_based_on_series'),
     ]
 

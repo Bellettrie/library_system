@@ -1,7 +1,8 @@
+
 from django.db import models
 
 # Create your models here.
-from django.db.models import PROTECT
+from django.db.models import PROTECT, CASCADE
 
 from book_code_generation.models import FakeItem, BookCode
 from creators.models import LocationNumber
@@ -139,5 +140,5 @@ class CreatorToSeries(models.Model):
     role = models.ForeignKey("creators.CreatorRole", on_delete=PROTECT)
 
 
-class WorkSeries(BookCode):
-    work = models.ForeignKey("works.Work", on_delete=PROTECT)
+class SeriesV2(BookCode):
+    work = models.ForeignKey("works.Work", on_delete=CASCADE)
