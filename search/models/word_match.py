@@ -1,10 +1,12 @@
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
+
+# Create your models here.
 from django.db.models import CASCADE
 
+from book_code_generation.helpers import normalize_str
 from creators.models import Creator
 from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
-from search.models.helpers import get_word_from_set, get_words_in_str
-from search.models.search_word import SearchWord
 from series.models import Series
 from works.models import SubWork, Work, WorkRelation
 
@@ -13,6 +15,54 @@ from django.dispatch import receiver
 
 from creators.models import Creator
 from works.models import Work, WorkRelation, CreatorToWork
+
+class SearchWord(models.Model):
+    word = models.CharField(max_length=255, db_index=True, unique=True)
+
+    @staticmethod
+    def get_word(word):
+        return SearchWord.objects.get_or_create(word=word)[0]
+
+    class Meta:
+        indexes = (GinIndex(fields=["word"]),)  # add index
+
+
+def get_word_from_set(word: str, word_set: dict):
+    """
+        Given a dictionary of string -> SearchWord, get the word from the dictionary. This is an optimization for the search word generation function.
+    """
+    word = word.upper()
+    w = word_set.get(word, None)
+    if w is not None:
+        return w
+
+    word_set[word] = SearchWord.get_word(word)
+    return word_set[word]
+
+
+def clean_word(string):
+    """
+    Remove anything not alphanumeric from word.
+    """
+    string = normalize_str(string)
+    return "".join(ch for ch in string if ch.isalnum() or ch == "*").upper()
+
+
+def get_words_in_str(string):
+    """
+        Split string into spaces and
+    """
+    if string is None:
+        return []
+    string = string.replace("'", " ")
+    z = string.strip().split(" ")
+    result = []
+    for w in z:
+        w = clean_word(w)
+        if len(w) > 1:
+            result.append(w)
+    return result
+
 
 class WordMatch(models.Model):
     word = models.ForeignKey(SearchWord, on_delete=CASCADE, db_index=True)
