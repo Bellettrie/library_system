@@ -138,5 +138,6 @@ class CreatorToSeries(models.Model):
 
     role = models.ForeignKey("creators.CreatorRole", on_delete=PROTECT)
 
+
 class WorkSeries(BookCode):
     work = models.ForeignKey("works.Work", on_delete=PROTECT)

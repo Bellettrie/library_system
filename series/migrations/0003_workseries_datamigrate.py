@@ -25,7 +25,7 @@ def data_migrate(apps, schema_editor):
             hidden,
             listed_author,
             based_on_series_id
-        ) SELECT 
+        ) SELECT
             language,
             article,
             title,
@@ -47,12 +47,12 @@ def data_migrate(apps, schema_editor):
         cursor.execute(worksQ, [])
 
         query2 = """
-        INSERT INTO series_workseries 
+        INSERT INTO series_workseries
         (
             book_code,
             book_code_sortable,
             work_id
-        ) SELECT 
+        ) SELECT
             series_series.book_code,
             series_series.book_code_sortable,
             works_work.id
@@ -68,7 +68,7 @@ def data_migrate(apps, schema_editor):
             creator_id,
             role_id,
             work_id
-        ) SELECT 
+        ) SELECT
             series_creatortoseries.number,
             series_creatortoseries.creator_id,
             series_creatortoseries.role_id,
@@ -86,8 +86,8 @@ def data_migrate(apps, schema_editor):
             relation_kind,
             from_work_id,
             to_work_id
-        ) 
-        SELECT 
+        )
+        SELECT
             coalesce(number, -6),
             display_number,
              CASE
@@ -105,9 +105,7 @@ def data_migrate(apps, schema_editor):
         cursor.execute(query_relations, [])
 
 
-
 class Migration(migrations.Migration):
-
     dependencies = [
         ('series', '0002_workseries'),
         ('works', '0005_work_based_on_series'),
