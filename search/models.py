@@ -120,7 +120,7 @@ class WordMatch(models.Model):
         return words
 
     @staticmethod
-    def get_wordmatches_for_work(words, pub: Publication, work_for_words: Work, role="TITLE"):
+    def get_wordmatches_for_work(words, pub: Work, work_for_words: Work, role="TITLE"):
         matches = []
         for word in get_words_in_str(work_for_words.article):
             matches.append(WordMatch(word=get_word_from_set(word, words), publication=pub, type=role))
