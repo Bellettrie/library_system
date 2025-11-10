@@ -108,7 +108,7 @@ def data_migrate(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ('series', '0002_workseries'),
-        ('works', '0005_work_based_on_series'),
+        ('works', '0006_work_based_on_series'),
     ]
 
     operations = [
