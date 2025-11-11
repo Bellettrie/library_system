@@ -158,10 +158,22 @@ class SeriesV2(BookCode):
 
 
 class Graph:
-    def __init__(self, wr, path):
+    def new_parent(self, wr):
+        gph = Graph(wr, '_')
+        gph.below['_'] = self
+        return gph
+
+    def __init__(self, wr, path, creators=None):
         self.wr = wr
-        self.path=path
+        self.path = path
         self.below = {}
+        self.creators = creators or []
+    def bubble_creator(self, creator_to_work):
+        if self.wr.from_work_id == creator_to_work.work_id:
+            self.creators.append(creator_to_work)
+        for x in self.below:
+            self.below[x].bubble_creator(creator_to_work)
+
     def get_children(self):
         child_list = list(self.below.values())
         sorted_children = sorted(child_list, key=lambda x: x.wr.relation_index)
@@ -176,6 +188,9 @@ class Graph:
         if not hasattr(wr, "path"):
             print("NO PATH")
             return
+        if self.below.get('_') and len(self.below) == 1:
+            self.below['_'].add_relation(wr)
+            return
 
         if len(wr.path) <= len(self.path):
             print("ERR")
@@ -184,12 +199,12 @@ class Graph:
         if bl is not None:
             return
         if len(wr.path) == len(self.path) + 1:
-            pth =Graph.path_zplurp(wr.path)
+            pth = Graph.path_zplurp(wr.path)
             self.below[pth] = Graph(wr, wr.path)
             return
 
         lstlim = []
-        for x in range (0, len(self.path)+1):
+        for x in range(0, len(self.path) + 1):
             lstlim.append(wr.path[x])
         blz = Graph.path_zplurp(lstlim)
         bl = self.below.get(blz)
@@ -197,5 +212,3 @@ class Graph:
             bl.add_relation(wr)
             return
         print("ERR 4")
-
-

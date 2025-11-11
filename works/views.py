@@ -146,7 +146,7 @@ class SearchQuery:
         for fragment in query_fragments:
             query = fragment(query)
 
-        return query
+        return query.prefetch_related('creatortowork_set',"creatortowork_set__creator")
 
 
 def query_annotate_and_sort_bookcodes(query):

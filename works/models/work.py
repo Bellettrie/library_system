@@ -73,7 +73,7 @@ class Work(NamedTranslatableThing):
     def get_own_authors(self):
         from works.models.creator_to_work import CreatorToWork
 
-        links = CreatorToWork.objects.filter(work_id=self.id)
+        links = CreatorToWork.objects.filter(work_id=self.id).select_related("creator")
         authors = []
         for link in links:
             authors.append(link)

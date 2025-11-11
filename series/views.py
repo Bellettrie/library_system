@@ -17,7 +17,7 @@ from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
 from series.models import Series, SeriesNode, SeriesV2, Graph
 from book_code_generation.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
-from works.models import WorkRelation
+from works.models import WorkRelation, CreatorToWork
 from works.views import SearchQuery
 
 
@@ -42,11 +42,35 @@ def get_series_by_query(request, search_text):
 
 def view_series(request, pk):
     series = get_object_or_404(SeriesV2, work_id=pk)
-    graph_data = WorkRelation.RelationTraversal.series_down([pk])
-    grph = Graph(WorkRelation(from_work=series.work, to_work=series.work), [pk])
+    graph_data = WorkRelation.RelationTraversal.series_down([pk]).prefetch_related("from_work", "to_work")
+    graph_data_up = WorkRelation.RelationTraversal.series_up([pk]).prefetch_related("from_work", "to_work")
+
+    works = [series.work]
+    for rel in graph_data:
+        works.append(rel.from_work)
+
+    for rel in graph_data_up:
+        works.append(rel.from_work)
+
+    c2ws = CreatorToWork.objects.filter(work__in=set(works)).select_related('creator')
+
+    grph = None
+
+    for graph in graph_data_up:
+        if grph is None:
+            grph = Graph(graph, '_')
+        else:
+            grph = grph.new_parent(graph)
+    if len(graph_data_up) == 0:
+        grph = Graph(WorkRelation(from_work=series.work, to_work=series.work), [pk])
+    else:
+        grph = grph.new_parent(WorkRelation(from_work=graph_data_up[-1].to_work, to_work=graph_data_up[-1].to_work))
     for graph in graph_data:
         grph.add_relation(graph)
-    print(grph)
+
+    for c2w in c2ws:
+        grph.bubble_creator(c2w)
+
     return render(request, 'series/view.html', {'series': series, 'series_graph': grph})
 
 
