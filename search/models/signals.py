@@ -1,31 +1,22 @@
-from datetime import timedelta
 from typing import List
-from creators.models import Creator
-from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
-from search.models import WordMatch
-from tasks.models import Task
-from django.db.models.signals import post_save, pre_delete, pre_save
-from django.dispatch import receiver
-from utils.time import get_now
-from works.models import Work, WorkRelation, CreatorToWork
 
-"""
-    This file is responsible for making sure the search-index gets updated when works, relations etc get updated.
-"""
+from creators.models import Creator
+from search.models import WordMatch
+
+from tasks.models import Task
+
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
+
+from works.models import Work, WorkRelation, CreatorToWork
 
 
 class UpdateWorks:
-    """
-    UpdateWorks is a task that is used to do a delayed-update of a specific work.
-    It is used to make sure the updates happen *after* the works or relevant relations have been updated.
-    """
-
     def __init__(self, works: List[Work]):
-        self.work_ids = list(map(lambda work: work.id, works))
+        self.works = works
 
     def exec(self):
-        works = Work.objects.filter(id__in=self.work_ids)
-        for work in works:
+        for work in self.works:
             WordMatch.create_all_for(work)
 
 
@@ -36,82 +27,24 @@ def work_updated_receiver(sender, instance: Work, created, **kwargs):
         WordMatch.create_all_for(work)
 
 
-def work_relation_updated(ids):
-    res_works = get_works_from_ids(ids)
-    for work in res_works:
-        WordMatch.create_all_for(work)
-
-
-@receiver(pre_save, sender=WorkRelation)
-def work_relation_updated_presave(sender, instance: WorkRelation, **kwargs):
-    prevs = WorkRelation.objects.filter(id=instance.id)
-    if len(prevs) == 0:
-        return
-    prev = prevs[0]
-    if instance.from_work_id == prev.from_work_id and instance.to_work_id == prev.to_work_id:
-        return
-    res_works = get_works_from_ids([prev.from_work_id, prev.to_work_id])
-    for work in res_works:
-        WordMatch.create_all_for(work)
-
-    Task.objects.create(task_name="update-works-work-relation-update-rels", task_object=UpdateWorks(list(res_works)),
-                        next_datetime=get_now() + timedelta(seconds=5))
-
-
 @receiver(post_save, sender=WorkRelation)
-def work_relation_updated_receiver(sender, instance: WorkRelation, **kwargs):
-    ids = [instance.from_work.id, instance.to_work.id]
-    work_relation_updated(ids)
+def work_relation_updated_receiver(sender, instance: WorkRelation, created, **kwargs):
+    res_works = get_works_from_ids([instance.from_work.id, instance.to_work.id])
+
+    for work in res_works:
+        WordMatch.create_all_for(work)
 
 
-def creator_updated(instance: Creator):
-    creators = get_all_author_aliases_by_ids([instance.id])
-    ids = []
-    for creator in creators:
-        ids.append(creator.id)
-    creator_to_works = CreatorToWork.objects.filter(creator_id__in=ids)
+@receiver(post_save, sender=Creator)
+def creator_updated_receiver(sender, instance: Creator, created, **kwargs):
+    creator_to_works = CreatorToWork.objects.filter(creator=instance)
     ids = []
     for c2w in creator_to_works:
         ids.append(c2w.work_id)
     res_works = get_works_from_ids(ids)
 
-    return res_works
-
-
-@receiver(pre_save, sender=Creator)
-def creator_updated_receiver_presave(sender, instance: Creator, **kwargs):
-    crea = Creator.objects.filter(id=instance.id)
-    if len(crea) == 0:
-        return
-    if crea[0].is_alias_of_id == instance.is_alias_of_id:
-        return
-    res_works = creator_updated(crea[0].is_alias_of)
-    Task.objects.create(task_name="update-creator-update-alias", task_object=UpdateWorks(list(res_works)),
-                        next_datetime=get_now() + timedelta(seconds=5))
-
-
-@receiver(post_save, sender=Creator)
-def creator_updated_receiver(sender, instance: Creator, created, **kwargs):
-    res_works = creator_updated(instance)
     for work in res_works:
         WordMatch.create_all_for(work)
-
-
-@receiver(pre_save, sender=CreatorToWork)
-def creator_to_work_updated_receiver_presave(sender, instance: CreatorToWork, **kwargs):
-    prevs = CreatorToWork.objects.filter(id=instance.id)
-    if len(prevs) == 0:
-        return
-    prev = prevs[0]
-    if instance.work_id == prev.work_id:
-        return
-    res_works = get_works_from_ids([prev.work_id])
-
-    for work in res_works:
-        WordMatch.create_all_for(work)
-
-    Task.objects.create(task_name="update-works-creator-to-work-prevs", task_object=UpdateWorks(list(res_works)),
-                        next_datetime=get_now() + timedelta(seconds=5))
 
 
 @receiver(post_save, sender=CreatorToWork)
@@ -122,22 +55,10 @@ def creator_to_work_updated_receiver(sender, instance: CreatorToWork, **kwargs):
         WordMatch.create_all_for(work)
 
 
-@receiver(pre_delete, sender=Work)
-def work_deleted_receiver(sender, instance: Work, **kwargs):
-    WordMatch.objects.filter(publication=instance).delete()
-
-    res_works = get_works_from_ids([instance.id])
-    wks = []
-    for res_work in res_works:
-        if instance.id != res_work.id:
-            wks.append(res_work)
-    Task.objects.create(task_name="update-works-work-delete", task_object=UpdateWorks(wks))
-
-
 # The deletes should be deferred, so they are executed *after* the entities are gone.
 @receiver(pre_delete, sender=WorkRelation)
 def work_relation_deleted_receiver(sender, instance: WorkRelation, **kwargs):
-    in_ids = [instance.to_work.id, instance.from_work.id]
+    in_ids = [instance.to_work, instance.from_work]
     res_works = get_works_from_ids(in_ids)
     for work in res_works:
         WordMatch.create_all_for(work)
@@ -147,11 +68,7 @@ def work_relation_deleted_receiver(sender, instance: WorkRelation, **kwargs):
 
 @receiver(pre_delete, sender=Creator)
 def creator_deleted_receiver(sender, instance: Creator, **kwargs):
-    creators = get_all_author_aliases_by_ids([instance.id])
-    ids = []
-    for creator in creators:
-        ids.append(creator.id)
-    creator_to_works = CreatorToWork.objects.filter(creator_id__in=ids)
+    creator_to_works = CreatorToWork.objects.filter(creator=instance)
     in_ids = []
     for c2w in creator_to_works:
         in_ids.append(c2w.work.id)
