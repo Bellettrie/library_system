@@ -6,8 +6,6 @@ from works.models import WorkRelation, CreatorToWork
 from works.tests import create_work
 
 
-# Create your tests here.
-
 class WorkRelationTests(TestCase):
     def setUp(self):
         self.work1 = create_work('Work')
@@ -17,7 +15,8 @@ class WorkRelationTests(TestCase):
         self.rel1 = WorkRelation.objects.create(from_work=self.work2, to_work=self.work1,
                                                 relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=1)
         self.rel2 = WorkRelation.objects.create(from_work=self.work1, to_work=self.work3,
-                                                relation_kind=WorkRelation.RelationKind.part_of_series, relation_index=2)
+                                                relation_kind=WorkRelation.RelationKind.part_of_series,
+                                                relation_index=2)
         crea = Creator.objects.create(given_names="Bob", name="Bouwer")
         Creator.objects.create(given_names="Bob", name="Builder", is_alias_of=crea)
         role = CreatorRole.objects.create(name='builder')
@@ -55,7 +54,7 @@ class WorkRelationTests(TestCase):
 
     def test_word_match_auto_update_based_on_work(self):
         WordMatch.objects.all().delete()
-        self.work1.title="DORK"
+        self.work1.title = "DORK"
         self.work1.save()
 
         words = self.get_all_words()
@@ -71,7 +70,7 @@ class WorkRelationTests(TestCase):
 
     def test_word_match_auto_update_based_on_subwork(self):
         WordMatch.objects.all().delete()
-        self.work2.title="DORK"
+        self.work2.title = "DORK"
         self.work2.save()
         WordMatch.objects.exclude(publication=self.work1).delete()
         words = self.get_all_words()
