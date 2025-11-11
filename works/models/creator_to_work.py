@@ -14,7 +14,3 @@ class CreatorToWork(models.Model):
         unique_together = ("creator", "work", "number")
 
     role = models.ForeignKey(CreatorRole, on_delete=PROTECT)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.work.update_listed_author()
