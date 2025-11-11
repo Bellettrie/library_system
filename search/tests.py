@@ -101,8 +101,8 @@ class WorkRelationTests(TestCase):
     def test_word_match_auto_update_based_on_creator_to_work(self):
         WordMatch.objects.all().delete()
         work4 = create_work("work4")
-        work4.article="the"
-        work4.sub_title="sub"
+        work4.article = "the"
+        work4.sub_title = "sub"
         work4.original_article = "de"
         work4.original_title = "roltrap naar de maan"
         work4.original_subtitle = "something"
