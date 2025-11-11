@@ -1,3 +1,5 @@
+from typing import List
+
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
@@ -8,6 +10,7 @@ from book_code_generation.helpers import normalize_str
 from creators.models import Creator
 from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from series.models import Series
+from tasks.models import Task
 from works.models import SubWork, Work, WorkRelation
 
 from django.db.models.signals import post_save, pre_delete
@@ -277,6 +280,14 @@ class SubWorkWordMatch(WordMatch):
             WordMatch.create_all_for(pub.publication, words)
 
 
+class UpdateWorks:
+    def __init__(self, works: List[Work]):
+        self.works = works
+    def exec(self):
+        for work in self.works:
+            WordMatch.create_all_for(work)
+
+
 @receiver(post_save, sender=Work)
 def work_updated_receiver(sender, instance, created, **kwargs):
     WordMatch.create_all_for(instance)
@@ -284,16 +295,18 @@ def work_updated_receiver(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=WorkRelation)
 def work_relation_updated_receiver(sender, instance, created, **kwargs):
-    WordMatch.create_all_for(instance.from_work)
-    WordMatch.create_all_for(instance.to_work)
+    works = WorkRelation.RelationTraversal.for_search_words_inverse([instance.from_work.id, instance.to_work.id])
+    for work in works:
+        WordMatch.create_all_for(work)
 
 
 @receiver(post_save, sender=Creator)
 def creator_updated_receiver(sender, instance, created, **kwargs):
-    base_works = Work.objects.filter(creatortowork__creator=instance)
+    creator_to_works = CreatorToWork.objects.filter(creator=instance)
     ids = []
-    for base_work in base_works:
-        ids.append(base_work.id)
+    for c2w in creator_to_works:
+        ids.append(c2w.work_id)
+
     works = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
     for work in works:
         WordMatch.create_all_for(work)
@@ -301,29 +314,32 @@ def creator_updated_receiver(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=CreatorToWork)
 def creator_to_work_updated_receiver(sender, instance, **kwargs):
-    works = Work.objects.filter(creatortowork=instance)
-    ids = []
-    for work in works:
-        ids.append(work.id)
-
-    works = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
+    works = WorkRelation.RelationTraversal.for_search_words_inverse([instance.work_id])
     for work in works:
         WordMatch.create_all_for(work)
 
 
+# The deletes should be deferred, so they are executed *after* the entities are gone.
 @receiver(pre_delete, sender=WorkRelation)
 def work_relation_deleted_receiver(sender, instance, **kwargs):
-    pass
-    #TODO: Implement me
+    works = [instance.to_work, instance.from_work]
+    rels = WorkRelation.RelationTraversal.for_search_words_inverse(works)
+
+    Task.objects.create(task_name="update-works-work-relation-delete",task_object=UpdateWorks(rels))
 
 
 @receiver(pre_delete, sender=Creator)
 def creator_deleted_receiver(sender, instance, **kwargs):
-    pass
-    #TODO: Implement me
+    creator_to_works = CreatorToWork.objects.filter(creator=instance)
+    ids = []
+    for c2w in creator_to_works:
+        ids.append(c2w.work.id)
+    rels = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
+
+    Task.objects.create(task_name="update-works-creator-delete",task_object=UpdateWorks(rels))
 
 
-@receiver(pre_delete, sender=Creator)
-def creator_to_work_deleted_receiver(sender, instance, **kwargs):
-    pass
-    #TODO: Implement me
+@receiver(pre_delete, sender=CreatorToWork)
+def creator_to_work_deleted_receiver(sender, instance: CreatorToWork, **kwargs):
+    rels = WorkRelation.RelationTraversal.for_search_words_inverse([instance.work.id])
+    Task.objects.create(task_name="update-works-creator_to_work-delete",task_object=UpdateWorks(rels))
