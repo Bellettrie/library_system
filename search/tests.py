@@ -92,6 +92,24 @@ class WorkRelationTests(TestCase):
         matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
                    WordMatch(word=words["WORK2"], publication=self.work1, type='SUBWORK'),
                    WordMatch(word=words["WORK3"], publication=self.work1, type='SERIES'),
+                   WordMatch(word=words["DERP"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOUWER"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BUILDER"], publication=self.work1, type='CREATOR')]
+        self.matches_equal(matches)
+
+    def test_word_match_auto_update_based_on_creator_to_work(self):
+        WordMatch.objects.all().delete()
+        work4 = create_work("work4")
+        WorkRelation.objects.create(from_work=self.work1, to_work=work4,
+                                                relation_kind=WorkRelation.RelationKind.part_of_series,
+                                                relation_index=2)
+        WordMatch.objects.exclude(publication=self.work1).delete()
+        words = self.get_all_words()
+        matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
+                   WordMatch(word=words["WORK2"], publication=self.work1, type='SUBWORK'),
+                   WordMatch(word=words["WORK3"], publication=self.work1, type='SERIES'),
+                   WordMatch(word=words["WORK4"], publication=self.work1, type='SERIES'),
                    WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
                    WordMatch(word=words["BOUWER"], publication=self.work1, type='CREATOR'),
                    WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),

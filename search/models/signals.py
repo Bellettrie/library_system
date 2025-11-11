@@ -60,6 +60,16 @@ def creator_to_work_updated_receiver(sender, instance: CreatorToWork, **kwargs):
         WordMatch.create_all_for(work)
 
 
+@receiver(pre_delete, sender=Work)
+def work_deleted_receiver(sender, instance: Work, **kwargs):
+    res_works = get_works_from_ids([instance.id])
+    wks = []
+    for res_work in res_works:
+        if instance.id != res_work.id:
+            wks.append(res_work)
+    Task.objects.create(task_name="update-works-work-delete", task_object=UpdateWorks(wks))
+
+
 # The deletes should be deferred, so they are executed *after* the entities are gone.
 @receiver(pre_delete, sender=WorkRelation)
 def work_relation_deleted_receiver(sender, instance: WorkRelation, **kwargs):
