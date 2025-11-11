@@ -78,10 +78,6 @@ class WordMatch(models.Model):
     def create_all_for(work: Work, words=None):
         if words is None:
             words = {}
-        pubs = Work.objects.filter(id=work.id)
-        if len(pubs) == 0:
-            return []
-        work = pubs[0]
 
         WordMatch.objects.filter(publication=work).delete()
 
