@@ -1,69 +1,12 @@
-from typing import List
-
-from django.contrib.postgres.indexes import GinIndex
 from django.db import models
-
-# Create your models here.
 from django.db.models import CASCADE
 
-from book_code_generation.helpers import normalize_str
 from creators.models import Creator
 from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
+from search.models.helpers import get_word_from_set, get_words_in_str
+from search.models.search_word import SearchWord
 from series.models import Series
-from tasks.models import Task
-
-from django.db.models.signals import post_save, pre_delete
-from django.dispatch import receiver
-
-from works.models import Work, WorkRelation, CreatorToWork, SubWork
-
-
-class SearchWord(models.Model):
-    word = models.CharField(max_length=255, db_index=True, unique=True)
-
-    @staticmethod
-    def get_word(word):
-        return SearchWord.objects.get_or_create(word=word)[0]
-
-    class Meta:
-        indexes = (GinIndex(fields=["word"]),)  # add index
-
-
-def get_word_from_set(word: str, word_set: dict):
-    """
-        Given a dictionary of string -> SearchWord, get the word from the dictionary. This is an optimization for the search word generation function.
-    """
-    word = word.upper()
-    w = word_set.get(word, None)
-    if w is not None:
-        return w
-
-    word_set[word] = SearchWord.get_word(word)
-    return word_set[word]
-
-
-def clean_word(string):
-    """
-    Remove anything not alphanumeric from word.
-    """
-    string = normalize_str(string)
-    return "".join(ch for ch in string if ch.isalnum() or ch == "*").upper()
-
-
-def get_words_in_str(string):
-    """
-        Split string into spaces and
-    """
-    if string is None:
-        return []
-    string = string.replace("'", " ")
-    z = string.strip().split(" ")
-    result = []
-    for w in z:
-        w = clean_word(w)
-        if len(w) > 1:
-            result.append(w)
-    return result
+from works.models import SubWork, Work, WorkRelation
 
 
 class WordMatch(models.Model):
@@ -273,79 +216,3 @@ class SubWorkWordMatch(WordMatch):
             words[word.word] = word
         for pub in subwork.workinpublication_set.all():
             WordMatch.create_all_for(pub.publication, words)
-
-
-class UpdateWorks:
-    def __init__(self, works: List[Work]):
-        self.works = works
-
-    def exec(self):
-        for work in self.works:
-            WordMatch.create_all_for(work)
-
-
-@receiver(post_save, sender=Work)
-def work_updated_receiver(sender, instance, created, **kwargs):
-    WordMatch.create_all_for(instance)
-
-
-@receiver(post_save, sender=WorkRelation)
-def work_relation_updated_receiver(sender, instance, created, **kwargs):
-    works = WorkRelation.RelationTraversal.for_search_words_inverse([instance.from_work.id, instance.to_work.id])
-
-    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, works))
-    for work in works:
-        WordMatch.create_all_for(work)
-
-
-@receiver(post_save, sender=Creator)
-def creator_updated_receiver(sender, instance, created, **kwargs):
-    creator_to_works = CreatorToWork.objects.filter(creator=instance)
-    ids = []
-    for c2w in creator_to_works:
-        ids.append(c2w.work_id)
-
-    works = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
-    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, works))
-
-    for work in works:
-        WordMatch.create_all_for(work)
-
-
-@receiver(post_save, sender=CreatorToWork)
-def creator_to_work_updated_receiver(sender, instance, **kwargs):
-    works = WorkRelation.RelationTraversal.for_search_words_inverse([instance.work_id])
-    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, works))
-
-    for work in works:
-        WordMatch.create_all_for(work)
-
-
-# The deletes should be deferred, so they are executed *after* the entities are gone.
-@receiver(pre_delete, sender=WorkRelation)
-def work_relation_deleted_receiver(sender, instance, **kwargs):
-    works = [instance.to_work, instance.from_work]
-    rels = WorkRelation.RelationTraversal.for_search_words_inverse(works)
-    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, rels))
-
-    Task.objects.create(task_name="update-works-work-relation-delete", task_object=UpdateWorks(list(works)))
-
-
-@receiver(pre_delete, sender=Creator)
-def creator_deleted_receiver(sender, instance, **kwargs):
-    creator_to_works = CreatorToWork.objects.filter(creator=instance)
-    ids = []
-    for c2w in creator_to_works:
-        ids.append(c2w.work.id)
-    rels = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
-    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, rels))
-
-    Task.objects.create(task_name="update-works-creator-delete", task_object=UpdateWorks(list(works)))
-
-
-@receiver(pre_delete, sender=CreatorToWork)
-def creator_to_work_deleted_receiver(sender, instance: CreatorToWork, **kwargs):
-    rels = WorkRelation.RelationTraversal.for_search_words_inverse([instance.work.id])
-    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, rels))
-
-    Task.objects.create(task_name="update-works-creator_to_work-delete", task_object=UpdateWorks(list(works)))

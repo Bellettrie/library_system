@@ -23,13 +23,26 @@ class WorkRelationTests(TestCase):
         role = CreatorRole.objects.create(name='builder')
         CreatorToWork.objects.create(creator=crea, work=self.work3, number=1, role=role)
 
-    def test_word_match_gen(self):
-        WordMatch.objects.all().delete()
-        WordMatch.create_all_for(self.work1)
+    def matches_equal(self, matches):
         wms = WordMatch.objects.all()
+        self.assertEqual(len(matches), len(wms))
+        for match in matches:
+            mtc = False
+            for wm in wms:
+                if wm.word == match.word and wm.publication == match.publication and wm.type == match.type:
+                    mtc = True
+            self.assertTrue(mtc, f"{match} not found in result set {wms}")
+
+    def get_all_words(self):
         words = {}
         for word in SearchWord.objects.all():
             words[word.word] = word
+        return words
+
+    def test_word_match_gen(self):
+        WordMatch.objects.all().delete()
+        WordMatch.create_all_for(self.work1)
+        words = self.get_all_words()
         matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
                    WordMatch(word=words["WORK2"], publication=self.work1, type='SUBWORK'),
                    WordMatch(word=words["WORK3"], publication=self.work1, type='SERIES'),
@@ -38,10 +51,35 @@ class WorkRelationTests(TestCase):
                    WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
                    WordMatch(word=words["BUILDER"], publication=self.work1, type='CREATOR')]
 
-        self.assertEqual(len(matches), len(wms))
-        for match in matches:
-            mtc = False
-            for wm in wms:
-                if wm.word == match.word and wm.publication == match.publication and wm.type == match.type:
-                    mtc = True
-            self.assertTrue(mtc, f"{match} not found in result set {wms}")
+        self.matches_equal(matches)
+
+    def test_word_match_auto_update_based_on_work(self):
+        WordMatch.objects.all().delete()
+        self.work1.title="DORK"
+        self.work1.save()
+
+        words = self.get_all_words()
+        matches = [WordMatch(word=words["DORK"], publication=self.work1, type='TITLE'),
+                   WordMatch(word=words["WORK2"], publication=self.work1, type='SUBWORK'),
+                   WordMatch(word=words["WORK3"], publication=self.work1, type='SERIES'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOUWER"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BUILDER"], publication=self.work1, type='CREATOR')]
+
+        self.matches_equal(matches)
+
+    def test_word_match_auto_update_based_on_subwork(self):
+        WordMatch.objects.all().delete()
+        self.work2.title="DORK"
+        self.work2.save()
+        WordMatch.objects.exclude(publication=self.work1).delete()
+        words = self.get_all_words()
+        matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
+                   WordMatch(word=words["DORK"], publication=self.work1, type='SUBWORK'),
+                   WordMatch(word=words["WORK3"], publication=self.work1, type='SERIES'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOUWER"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BUILDER"], publication=self.work1, type='CREATOR')]
+        self.matches_equal(matches)
