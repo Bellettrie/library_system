@@ -14,9 +14,10 @@ from book_code_generation.procedures.location_number_generation import generate_
 from book_code_generation.views import get_book_code_series
 from creators.models import Creator, LocationNumber
 from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
-from series.models import Series, SeriesNode
+from series.models import Series, SeriesNode, SeriesV2
 from book_code_generation.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
+from works.views import SearchQuery
 
 
 def word_to_regex(word: str):
@@ -29,27 +30,17 @@ def word_to_regex(word: str):
 
 
 def get_series_by_query(request, search_text):
-    series = Series.objects.all()
+    sq = SearchQuery(words=search_text).search()
+    series = SeriesV2.objects.filter(work__in=sq)
 
-    for word in search_text.replace("%20", " ").split(" "):
-        zz = Series.objects.filter(
-            Q(title__icontains=word) | Q(sub_title__icontains=word) | Q(original_title__icontains=word) | Q(
-                original_subtitle__icontains=word) | Q(article__icontains=word) | Q(original_article__icontains=word))
-        i = len(zz)
-        j = 0
-        while j < i:
-            zz = Series.objects.filter(part_of_series__in=zz) | zz
-            j = i
-            i = len(zz)
-        series = series & zz
-    list = []
     for serie in series.order_by('title'):
-        list.append({'id': serie.pk, 'text': serie.get_canonical_title()})
+        list.append({'id': serie.work_id, 'text': serie.work.get_title()})
+
     return JsonResponse({'results': list}, safe=False)
 
 
 def view_series(request, pk):
-    series = get_object_or_404(Series, pk=pk)
+    series = get_object_or_404(SeriesV2, work_id=pk)
     return render(request, 'series/view.html', {'series': series})
 
 
@@ -141,28 +132,11 @@ class SeriesList(ListView):
         words = get_query_words(self.request.GET.get('q', ""))
         if words is None:
             return []
-        result = None
-        for word in words:
-            word = word_to_regex(word)
-            if len(word) == 0:
-                return []
-            authors = Creator.objects.filter(Q(name__iregex=word) | Q(given_names__iregex=word))
+        sq = SearchQuery(words=words).search()
+        series = SeriesV2.objects.filter(work__in=sq)
 
-            series = set(Series.objects.filter(Q(creatortoseries__creator__in=authors)
-                                               | Q(title__iregex=word)
-                                               | Q(sub_title__iregex=word)
-                                               | Q(original_title__iregex=word)
-                                               | Q(original_subtitle__iregex=word)
-                                               ).order_by('title'))
-            if result is None:
-                result = series
-            else:
-                result = series & result
-        if result is None:
-            return []
-        lst = list(result)
-        lst.sort(key=lambda i: i.title)
-        return lst
+
+        return list(series)
 
 
 @transaction.atomic
