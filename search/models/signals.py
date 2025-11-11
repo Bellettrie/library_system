@@ -1,6 +1,7 @@
 from typing import List
 
 from creators.models import Creator
+from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from search.models import WordMatch
 
 from tasks.models import Task
@@ -37,7 +38,11 @@ def work_relation_updated_receiver(sender, instance: WorkRelation, created, **kw
 
 @receiver(post_save, sender=Creator)
 def creator_updated_receiver(sender, instance: Creator, created, **kwargs):
-    creator_to_works = CreatorToWork.objects.filter(creator=instance)
+    creators = get_all_author_aliases_by_ids([instance.id])
+    ids = []
+    for creator in creators:
+        ids.append(creator.id)
+    creator_to_works = CreatorToWork.objects.filter(creator_id__in=ids)
     ids = []
     for c2w in creator_to_works:
         ids.append(c2w.work_id)
@@ -68,7 +73,11 @@ def work_relation_deleted_receiver(sender, instance: WorkRelation, **kwargs):
 
 @receiver(pre_delete, sender=Creator)
 def creator_deleted_receiver(sender, instance: Creator, **kwargs):
-    creator_to_works = CreatorToWork.objects.filter(creator=instance)
+    creators = get_all_author_aliases_by_ids([instance.id])
+    ids = []
+    for creator in creators:
+        ids.append(creator.id)
+    creator_to_works = CreatorToWork.objects.filter(creator_id__in=ids)
     in_ids = []
     for c2w in creator_to_works:
         in_ids.append(c2w.work.id)
