@@ -14,10 +14,11 @@ from works.models import Work, WorkRelation, CreatorToWork
 
 class UpdateWorks:
     def __init__(self, works: List[Work]):
-        self.works = works
+        self.work_ids = list(map(lambda work: work.id, works))
 
     def exec(self):
-        for work in self.works:
+        works = Work.objects.filter(id__in=self.work_ids)
+        for work in works:
             WordMatch.create_all_for(work)
 
 
@@ -62,6 +63,8 @@ def creator_to_work_updated_receiver(sender, instance: CreatorToWork, **kwargs):
 
 @receiver(pre_delete, sender=Work)
 def work_deleted_receiver(sender, instance: Work, **kwargs):
+    WordMatch.objects.filter(publication=instance).delete()
+
     res_works = get_works_from_ids([instance.id])
     wks = []
     for res_work in res_works:
@@ -73,7 +76,7 @@ def work_deleted_receiver(sender, instance: Work, **kwargs):
 # The deletes should be deferred, so they are executed *after* the entities are gone.
 @receiver(pre_delete, sender=WorkRelation)
 def work_relation_deleted_receiver(sender, instance: WorkRelation, **kwargs):
-    in_ids = [instance.to_work, instance.from_work]
+    in_ids = [instance.to_work.id, instance.from_work.id]
     res_works = get_works_from_ids(in_ids)
     for work in res_works:
         WordMatch.create_all_for(work)
