@@ -18,7 +18,7 @@ class WorkRelationTests(TestCase):
                                                 relation_kind=WorkRelation.RelationKind.part_of_series,
                                                 relation_index=2)
         crea = Creator.objects.create(given_names="Bob", name="Bouwer")
-        Creator.objects.create(given_names="Bob", name="Builder", is_alias_of=crea)
+        self.crea2 = Creator.objects.create(given_names="Bob", name="Builder", is_alias_of=crea)
         role = CreatorRole.objects.create(name='builder')
         CreatorToWork.objects.create(creator=crea, work=self.work3, number=1, role=role)
 
@@ -76,6 +76,21 @@ class WorkRelationTests(TestCase):
         words = self.get_all_words()
         matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
                    WordMatch(word=words["DORK"], publication=self.work1, type='SUBWORK'),
+                   WordMatch(word=words["WORK3"], publication=self.work1, type='SERIES'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOUWER"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BUILDER"], publication=self.work1, type='CREATOR')]
+        self.matches_equal(matches)
+
+    def test_word_match_auto_update_based_on_creator(self):
+        WordMatch.objects.all().delete()
+        self.crea2.given_names = "DERP"
+        self.crea2.save()
+        WordMatch.objects.exclude(publication=self.work1).delete()
+        words = self.get_all_words()
+        matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
+                   WordMatch(word=words["WORK2"], publication=self.work1, type='SUBWORK'),
                    WordMatch(word=words["WORK3"], publication=self.work1, type='SERIES'),
                    WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
                    WordMatch(word=words["BOUWER"], publication=self.work1, type='CREATOR'),
