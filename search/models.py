@@ -292,6 +292,8 @@ def work_updated_receiver(sender, instance, created, **kwargs):
 @receiver(post_save, sender=WorkRelation)
 def work_relation_updated_receiver(sender, instance, created, **kwargs):
     works = WorkRelation.RelationTraversal.for_search_words_inverse([instance.from_work.id, instance.to_work.id])
+
+    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, works))
     for work in works:
         WordMatch.create_all_for(work)
 
@@ -304,6 +306,8 @@ def creator_updated_receiver(sender, instance, created, **kwargs):
         ids.append(c2w.work_id)
 
     works = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
+    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, works))
+
     for work in works:
         WordMatch.create_all_for(work)
 
@@ -311,6 +315,8 @@ def creator_updated_receiver(sender, instance, created, **kwargs):
 @receiver(post_save, sender=CreatorToWork)
 def creator_to_work_updated_receiver(sender, instance, **kwargs):
     works = WorkRelation.RelationTraversal.for_search_words_inverse([instance.work_id])
+    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, works))
+
     for work in works:
         WordMatch.create_all_for(work)
 
@@ -320,8 +326,9 @@ def creator_to_work_updated_receiver(sender, instance, **kwargs):
 def work_relation_deleted_receiver(sender, instance, **kwargs):
     works = [instance.to_work, instance.from_work]
     rels = WorkRelation.RelationTraversal.for_search_words_inverse(works)
+    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, rels))
 
-    Task.objects.create(task_name="update-works-work-relation-delete", task_object=UpdateWorks(rels))
+    Task.objects.create(task_name="update-works-work-relation-delete", task_object=UpdateWorks(list(works)))
 
 
 @receiver(pre_delete, sender=Creator)
@@ -331,11 +338,14 @@ def creator_deleted_receiver(sender, instance, **kwargs):
     for c2w in creator_to_works:
         ids.append(c2w.work.id)
     rels = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
+    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, rels))
 
-    Task.objects.create(task_name="update-works-creator-delete", task_object=UpdateWorks(rels))
+    Task.objects.create(task_name="update-works-creator-delete", task_object=UpdateWorks(list(works)))
 
 
 @receiver(pre_delete, sender=CreatorToWork)
 def creator_to_work_deleted_receiver(sender, instance: CreatorToWork, **kwargs):
     rels = WorkRelation.RelationTraversal.for_search_words_inverse([instance.work.id])
-    Task.objects.create(task_name="update-works-creator_to_work-delete", task_object=UpdateWorks(rels))
+    works = Work.objects.filter(pk__in=map(lambda wk: wk.id, rels))
+
+    Task.objects.create(task_name="update-works-creator_to_work-delete", task_object=UpdateWorks(list(works)))
