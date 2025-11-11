@@ -29,14 +29,14 @@ class WorkRelation(models.Model):
     class RelationTraversal:
         @staticmethod
         def for_search_words(work_ids: List[int]):
-            up_types = [WorkRelation.RelationKind.part_of_series]
+            up_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series]
             down_types = [WorkRelation.RelationKind.sub_work_of]
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
         @staticmethod
         def for_search_words_inverse(work_ids: List[int]):
             up_types = [WorkRelation.RelationKind.sub_work_of]
-            down_types = [WorkRelation.RelationKind.part_of_series]
+            down_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series]
 
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
