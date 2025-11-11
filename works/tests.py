@@ -26,7 +26,7 @@ class WorkRelationTests(TestCase):
                                                 relation_kind=WorkRelation.RelationKind.sub_work_of, relation_index=4)
         self.rel5 = WorkRelation.objects.create(from_work=self.work1, to_work=self.work5,
                                                 relation_kind=WorkRelation.RelationKind.part_of_series,
-                                                relation_index=1)
+                                                relation_index=2)
         self.rel6 = WorkRelation.objects.create(from_work=self.work6, to_work=self.work7, relation_index=1,
                                                 relation_kind=WorkRelation.RelationKind.sub_work_of)
         self.rel7 = WorkRelation.objects.create(from_work=self.work8, to_work=self.work7, relation_index=2,
@@ -35,6 +35,7 @@ class WorkRelationTests(TestCase):
     def assertSameRelations(self, first: RawQuerySet, second: List[WorkRelation]):
         fst_set = set(map(lambda x: x.id, first))
         snd_set = set(map(lambda x: x.id, second))
+
         self.assertEqual(len(first), len(second))
         self.assertEqual(fst_set, snd_set)
 
