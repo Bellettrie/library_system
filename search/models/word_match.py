@@ -11,13 +11,12 @@ from creators.models import Creator
 from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from series.models import Series
 from tasks.models import Task
-from works.models import SubWork, Work, WorkRelation
 
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
-from creators.models import Creator
-from works.models import Work, WorkRelation, CreatorToWork
+from works.models import Work, WorkRelation, CreatorToWork, SubWork
+
 
 class SearchWord(models.Model):
     word = models.CharField(max_length=255, db_index=True, unique=True)
@@ -79,7 +78,7 @@ class WordMatch(models.Model):
     def create_all_for(work: Work, words=None):
         if words is None:
             words = {}
-        pubs = Publication.objects.filter(id=work.id)
+        pubs = Work.objects.filter(id=work.id)
         if len(pubs) == 0:
             return []
         work = pubs[0]
@@ -283,6 +282,7 @@ class SubWorkWordMatch(WordMatch):
 class UpdateWorks:
     def __init__(self, works: List[Work]):
         self.works = works
+
     def exec(self):
         for work in self.works:
             WordMatch.create_all_for(work)
@@ -325,7 +325,7 @@ def work_relation_deleted_receiver(sender, instance, **kwargs):
     works = [instance.to_work, instance.from_work]
     rels = WorkRelation.RelationTraversal.for_search_words_inverse(works)
 
-    Task.objects.create(task_name="update-works-work-relation-delete",task_object=UpdateWorks(rels))
+    Task.objects.create(task_name="update-works-work-relation-delete", task_object=UpdateWorks(rels))
 
 
 @receiver(pre_delete, sender=Creator)
@@ -336,10 +336,10 @@ def creator_deleted_receiver(sender, instance, **kwargs):
         ids.append(c2w.work.id)
     rels = WorkRelation.RelationTraversal.for_search_words_inverse(ids)
 
-    Task.objects.create(task_name="update-works-creator-delete",task_object=UpdateWorks(rels))
+    Task.objects.create(task_name="update-works-creator-delete", task_object=UpdateWorks(rels))
 
 
 @receiver(pre_delete, sender=CreatorToWork)
 def creator_to_work_deleted_receiver(sender, instance: CreatorToWork, **kwargs):
     rels = WorkRelation.RelationTraversal.for_search_words_inverse([instance.work.id])
-    Task.objects.create(task_name="update-works-creator_to_work-delete",task_object=UpdateWorks(rels))
+    Task.objects.create(task_name="update-works-creator_to_work-delete", task_object=UpdateWorks(rels))
