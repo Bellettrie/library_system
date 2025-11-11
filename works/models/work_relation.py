@@ -41,7 +41,8 @@ class WorkRelation(models.Model):
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
     @staticmethod
-    def traverse_relations(work_ids: List[int], forward_kinds: List[int], reverse_kinds: List[int]) -> RawQuerySet:
+    def traverse_relations(work_ids: List[int], forward_kinds: List[int], reverse_kinds: List[int],
+                           further_away_first=False) -> RawQuerySet:
         """
         Traverse the WorkRelation model as a graph, recursively finding related WorkRelation rows.
 
@@ -60,8 +61,8 @@ class WorkRelation(models.Model):
         # Like any recursive query, it has an initial step (the first main select), and a recursive step (the select after the UNION).
         query = """
                 WITH RECURSIVE
-                forward_kinds AS (SELECT unnest(%s::int[])),
-                    reverse_kinds AS (SELECT unnest(%s::int[])),
+                forward_kinds AS (SELECT unnest(%(forward_kinds)s::int[])),
+                    reverse_kinds AS (SELECT unnest(%(reverse_kinds)s::int[])),
                     cte_workrelations
                         (
                          id,
@@ -82,11 +83,11 @@ class WorkRelation(models.Model):
                                 from_work_id,
                                 to_work_id,
                                 1,
-                                array[case when from_work_id = ANY(%s::int[]) then from_work_id else to_work_id end, relation_index] as path,
-                                from_work_id = ANY(%s::int[]) as fwd
+                                array[case when from_work_id = ANY(%(work_ids)s::int[]) then from_work_id else to_work_id end, %(mul)s * relation_index] as path,
+                                from_work_id = ANY(%(work_ids)s::int[]) as fwd
                          FROM works_workrelation
-                         WHERE (from_work_id    = ANY(%s::int[]) AND relation_kind IN (select * from forward_kinds))
-                            OR (to_work_id = ANY(%s::int[]) AND relation_kind IN (select * from reverse_kinds))
+                         WHERE (from_work_id    = ANY(%(work_ids)s::int[]) AND relation_kind IN (select * from forward_kinds))
+                            OR (to_work_id = ANY(%(work_ids)s::int[]) AND relation_kind IN (select * from reverse_kinds))
                          UNION
                          SELECT DISTINCT on (w.id)-- We recursively traverse over the relations
                                                   w.id,
@@ -96,7 +97,7 @@ class WorkRelation(models.Model):
                                                   w.from_work_id,
                                                   w.to_work_id,
                                                   c.depth + 1,
-                                                  c.path || w.relation_index,
+                                                  c.path || %(mul)s * w.relation_index,
                                                   ( c.from_work_id = w.from_work_id or c.to_work_id = w.from_work_id ) as fwd
                          FROM works_workrelation w
                                   INNER JOIN cte_workrelations c
@@ -139,9 +140,12 @@ class WorkRelation(models.Model):
                                         to_work_id,
                                         path
                 FROM cte_workrelations
-                order by path asc"""
+                order by path"""
 
-        rel = WorkRelation.objects.raw(query, [forward_kinds, reverse_kinds, work_ids, work_ids, work_ids, work_ids])
+        query += " DESC" if further_away_first else " ASC"
+
+        rel = WorkRelation.objects.raw(query, {"forward_kinds": forward_kinds, "reverse_kinds": reverse_kinds,
+                                               "work_ids": work_ids, "mul": -1 if further_away_first else 1})
         rel = rel.prefetch_related('from_work', 'to_work')
         return rel
 

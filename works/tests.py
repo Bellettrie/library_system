@@ -81,7 +81,7 @@ class WorkRelationTests(TestCase):
 
     def test_relations_from_multiple_starting_points(self):
         sub_kind = WorkRelation.RelationKind.sub_work_of
-        rels = WorkRelation.traverse_relations([self.work1.id, self.work7.id], [sub_kind], [sub_kind])
+        rels = WorkRelation.traverse_relations([self.work1.id, self.work7.id], [sub_kind], [sub_kind], further_away_first=True)
         self.assertSameRelations(rels, [self.rel1, self.rel2, self.rel3, self.rel4, self.rel6, self.rel7])
 
 
