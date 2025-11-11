@@ -11,6 +11,7 @@ class WorkRelation(models.Model):
     The WorkRelation model is used to represent the relations between Works in the system.
 
     """
+
     class RelationKind(models.IntegerChoices):
         sub_work_of = 1
         part_of_series = 2
@@ -69,7 +70,9 @@ class WorkRelation(models.Model):
                          relation_kind,
                          from_work_id,
                          to_work_id,
-                         depth
+                         depth,
+                         path,
+                         fwd
                             )
                         AS
                         (SELECT id,
@@ -78,7 +81,9 @@ class WorkRelation(models.Model):
                                 relation_kind,
                                 from_work_id,
                                 to_work_id,
-                                1
+                                1,
+                                array[case when from_work_id = ANY(%s::int[]) then from_work_id else to_work_id end, relation_index] as path,
+                                from_work_id = ANY(%s::int[]) as fwd
                          FROM works_workrelation
                          WHERE (from_work_id    = ANY(%s::int[]) AND relation_kind IN (select * from forward_kinds))
                             OR (to_work_id = ANY(%s::int[]) AND relation_kind IN (select * from reverse_kinds))
@@ -90,52 +95,58 @@ class WorkRelation(models.Model):
                                                   w.relation_kind,
                                                   w.from_work_id,
                                                   w.to_work_id,
-                                                  c.depth + 1
+                                                  c.depth + 1,
+                                                  c.path || w.relation_index,
+                                                  ( c.from_work_id = w.from_work_id or c.to_work_id = w.from_work_id ) as fwd
                          FROM works_workrelation w
                                   INNER JOIN cte_workrelations c
                                              ON -- use both ends of the already-found WorkRelations to find new ones if they match with the directions we are looking.
                                                  (
                                                      (
+                                                         c.id != w.id AND
                                                          c.from_work_id = w.from_work_id AND
-                                                         w.relation_kind IN (select * from forward_kinds)
+                                                         w.relation_kind IN (select * from forward_kinds) AND
+                                                         not c.fwd
                                                          )
                                                          OR
                                                      (
+                                                         c.id != w.id AND
                                                          c.to_work_id = w.from_work_id and
                                                          w.relation_kind IN (select * from forward_kinds)
+                                                         AND c.fwd
                                                          )
                                                          OR
                                                      (
+                                                         c.id != w.id AND
                                                          c.to_work_id = w.to_work_id AND
                                                          w.relation_kind IN (select * from reverse_kinds)
+                                                         AND c.fwd
                                                          )
                                                          OR
                                                      (
+                                                         c.id != w.id AND
                                                          c.from_work_id = w.to_work_id AND
                                                          w.relation_kind IN (select * from reverse_kinds)
+                                                         AND NOT c.fwd
                                                          )
                                                      )
                         ) CYCLE id SET is_cycle USING path_cycle -- This prevents us from crashing the database if loops exist ;).
-                SELECT distinct on (id) id,
+                SELECT distinct on (path) id,
                                         relation_index,
                                         relation_index_label,
                                         relation_kind,
                                         from_work_id,
                                         to_work_id,
-                                        depth,
-                                        path_cycle
+                                        path
                 FROM cte_workrelations
-                order by id, depth"""
+                order by path asc"""
 
-        rel = WorkRelation.objects.raw(query, [forward_kinds, reverse_kinds, work_ids, work_ids])
+        rel = WorkRelation.objects.raw(query, [forward_kinds, reverse_kinds, work_ids, work_ids, work_ids, work_ids])
         rel = rel.prefetch_related('from_work', 'to_work')
         return rel
 
     def __str__(self):
-        lvl = ""
-        if hasattr(self, 'depth'):
-            lvl = 'depth: ' + str(self.depth)
-
-        if hasattr(self, 'path_cycle'):
-            lvl += "cycle : " + str(self.path_cycle)
-        return f'{self.from_work.title} -> {self.to_work.title}: {self.relation_index_label} -> {self.relation_kind} {lvl}'
+        path = ""
+        if hasattr(self, 'path'):
+            path += "path : " + str(self.path)
+        return f'{self.from_work.title} -> {self.to_work.title}: {self.relation_index_label} -> {self.relation_kind} {path}'
