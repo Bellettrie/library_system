@@ -102,8 +102,8 @@ class WorkRelationTests(TestCase):
         WordMatch.objects.all().delete()
         work4 = create_work("work4")
         WorkRelation.objects.create(from_work=self.work1, to_work=work4,
-                                                relation_kind=WorkRelation.RelationKind.part_of_series,
-                                                relation_index=2)
+                                    relation_kind=WorkRelation.RelationKind.part_of_series,
+                                    relation_index=2)
         WordMatch.objects.exclude(publication=self.work1).delete()
         words = self.get_all_words()
         matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
