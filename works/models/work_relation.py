@@ -40,6 +40,12 @@ class WorkRelation(models.Model):
 
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
+        @staticmethod
+        def series_down(work_ids: List[int]):
+            up_types = []
+            down_types = [WorkRelation.RelationKind.part_of_series]
+            return WorkRelation.traverse_relations(work_ids, up_types, down_types)
+
     @staticmethod
     def traverse_relations(work_ids: List[int], forward_kinds: List[int], reverse_kinds: List[int],
                            further_away_first=False) -> RawQuerySet:

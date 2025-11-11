@@ -1,3 +1,4 @@
+from typing import List
 
 from django.db import models
 
@@ -6,7 +7,7 @@ from django.db.models import PROTECT, CASCADE
 
 from book_code_generation.models import FakeItem, BookCode
 from creators.models import LocationNumber
-from works.models import NamedTranslatableThing, Location, GENERATORS
+from works.models import NamedTranslatableThing, Location, GENERATORS, WorkRelation
 
 
 class SeriesNode(models.Model):
@@ -141,4 +142,60 @@ class CreatorToSeries(models.Model):
 
 
 class SeriesV2(BookCode):
-    work = models.ForeignKey("works.Work", on_delete=CASCADE)
+    work = models.OneToOneField("works.Work", on_delete=CASCADE)
+
+    def relation_index_label(self):
+        wr = self.work.part_of_series()
+        if wr:
+            return wr.relation_index_label
+        return None
+
+    def relation_index(self):
+        wr = self.work.part_of_series()
+        if wr:
+            return wr.relation_index
+        return None
+
+
+class Graph:
+    def __init__(self, wr, path):
+        self.wr = wr
+        self.path=path
+        self.below = {}
+    def get_children(self):
+        child_list = list(self.below.values())
+        sorted_children = sorted(child_list, key=lambda x: x.wr.relation_index)
+        return sorted_children
+
+    @staticmethod
+    def path_zplurp(pth: List[int]):
+        pt = list(map(str, pth))
+        return ",".join(pt)
+
+    def add_relation(self, wr: WorkRelation):
+        if not hasattr(wr, "path"):
+            print("NO PATH")
+            return
+
+        if len(wr.path) <= len(self.path):
+            print("ERR")
+            return
+        bl = self.below.get(Graph.path_zplurp(wr.path))
+        if bl is not None:
+            return
+        if len(wr.path) == len(self.path) + 1:
+            pth =Graph.path_zplurp(wr.path)
+            self.below[pth] = Graph(wr, wr.path)
+            return
+
+        lstlim = []
+        for x in range (0, len(self.path)+1):
+            lstlim.append(wr.path[x])
+        blz = Graph.path_zplurp(lstlim)
+        bl = self.below.get(blz)
+        if bl is not None:
+            bl.add_relation(wr)
+            return
+        print("ERR 4")
+
+

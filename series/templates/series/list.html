@@ -5,7 +5,8 @@
     <div class="flex flex-col gap-3">
         {% component 'search.searchbox' selected_tag="series" %}
             <form class="flex flex-1  w-full place-content-center join" action="/series/list" method="get">
-                <input class="input input-bordered join-item" id="q" type="text" name="q" value="{{ request.GET.q }}" placeholder="Cosmere">
+                <input class="input input-bordered join-item" id="q" type="text" name="q" value="{{ request.GET.q }}"
+                       placeholder="Cosmere">
                 <input class="btn btn-primary join-item" type="submit" value="Search">
             </form>
         {% endcomponent %}
@@ -16,28 +17,34 @@
             {% fill 'title' %}Results{% endfill %}
             {% fill 'content' %}
                 <table class="table {% if small_table %}table-xs{% endif %} table-zebra table-pin-rows table-pin-cols rounded-box">
-                    {% for series in object_list %}
-                        <tr>
-                            <td colspan="{{ counter.five_minus }}">{% if series.display_number %}[
-                                {{ series.display_number }}
-                                ]{% else %}
-                                *{% endif %}</td>
-                            {% with publication=series %}
-                                <td><a class="link link-secondary" href="/series/views/{{ publication.pk }}">
-                                    {% if publication.title %}{{ publication.get_title }} {% if publication.sub_title %}
-                                        <br/>
-                                        <i>-{{ publication.sub_title }}</i>{% endif %}{% else %}
-                                        <i>No Title</i> {% endif %}
-                                </a></td>
-                                <td>
-                                    {% for author in publication.get_own_authors %}
-                                        {% include 'creators/single_line_description.html' %}{% if not forloop.last %}
-                                            <br/>
+                    {% for work in object_list %}
+                        {% with series=work.as_series %}
+                            {% if series %}
+                                <tr>
+                                    <td colspan="{{ counter.five_minus }}">{% if series.relation_index_label %}[
+                                        {{ series.relation_index_label }}
+                                        ]{% else %}
+                                        {% if series.relation_index %}
+                                            [{{ series.relation_index }}]
                                         {% endif %}
-                                    {% endfor %}
-                                </td>
-                            {% endwith %}
-                        </tr>
+                                        *{% endif %}</td>
+                                    <td><a class="link link-secondary" href="/series/views/{{ work.pk }}">
+                                        {% if work.title %}{{ work.get_title }} {% if work.sub_title %}
+                                            <br/>
+                                            <i>-{{ work.sub_title }}</i>{% endif %}{% else %}
+                                            <i>No Title</i> {% endif %}
+                                    </a></td>
+                                    <td>
+                                        {% for author in work.get_own_authors %}
+                                            {% include 'creators/single_line_description.html' %}
+                                                    {% if not forloop.last %}
+                                                        <br/>
+                                                    {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endwith %}
                     {% empty %}
                         <i> No results</i>
                     {% endfor %}

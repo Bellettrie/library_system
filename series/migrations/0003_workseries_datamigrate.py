@@ -91,7 +91,7 @@ def data_migrate(apps, schema_editor):
             coalesce(number, -6),
             display_number,
              CASE
-                WHEN coalesce(series_workinseries.is_primary, false) = TRUE THEN 2
+                WHEN coalesce(series_workinseries.is_primary, true) = TRUE THEN 2
                 ELSE 3
             END,
             coalesce(from_work.id, wwork.id),

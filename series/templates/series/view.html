@@ -5,54 +5,61 @@
             {% fill 'title' %}{% include 'series/part_of_series_name.html' %} {% endfill %}
             {% fill 'content' %}
                 <table class="table table-striped">
-                    {% with series=series %}
+                    {% with series=series.as_series %}
                         <tr>
                             <th>Name</th>
                             <td>
                                 <a href="/series/views/{{ series.pk }}">
-                                    {% if series.title %}{{ series.get_title }} {% if series.sub_title %}<br/>
-                                        <i>-{{ series.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                                    {% if series.work.title %}{{ series.work.get_title }} {% if series.work.sub_title %}
+                                        <br/>
+                                        <i>-{{ series.work.sub_title }}</i>{% endif %}{% else %}
+                                        <i>No Title</i> {% endif %}
                                 </a>
                             </td>
                         </tr>
-                        {% if series.original_title %}
+                        {% if series.work.original_title %}
                             <tr>
                                 <th> Original Name</th>
                                 <td>
-                                    {% if series.get_original_title %} {{ series.get_original_title }}
-                                        {% if series.original_sub_title %}<br/>
-                                            <i>-{{ series.original_sub_title }}</i>{% endif %}{% else %}
+                                    {% if series.work.get_original_title %} {{ series.work.get_original_title }}
+                                        {% if series.work.original_sub_title %}<br/>
+                                            <i>-{{ series.work.original_sub_title }}</i>{% endif %}{% else %}
                                         <i>No Title</i> {% endif %}
                                 </td>
                             </tr>
                         {% endif %}
-                        {% if series.original_language %}
+                        {% if series.work.original_language %}
                             <tr>
                                 <th> Original Language</th>
                                 <td>
-                                    {{ series.original_language }}
+                                    {{ series.work.original_language }}
                                 </td>
                             </tr>
                         {% endif %}
                         <tr>
                             <th>Authors</th>
                             <td>
-                                {% for author in series.get_own_authors %}
+                                {% for author in series.work.get_own_authors %}
                                     {% include 'creators/single_line_description.html' %}
                                     {% if not forloop.last %}<br/>{% endif %}{% endfor %}
                             </td>
                         </tr>
                     {% endwith %}
-                    {% if series.number %}
-                        <tr>
-                            <th>Part of series</th>
-                            <td>
-                                {% with also_show_number=True %}
-                                    {% include 'series/part_of_series_name.html' %}<br>
-                                {% endwith %}
-                            </td>
-                        </tr>
-                    {% endif %}
+                    {% with part_of=series.work.part_of_series %}
+                        {% if part_of %}
+                            <tr>
+                                <th>Part of series</th>
+                                <td>
+                                    {% with work=series.work %}
+                                        {% with also_show_number=True %}
+                                            {% include 'series/part_of_series_name.html' %} > {{ work.title }}
+                                            <br>
+                                        {% endwith %}
+                                    {% endwith %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endwith %}
                     <tr>
                         <th>Location</th>
                         <td>{{ series.location }}</td>

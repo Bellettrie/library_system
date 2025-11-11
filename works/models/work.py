@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import PROTECT, CASCADE
 from django.db.models.expressions import RawSQL
+from django.shortcuts import get_object_or_404
 
 from book_code_generation.models import FakeItem, BookCode
 from lendings.models import Lending
@@ -20,6 +21,21 @@ class Work(NamedTranslatableThing):
     # Temporary field for migration
     based_on_series = models.OneToOneField("series.Series", on_delete=PROTECT, null=True, blank=True)
 
+    def as_series(self):
+        from series.models import SeriesV2
+        srs = SeriesV2.objects.filter (work_id=self.id)
+        if len(srs) == 1:
+            return srs[0]
+        return None
+
+
+    def part_of_series(self):
+        from works.models import WorkRelation
+
+        ws =   WorkRelation.objects.filter(from_work=self, relation_kind__in=[WorkRelation.RelationKind.part_of_series])
+        if len(ws) == 1:
+            return ws[0]
+        return None
 
     def get_pub(self):
         return self

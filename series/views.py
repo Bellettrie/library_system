@@ -14,9 +14,10 @@ from book_code_generation.procedures.location_number_generation import generate_
 from book_code_generation.views import get_book_code_series
 from creators.models import Creator, LocationNumber
 from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
-from series.models import Series, SeriesNode, SeriesV2
+from series.models import Series, SeriesNode, SeriesV2, Graph
 from book_code_generation.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
+from works.models import WorkRelation
 from works.views import SearchQuery
 
 
@@ -41,7 +42,12 @@ def get_series_by_query(request, search_text):
 
 def view_series(request, pk):
     series = get_object_or_404(SeriesV2, work_id=pk)
-    return render(request, 'series/view.html', {'series': series})
+    graph_data = WorkRelation.RelationTraversal.series_down([pk])
+    grph = Graph(WorkRelation(from_work=series.work, to_work=series.work), [pk])
+    for graph in graph_data:
+        grph.add_relation(graph)
+    print(grph)
+    return render(request, 'series/view.html', {'series': series, 'series_graph': grph})
 
 
 @transaction.atomic
@@ -129,14 +135,13 @@ class SeriesList(ListView):
         return context
 
     def get_queryset(self):  # new
-        words = get_query_words(self.request.GET.get('q', ""))
+        words = get_query_words(self.request.GET.get('q', None))
         if words is None:
             return []
-        sq = SearchQuery(words=words).search()
-        series = SeriesV2.objects.filter(work__in=sq)
-
-
-        return list(series)
+        sq = SearchQuery(words=words).search().filter(seriesv2__isnull=False)
+        print(sq.query)
+        print(sq.all())
+        return sq
 
 
 @transaction.atomic

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
+from django.db.models import QuerySet
 from django.db.models.expressions import RawSQL, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
@@ -135,7 +136,7 @@ class SearchQuery:
 
         return queries
 
-    def search(self):
+    def search(self) -> QuerySet[Work]:
         query_fragments = self.get_subqueries()
         if len(query_fragments) == 0:
             return Work.objects.none()
