@@ -1,9 +1,8 @@
 from django.db import models
-from django.db.models import PROTECT, CASCADE
+from django.db.models import PROTECT
 from django.db.models.expressions import RawSQL
-from django.shortcuts import get_object_or_404
 
-from book_code_generation.models import FakeItem, BookCode
+from book_code_generation.models import FakeItem
 from lendings.models import Lending
 from works.models.abstract import TranslatedThing, NamedTranslatableThing
 from works.models.code_generators import GENERATORS
@@ -19,20 +18,18 @@ class Work(NamedTranslatableThing):
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
 
     # Temporary field for migration
-    based_on_series = models.OneToOneField("series.Series", on_delete=PROTECT, null=True, blank=True)
 
     def as_series(self):
         from series.models import SeriesV2
-        srs = SeriesV2.objects.filter (work_id=self.id)
+        srs = SeriesV2.objects.filter(work_id=self.id)
         if len(srs) == 1:
             return srs[0]
         return None
 
-
     def part_of_series(self):
         from works.models import WorkRelation
 
-        ws =   WorkRelation.objects.filter(from_work=self, relation_kind__in=[WorkRelation.RelationKind.part_of_series])
+        ws = WorkRelation.objects.filter(from_work=self, relation_kind__in=[WorkRelation.RelationKind.part_of_series])
         if len(ws) == 1:
             return ws[0]
         return None
@@ -50,25 +47,23 @@ class Work(NamedTranslatableThing):
         self.save()
 
     def get_authors(self):
-        from series.models import WorkInSeries
-        from works.models.creator_to_work import CreatorToWork
+        from works.models import CreatorToWork, WorkRelation
 
-        links = CreatorToWork.objects.filter(work_id=self.id)
-        authors = []
-        for link in links:
-            authors.append(link)
-        for serie in WorkInSeries.objects.filter(work_id=self.id, is_primary=True):
-            authors = serie.get_authors() + authors
-        author_set = list()
-        for author in authors:
-            add = True
-            for author_2 in author_set:
-                if author.creator.pk == author_2.creator.pk and author.role.name == author_2.role.name:
-                    add = False
-            if add:
-                author_set.append(author)
-        author_set.sort(key=lambda a: a.number)
-        return author_set
+        work_rels = WorkRelation.RelationTraversal.series_up([self.id])
+        work_ids = []
+        for rel in work_rels:
+            work_ids.append(rel.from_work.id)
+            work_ids.append(rel.to_work.id)
+        work_ids = set(work_ids)
+
+        creator_to_works = CreatorToWork.objects.filter(work_id__in=work_ids)
+
+        result = []
+        for work in work_rels:
+            for creator in creator_to_works:
+                if work.id == creator.work_id:
+                    result.append(creator)
+        return result
 
     def get_own_authors(self):
         from works.models.creator_to_work import CreatorToWork

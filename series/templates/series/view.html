@@ -92,10 +92,10 @@
                     </tr>
                 </table>
                 {% if perms.series.change_series %}
-                    <a class="btn btn-primary" href="{% url 'series.edit' series.pk %}">Edit</a>
+                    <a class="btn btn-primary" href="{% url 'series.edit' series.work.pk %}">Edit</a>
                 {% endif %}
                 {% if perms.series.delete_series %}
-                    <a class="btn btn-danger" href="{% url 'series.delete' series.pk %}">Delete</a>
+                    <a class="btn btn-danger" href="{% url 'series.delete' series.work.pk %}">Delete</a>
                 {% endif %}
             {% endfill %}
         {% endcomponent %}

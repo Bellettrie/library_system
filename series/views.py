@@ -2,7 +2,6 @@ import re
 
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 
 # Create your views here.
@@ -12,12 +11,13 @@ from django.views.generic import ListView
 
 from book_code_generation.procedures.location_number_generation import generate_location_number
 from book_code_generation.views import get_book_code_series
-from creators.models import Creator, LocationNumber
-from series.forms import SeriesCreateForm, CreatorToSeriesFormSet
-from series.models import Series, SeriesNode, SeriesV2, Graph
+from creators.models import LocationNumber
+from series.forms import SeriesForm
+from series.models import SeriesV2, Graph
 from book_code_generation.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
-from works.models import WorkRelation, CreatorToWork
+from works.forms import WorkForm, CreatorToWorkFormSet
+from works.models import CreatorToWork, Work
 from works.views import SearchQuery
 
 
@@ -42,34 +42,7 @@ def get_series_by_query(request, search_text):
 
 def view_series(request, pk):
     series = get_object_or_404(SeriesV2, work_id=pk)
-    graph_data = WorkRelation.RelationTraversal.series_down([pk]).prefetch_related("from_work", "to_work")
-    graph_data_up = WorkRelation.RelationTraversal.series_up([pk]).prefetch_related("from_work", "to_work")
-
-    works = [series.work]
-    for rel in graph_data:
-        works.append(rel.from_work)
-
-    for rel in graph_data_up:
-        works.append(rel.from_work)
-
-    c2ws = CreatorToWork.objects.filter(work__in=set(works)).select_related('creator')
-
-    grph = None
-
-    for graph in graph_data_up:
-        if grph is None:
-            grph = Graph(graph, '_')
-        else:
-            grph = grph.new_parent(graph)
-    if len(graph_data_up) == 0:
-        grph = Graph(WorkRelation(from_work=series.work, to_work=series.work), [pk])
-    else:
-        grph = grph.new_parent(WorkRelation(from_work=graph_data_up[-1].to_work, to_work=graph_data_up[-1].to_work))
-    for graph in graph_data:
-        grph.add_relation(graph)
-
-    for c2w in c2ws:
-        grph.bubble_creator(c2w)
+    grph = Graph.new_from_work(series.work)
 
     return render(request, 'series/view.html', {'series': series, 'series_graph': grph})
 
@@ -81,25 +54,25 @@ def edit_series(request, pk):
     creators = None
     if request.method == 'POST':
         if pk is not None:
-            series = get_object_or_404(Series, pk=pk)
-            form = SeriesCreateForm(request.POST, instance=series)
-            creators = CreatorToSeriesFormSet(request.POST, request.FILES, instance=series)
+            series = get_object_or_404(SeriesV2, work_id=pk)
+            work_form = WorkForm(request.POST, instance=series.work)
+
+            form = SeriesForm(request.POST, instance=series)
+            creators = CreatorToWorkFormSet(request.POST, request.FILES, instance=series.work)
         else:
-            form = SeriesCreateForm(request.POST)
-            creators = CreatorToSeriesFormSet(request.POST, request.FILES)
+            form = SeriesForm(request.POST)
+            work_form = WorkForm(request.POST)
+            creators = CreatorToWorkFormSet(request.POST, request.FILES)
         if form.is_valid():
+            if work_form.is_valid():
+                work_inst = work_form.save(commit=False)
+                work_inst.is_translated = not not work_inst.original_language
+                work_inst.save()
+            else:
+                return render(request, 'series/edit.html',
+                              {'series': series, 'form': form, 'work_form': work_form, 'creators': creators})
             instance = form.save(commit=False)
-            found_set = set()
-            if instance.pk:
-                found_set.add(instance)
-            # Check for loops!
-            walker = instance.part_of_series
-            while walker is not None:
-                if walker in found_set:
-                    raise ValueError("Loop!")
-                found_set.add(walker)
-                walker = walker.part_of_series
-            instance.is_translated = instance.original_language is not None
+            instance.work_id= work_inst.id
             instance.save()
 
             if creators.is_valid():
@@ -107,24 +80,22 @@ def edit_series(request, pk):
                 for inst in creators.deleted_objects:
                     inst.delete()
                 for c2w in instances:
-                    c2w.series = instance
+                    c2w.work = work_inst
                     c2w.save()
 
-            if series is not None:
-                from search.models import SeriesWordMatch
-                SeriesWordMatch.series_rename(series)
-
-            return HttpResponseRedirect(reverse('series.views', args=(instance.pk,)))
+            return HttpResponseRedirect(reverse('series.views', args=(instance.work.pk,)))
     else:
         if pk is not None:
-            series = get_object_or_404(Series, pk=pk)
-            creators = CreatorToSeriesFormSet(instance=series)
-            form = SeriesCreateForm(instance=series)
+            series = get_object_or_404(SeriesV2, work_id=pk)
+            work_form = WorkForm(instance=series.work)
+            creators = CreatorToWorkFormSet(instance=series.work)
+            form = SeriesForm(instance=series)
         else:
-            creators = CreatorToSeriesFormSet()
-            form = SeriesCreateForm()
+            work_form = WorkForm(request.POST)
+            creators = CreatorToWorkFormSet()
+            form = SeriesForm()
 
-    return render(request, 'series/edit.html', {'series': series, 'form': form, 'creators': creators})
+    return render(request, 'series/edit.html', {'series': series, 'form': form, 'work_form':work_form, 'creators': creators})
 
 
 @permission_required('series.add_series')
@@ -134,21 +105,19 @@ def new_series(request):
 
 @permission_required('series.delete_series')
 def delete_series(request, pk):
-    series = Series.objects.filter(pk=pk)
-    z = SeriesNode.objects.filter(part_of_series=series.first())
-    if len(z) > 0:
-        return render(request, 'are-you-sure.html', {
-            'what': "to delete " + (series.first().title or "<No name> ") + ". Series has to have no subseries."})
+    wk = Work.objects.filter(id=pk)
+
     if not request.GET.get('confirm'):
         return render(request, 'are-you-sure.html',
-                      {'what': "delete series with name " + (series.first().title or "<No name> ")})
-    series.delete()
+                      {'what': "delete series with name " + (wk.first().title or "<No name> ")})
+    CreatorToWork.objects.filter(work_id=pk).delete()
+    wk.delete()
 
     return redirect('homepage')
 
 
 class SeriesList(ListView):
-    model = Series
+    model = Work
     template_name = 'series/list.html'
     paginate_by = 10
 

@@ -51,11 +51,15 @@ def data_migrate(apps, schema_editor):
         (
             book_code,
             book_code_sortable,
-            work_id
+            work_id,
+            location_id,
+            location_code_id
         ) SELECT
             series_series.book_code,
             series_series.book_code_sortable,
-            works_work.id
+            works_work.id,
+            series_series.location_id,
+            series_series.location_code_id
             FROM series_series
         LEFT JOIN works_work ON series_series.seriesnode_ptr_id = works_work.based_on_series_id
         """

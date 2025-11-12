@@ -26,4 +26,21 @@ class Migration(migrations.Migration):
                 'indexes': [django.contrib.postgres.indexes.GinIndex(fields=['book_code_sortable'], name='series_seriesv2_book_code')],
             },
         ),
+        migrations.AddField(
+            model_name='seriesv2',
+            name='location',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                    to='works.location'),
+        ),
+        migrations.AddField(
+            model_name='seriesv2',
+            name='location_code',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                    to='creators.locationnumber'),
+        ),
+        migrations.AlterField(
+            model_name='seriesv2',
+            name='work',
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='works.work'),
+        ),
     ]

@@ -6,17 +6,20 @@
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        <div class="flex flex-col 3xl:flex-row gap-3">
+        <div class="flex flex-col gap-3">
+        {% component 'tile.Tile' root_class_tags="flex-0" %}
+                {% fill 'title' %}Work Info{% endfill %}
+                {% fill 'content' %}
+                    <dl class="divide-y divide-gray-100">
+                        {% component "form.Smol" work_form / %}
+                    </dl>
+                {% endfill %}
+            {% endcomponent %}
             {% component 'tile.Tile' root_class_tags="flex-0" %}
                 {% fill 'title' %}Series Info{% endfill %}
                 {% fill 'content' %}
                     <dl class="divide-y divide-gray-100">
-                        {% for field in form.visible_fields %}
-                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class=" font-medium ">{{ field.label }}</dt>
-                                <dd class="mt-1  sm:col-span-2 sm:mt-0">{{ field|add_class:"input input-xs border-1 border-bellered" }}</dd>
-                            </div>
-                        {% endfor %}
+                        {% component "form.Smol" form / %}
                     </dl>
                 {% endfill %}
             {% endcomponent %}

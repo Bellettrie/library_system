@@ -1,20 +1,19 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models import QuerySet
-from django.db.models.expressions import RawSQL, F
+from django.db.models.expressions import F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 # Create your views here.
 from django.urls import reverse
-from django.views.generic import DetailView, ListView
 
-from recode.models import Recode
+from django.views.generic import DetailView, ListView
 from recode.procedures.update_recode import update_recode_for_item
 from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
 from utils.get_query_words import get_query_words
-from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm, \
+from works.forms import ItemStateCreateForm, ItemCreateForm, WorkForm, SubWorkCreateForm, \
     LocationChangeForm
 from works.models import Work, Item, ItemState, WorkInPublication, \
     Category
@@ -298,9 +297,9 @@ def publication_edit(request, publication_id=None):
     if request.method == 'POST':
         if publication_id is not None:
             publication = get_object_or_404(Work, pk=publication_id)
-            form = PublicationCreateForm(request.POST, instance=publication)
+            form = WorkForm(request.POST, instance=publication)
         else:
-            form = PublicationCreateForm(request.POST)
+            form = WorkForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.is_translated = instance.original_language is not None
@@ -337,11 +336,11 @@ def publication_edit(request, publication_id=None):
             publication = get_object_or_404(Work, pk=publication_id)
             creator_to_works = CreatorToWorkFormSet(instance=publication)
             series_to_works = SeriesToWorkFomSet(instance=publication)
-            form = PublicationCreateForm(instance=publication)
+            form = WorkForm(instance=publication)
         else:
             creator_to_works = CreatorToWorkFormSet()
             series_to_works = SeriesToWorkFomSet()
-            form = PublicationCreateForm()
+            form = WorkForm()
     return render(request, 'works/publication_edit.html',
                   {'series': series_to_works, 'publication': publication, 'form': form, 'creators': creator_to_works})
 
