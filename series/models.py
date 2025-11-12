@@ -7,7 +7,8 @@ from django.db.models import PROTECT, CASCADE
 
 from book_code_generation.models import BookCode
 from creators.models import LocationNumber
-from works.models import NamedTranslatableThing, Location, WorkRelation
+from works.models import NamedTranslatableThing, Location, WorkRelation, Work
+
 
 class SeriesV2(BookCode):
     work = models.OneToOneField("works.Work", on_delete=CASCADE)
@@ -35,15 +36,14 @@ class Graph:
         return gph
 
     @staticmethod
-    def new_from_work(work):
-        pk = work.id
-        graph_data = WorkRelation.RelationTraversal.series_down([pk])
+    def new_from_work(work: Work):
+        graph_data = WorkRelation.RelationTraversal.series_down([work.id])
         graph_data = graph_data.prefetch_related(
             "from_work",
             "to_work",
             "from_work__item_set",
             "to_work__item_set")
-        graph_data_up = WorkRelation.RelationTraversal.series_up([pk])
+        graph_data_up = WorkRelation.RelationTraversal.series_up([work.id])
         graph_data_up = graph_data_up.prefetch_related(
             "from_work",
             "to_work",
@@ -61,22 +61,22 @@ class Graph:
         from works.models import CreatorToWork
         c2ws = CreatorToWork.objects.filter(work__in=set(works)).select_related('creator')
 
-        grph = None
+        graph_result = None
         for graph in graph_data_up:
-            if grph is None:
-                grph = Graph(graph, '_')
+            if graph_result is None:
+                graph_result = Graph(graph, '_')
             else:
-                grph = grph.new_parent(graph)
+                graph_result = graph_result.new_parent(graph)
         if len(graph_data_up) == 0:
-            grph = Graph(WorkRelation(from_work=work, to_work=work), [pk])
+            graph_result = Graph(WorkRelation(from_work=work, to_work=work), [work.id])
         else:
-            grph = grph.new_parent(WorkRelation(from_work=graph_data_up[-1].to_work, to_work=graph_data_up[-1].to_work))
+            graph_result = graph_result.new_parent(WorkRelation(from_work=graph_data_up[-1].to_work, to_work=graph_data_up[-1].to_work))
         for graph in graph_data:
-            grph.add_relation(graph)
+            graph_result.add_relation(graph)
 
         for c2w in c2ws:
-            grph.bubble_creator(c2w)
-        return grph
+            graph_result.bubble_creator(c2w)
+        return graph_result
 
     def __init__(self, wr, path, creators=None):
         self.wr = wr
@@ -96,35 +96,38 @@ class Graph:
         return sorted_children
 
     @staticmethod
-    def path_zplurp(pth: List[int]):
+    def path_to_string(pth: List[int]):
         pt = list(map(str, pth))
         return ",".join(pt)
 
     def add_relation(self, wr: WorkRelation):
         if not hasattr(wr, "path"):
-            print("NO PATH")
-            return
+            raise Exception("Tree building failed")
+
         if self.below.get('_') and len(self.below) == 1:
             self.below['_'].add_relation(wr)
             return
 
         if len(wr.path) <= len(self.path):
-            print("ERR")
-            return
-        bl = self.below.get(Graph.path_zplurp(wr.path))
+            raise Exception("Tree building failed")
+
+        bl = self.below.get(Graph.path_to_string(wr.path))
         if bl is not None:
             return
         if len(wr.path) == len(self.path) + 1:
-            pth = Graph.path_zplurp(wr.path)
+            pth = Graph.path_to_string(wr.path)
             self.below[pth] = Graph(wr, wr.path)
             return
 
         lstlim = []
         for x in range(0, len(self.path) + 1):
             lstlim.append(wr.path[x])
-        blz = Graph.path_zplurp(lstlim)
+
+        blz = Graph.path_to_string(lstlim)
         bl = self.below.get(blz)
+
         if bl is not None:
             bl.add_relation(wr)
             return
-        print("ERR 4")
+
+        raise Exception("Tree building failed")

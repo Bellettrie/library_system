@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models import QuerySet
-from django.db.models.expressions import F
+from django.db.models.expressions import F, RawSQL
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 # Create your views here.
@@ -153,10 +153,12 @@ def query_annotate_and_sort_bookcodes(query):
         itemid=F('item__id'),
         book_code_sortable=F('item__book_code_sortable'),
         book_code=F('item__book_code'),
-        book_code_extension=F('item__book_code_extension')
+        book_code_extension=F('item__book_code_extension'),
+        is_series_bookcode_sortable=F('seriesv2__book_code_sortable'),
+        book_codeX = RawSQL('coalesce(works_item.book_code_sortable,series_seriesv2.book_code_sortable)',[]),
     )
-    query = query.order_by("book_code_sortable", "id", 'itemid')
-    query = query.distinct("book_code_sortable", "id", 'itemid')
+    query = query.order_by("book_codeX", "id", 'itemid')
+    query = query.distinct("book_codeX", "id", 'itemid')
     return query
 
 

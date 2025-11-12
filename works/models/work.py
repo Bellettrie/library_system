@@ -50,7 +50,7 @@ class Work(NamedTranslatableThing):
         from works.models import CreatorToWork, WorkRelation
 
         work_rels = WorkRelation.RelationTraversal.series_up([self.id])
-        work_ids = []
+        work_ids = [self.id]
         for rel in work_rels:
             work_ids.append(rel.from_work.id)
             work_ids.append(rel.to_work.id)
@@ -59,9 +59,9 @@ class Work(NamedTranslatableThing):
         creator_to_works = CreatorToWork.objects.filter(work_id__in=work_ids)
 
         result = []
-        for work in work_rels:
+        for work_id in work_ids:
             for creator in creator_to_works:
-                if work.id == creator.work_id:
+                if work_id == creator.work_id:
                     result.append(creator)
         return result
 
