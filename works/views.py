@@ -145,7 +145,7 @@ class SearchQuery:
         for fragment in query_fragments:
             query = fragment(query)
 
-        return query.prefetch_related('creatortowork_set',"creatortowork_set__creator")
+        return query.prefetch_related('creatortowork_set', "creatortowork_set__creator")
 
 
 def query_annotate_and_sort_bookcodes(query):
@@ -155,7 +155,7 @@ def query_annotate_and_sort_bookcodes(query):
         book_code=F('item__book_code'),
         book_code_extension=F('item__book_code_extension'),
         is_series_bookcode_sortable=F('seriesv2__book_code_sortable'),
-        book_codeX = RawSQL('coalesce(works_item.book_code_sortable,series_seriesv2.book_code_sortable)',[]),
+        book_codeX=RawSQL('coalesce(works_item.book_code_sortable,series_seriesv2.book_code_sortable)', []),
     )
     query = query.order_by("book_codeX", "id", 'itemid')
     query = query.distinct("book_codeX", "id", 'itemid')
@@ -191,9 +191,13 @@ class WorkList(ListView):
         return get_works(self.request)
 
 
-class WorkDetail(DetailView):
+def publication_view(request, pk):
+    work = get_object_or_404(Work, pk=pk)
     template_name = 'works/publication_view.html'
-    model = Work
+    if work.as_series():
+        return HttpResponseRedirect(reverse('series.views', args=(pk,)))
+
+    return render(request, template_name, {'work': work})
 
 
 def create_item_state_hx(request, item_id):
