@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('search', '0005_delete_subworkwordmatch'),
-        ('works', '0006_subwork_datamigrate'),
+        ('works', '0007_subwork_datamigrate'),
     ]
 
     operations = [

@@ -13,6 +13,7 @@ from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
 from utils.get_query_words import get_query_words
+from utils.time import get_now
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm, \
     LocationChangeForm
 from works.models import Work, Item, ItemState, \
@@ -340,7 +341,7 @@ def publication_edit(request, publication_id=None):
         else:
             creator_to_works = CreatorToWorkFormSet()
             series_to_works = SeriesToWorkFomSet()
-            form = PublicationCreateForm()
+            form = PublicationCreateForm(initial={'date_added': get_now()})
     return render(request, 'works/publication_edit.html',
                   {'series': series_to_works, 'publication': publication, 'form': form, 'creators': creator_to_works})
 
@@ -408,7 +409,7 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             form = SubWorkCreateForm(instance=subwork_relation.from_work)
         else:
             creator_to_works = CreatorToWorkFormSet()
-            form = SubWorkCreateForm()
+            form = SubWorkCreateForm(initial={'date_added': get_now()})
     return render(request, 'works/subwork_edit.html',
                   {'series': series, 'publication': subwork_relation, 'form': form, 'creators': creator_to_works,
                    'num': num,
@@ -424,11 +425,13 @@ def subwork_new(request, publication_id):
 @transaction.atomic
 @permission_required('works.add_publication')
 def subwork_delete(request, subwork_id):
-    relation = get_object_or_404(WorkRelation, work_id=subwork_id, relation_type=WorkRelation.RelationKind.sub_work_of)
+    relation = get_object_or_404(WorkRelation, from_work=subwork_id,
+                                 relation_kind=WorkRelation.RelationKind.sub_work_of)
 
     if request.GET.get('confirm'):
         work = relation.from_work
         relation.delete()
         work.delete()
-        return HttpResponseRedirect(reverse('work.view', args=(relation.relation_kind,)))
-    return render(request, 'are-you-sure.html', {'what': 'delete the subwork ' + relation.to_work.get_title() + "?"})
+        return HttpResponseRedirect(reverse('work.view', args=(relation.to_work_id,)))
+    return render(request, 'are-you-sure.html',
+                  {'what': 'delete the subwork ' + (relation.from_work.get_title() or "No Title") + "?"})
