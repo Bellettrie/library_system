@@ -21,7 +21,7 @@ class WorkRelation(models.Model):
     from_work = models.ForeignKey(Work, on_delete=models.CASCADE, related_name='outgoing_relations')
     to_work = models.ForeignKey(Work, on_delete=models.CASCADE, related_name='incoming_relations')
 
-    relation_index = models.IntegerField()
+    relation_index = models.DecimalField(null=True, blank=True, decimal_places=1, max_digits=5)
     relation_index_label = models.CharField(max_length=64)
 
     relation_kind = models.IntegerField(choices=RelationKind.choices, db_index=True)
