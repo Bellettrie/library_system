@@ -12,6 +12,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterField(
+            model_name='workrelation',
+            name='relation_index',
+            field=models.DecimalField(blank=True, decimal_places=1, max_digits=5, null=True),
+        ),
         migrations.AddField(
             model_name='work',
             name='based_on_series',

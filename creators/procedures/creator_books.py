@@ -1,4 +1,3 @@
-
 from creators.models import Creator
 from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from works.models import Work, CreatorToWork, WorkRelation
@@ -16,5 +15,5 @@ def get_books_for_author(creator: Creator):
         work_ids.append(wr.from_work_id)
         work_ids.append(wr.to_work_id)
 
-    quer =  Work.objects.filter(id__in=set(work_ids))
-    return query_annotate_and_sort_bookcodes(quer)
+    query = Work.objects.filter(id__in=set(work_ids))
+    return query_annotate_and_sort_bookcodes(query)

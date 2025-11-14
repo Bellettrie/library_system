@@ -13,6 +13,13 @@ class LocationNumber(models.Model):
     name = models.CharField(max_length=64, null=True, blank=True)
     auto_name = models.BooleanField(default=True)
 
+    def gen_prefix(self):
+        print("HERE")
+        if self.location is None:
+            return None
+        print("RES")
+        return self.location.category.code + "-" + self.letter + "-" + str(self.number) + "-"
+
 
 class Creator(models.Model):
     given_names = models.CharField(max_length=255, blank=True)
@@ -95,7 +102,9 @@ class Creator(models.Model):
             if len(Recode.objects.filter(item=item)) > 0:
                 old_recode += 1
             else:
-                if not code or re.match("^" + location.category.code + "-" + code.letter + "-" + str(code.number) + "0*-", item.book_code):
+                if not code or re.match(
+                        "^" + location.category.code + "-" + code.letter + "-" + str(code.number) + "0*-",
+                        item.book_code):
                     new_recode += 1
                 else:
                     non_automa += 1
@@ -199,4 +208,5 @@ def relabel_creator(creator, location, old_number, old_letter, new_number, new_l
 
 
 def force_relabel(creatorlocationnumber: CreatorLocationNumber, old_number: int, old_letter: str):
-    relabel_creator(creatorlocationnumber.creator, creatorlocationnumber.location, old_number, old_letter, creatorlocationnumber.number, creatorlocationnumber.letter)
+    relabel_creator(creatorlocationnumber.creator, creatorlocationnumber.location, old_number, old_letter,
+                    creatorlocationnumber.number, creatorlocationnumber.letter)

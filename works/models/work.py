@@ -84,9 +84,6 @@ class Work(NamedTranslatableThing):
         author_set.sort(key=lambda a: a.number)
         return author_set
 
-    def is_simple_publication(self):
-        return len(self.workinpublication_set) == 0
-
     def get_items(self):
         from works.models.item import Item
         query = """
@@ -102,41 +99,31 @@ class Work(NamedTranslatableThing):
             order_by("-available"). \
             filter(publication_id=self.id)
 
-    def get_lend_item(self):
-        for item in self.get_items():
-            if len(Lending.objects.filter(item=item)) == 0:
-                return item
-
-    def get_why_no(self):
-        if len(self.get_items()) == 0:
-            return "Not available"
-        else:
-            return "Lent out"
-
-    def get_primary_series_or_none(self):
-        from series.models import Series, WorkInSeries
-        series_list = WorkInSeries.objects.filter(work_id=self.id, is_primary=True)
-        if len(series_list) > 0:
-            return series_list[0]
-        else:
-            return None
-
-    def has_no_items(self):
-        return len(self.get_items()) == 0
-
     def generate_code_full(self, location):
+        from works.models import WorkRelation
         first_letters = self.title[0:2].lower()
+        postfix = first_letters
+        series_list = list(WorkRelation.RelationTraversal.series_up([self.id]))
+        if ser := self.as_series():
+            if ser.location_code:
+                prefix = ser.location_code.gen_prefix()
+                if prefix:
+                    return prefix + postfix
 
-        from series.models import SeriesV2
-        series_list = WorkInSeries.objects.filter(work_id=self.id, is_primary=True)
-        if len(series_list) > 0 and series_list[0].part_of_series.book_code != "":
-            if series_list[0].number is None:
-                return series_list[0].part_of_series.book_code + first_letters
+        if len(series_list) > 0 and series_list[0].relation_index is not None:
+            num = series_list[0].relation_index
+            if num == float(int(num)):
+                num = int(num)
+            postfix = str(num)
 
-            if series_list[0].number == float(int(series_list[0].number)):
-                return series_list[0].part_of_series.book_code + str(int(series_list[0].number))
-            else:
-                return series_list[0].part_of_series.book_code + str(series_list[0].number)
+        for rel in series_list:
+            ser = rel.to_work.as_series()
+            if ser and ser.location_code:
+                prefix = ser.location_code.gen_prefix()
+                if prefix:
+                    return prefix + postfix
+            if ser and ser.book_code:
+                return ser.book_code + postfix
 
         generator = GENERATORS[location.sig_gen]
         val, should_not_add = generator(FakeItem(self, location))
@@ -146,10 +133,19 @@ class Work(NamedTranslatableThing):
             return val + first_letters
 
     def generate_code_prefix(self, location):
-        from series.models import Series, WorkInSeries
-        series_list = WorkInSeries.objects.filter(work_id=self.id, is_primary=True)
-        if len(series_list) > 0 and len(series_list[0].part_of_series.book_code.split("-")) > 1:
-            return series_list[0].part_of_series.book_code
+        from works.models import WorkRelation
+        if ser := self.as_series():
+            if ser.location_code:
+                prefix = ser.location_code.gen_prefix()
+                if prefix:
+                    return prefix
+        series_list = WorkRelation.RelationTraversal.series_up([self.id])
+
+        for rel in series_list:
+            ser = rel.to_work.as_series()
+            if ser and ser.book_code:
+                return ser.book_code
+
         generator = GENERATORS[location.sig_gen]
         return generator(FakeItem(self, location))
 

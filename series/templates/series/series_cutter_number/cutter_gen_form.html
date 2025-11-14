@@ -15,13 +15,13 @@
         <div class="form-group">
             <label for="input_string">Input</label>
             <input type="text" class="form-control" name="prefix" id="prefix" aria-describedby="bookcodehelp"
-                   value="{{ series.title }} - {{ series.pk }}" required>
+                   value="{{ series.work.title }} - {{ series.work_id }}" required>
             <small id="bookcodehelp" class="form-text text-muted">
                 Overwrite this text to define what text is used to create the custom code
             </small>
         </div>
         <div class="form-group">
-            <input type="button" class="form-control" hx-post="{% url 'series.cutter.gen_code_gen' series.pk %}"
+            <input type="button" class="form-control" hx-post="{% url 'series.cutter.gen_code_gen' series.work_id %}"
                    hx-target="#cutter" hx-include="[prefix='prefix']" value="Generate">
         </div>
         <div id="cutter">

@@ -196,10 +196,12 @@ def publication_view(request, pk):
     work = get_object_or_404(Work, pk=pk)
     template_name = 'works/publication_view.html'
     series = work.as_series
-    part_of_series = WorkRelation.objects.filter(from_work=work, relation_kind__in=[WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series]).all()
+    part_of_series = WorkRelation.objects.filter(from_work=work,
+                                                 relation_kind__in=[WorkRelation.RelationKind.part_of_series,
+                                                                    WorkRelation.RelationKind.part_of_secondary_series]).all()
     data = {
         "work": work,
-        "part_of_series":part_of_series,
+        "part_of_series": part_of_series,
     }
     if series:
         data['series'] = series

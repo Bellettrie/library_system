@@ -65,7 +65,7 @@ def edit_series(request, pk):
                 return render(request, 'series/edit.html',
                               {'series': series, 'form': form, 'work_form': work_form, 'creators': creators})
             instance = form.save(commit=False)
-            instance.work_id= work_inst.id
+            instance.work_id = work_inst.id
             instance.save()
 
             if creators.is_valid():
@@ -88,7 +88,8 @@ def edit_series(request, pk):
             creators = CreatorToWorkFormSet()
             form = SeriesForm()
 
-    return render(request, 'series/edit.html', {'series': series, 'form': form, 'work_form':work_form, 'creators': creators})
+    return render(request, 'series/edit.html',
+                  {'series': series, 'form': form, 'work_form': work_form, 'creators': creators})
 
 
 @permission_required('series.add_series')
@@ -160,7 +161,7 @@ def location_code_set_form(request, pk, hx_enabled=False):
         return render(request, templ,
                       {"series": series, "error": "Already has a location code.", "hx_enabled": hx_enabled})
     if request.method == "POST":
-        prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.title, pk=series.pk)).upper()
+        prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.work.title, pk=series.pk)).upper()
         letter = request.POST.get("cutter_letter")
         number = request.POST.get("cutter_number")
 
@@ -183,7 +184,7 @@ def location_code_set_form(request, pk, hx_enabled=False):
 @permission_required('series.change_series')
 def location_code_set_gen(request, pk):
     series = get_object_or_404(SeriesV2, work_id=pk)
-    prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.title, pk=series.pk)).upper()
+    prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.work.title, pk=series.pk)).upper()
     lst = []
     if series.location_code:
         lst = [series.location_code.pk]

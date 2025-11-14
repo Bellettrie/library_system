@@ -31,7 +31,7 @@ class Card(Component):
             creators = creators[:1]
 
         if not series and not item:
-            code="not in collection"
+            code = "not in collection"
         return {
             "creators": creators,
             "item": item,

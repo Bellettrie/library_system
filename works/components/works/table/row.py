@@ -27,7 +27,7 @@ class Row(Component):
             series = work.as_series()
 
         code = ""
-        code_extension=""
+        code_extension = ""
         if item:
             code = item.book_code
             code_extension = item.book_code_extension
@@ -37,7 +37,7 @@ class Row(Component):
         if not all_authors and len(creators) > 0:
             creators = creators[:1]
         if not series and not item:
-            code="not in collection"
+            code = "not in collection"
         return {
             "skip_header": skip_header,
             "creators": creators,
@@ -46,7 +46,7 @@ class Row(Component):
             "series": series,
             "split_code": code.split("-"),
             "book_code": code,
-            "book_code_extension":code_extension
+            "book_code_extension": code_extension
         }
 
     template_name = "works/table/row.html"

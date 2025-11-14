@@ -42,20 +42,20 @@
                 {% component "datarow.Datarow" "Series Book Code" %}
                     {{ series.book_code }}
                     {% if perms.series.change_series %}
-                        <a class="btn btn-primary btn-sm" hx-get="{% url 'series.gen_code' series.pk %}"
-                           hx-target="#dialog" href="{% url 'series.gen_code' series.pk %}">
+                        <a class="btn btn-primary btn-sm" hx-get="{% url 'series.gen_code' series.work_id %}"
+                           hx-target="#dialog" href="{% url 'series.gen_code' series.work_id %}">
                             {% if series.book_code %}
                                 Edit{% else %}New{% endif %}</a>
                     {% endif %}
                 {% endcomponent %}
                 {% if series.location_code and perms.series.change_series %}
                     {% component "datarow.Datarow" "Series Location Code" %}
-                        { series.location_code.letter }}-{{ series.location_code.number }}
+                        {{ series.location_code.letter }}-{{ series.location_code.number }}
                         {% if perms.series.change_series %}
                             <a class="btn btn-danger btn-sm"
-                               hx-get="{% url 'series.cutter.del_code' series.pk %}"
+                               hx-get="{% url 'series.cutter.del_code' series.work_id %}"
                                hx-target="#dialog"
-                               href="{% url 'series.cutter.del_code' series.pk %}">Delete</a>
+                               href="{% url 'series.cutter.del_code' series.work_id %}">Delete</a>
                         {% endif %}
                         <br>
                         <small>{{ series.location_code.name }}</small>
