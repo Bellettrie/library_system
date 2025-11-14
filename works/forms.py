@@ -4,7 +4,7 @@ from django.forms import ModelForm, inlineformset_factory
 from creators.forms import CreatorWidget
 from series.forms import SeriesWidget
 from series.models import WorkInSeries
-from works.models import ItemState, Item, CreatorToWork, Work, SubWork
+from works.models import ItemState, Item, CreatorToWork, Work
 
 
 class SimpleWorkSearch(forms.Form):
@@ -64,7 +64,7 @@ class PublicationCreateForm(ModelForm):
 
 class SubWorkCreateForm(ModelForm):
     class Meta:
-        model = SubWork
+        model = Work
         z_fields = [
             'hidden',
             'sorting',

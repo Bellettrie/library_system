@@ -7,7 +7,7 @@ from works.models import WorkRelation, Work
 
 
 sql_migrate = """
-INSERT INTO works_workrelation(relates_to_id, work_id, display_number_in_relation, number_in_relation, relation_type)
+INSERT INTO works_workrelation(to_work_id, from_work_id, relation_index_label, relation_index, relation_kind)
 SELECT publication_id, work_id, display_number_in_publication, number_in_publication, 1
 FROM works_workinpublication
 """
@@ -16,7 +16,7 @@ FROM works_workinpublication
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('works', '0004_workrelation'),
+        ('works', '0005_alter_workinpublication_publication_and_more'),
     ]
 
     operations = [

@@ -8,27 +8,27 @@
                         {% for subwork_relation in tbl %}
                             <tr>
                                 <td>
-                                    {% if subwork_relation.display_number_in_relation%}
-                                        {{ subwork_relation.display_number_in_relation }}
+                                    {% if subwork_relation.relation_index_label%}
+                                        {{ subwork_relation.relation_index_label }}
                                     {% else %}
-                                        {{ subwork_relation.number_in_relation }}
+                                        {{ subwork_relation.relation_index }}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if subwork_relation.work.title %}{{ subwork_relation.work.get_title }} {% if subwork_relation.work.sub_title %}<br/>
-                                        <i>-{{ subwork_relation.work.sub_title }}</i>{% endif %}{% else %}
+                                    {% if subwork_relation.from_work.title %}{{ subwork_relation.from_work.get_title }} {% if subwork_relation.from_work.sub_title %}<br/>
+                                        <i>-{{ subwork_relation.from_work.sub_title }}</i>{% endif %}{% else %}
                                         <i>No Title</i> {% endif %}
                                 </td>
                                 <td>
-                                    {% for author in subwork_relation.work.get_own_authors %}
+                                    {% for author in subwork_relation.from_work.get_own_authors %}
                                         {% include 'creators/single_line_description.html' %}
                                         {% if not forloop.last %}<br/>{% endif %}{% empty %}{% endfor %}
                                 </td>
                                 {% if should_edit and perms.works.change_publication %}
                                     <td class="join">
-                                        <a href="{% url 'work.subwork.edit' subwork_relation.work_id %}"
+                                        <a href="{% url 'work.subwork.edit' subwork_relation.from_work_id %}"
                                            class="btn btn-primary btn-xs join-item">Edit</a>
-                                        <a href="{% url 'work.subwork.delete' subwork_relation.work_id %}"
+                                        <a href="{% url 'work.subwork.delete' subwork_relation.from_work_id %}"
                                            class="btn btn-error btn-xs join-item">Delete</a>
                                     </td>
                                 {% endif %}
