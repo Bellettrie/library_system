@@ -118,10 +118,6 @@ class Work(NamedTranslatableThing):
 
         for rel in series_list:
             ser = rel.to_work.as_series()
-            if ser and ser.location_code:
-                prefix = ser.location_code.gen_prefix()
-                if prefix:
-                    return prefix + postfix
             if ser and ser.book_code:
                 return ser.book_code + postfix
 
