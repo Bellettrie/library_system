@@ -16,7 +16,7 @@ FROM works_workinpublication
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('works', '0005_alter_workinpublication_publication_and_more'),
+        ('works', '0006_alter_workrelation_relation_index'),
     ]
 
     operations = [
