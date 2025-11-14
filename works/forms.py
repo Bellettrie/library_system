@@ -2,8 +2,6 @@ from django import forms
 from django.forms import ModelForm, inlineformset_factory
 
 from creators.forms import CreatorWidget
-from series.forms import SeriesWidget
-from series.models import WorkInSeries
 from works.models import ItemState, Item, CreatorToWork, Work, SubWork
 
 
@@ -42,7 +40,7 @@ NAMED_TRANSLATED_LIST = ['title', 'article', 'sub_title', 'language', 'original_
                          'original_subtitle', 'original_language']
 
 
-class PublicationCreateForm(ModelForm):
+class WorkForm(ModelForm):
     class Meta:
         model = Work
         z_fields = [
@@ -93,6 +91,3 @@ class LocationChangeForm(ModelForm):
 
 CreatorToWorkFormSet = inlineformset_factory(Work, CreatorToWork, can_delete=True, fields=['creator', 'number', 'role'],
                                              widgets={'creator': CreatorWidget})
-SeriesToWorkFomSet = inlineformset_factory(Work, WorkInSeries, can_delete=True,
-                                           fields=['part_of_series', 'number', 'display_number', 'is_primary'],
-                                           widgets={'part_of_series': SeriesWidget})
