@@ -108,8 +108,8 @@ class WorkRelationTests(TestCase):
         work4.original_subtitle = "something"
         work4.save()
         wr = WorkRelation.objects.create(from_work=self.work1, to_work=work4,
-                                    relation_kind=WorkRelation.RelationKind.part_of_secondary_series,
-                                    relation_index=3)
+                                         relation_kind=WorkRelation.RelationKind.part_of_secondary_series,
+                                         relation_index=3)
         WordMatch.objects.exclude(publication=self.work1).delete()
         words = self.get_all_words()
         matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
@@ -146,8 +146,6 @@ class WorkRelationTests(TestCase):
                    WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
                    WordMatch(word=words["BUILDER"], publication=self.work1, type='CREATOR')]
         self.matches_equal(matches)
-
-
 
     def test_word_match_auto_update_based_on_work_delete(self):
         self.work2.delete()
