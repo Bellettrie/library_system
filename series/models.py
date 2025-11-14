@@ -70,7 +70,8 @@ class Graph:
         if len(graph_data_up) == 0:
             graph_result = Graph(WorkRelation(from_work=work, to_work=work), [work.id])
         else:
-            graph_result = graph_result.new_parent(WorkRelation(from_work=graph_data_up[-1].to_work, to_work=graph_data_up[-1].to_work))
+            graph_result = graph_result.new_parent(
+                WorkRelation(from_work=graph_data_up[-1].to_work, to_work=graph_data_up[-1].to_work))
         for graph in graph_data:
             graph_result.add_relation(graph)
 

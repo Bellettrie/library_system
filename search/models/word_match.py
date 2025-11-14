@@ -12,8 +12,10 @@ class WordMatch(models.Model):
     word = models.ForeignKey(SearchWord, on_delete=CASCADE, db_index=True)
     publication = models.ForeignKey(Work, on_delete=CASCADE)
     type = models.CharField(max_length=8, default="TITLE", db_index=True)
+
     def __hash__(self):
         return hash((self.word_id, self.publication_id, self.type))
+
     def __str__(self):
         return f"{self.word.word} {self.publication} {self.type}"
 
@@ -115,8 +117,6 @@ class SubWorkWordMatch(WordMatch):
                 words[word.word] = word
         for series in list(work.get_sub_works()):
             SubWorkWordMatch.get_all_for_subwork(work, series.work, words)
-            for author in series.get_authors():
-                AuthorWordMatch.get_all_for_author(work, author.creator, words)
 
     @staticmethod
     def subwork_rename(subwork: SubWork):
