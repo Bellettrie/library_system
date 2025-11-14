@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from works.models import ItemType, ItemState, Category, Location, Work, SubWork
+from works.models import ItemType, ItemState, Category, Location, Work
 
 # Register your models here.
 
@@ -18,4 +18,3 @@ class AdminDta(admin.ModelAdmin):
 
 
 admin.site.register(Work, AdminDta)
-admin.site.register(SubWork, AdminDta)

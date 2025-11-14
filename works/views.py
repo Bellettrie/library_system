@@ -15,8 +15,8 @@ from search.queries import filter_state, filter_book_code_get_q, \
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm, \
     LocationChangeForm
-from works.models import Work, Item, ItemState, WorkInPublication, \
-    Category
+from works.models import Work, Item, ItemState, \
+    Category, WorkRelation
 from works.models.item_state import get_available_states
 
 
@@ -357,16 +357,15 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
     from works.forms import CreatorToWorkFormSet
     creator_to_works = None
     series = None
-    publication = None
+    subwork_relation = None
     num = 0
     disp_num = ''
     if request.method == 'POST':
-
         if subwork_id is not None:
-            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
-            num = publication.number_in_publication
-            disp_num = publication.display_number_in_publication
-            form = SubWorkCreateForm(request.POST, instance=publication.work)
+            subwork_relation = get_object_or_404(WorkRelation, from_work_id=subwork_id)
+            num = subwork_relation.relation_index
+            disp_num = subwork_relation.relation_index_label
+            form = SubWorkCreateForm(request.POST, instance=subwork_relation.from_work)
         else:
             form = SubWorkCreateForm(request.POST)
         num = request.POST.get('num', num)
@@ -388,28 +387,31 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
                     form.add_error(None, str(error))
 
             if subwork_id is None:
-                pub = get_object_or_404(Work, id=publication_id)
-                publication = WorkInPublication.objects.create(work=instance, publication=pub,
-                                                               number_in_publication=num,
-                                                               display_number_in_publication=disp_num)
-            else:
-                publication.number_in_publication = num
-                publication.display_number_in_publication = disp_num
-                publication.save()
+                publication = get_object_or_404(Work, pk=publication_id)
 
-            return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
+                subwork_relation = WorkRelation.objects.create(from_work=instance, to_work=publication,
+                                                               relation_index=num,
+                                                               relation_index_label=disp_num,
+                                                               relation_kind=WorkRelation.RelationKind.sub_work_of)
+            else:
+                subwork_relation.relation_index = num
+                subwork_relation.relation_index_label = disp_num
+                subwork_relation.save()
+            return HttpResponseRedirect(reverse('work.view', args=(subwork_relation.to_work_id,)))
     else:
         if subwork_id is not None:
-            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
-            num = publication.number_in_publication
-            disp_num = publication.display_number_in_publication
-            creator_to_works = CreatorToWorkFormSet(instance=publication.work)
-            form = SubWorkCreateForm(instance=publication.work)
+            subwork_relation = get_object_or_404(WorkRelation, from_work_id=subwork_id,
+                                                 relation_kind=WorkRelation.RelationKind.sub_work_of)
+            num = subwork_relation.relation_index
+            disp_num = subwork_relation.relation_index_label
+            creator_to_works = CreatorToWorkFormSet(instance=subwork_relation.from_work)
+            form = SubWorkCreateForm(instance=subwork_relation.from_work)
         else:
             creator_to_works = CreatorToWorkFormSet()
             form = SubWorkCreateForm()
     return render(request, 'works/subwork_edit.html',
-                  {'series': series, 'publication': publication, 'form': form, 'creators': creator_to_works, 'num': num,
+                  {'series': series, 'publication': subwork_relation, 'form': form, 'creators': creator_to_works,
+                   'num': num,
                    'disp_num': disp_num})
 
 
@@ -422,11 +424,11 @@ def subwork_new(request, publication_id):
 @transaction.atomic
 @permission_required('works.add_publication')
 def subwork_delete(request, subwork_id):
-    publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+    relation = get_object_or_404(WorkRelation, work_id=subwork_id, relation_type=WorkRelation.RelationKind.sub_work_of)
 
     if request.GET.get('confirm'):
-        work = publication.work
-        publication.delete()
+        work = relation.from_work
+        relation.delete()
         work.delete()
-        return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
-    return render(request, 'are-you-sure.html', {'what': 'delete the subwork ' + publication.work.get_title() + "?"})
+        return HttpResponseRedirect(reverse('work.view', args=(relation.relation_kind,)))
+    return render(request, 'are-you-sure.html', {'what': 'delete the subwork ' + relation.to_work.get_title() + "?"})
