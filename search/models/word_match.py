@@ -12,7 +12,8 @@ class WordMatch(models.Model):
     word = models.ForeignKey(SearchWord, on_delete=CASCADE, db_index=True)
     publication = models.ForeignKey(Work, on_delete=CASCADE)
     type = models.CharField(max_length=8, default="TITLE", db_index=True)
-
+    def __hash__(self):
+        return hash((self.word_id, self.publication_id, self.type))
     def __str__(self):
         return f"{self.word.word} {self.publication} {self.type}"
 
@@ -59,11 +60,10 @@ class WordMatch(models.Model):
                 matches.append(WordMatch(word=get_word_from_set(word, words), publication=work, type="CREATOR"))
             for word in get_words_in_str(creator.name):
                 matches.append(WordMatch(word=get_word_from_set(word, words), publication=work, type="CREATOR"))
-
+        matches = list(set(matches))
         WordMatch.objects.bulk_create(matches)
 
         # TODO: These two will be history when the subworks and series are migrated.
-        AuthorWordMatch.get_all_for_authors(work, words)
         SubWorkWordMatch.get_all_for_subworks(work, words)
         return words
 
@@ -83,38 +83,6 @@ class WordMatch(models.Model):
         for word in get_words_in_str(work_for_words.original_subtitle):
             matches.append(WordMatch(word=get_word_from_set(word, words), publication=pub, type=role))
         return matches
-
-
-class AuthorWordMatch(WordMatch):
-    creator = models.ForeignKey(Creator, on_delete=CASCADE)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.type = "AUTHOR"
-
-    @staticmethod
-    def get_all_for_author(work: Work, creator: Creator, words):
-        names = set()
-        for creator in get_all_author_aliases_by_ids([creator.id]):
-            for name in get_words_in_str(creator.name):
-                AuthorWordMatch.objects.create(word=get_word_from_set(name, words), publication=work, creator=creator)
-            for name in get_words_in_str(creator.given_names):
-                AuthorWordMatch.objects.create(word=get_word_from_set(name, words), publication=work, creator=creator)
-        return names
-
-    @staticmethod
-    def get_all_for_authors(work: Work, words=None):
-        if words is None:
-            words = {}
-            for word in SearchWord.objects.all():
-                words[word.word] = word
-        for creator in work.get_authors():
-            AuthorWordMatch.get_all_for_author(work, creator.creator, words)
-
-    @staticmethod
-    def author_rename(author: Creator):
-        for pub in author.get_all_publications():
-            WordMatch.create_all_for(pub)
 
 
 class SubWorkWordMatch(WordMatch):

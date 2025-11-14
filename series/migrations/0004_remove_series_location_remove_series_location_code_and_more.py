@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('series', '0003_workseries_datamigrate'),
+        ('works', '0007_remove_work_based_on_series'),
     ]
 
     operations = [
