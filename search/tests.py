@@ -107,9 +107,9 @@ class WorkRelationTests(TestCase):
         work4.original_title = "roltrap naar de maan"
         work4.original_subtitle = "something"
         work4.save()
-        WorkRelation.objects.create(from_work=self.work1, to_work=work4,
-                                    relation_kind=WorkRelation.RelationKind.part_of_secondary_series,
-                                    relation_index=3)
+        wr = WorkRelation.objects.create(from_work=self.work1, to_work=work4,
+                                         relation_kind=WorkRelation.RelationKind.part_of_secondary_series,
+                                         relation_index=3)
         WordMatch.objects.exclude(publication=self.work1).delete()
         words = self.get_all_words()
         matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
@@ -124,6 +124,23 @@ class WorkRelationTests(TestCase):
                    WordMatch(word=words["DE"], publication=self.work1, type='SERIES'),
                    WordMatch(word=words["MAAN"], publication=self.work1, type='SERIES'),
                    WordMatch(word=words["SOMETHING"], publication=self.work1, type='SERIES'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOUWER"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
+                   WordMatch(word=words["BUILDER"], publication=self.work1, type='CREATOR')]
+        self.matches_equal(matches)
+
+        wr.from_work = work4
+        wr.save()
+
+        for task in Task.objects.all():
+            task.task_object.exec()
+
+        words = self.get_all_words()
+
+        matches = [WordMatch(word=words["WORK"], publication=self.work1, type='TITLE'),
+                   WordMatch(word=words["WORK2"], publication=self.work1, type='SUBWORK'),
+                   WordMatch(word=words["WORK3"], publication=self.work1, type='SERIES'),
                    WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
                    WordMatch(word=words["BOUWER"], publication=self.work1, type='CREATOR'),
                    WordMatch(word=words["BOB"], publication=self.work1, type='CREATOR'),
