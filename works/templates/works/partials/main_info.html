@@ -23,29 +23,58 @@
                 {% for author in work.get_authors %}{% include 'creators/single_line_description.html' %}<br>
                 {% endfor %}
             {% endcomponent %}
-
             {% if work.comment %}
                 {% component "datarow.Datarow" "Comments" %}
                     {{ work.comment }}
                 {% endcomponent %}
             {% endif %}
-            {% if wis %}
+            {% if part_of_series %}
                 {% component "datarow.Datarow" "Series" %}
-                    {% for series in  wis %}
+                    {% for part_of in  part_of_series %}
                         {% include 'series/part_of_series_name.html' %}{% if not forloop.last %}<br>{% endif %}
                     {% endfor %}
                 {% endcomponent %}
-
             {% endif %}
+            {% if series %}
+                {% component "datarow.Datarow" "Series Location" %}
+                    {{ series.location }}
+                {% endcomponent %}
+                {% component "datarow.Datarow" "Series Book Code" %}
+                    {{ series.book_code }}
+                    {% if perms.series.change_series %}
+                        <a class="btn btn-primary btn-sm" hx-get="{% url 'series.gen_code' series.pk %}"
+                           hx-target="#dialog" href="{% url 'series.gen_code' series.pk %}">
+                            {% if series.book_code %}
+                                Edit{% else %}New{% endif %}</a>
+                    {% endif %}
+                {% endcomponent %}
+                {% if series.location_code and perms.series.change_series %}
+                    {% component "datarow.Datarow" "Series Location Code" %}
+                        { series.location_code.letter }}-{{ series.location_code.number }}
+                        {% if perms.series.change_series %}
+                            <a class="btn btn-danger btn-sm"
+                               hx-get="{% url 'series.cutter.del_code' series.pk %}"
+                               hx-target="#dialog"
+                               href="{% url 'series.cutter.del_code' series.pk %}">Delete</a>
+                        {% endif %}
+                        <br>
+                        <small>{{ series.location_code.name }}</small>
+                    {% endcomponent %}
+                {% endif %}
+            {% endif %}
+
         </dl>
-
-
     {% endfill %}
     {% fill 'footer' %}
         {% if perms.works.change_work %}
             {% component 'tile.Footer' %}
-                <a class="btn btn-sm  btn-primary join-item"
-                   href="{% url 'works.publication.edit' work.pk %}">Edit publication</a>
+                {% if not series %}
+                    <a class="btn btn-sm  btn-primary join-item"
+                       href="{% url 'works.publication.edit' work.pk %}">Edit publication</a>
+                {% else %}
+                    <a class="btn btn-sm  btn-primary join-item"
+                       href="{% url 'series.edit' work.pk %}">Edit series</a>
+                {% endif %}
             {% endcomponent %}
         {% endif %}
     {% endfill %}

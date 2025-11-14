@@ -40,13 +40,6 @@ def get_series_by_query(request, search_text):
     return JsonResponse({'results': list}, safe=False)
 
 
-def view_series(request, pk):
-    series = get_object_or_404(SeriesV2, work_id=pk)
-    grph = Graph.new_from_work(series.work)
-
-    return render(request, 'series/view.html', {'series': series, 'series_graph': grph})
-
-
 @transaction.atomic
 @permission_required('series.change_series')
 def edit_series(request, pk):
@@ -83,7 +76,7 @@ def edit_series(request, pk):
                     c2w.work = work_inst
                     c2w.save()
 
-            return HttpResponseRedirect(reverse('series.views', args=(instance.work.pk,)))
+            return HttpResponseRedirect(reverse('work.view', args=(instance.work.pk,)))
     else:
         if pk is not None:
             series = get_object_or_404(SeriesV2, work_id=pk)
@@ -142,7 +135,7 @@ class SeriesList(ListView):
 def new_codegen(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/code_gen.html'
 
-    series = get_object_or_404(Series, pk=pk)
+    series = get_object_or_404(SeriesV2, work_id=pk)
 
     if request.method == 'POST':
         bk = request.POST.get("book_code")
@@ -152,7 +145,7 @@ def new_codegen(request, pk, hx_enabled=False):
             if hx_enabled:
                 return HttpResponse(status=209, headers={"HX-Refresh": "true"})
             else:
-                return HttpResponseRedirect(reverse('series.views', args=(pk,)))
+                return HttpResponseRedirect(reverse('work.view', args=(pk,)))
     return render(request, templ,
                   {"series": series, "recommended_code": get_book_code_series(series), "hx_enabled": hx_enabled})
 
@@ -162,7 +155,7 @@ def new_codegen(request, pk, hx_enabled=False):
 def location_code_set_form(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/cutter_gen_form.html'
 
-    series = get_object_or_404(Series, pk=pk)
+    series = get_object_or_404(SeriesV2, work_id=pk)
     if series.location_code:
         return render(request, templ,
                       {"series": series, "error": "Already has a location code.", "hx_enabled": hx_enabled})
@@ -184,13 +177,12 @@ def location_code_set_form(request, pk, hx_enabled=False):
         if hx_enabled:
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         return HttpResponseRedirect(reverse('series.gen_code', args=(pk,)))
-    print(hx_enabled)
     return render(request, templ, {"series": series, "letter": "UNKNOWN", "hx_enabled": hx_enabled})
 
 
 @permission_required('series.change_series')
 def location_code_set_gen(request, pk):
-    series = get_object_or_404(Series, pk=pk)
+    series = get_object_or_404(SeriesV2, work_id=pk)
     prefix = request.POST.get("prefix", "{title} ({pk})".format(title=series.title, pk=series.pk)).upper()
     lst = []
     if series.location_code:
@@ -205,7 +197,7 @@ def location_code_set_gen(request, pk):
 @permission_required('series.change_series')
 def location_code_delete_form(request, pk, hx_enabled=False):
     templ = 'series/series_cutter_number/cutter_delete.html'
-    series = get_object_or_404(Series, pk=pk)
+    series = get_object_or_404(SeriesV2, work_id=pk)
     if request.POST:
         lc = series.location_code
         series.location_code = None
@@ -214,6 +206,6 @@ def location_code_delete_form(request, pk, hx_enabled=False):
         if hx_enabled:
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         else:
-            return HttpResponseRedirect(reverse('series.views', args=(pk,)))
+            return HttpResponseRedirect(reverse('work.view', args=(pk,)))
     return render(request, templ,
                   {"series": series, 'hx_enabled': hx_enabled})

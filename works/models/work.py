@@ -127,7 +127,7 @@ class Work(NamedTranslatableThing):
     def generate_code_full(self, location):
         first_letters = self.title[0:2].lower()
 
-        from series.models import Series, WorkInSeries
+        from series.models import SeriesV2
         series_list = WorkInSeries.objects.filter(work_id=self.id, is_primary=True)
         if len(series_list) > 0 and series_list[0].part_of_series.book_code != "":
             if series_list[0].number is None:

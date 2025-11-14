@@ -25,4 +25,4 @@ NAMED_TRANSLATED_LIST = ['title', 'sub_title', 'article', 'original_title', 'ori
 class SeriesForm(ModelForm):
     class Meta:
         model = SeriesV2
-        fields = ['book_code']
+        fields = ['location', 'book_code']

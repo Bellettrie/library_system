@@ -12,11 +12,12 @@ from recode.procedures.update_recode import update_recode_for_item
 from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
+from series.models import Graph
 from utils.get_query_words import get_query_words
 from works.forms import ItemStateCreateForm, ItemCreateForm, WorkForm, SubWorkCreateForm, \
     LocationChangeForm
 from works.models import Work, Item, ItemState, WorkInPublication, \
-    Category
+    Category, WorkRelation
 from works.models.item_state import get_available_states
 
 
@@ -194,10 +195,17 @@ class WorkList(ListView):
 def publication_view(request, pk):
     work = get_object_or_404(Work, pk=pk)
     template_name = 'works/publication_view.html'
-    if work.as_series():
-        return HttpResponseRedirect(reverse('series.views', args=(pk,)))
+    series = work.as_series
+    part_of_series = WorkRelation.objects.filter(from_work=work, relation_kind__in=[WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series]).all()
+    data = {
+        "work": work,
+        "part_of_series":part_of_series,
+    }
+    if series:
+        data['series'] = series
+        data['series_graph'] = Graph.new_from_work(work)
 
-    return render(request, template_name, {'work': work})
+    return render(request, template_name, data)
 
 
 def create_item_state_hx(request, item_id):
@@ -296,9 +304,7 @@ def item_history(request, item_id, hx_enabled=False):
 @permission_required('works.change_publication')
 def publication_edit(request, publication_id=None):
     from works.forms import CreatorToWorkFormSet
-    from works.forms import SeriesToWorkFomSet
     creator_to_works = None
-    series_to_works = None
     publication = None
     if request.method == 'POST':
         if publication_id is not None:
@@ -323,32 +329,18 @@ def publication_edit(request, publication_id=None):
                 for error in creator_to_works.errors:
                     form.add_error(None, str(error))
 
-            series_to_works = SeriesToWorkFomSet(request.POST, request.FILES, instance=instance)
-
-            if series_to_works.is_valid():
-                instances = series_to_works.save(commit=False)
-                for inst in series_to_works.deleted_objects:
-                    inst.delete()
-                for i in instances:
-                    i.work = instance
-                    i.save()
-            else:
-                for error in series_to_works.errors:
-                    form.add_error(None, str(error))
             return HttpResponseRedirect(reverse('work.view', args=(instance.pk,)))
     else:
         publication = None
         if publication_id is not None:
             publication = get_object_or_404(Work, pk=publication_id)
             creator_to_works = CreatorToWorkFormSet(instance=publication)
-            series_to_works = SeriesToWorkFomSet(instance=publication)
             form = WorkForm(instance=publication)
         else:
             creator_to_works = CreatorToWorkFormSet()
-            series_to_works = SeriesToWorkFomSet()
             form = WorkForm()
     return render(request, 'works/publication_edit.html',
-                  {'series': series_to_works, 'publication': publication, 'form': form, 'creators': creator_to_works})
+                  {'publication': publication, 'form': form, 'creators': creator_to_works})
 
 
 @transaction.atomic
