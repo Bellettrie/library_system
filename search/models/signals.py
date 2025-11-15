@@ -1,20 +1,25 @@
 from datetime import timedelta
 from typing import List
-
 from creators.models import Creator
 from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from search.models import WordMatch
-
 from tasks.models import Task
-
 from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
-
 from utils.time import get_now
 from works.models import Work, WorkRelation, CreatorToWork
 
+"""
+    This file is responsible for making sure the search-index gets updated when works, relations etc get updated.
+"""
+
 
 class UpdateWorks:
+    """
+    UpdateWorks is a task that is used to do a delayed-update of a specific work.
+    It is used to make sure the updates happen *after* the works or relevant relations have been updated.
+    """
+
     def __init__(self, works: List[Work]):
         self.work_ids = list(map(lambda work: work.id, works))
 
@@ -33,7 +38,6 @@ def work_updated_receiver(sender, instance: Work, created, **kwargs):
 
 def work_relation_updated(ids):
     res_works = get_works_from_ids(ids)
-    print(ids, res_works)
     for work in res_works:
         WordMatch.create_all_for(work)
 
