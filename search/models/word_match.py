@@ -1,62 +1,12 @@
-from django.contrib.postgres.indexes import GinIndex
 from django.db import models
-
-# Create your models here.
 from django.db.models import CASCADE
 
-from book_code_generation.helpers import normalize_str
 from creators.models import Creator
 from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
+from search.models.helpers import get_word_from_set, get_words_in_str
+from search.models.search_word import SearchWord
 from series.models import Series
-from works.models import SubWork, Work, WorkRelation
-
-
-class SearchWord(models.Model):
-    word = models.CharField(max_length=255, db_index=True, unique=True)
-
-    @staticmethod
-    def get_word(word):
-        return SearchWord.objects.get_or_create(word=word)[0]
-
-    class Meta:
-        indexes = (GinIndex(fields=["word"]),)  # add index
-
-
-def get_word_from_set(word: str, word_set: dict):
-    """
-        Given a dictionary of string -> SearchWord, get the word from the dictionary. This is an optimization for the search word generation function.
-    """
-    word = word.upper()
-    w = word_set.get(word, None)
-    if w is not None:
-        return w
-
-    word_set[word] = SearchWord.get_word(word)
-    return word_set[word]
-
-
-def clean_word(string):
-    """
-    Remove anything not alphanumeric from word.
-    """
-    string = normalize_str(string)
-    return "".join(ch for ch in string if ch.isalnum() or ch == "*").upper()
-
-
-def get_words_in_str(string):
-    """
-        Split string into spaces and
-    """
-    if string is None:
-        return []
-    string = string.replace("'", " ")
-    z = string.strip().split(" ")
-    result = []
-    for w in z:
-        w = clean_word(w)
-        if len(w) > 1:
-            result.append(w)
-    return result
+from works.models import Work, WorkRelation
 
 
 class WordMatch(models.Model):
@@ -116,7 +66,6 @@ class WordMatch(models.Model):
         # TODO: These two will be history when the subworks and series are migrated.
         AuthorWordMatch.get_all_for_authors(work, words)
         SeriesWordMatch.get_all_for_serieses(work, words)
-        SubWorkWordMatch.get_all_for_subworks(work, words)
         return words
 
     @staticmethod
@@ -223,46 +172,3 @@ class SeriesWordMatch(WordMatch):
                 WordMatch.create_all_for(pub, words)
             for ss in Series.objects.filter(part_of_series_id=s.pk):
                 serieses.append(ss)
-
-
-class SubWorkWordMatch(WordMatch):
-    sub_work = models.ForeignKey(SubWork, on_delete=CASCADE)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.type = "SUBWORK"
-
-    @staticmethod
-    def get_all_for_subwork(work: Work, sub_work: SubWork, words):
-        for word in get_words_in_str(sub_work.article):
-            SubWorkWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, sub_work=sub_work)
-        for word in get_words_in_str(sub_work.original_language):
-            SubWorkWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, sub_work=sub_work)
-        for word in get_words_in_str(sub_work.title):
-            SubWorkWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, sub_work=sub_work)
-        for word in get_words_in_str(sub_work.sub_title):
-            SubWorkWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, sub_work=sub_work)
-        for word in get_words_in_str(sub_work.original_title):
-            SubWorkWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, sub_work=sub_work)
-        for word in get_words_in_str(sub_work.original_subtitle):
-            SubWorkWordMatch.objects.create(word=get_word_from_set(word, words), publication=work, sub_work=sub_work)
-
-    @staticmethod
-    def get_all_for_subworks(work: Work, words=None):
-        if words is None:
-            words = {}
-            for word in SearchWord.objects.all():
-                words[word.word] = word
-        for series in list(work.get_sub_works()):
-            SubWorkWordMatch.get_all_for_subwork(work, series.work, words)
-            for author in series.get_authors():
-                AuthorWordMatch.get_all_for_author(work, author.creator, words)
-
-    @staticmethod
-    def subwork_rename(subwork: SubWork):
-        SubWorkWordMatch.objects.filter(sub_work=subwork).delete()
-        words = {}
-        for word in SearchWord.objects.all():
-            words[word.word] = word
-        for pub in subwork.workinpublication_set.all():
-            WordMatch.create_all_for(pub.publication, words)
