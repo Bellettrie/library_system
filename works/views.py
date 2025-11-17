@@ -360,17 +360,18 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
     if subwork_id is not None:
         subwork_relations = WorkRelation.objects.filter(from_work_id=subwork_id,
                                                         relation_kind=WorkRelation.RelationKind.sub_work_of)
-    subwork_relation = None
-    subwork = None
-
-    num = 0
-    disp_num = ''
     if len(subwork_relations) > 0:
         subwork_relation = subwork_relations[0]
         subwork = subwork_relation.from_work
 
         num = subwork_relation.relation_index
         disp_num = subwork_relation.relation_index_label
+    else:
+        subwork_relation = None
+        subwork = None
+        num = 0
+        disp_num = ''
+
     num = request.POST.get('num', num)
     disp_num = request.POST.get('disp_num', disp_num)
 
@@ -384,20 +385,12 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             sub_form_has_errors = save_creator_work_relations(creator_to_works, subwork_instance)
             subwork_relation = save_subwork_relations(disp_num, subwork_instance, num, publication_id, subwork_relation)
 
-            if sub_form_has_errors:
-                return render(request, 'works/subwork_edit.html',
-                              {'publication': subwork_relation, 'form': form, 'creators': creator_to_works,
-                               'num': num,
-                               'disp_num': disp_num})
+            # Both saves went okay
+            if not (sub_form_has_errors or len(form.errors) > 0):
+                return HttpResponseRedirect(reverse('work.view', args=(subwork_relation.to_work_id,)))
 
-            return HttpResponseRedirect(reverse('work.view', args=(subwork_relation.to_work_id,)))
-
-    if subwork_relation is not None:
-        creator_to_works = CreatorToWorkFormSet(instance=subwork_relation.from_work)
-        form = SubWorkForm(instance=subwork_relation.from_work)
-    else:
-        creator_to_works = CreatorToWorkFormSet()
-        form = SubWorkForm(initial={'date_added': get_now()})
+    creator_to_works = CreatorToWorkFormSet(instance=subwork)
+    form = SubWorkForm(instance=subwork)
 
     return render(request, 'works/subwork_edit.html',
                   {'publication': subwork_relation, 'form': form, 'creators': creator_to_works,
