@@ -377,12 +377,12 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
     if request.method == 'POST':
         form = SubWorkForm(request.POST, instance=subwork)
         if form.is_valid():
-            instance = form.save(commit=False)
-            instance.is_translated = instance.original_language is not None
-            instance.save()
-            creator_to_works = CreatorToWorkFormSet(request.POST, instance=instance)
-            sub_form_has_errors = save_creator_work_relations(creator_to_works, instance)
-            subwork_relation = save_subwork_relations(disp_num, instance, num, publication_id, subwork_relation)
+            subwork_instance = form.save(commit=False)
+            subwork_instance.is_translated = subwork_instance.original_language is not None
+            subwork_instance.save()
+            creator_to_works = CreatorToWorkFormSet(request.POST, instance=subwork_instance)
+            sub_form_has_errors = save_creator_work_relations(creator_to_works, subwork_instance)
+            subwork_relation = save_subwork_relations(disp_num, subwork_instance, num, publication_id, subwork_relation)
 
             if sub_form_has_errors:
                 return render(request, 'works/subwork_edit.html',
