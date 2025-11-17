@@ -62,7 +62,7 @@ class PublicationCreateForm(ModelForm):
             fields.append(field)
 
 
-class SubWorkCreateForm(ModelForm):
+class SubWorkForm(ModelForm):
     class Meta:
         model = Work
         z_fields = [

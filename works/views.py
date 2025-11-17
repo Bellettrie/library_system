@@ -14,7 +14,7 @@ from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text
 from utils.get_query_words import get_query_words
 from utils.time import get_now
-from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm, \
+from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkForm, \
     LocationChangeForm
 from works.models import Work, Item, ItemState, \
     Category, WorkRelation
@@ -356,62 +356,51 @@ def publication_new(request):
 @permission_required('works.change_publication')
 def subwork_edit(request, subwork_id=None, publication_id=None):
     from works.forms import CreatorToWorkFormSet
-    creator_to_works = None
-    series = None
+    subwork_relations = []
+    if subwork_id is not None:
+        subwork_relations = WorkRelation.objects.filter(from_work_id=subwork_id,
+                                                        relation_kind=WorkRelation.RelationKind.sub_work_of)
     subwork_relation = None
+    subwork = None
+
     num = 0
     disp_num = ''
+    if len(subwork_relations) > 0:
+        subwork_relation = subwork_relations[0]
+        subwork = subwork_relation.from_work
+
+        num = subwork_relation.relation_index
+        disp_num = subwork_relation.relation_index_label
+    num = request.POST.get('num', num)
+    disp_num = request.POST.get('disp_num', disp_num)
+
     if request.method == 'POST':
-        if subwork_id is not None:
-            subwork_relation = get_object_or_404(WorkRelation, from_work_id=subwork_id)
-            num = subwork_relation.relation_index
-            disp_num = subwork_relation.relation_index_label
-            form = SubWorkCreateForm(request.POST, instance=subwork_relation.from_work)
-        else:
-            form = SubWorkCreateForm(request.POST)
-        num = request.POST.get('num', num)
-        disp_num = request.POST.get('disp_num', disp_num)
+        form = SubWorkForm(request.POST, instance=subwork)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.is_translated = instance.original_language is not None
             instance.save()
-            creator_to_works = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
-            if creator_to_works.is_valid():
-                instances = creator_to_works.save(commit=False)
-                for inst in creator_to_works.deleted_objects:
-                    inst.delete()
-                for c2w in instances:
-                    c2w.work = instance
-                    c2w.save()
-            else:
-                for error in creator_to_works.errors:
-                    form.add_error(None, str(error))
+            creator_to_works = CreatorToWorkFormSet(request.POST, instance=instance)
+            sub_form_has_errors = save_creator_work_relations(creator_to_works, instance)
+            subwork_relation = save_subwork_relations(disp_num, instance, num, publication_id, subwork_relation)
 
-            if subwork_id is None:
-                publication = get_object_or_404(Work, pk=publication_id)
+            if sub_form_has_errors:
+                return render(request, 'works/subwork_edit.html',
+                              {'publication': subwork_relation, 'form': form, 'creators': creator_to_works,
+                               'num': num,
+                               'disp_num': disp_num})
 
-                subwork_relation = WorkRelation.objects.create(from_work=instance, to_work=publication,
-                                                               relation_index=num,
-                                                               relation_index_label=disp_num,
-                                                               relation_kind=WorkRelation.RelationKind.sub_work_of)
-            else:
-                subwork_relation.relation_index = num
-                subwork_relation.relation_index_label = disp_num
-                subwork_relation.save()
             return HttpResponseRedirect(reverse('work.view', args=(subwork_relation.to_work_id,)))
+
+    if subwork_relation is not None:
+        creator_to_works = CreatorToWorkFormSet(instance=subwork_relation.from_work)
+        form = SubWorkForm(instance=subwork_relation.from_work)
     else:
-        if subwork_id is not None:
-            subwork_relation = get_object_or_404(WorkRelation, from_work_id=subwork_id,
-                                                 relation_kind=WorkRelation.RelationKind.sub_work_of)
-            num = subwork_relation.relation_index
-            disp_num = subwork_relation.relation_index_label
-            creator_to_works = CreatorToWorkFormSet(instance=subwork_relation.from_work)
-            form = SubWorkCreateForm(instance=subwork_relation.from_work)
-        else:
-            creator_to_works = CreatorToWorkFormSet()
-            form = SubWorkCreateForm(initial={'date_added': get_now()})
+        creator_to_works = CreatorToWorkFormSet()
+        form = SubWorkForm(initial={'date_added': get_now()})
+
     return render(request, 'works/subwork_edit.html',
-                  {'series': series, 'publication': subwork_relation, 'form': form, 'creators': creator_to_works,
+                  {'publication': subwork_relation, 'form': form, 'creators': creator_to_works,
                    'num': num,
                    'disp_num': disp_num})
 
@@ -435,3 +424,33 @@ def subwork_delete(request, subwork_id):
         return HttpResponseRedirect(reverse('work.view', args=(relation.to_work_id,)))
     return render(request, 'are-you-sure.html',
                   {'what': 'delete the subwork ' + (relation.from_work.get_title() or "No Title") + "?"})
+
+
+def save_subwork_relations(disp_num, instance, num, publication_id, subwork_relation):
+    if subwork_relation is None:
+        publication = get_object_or_404(Work, pk=publication_id)
+
+        subwork_relation = WorkRelation.objects.create(from_work=instance, to_work=publication,
+                                                       relation_index=num,
+                                                       relation_index_label=disp_num,
+                                                       relation_kind=WorkRelation.RelationKind.sub_work_of)
+    else:
+        subwork_relation.relation_index = num
+        subwork_relation.relation_index_label = disp_num
+        subwork_relation.save()
+    return subwork_relation
+
+
+def save_creator_work_relations(creator_to_works, work):
+    sub_form_has_errors = False
+    if creator_to_works.is_valid():
+        instances = creator_to_works.save(commit=False)
+        for inst in creator_to_works.deleted_objects:
+            inst.delete()
+        for c2w in instances:
+            c2w.work = work
+            c2w.save()
+    else:
+        if len(creator_to_works.errors) > 0:
+            sub_form_has_errors = True
+    return sub_form_has_errors
