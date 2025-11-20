@@ -6,7 +6,7 @@
         {% csrf_token %}
         <div class="flex flex-col gap-3">
             {% component "tile.Tile" root_class_tags="flex-0" %}
-                {% fill 'title' %}Series{% endfill %}
+                {% fill 'title' %}Subwork Edit{% endfill %}
                 {% fill 'content' %}
                     <dl class="divide-y divide-gray-100">
                         <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -46,6 +46,11 @@
                             {% component "form.Smol" creator / %}
                             <hr>
                         {% endfor %}
+                    {% endfill %}
+                    {% fill 'footer' %}
+                        {% component 'tile.Footer' %}
+                            <input class="btn btn-primary join-item" type="submit" value="Save">
+                        {% endcomponent %}
                     {% endfill %}
                 {% endcomponent %}
             </div>
