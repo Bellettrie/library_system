@@ -1,30 +1,54 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 {% block title %}{{ publication.title }}{% endblock %}
 {% block content %}
     <form action="#" method="post">
         {% csrf_token %}
-        <h2>Base info</h2>
-        <table>
-            {{ form.as_table }}
-            <tr>
-                <td>
-                    Number
-                </td>
-                <td>
-                    <input value="{{ num }}" type="number" step=".00001" name="num" id="num" class="input input-sm">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Display Number
-                </td>
-                <td>
-                    <input value="{{ disp_num }}" name="disp_num" id="disp_num" class="input input-sm">
-                </td>
-            </tr>
-        </table>
-        <h2> Creators</h2>
-                {{ creators.as_p }}
-        <input class="btn btn-primary" type="submit" value="Save">
+        <div class="flex flex-col gap-3">
+            {% component "tile.Tile" root_class_tags="flex-0" %}
+                {% fill 'title' %}Series{% endfill %}
+                {% fill 'content' %}
+                    <dl class="divide-y divide-gray-100">
+                        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class=" font-medium ">Number</dt>
+                            <input value="{{ num }}" type="number" step=".00001" name="num" id="num"
+                                   class="input input-sm">
+                        </div>
+                        <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class=" font-medium ">Display Number</dt>
+                            <input value="{{ disp_num }}" name="disp_num" id="disp_num" class="input input-sm">
+                        </div>
+                    </dl>
+                {% endfill %}
+            {% endcomponent %}
+
+            {% component 'tile.Tile' root_class_tags="flex-0" %}
+                {% fill 'title' %}Publication Info{% endfill %}
+                {% fill 'content' %}
+                    <dl class="divide-y divide-gray-100">
+
+                        {% for field in form.visible_fields %}
+                            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class=" font-medium ">{{ field.label }}</dt>
+                                <dd class="mt-1  sm:col-span-2 sm:mt-0">{{ field|add_class:"input input-xs border-1 border-bellered" }}</dd>
+                            </div>
+                        {% endfor %}
+                    </dl>
+                {% endfill %}
+            {% endcomponent %}
+
+            <div class="grow  flex flex-col gap-3 ">
+                {% component "tile.Tile" root_class_tags="flex-0" %}
+                    {% fill 'title' %}Creators{% endfill %}
+                    {% fill 'content' %}
+                        {{ creators.management_form }}
+                        {% for creator in creators %}
+                            {% component "form.Smol" creator / %}
+                            <hr>
+                        {% endfor %}
+                    {% endfill %}
+                {% endcomponent %}
+            </div>
+        </div>
     </form>
 {% endblock %}
