@@ -8,16 +8,25 @@
                         {% for subwork_relation in tbl %}
                             <tr>
                                 <td>
-                                    {% if subwork_relation.relation_index_label%}
+                                    {% if subwork_relation.relation_index_label %}
                                         {{ subwork_relation.relation_index_label }}
                                     {% else %}
                                         {{ subwork_relation.relation_index_as_text }}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if subwork_relation.from_work.title %}{{ subwork_relation.from_work.get_title }} {% if subwork_relation.from_work.sub_title %}<br/>
-                                        <i>-{{ subwork_relation.from_work.sub_title }}</i>{% endif %}{% else %}
-                                        <i>No Title</i> {% endif %}
+                                    {% if subwork_relation.from_work.title %}
+                                        <a class="link link-secondary"
+                                           href="{% url "work.view" subwork_relation.from_work.id %}">
+                                            {{ subwork_relation.from_work.get_title }}
+                                        </a>
+                                        {% if subwork_relation.from_work.sub_title %}
+                                            <br/>
+                                            <i>-{{ subwork_relation.from_work.sub_title }}</i>
+                                        {% endif %}
+                                    {% else %}
+                                        <i>No Title</i>
+                                    {% endif %}
                                 </td>
                                 <td>
                                     {% for author in subwork_relation.from_work.get_own_authors %}

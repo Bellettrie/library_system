@@ -106,6 +106,13 @@ class Work(NamedTranslatableThing):
         else:
             return None
 
+    def part_of_works(self):
+        from works.models import WorkRelation
+        rels = WorkRelation.objects.filter(from_work_id=self.id, relation_kind=WorkRelation.RelationKind.sub_work_of)
+        if len(rels) > 0:
+            return rels
+        return None
+
     def has_no_items(self):
         return len(self.get_items()) == 0
 
