@@ -13,10 +13,11 @@ from search.queries import filter_state, filter_book_code_get_q, \
     filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
     filter_basic_text
 from utils.get_query_words import get_query_words
-from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkCreateForm, \
+from utils.time import get_now
+from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkForm, \
     LocationChangeForm
-from works.models import Work, Item, ItemState, WorkInPublication, \
-    Category
+from works.models import Work, Item, ItemState, \
+    Category, WorkRelation
 from works.models.item_state import get_available_states
 
 
@@ -340,7 +341,7 @@ def publication_edit(request, publication_id=None):
         else:
             creator_to_works = CreatorToWorkFormSet()
             series_to_works = SeriesToWorkFomSet()
-            form = PublicationCreateForm()
+            form = PublicationCreateForm(initial={'date_added': get_now()})
     return render(request, 'works/publication_edit.html',
                   {'series': series_to_works, 'publication': publication, 'form': form, 'creators': creator_to_works})
 
@@ -355,61 +356,45 @@ def publication_new(request):
 @permission_required('works.change_publication')
 def subwork_edit(request, subwork_id=None, publication_id=None):
     from works.forms import CreatorToWorkFormSet
-    creator_to_works = None
-    series = None
-    publication = None
-    num = 0
-    disp_num = ''
-    if request.method == 'POST':
+    subwork_relations = []
+    if subwork_id is not None:
+        subwork_relations = WorkRelation.objects.filter(from_work_id=subwork_id,
+                                                        relation_kind=WorkRelation.RelationKind.sub_work_of)
+    if len(subwork_relations) > 0:
+        subwork_relation = subwork_relations[0]
+        subwork = subwork_relation.from_work
 
-        if subwork_id is not None:
-            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
-            num = publication.number_in_publication
-            disp_num = publication.display_number_in_publication
-            form = SubWorkCreateForm(request.POST, instance=publication.work)
-        else:
-            form = SubWorkCreateForm(request.POST)
-        num = request.POST.get('num', num)
-        disp_num = request.POST.get('disp_num', disp_num)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.is_translated = instance.original_language is not None
-            instance.save()
-            creator_to_works = CreatorToWorkFormSet(request.POST, request.FILES, instance=instance)
-            if creator_to_works.is_valid():
-                instances = creator_to_works.save(commit=False)
-                for inst in creator_to_works.deleted_objects:
-                    inst.delete()
-                for c2w in instances:
-                    c2w.work = instance
-                    c2w.save()
-            else:
-                for error in creator_to_works.errors:
-                    form.add_error(None, str(error))
-
-            if subwork_id is None:
-                pub = get_object_or_404(Work, id=publication_id)
-                publication = WorkInPublication.objects.create(work=instance, publication=pub,
-                                                               number_in_publication=num,
-                                                               display_number_in_publication=disp_num)
-            else:
-                publication.number_in_publication = num
-                publication.display_number_in_publication = disp_num
-                publication.save()
-
-            return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
+        num = subwork_relation.relation_index
+        disp_num = subwork_relation.relation_index_label
     else:
-        if subwork_id is not None:
-            publication = get_object_or_404(WorkInPublication, pk=subwork_id)
-            num = publication.number_in_publication
-            disp_num = publication.display_number_in_publication
-            creator_to_works = CreatorToWorkFormSet(instance=publication.work)
-            form = SubWorkCreateForm(instance=publication.work)
-        else:
-            creator_to_works = CreatorToWorkFormSet()
-            form = SubWorkCreateForm()
+        subwork_relation = None
+        subwork = None
+        num = 0
+        disp_num = ''
+
+    num = request.POST.get('num', num)
+    disp_num = request.POST.get('disp_num', disp_num)
+
+    if request.method == 'POST':
+        form = SubWorkForm(request.POST, instance=subwork)
+        if form.is_valid():
+            subwork_instance = form.save(commit=False)
+            subwork_instance.is_translated = subwork_instance.original_language is not None
+            subwork_instance.save()
+            creator_to_works = CreatorToWorkFormSet(request.POST, instance=subwork_instance)
+            sub_form_has_errors = save_creator_work_relations(creator_to_works, subwork_instance)
+            subwork_relation = save_subwork_relations(disp_num, subwork_instance, num, publication_id, subwork_relation)
+
+            # Both saves went okay
+            if not (sub_form_has_errors or len(form.errors) > 0):
+                return HttpResponseRedirect(reverse('work.view', args=(subwork_relation.to_work_id,)))
+
+    creator_to_works = CreatorToWorkFormSet(instance=subwork)
+    form = SubWorkForm(instance=subwork)
+
     return render(request, 'works/subwork_edit.html',
-                  {'series': series, 'publication': publication, 'form': form, 'creators': creator_to_works, 'num': num,
+                  {'publication': subwork_relation, 'form': form, 'creators': creator_to_works,
+                   'num': num,
                    'disp_num': disp_num})
 
 
@@ -422,11 +407,43 @@ def subwork_new(request, publication_id):
 @transaction.atomic
 @permission_required('works.add_publication')
 def subwork_delete(request, subwork_id):
-    publication = get_object_or_404(WorkInPublication, pk=subwork_id)
+    relation = get_object_or_404(WorkRelation, from_work=subwork_id,
+                                 relation_kind=WorkRelation.RelationKind.sub_work_of)
 
     if request.GET.get('confirm'):
-        work = publication.work
-        publication.delete()
+        work = relation.from_work
+        relation.delete()
         work.delete()
-        return HttpResponseRedirect(reverse('work.view', args=(publication.publication_id,)))
-    return render(request, 'are-you-sure.html', {'what': 'delete the subwork ' + publication.work.get_title() + "?"})
+        return HttpResponseRedirect(reverse('work.view', args=(relation.to_work_id,)))
+    return render(request, 'are-you-sure.html',
+                  {'what': 'delete the subwork ' + (relation.from_work.get_title() or "No Title") + "?"})
+
+
+def save_subwork_relations(disp_num, instance, num, publication_id, subwork_relation):
+    if subwork_relation is None:
+        publication = get_object_or_404(Work, pk=publication_id)
+
+        subwork_relation = WorkRelation.objects.create(from_work=instance, to_work=publication,
+                                                       relation_index=num,
+                                                       relation_index_label=disp_num,
+                                                       relation_kind=WorkRelation.RelationKind.sub_work_of)
+    else:
+        subwork_relation.relation_index = num
+        subwork_relation.relation_index_label = disp_num
+        subwork_relation.save()
+    return subwork_relation
+
+
+def save_creator_work_relations(creator_to_works, work):
+    sub_form_has_errors = False
+    if creator_to_works.is_valid():
+        instances = creator_to_works.save(commit=False)
+        for inst in creator_to_works.deleted_objects:
+            inst.delete()
+        for c2w in instances:
+            c2w.work = work
+            c2w.save()
+    else:
+        if len(creator_to_works.errors) > 0:
+            sub_form_has_errors = True
+    return sub_form_has_errors

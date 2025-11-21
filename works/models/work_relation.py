@@ -26,6 +26,11 @@ class WorkRelation(models.Model):
 
     relation_kind = models.IntegerField(choices=RelationKind.choices, db_index=True)
 
+    def relation_index_as_text(self):
+        if float(int(self.relation_index)) == float(self.relation_index):
+            return str(int(self.relation_index))
+        return str(self.relation_index)
+
     class RelationTraversal:
         @staticmethod
         def for_search_words(work_ids: List[int]):
