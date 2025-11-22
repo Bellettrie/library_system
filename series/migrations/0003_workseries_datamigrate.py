@@ -117,7 +117,7 @@ def data_migrate(apps, schema_editor):
 
 
 def start_series_data_update(apps, schema_editor):
-    works = Work.objects.filter(seriesv2__isnull=False)
+    works = Work.objects.filter(seriesv2__isnull=False).order_by("id")
     time = get_now()
     c = 0
     for wks in Paginator(works, 100):
@@ -133,6 +133,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('series', '0002_seriesv2'),
         ('works', '0010_work_based_on_series'),
+        ("tasks", "0003_add_file_upload_cron_task")
     ]
 
     operations = [
