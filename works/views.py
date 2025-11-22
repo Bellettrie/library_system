@@ -7,9 +7,8 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 # Create your views here.
 from django.urls import reverse
-from django.views.generic import ListView
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.views.generic import DetailView, ListView
+from django.views.generic import ListView
 
 from recode.procedures.update_recode import update_recode_for_item
 from search.queries import filter_state, filter_book_code_get_q, \
