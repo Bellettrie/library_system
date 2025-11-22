@@ -156,3 +156,7 @@ class Work(NamedTranslatableThing):
         return WorkRelation.objects.filter(to_work_id=self.id,
                                            relation_kind=WorkRelation.RelationKind.sub_work_of).order_by(
             'relation_index')
+
+    def is_deletable(self):
+        from works.procedures.orphaned_work import orphaned
+        return orphaned(self)

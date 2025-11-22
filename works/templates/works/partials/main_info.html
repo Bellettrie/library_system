@@ -65,6 +65,13 @@
     {% fill 'footer' %}
         {% if perms.works.change_work %}
             {% component 'tile.Footer' %}
+                {% if object.is_deletable %}
+                    <a class="btn btn-sm btn-error join-item"
+                       href="{% url "work.delete" object.pk %}">Delete</a>
+                {% else %}
+                    <a class="btn btn-sm btn-error btn-disabled join-item"
+                       >Delete</a>
+                {% endif %}
                 <a class="btn btn-sm  btn-primary join-item"
                    href="{% url 'works.publication.edit' object.pk %}">Edit publication</a>
             {% endcomponent %}

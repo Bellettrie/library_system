@@ -2,8 +2,7 @@ from django.urls import path
 
 from utils.wrappers import hx_wrap
 from works.views import WorkList, create_item_state, item_edit, publication_edit, publication_new, \
-    item_new, \
-    item_history, change_item_location
+    item_new, item_history, change_item_location, work_ask_delete
 from . import views
 
 urlpatterns = [
@@ -21,16 +20,17 @@ urlpatterns = [
     path('work/<slug:work_id>/relation/<slug:relation_id>/remove', hx_wrap(views.remove_relation),
          name='works.relation.remove'),
     path('work/<slug:work_id>/relation/<slug:relation_id>/edit', views.edit_relation_to_work,
-
          name='works.relation.edit'),
     path('work/<slug:work_id>/relation/<slug:relation_id>/edit/rev', views.edit_relation_from_work,
          name='works.relation.edit.rev'),
+    path('work/<slug:work_id>/delete', views.delete_work, name='work.delete'),
 
-    path('publication/edit/<slug:publication_id>', publication_edit, name='works.publication.edit'),
-    path('publication/new', publication_new, name='works.publication.new'),
-    path('publication/<slug:pk>', views.WorkDetail.as_view(), name='work.view'),
+    path('work/new', publication_new, name='works.publication.new'),
+
+    path('work/<slug:pk>', views.WorkDetail.as_view(), name='work.view'),
+    path('work/<slug:work_id>/ask_delete/<slug:return_to>', hx_wrap(work_ask_delete), name='work.ask_delete'),
+    path('work/<slug:publication_id>/edit', publication_edit, name='works.publication.edit'),
 
     path('subworks/new/<slug:publication_id>', views.subwork_new, name='work.subwork.new'),
     path('subworks/edit/<slug:subwork_id>', views.subwork_edit, name='work.subwork.edit'),
-    path('subworks/delete/<slug:subwork_id>', views.subwork_delete, name='work.subwork.delete'),
 ]

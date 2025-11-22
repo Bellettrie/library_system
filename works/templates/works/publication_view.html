@@ -2,7 +2,6 @@
 
 {% block title %}{{ work.get_title }}{% endblock %}
 {% block content %}
-
     {% with wis=work.workinseries_set.all %}
         {% with tbl=work.get_sub_works %}
             <div class="flex flex-col gap-3">

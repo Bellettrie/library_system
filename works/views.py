@@ -17,8 +17,9 @@ from utils.time import get_now
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkForm, \
     LocationChangeForm, RelationForm, RelationFormRev
 from works.models import Work, Item, ItemState, \
-    Category, WorkRelation
+    Category, WorkRelation, CreatorToWork
 from works.models.item_state import get_available_states
+from works.procedures.orphaned_work import orphaned
 
 
 def get_works(request, advanced_override=False):
@@ -416,33 +417,47 @@ def subwork_new(request, publication_id):
 
 
 @transaction.atomic
-@permission_required('works.add_publication')
-def subwork_delete(request, subwork_id):
-    relation = get_object_or_404(WorkRelation, from_work=subwork_id,
-                                 relation_kind=WorkRelation.RelationKind.sub_work_of)
-
+@permission_required('works.delete_work')
+def delete_work(request, work_id):
+    work = get_object_or_404(Work, id=work_id)
+    if not work.is_deletable():
+        return HttpResponse(status=404, content=b'Cannot delete work, still linked')
     if request.GET.get('confirm'):
-        work = relation.from_work
-        relation.delete()
+        CreatorToWork.objects.filter(work=work).delete()
         work.delete()
-        return HttpResponseRedirect(reverse('work.view', args=(relation.to_work_id,)))
+        if request.GET.get("next"):
+            return HttpResponseRedirect(request.GET.get("next"))
+        return HttpResponseRedirect("/")
     return render(request, 'are-you-sure.html',
-                  {'what': 'delete the subwork ' + (relation.from_work.get_title() or "No Title") + "?"})
+                  {
+                      'what': f'delete work "{work.get_title_or_no_title()}"?',
+                      'requestpath': request.path}
+                  )
 
 
+@transaction.atomic
+@permission_required('works.delete_work')
+def work_ask_delete(request, work_id, return_to=None, hx_enabled=False):
+    work = get_object_or_404(Work, id=work_id)
+    return render(request, 'works/work_ask_delete.html',
+                  {"work": work, "return_to": return_to, "hx_enabled": hx_enabled})
+
+
+@transaction.atomic
 @permission_required('works.delete_workrelation')
 def remove_relation(request, work_id, relation_id, hx_enabled=False):
     relation = get_object_or_404(WorkRelation, id=relation_id)
     if request.GET.get('confirm'):
         relation.delete()
+        if orphaned(relation.from_work):
+            return HttpResponseRedirect(reverse('work.ask_delete', args=(relation.from_work.id, relation.to_work.id)))
         if hx_enabled:
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
         return HttpResponseRedirect(reverse('work.view', args=(work_id,)))
-    work = get_object_or_404(Work, pk=work_id)
-
     return render(request, 'are-you-sure.html',
-                  {'what': 'Delete relation of work ' + (work.get_title() or "No Title") + "?",
-                   'requestpath': request.path, 'hx_enabled': hx_enabled})
+                  {
+                      'what': f'delete relation "{relation.from_work.get_title_or_no_title()} {relation.relation_kind_description()} {relation.to_work.get_title_or_no_title()}"?',
+                      'requestpath': request.path, 'hx_enabled': hx_enabled})
 
 
 @permission_required('works.change_workrelation')
