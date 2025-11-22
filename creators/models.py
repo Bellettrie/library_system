@@ -14,10 +14,8 @@ class LocationNumber(models.Model):
     auto_name = models.BooleanField(default=True)
 
     def gen_prefix(self):
-        print("HERE")
         if self.location is None:
             return None
-        print("RES")
         return self.location.category.code + "-" + self.letter + "-" + str(self.number) + "-"
 
 

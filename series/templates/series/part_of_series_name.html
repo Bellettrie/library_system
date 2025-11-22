@@ -4,7 +4,7 @@
     {% endif %}
 {% endwith %}
 {% if part_of and part_of.from_work %}
-    <a href="{% url 'work.view' part_of.to_work.id %}">{{ part_of.to_work.title }} </a>
+    <a class="link link-secondary" href="{% url 'work.view' part_of.to_work.id %}">{{ part_of.to_work.title }}</a>
     {% if part_of.relation_index_label %}[{{ part_of.relation_index_label }}]{% endif %}
     {% if also_show_number %}
         {% if part_of.relation_index %}({{ part_of.relation_index }}){% endif %}

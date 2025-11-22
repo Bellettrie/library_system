@@ -18,7 +18,6 @@ class Row(Component):
         work = row.work
         series = row.series
         if work is None:
-            print(item, len(item))
             work = item.publication
 
         creators = work.get_authors()

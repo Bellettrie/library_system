@@ -1,7 +1,6 @@
 {% component 'tile.Tile' root_class_tags="" %}
     {% fill 'title' %}Items for this publication{% endfill %}
     {% fill 'content' %}
-        {% with work.get_items as items %}
             {% if items.count == 1 %}
                 {% component "works.item_datalist.Item" items.0 perms / %}
             {% elif items.count == 0 %}
@@ -18,7 +17,6 @@
                     {% endfor %}
                 </div>
             {% endif %}
-        {% endwith %}
 
     {% endfill %}
     {% fill 'footer' %}

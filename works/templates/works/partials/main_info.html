@@ -1,5 +1,6 @@
 {% component 'tile.Tile' root_class_tags="lg:basis-64" %}
-    {% fill 'title' %}Publication Details{% endfill %}
+    {% fill 'title' %}{% if series %}Series
+        {% else %}{% if work.get_items %}Publication{% else %}Work {% endif %}{% endif %} Details{% endfill %}
     {% fill 'content' %}
         <dl class="w-full divide-y divide-gray-100">
             {% component "datarow.Datarow" "Title" %}
@@ -63,7 +64,7 @@
                     {% endcomponent %}
                 {% endif %}
             {% endif %}
-            {% with part_of_works=object.part_of_works %}
+            {% with part_of_works=work.part_of_works %}
                 {% if part_of_works %}
                     {% component "datarow.Datarow" "Available in Work" %}
                         {% for subwork_relation in  part_of_works %}
@@ -87,9 +88,9 @@
     {% fill 'footer' %}
         {% if perms.works.change_work %}
             {% component 'tile.Footer' %}
-                {% if object.is_deletable %}
+                {% if work.is_deletable %}
                     <a class="btn btn-sm btn-error join-item"
-                       href="{% url "work.delete" object.pk %}">Delete</a>
+                       href="{% url "work.delete" work..pk %}">Delete</a>
                 {% else %}
                     <a class="btn btn-sm btn-error btn-disabled join-item"
                     >Delete</a>
