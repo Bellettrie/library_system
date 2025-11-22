@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 # Create your views here.
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
@@ -425,7 +426,8 @@ def delete_work(request, work_id):
     if request.GET.get('confirm'):
         CreatorToWork.objects.filter(work=work).delete()
         work.delete()
-        if request.GET.get("next"):
+        next_url = request.GET.get("next")
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
             return HttpResponseRedirect(request.GET.get("next"))
         return HttpResponseRedirect("/")
     return render(request, 'are-you-sure.html',

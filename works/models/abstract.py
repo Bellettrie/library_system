@@ -18,10 +18,11 @@ class NamedThing(models.Model):
         return self.title
 
     def get_title_or_no_title(self):
-        title= self.get_title()
+        title = self.get_title()
         if title != "":
             return title
         return "<No Title>"
+
 
 class TranslatedThing(models.Model):
     class Meta:
