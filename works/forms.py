@@ -124,6 +124,14 @@ class ReadOnlyText(TextInput):
         return super(ReadOnlyText, self).render(name, title, attrs, renderer)
 
 
+relation_choices = [
+    (1, 'Is Subwork Of'),
+    # (2, "Is Part of Series"),
+    # (3, "Is Part of Secondary Series"),
+    # (4, "Is Translation of"),
+]
+
+
 class RelationForm(ModelForm):
     class Meta:
         model = WorkRelation
@@ -144,8 +152,7 @@ class RelationForm(ModelForm):
             self.fields['relation_kind'].disabled = True
             self.fields['to_work'].disabled = True
             self.fields['to_work'].widget = ReadOnlyText()
-        self.fields['relation_kind'].choices = [(1, 'Is Subwork Of'), (2, "Is Part of Series"),
-                                                (3, "Is Part of Secondary Series")]
+        self.fields['relation_kind'].choices = relation_choices
 
 
 class RelationFormRev(ModelForm):
@@ -166,5 +173,4 @@ class RelationFormRev(ModelForm):
             self.fields['from_work'].disabled = True
             self.fields['from_work'].widget = ReadOnlyText()
 
-        self.fields['relation_kind'].choices = [(1, 'Is Subwork Of'), (2, "Is Part of Series"),
-                                                (3, "Is Part of Secondary Series")]
+        self.fields['relation_kind'].choices = relation_choices

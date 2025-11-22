@@ -34,14 +34,16 @@ class WorkRelation(models.Model):
     class RelationTraversal:
         @staticmethod
         def for_search_words(work_ids: List[int]):
-            up_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series]
-            down_types = [WorkRelation.RelationKind.sub_work_of]
+            up_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series,
+                        WorkRelation.RelationKind.translation_of]
+            down_types = [WorkRelation.RelationKind.sub_work_of, WorkRelation.RelationKind.translation_of]
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
         @staticmethod
         def for_search_words_inverse(work_ids: List[int]):
-            up_types = [WorkRelation.RelationKind.sub_work_of]
-            down_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series]
+            up_types = [WorkRelation.RelationKind.sub_work_of, WorkRelation.RelationKind.translation_of]
+            down_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series,
+                          WorkRelation.RelationKind.translation_of]
 
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
@@ -63,7 +65,7 @@ class WorkRelation(models.Model):
         if self.relation_kind == self.RelationKind.part_of_secondary_series:
             return 'has Secondary Series Part'
         if self.relation_kind == self.RelationKind.translation_of:
-            return 'has Translation of '
+            return 'has Translation '
 
     @staticmethod
     def traverse_relations(work_ids: List[int], forward_kinds: List[int], reverse_kinds: List[int],
