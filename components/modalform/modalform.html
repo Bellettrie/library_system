@@ -5,7 +5,7 @@
         });
     </script>
 {% endif %}
-<form hx-post="{{ form_path }}" class="modal-content" method="post">
+<form {% if hx_enabled %}hx-post="{{ form_path }}"{% else %}action="{{ form_path }}"{% endif %} class="modal-content"  method="post">
     {% csrf_token %}
     <h5 class="modal-title text-2xl">{{ form_title }}</h5>
     <div class="modal-body">

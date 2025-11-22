@@ -1,10 +1,15 @@
 from django import forms
-from django.forms import ModelForm, inlineformset_factory
+from django.conf import settings
+from django.forms import ModelForm, inlineformset_factory, Widget
+from django.forms.widgets import TextInput
+from django.template import loader
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from creators.forms import CreatorWidget
 from series.forms import SeriesWidget
 from series.models import WorkInSeries
-from works.models import ItemState, Item, CreatorToWork, Work
+from works.models import ItemState, Item, CreatorToWork, Work, WorkRelation
 
 
 class SimpleWorkSearch(forms.Form):
@@ -96,3 +101,76 @@ CreatorToWorkFormSet = inlineformset_factory(Work, CreatorToWork, can_delete=Tru
 SeriesToWorkFomSet = inlineformset_factory(Work, WorkInSeries, can_delete=True,
                                            fields=['part_of_series', 'number', 'display_number', 'is_primary'],
                                            widgets={'part_of_series': SeriesWidget})
+
+
+class WorkFindWidget(Widget):
+    def render(self, name, value, attrs=None, renderer=None):
+        template = loader.get_template('works/work_select.html')
+
+        default_options = Work.objects.filter(pk=value)
+        default_option = None
+        if len(default_options) == 1:
+            default_option = default_options[0]
+        return template.render({'name': name, 'value': value, 'BASE_URL': settings.BASE_URL, "default": default_option})
+
+
+class ReadOnlyText(TextInput):
+    def render(self, name, value, attrs=None, renderer=None):
+        work = Work.objects.filter(pk=value)
+        if len(work) > 0:
+            title = work[0].get_description_title()
+        else:
+            title = ""
+        return super(ReadOnlyText, self).render(name, title, attrs, renderer)
+
+
+relation_choices = [
+    (1, 'Is Subwork Of'),
+    # (2, "Is Part of Series"),
+    # (3, "Is Part of Secondary Series"),
+    # (4, "Is Translation of"),
+]
+
+
+class RelationForm(ModelForm):
+    class Meta:
+        model = WorkRelation
+        fields = ['from_work', 'relation_kind', 'to_work', 'relation_index', 'relation_index_label']
+        widgets = {'to_work': WorkFindWidget, 'from_work': ReadOnlyText}
+
+    def render(self, *args, **kwargs):
+        super(RelationForm, self).render(*args, **kwargs)
+
+    def __init__(self, *args, **kwargs):
+        super(RelationForm, self).__init__(*args, **kwargs)
+        self.fields["from_work"].disabled = True
+        if self.instance.pk is None:
+            url = reverse('works.relation.edit.rev', args=(self.instance.from_work.id, self.instance.id or -1))
+            self.fields['relation_kind'].label = mark_safe("Relation <a class=\"text-2xl\" href=\"" + url + "\">⇅</a>")
+        else:
+            self.fields['relation_kind'].label = "Relation"
+            self.fields['relation_kind'].disabled = True
+            self.fields['to_work'].disabled = True
+            self.fields['to_work'].widget = ReadOnlyText()
+        self.fields['relation_kind'].choices = relation_choices
+
+
+class RelationFormRev(ModelForm):
+    class Meta:
+        model = WorkRelation
+        fields = ['from_work', 'relation_kind', 'to_work', 'relation_index', 'relation_index_label']
+        widgets = {'from_work': WorkFindWidget, 'to_work': ReadOnlyText}
+
+    def __init__(self, *args, **kwargs):
+        super(RelationFormRev, self).__init__(*args, **kwargs)
+        self.fields["to_work"].disabled = True
+        if self.instance.pk is None:
+            url = reverse('works.relation.edit', args=(self.instance.to_work.id, self.instance.id or -1))
+            self.fields['relation_kind'].label = mark_safe("Relation <a class=\"text-2xl\" href=\"" + url + "\">⇅</a>")
+        else:
+            self.fields['relation_kind'].label = "Relation"
+            self.fields['relation_kind'].disabled = True
+            self.fields['from_work'].disabled = True
+            self.fields['from_work'].widget = ReadOnlyText()
+
+        self.fields['relation_kind'].choices = relation_choices

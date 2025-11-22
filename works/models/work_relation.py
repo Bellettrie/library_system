@@ -22,7 +22,7 @@ class WorkRelation(models.Model):
     to_work = models.ForeignKey(Work, on_delete=models.CASCADE, related_name='incoming_relations')
 
     relation_index = models.DecimalField(null=True, blank=True, decimal_places=1, max_digits=5)
-    relation_index_label = models.CharField(max_length=64)
+    relation_index_label = models.CharField(max_length=64, blank=True, null=True)
 
     relation_kind = models.IntegerField(choices=RelationKind.choices, db_index=True)
 
@@ -34,16 +34,38 @@ class WorkRelation(models.Model):
     class RelationTraversal:
         @staticmethod
         def for_search_words(work_ids: List[int]):
-            up_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series]
-            down_types = [WorkRelation.RelationKind.sub_work_of]
+            up_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series,
+                        WorkRelation.RelationKind.translation_of]
+            down_types = [WorkRelation.RelationKind.sub_work_of, WorkRelation.RelationKind.translation_of]
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
 
         @staticmethod
         def for_search_words_inverse(work_ids: List[int]):
-            up_types = [WorkRelation.RelationKind.sub_work_of]
-            down_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series]
+            up_types = [WorkRelation.RelationKind.sub_work_of, WorkRelation.RelationKind.translation_of]
+            down_types = [WorkRelation.RelationKind.part_of_series, WorkRelation.RelationKind.part_of_secondary_series,
+                          WorkRelation.RelationKind.translation_of]
 
             return WorkRelation.traverse_relations(work_ids, up_types, down_types)
+
+    def relation_kind_description(self):
+        if self.relation_kind == self.RelationKind.sub_work_of:
+            return 'is Sub Work of'
+        elif self.relation_kind == self.RelationKind.part_of_series:
+            return 'is Part of Series'
+        elif self.relation_kind == self.RelationKind.part_of_secondary_series:
+            return 'is Part of Secondary Series'
+        elif self.relation_kind == self.RelationKind.translation_of:
+            return 'is Translation of '
+
+    def relation_kind_reverse(self):
+        if self.relation_kind == self.RelationKind.sub_work_of:
+            return 'has Sub Work'
+        if self.relation_kind == self.RelationKind.part_of_series:
+            return 'has Series Part'
+        if self.relation_kind == self.RelationKind.part_of_secondary_series:
+            return 'has Secondary Series Part'
+        if self.relation_kind == self.RelationKind.translation_of:
+            return 'has Translation '
 
     @staticmethod
     def traverse_relations(work_ids: List[int], forward_kinds: List[int], reverse_kinds: List[int],

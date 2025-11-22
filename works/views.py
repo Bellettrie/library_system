@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models.expressions import RawSQL, F
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 # Create your views here.
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import DetailView, ListView
 
 from recode.models import Recode
@@ -15,13 +16,14 @@ from search.queries import filter_state, filter_book_code_get_q, \
 from utils.get_query_words import get_query_words
 from utils.time import get_now
 from works.forms import ItemStateCreateForm, ItemCreateForm, PublicationCreateForm, SubWorkForm, \
-    LocationChangeForm
+    LocationChangeForm, RelationForm, RelationFormRev
 from works.models import Work, Item, ItemState, \
-    Category, WorkRelation
+    Category, WorkRelation, CreatorToWork
 from works.models.item_state import get_available_states
+from works.procedures.orphaned_work import orphaned
 
 
-def get_works(request):
+def get_works(request, advanced_override=False):
     if request.GET.get('q', "").count("*") + \
             request.GET.get('q_author', "").count("*") + \
             request.GET.get('q_series', "").count("*") + \
@@ -52,7 +54,7 @@ def get_works(request):
     if len(states) > 0:
         query.states = states
 
-    if len(query.get_subqueries()) > 0 and request.GET.get('advanced', 'False') != 'True':
+    if len(query.get_subqueries()) > 0 and request.GET.get('advanced', 'False') != 'True' and not advanced_override:
         query.only_with_items = True
         statz = get_available_states()
         query.states = list(map(lambda state: state.state_name, statz))
@@ -188,6 +190,17 @@ class WorkList(ListView):
 
     def get_queryset(self):  # new
         return get_works(self.request)
+
+
+def search_works_json(request):
+    if request.GET:
+        works = get_works(request, advanced_override=True)[0:50]
+        lst = []
+        for work in works:
+            lst.append({'id': work.pk, 'text': work.get_description_title()})
+        return JsonResponse({'results': lst}, safe=False)
+    else:
+        return JsonResponse({'results': []})
 
 
 class WorkDetail(DetailView):
@@ -405,18 +418,98 @@ def subwork_new(request, publication_id):
 
 
 @transaction.atomic
-@permission_required('works.add_publication')
-def subwork_delete(request, subwork_id):
-    relation = get_object_or_404(WorkRelation, from_work=subwork_id,
-                                 relation_kind=WorkRelation.RelationKind.sub_work_of)
-
+@permission_required('works.delete_work')
+def delete_work(request, work_id):
+    work = get_object_or_404(Work, id=work_id)
+    if not work.is_deletable():
+        return HttpResponse(status=404, content=b'Cannot delete work, still linked')
     if request.GET.get('confirm'):
-        work = relation.from_work
-        relation.delete()
+        CreatorToWork.objects.filter(work=work).delete()
         work.delete()
-        return HttpResponseRedirect(reverse('work.view', args=(relation.to_work_id,)))
+        next_url = request.GET.get("next")
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+            return HttpResponseRedirect(request.GET.get("next"))
+        return HttpResponseRedirect("/")
     return render(request, 'are-you-sure.html',
-                  {'what': 'delete the subwork ' + (relation.from_work.get_title() or "No Title") + "?"})
+                  {
+                      'what': f'delete work "{work.get_title_or_no_title()}"?',
+                      'requestpath': request.path}
+                  )
+
+
+@transaction.atomic
+@permission_required('works.delete_work')
+def work_ask_delete(request, work_id, return_to=None, hx_enabled=False):
+    work = get_object_or_404(Work, id=work_id)
+    return render(request, 'works/work_ask_delete.html',
+                  {"work": work, "return_to": return_to, "hx_enabled": hx_enabled})
+
+
+@transaction.atomic
+@permission_required('works.delete_workrelation')
+def remove_relation(request, work_id, relation_id, hx_enabled=False):
+    relation = get_object_or_404(WorkRelation, id=relation_id)
+    if request.GET.get('confirm'):
+        relation.delete()
+        if orphaned(relation.from_work):
+            return HttpResponseRedirect(reverse('work.ask_delete', args=(relation.from_work.id, relation.to_work.id)))
+        if hx_enabled:
+            return HttpResponse(status=209, headers={"HX-Refresh": "true"})
+        return HttpResponseRedirect(reverse('work.view', args=(work_id,)))
+    return render(request, 'are-you-sure.html',
+                  {
+                      'what': f'delete relation "{relation.from_work.get_title_or_no_title()} {relation.relation_kind_description()} {relation.to_work.get_title_or_no_title()}"?',
+                      'requestpath': request.path, 'hx_enabled': hx_enabled})
+
+
+@permission_required('works.change_workrelation')
+def edit_relation_to_work(request, work_id, relation_id=None, hx_enabled=False):
+    if relation_id == '-1':
+        relation_id = None
+    relation = None
+    if relation_id is not None:
+        relation = get_object_or_404(WorkRelation, id=relation_id)
+
+    work = get_object_or_404(Work, pk=work_id)
+    if relation is None:
+        relation = WorkRelation(from_work=work)
+    if request.POST:
+        form = RelationForm(request.POST, instance=relation)
+        if form.is_valid():
+            form.save()
+            if hx_enabled:
+                return HttpResponse(status=209, headers={"HX-Refresh": "true"})
+            return HttpResponseRedirect(reverse('work.view', args=(work_id,)))
+    else:
+        form = RelationForm(instance=relation)
+
+    return render(request, 'works/modals/relation_edit.html',
+                  {'form': form, 'hx_enabled': hx_enabled, 'work': work, "fwd": True})
+
+
+@permission_required('works.change_workrelation')
+def edit_relation_from_work(request, work_id, relation_id=None, hx_enabled=False):
+    if relation_id == '-1':
+        relation_id = None
+    relation = None
+    if relation_id is not None:
+        relation = get_object_or_404(WorkRelation, id=relation_id)
+
+    work = get_object_or_404(Work, pk=work_id)
+    if relation is None:
+        relation = WorkRelation(to_work=work)
+    if request.POST:
+        form = RelationFormRev(request.POST, instance=relation)
+        if form.is_valid():
+            form.save()
+            if hx_enabled:
+                return HttpResponse(status=209, headers={"HX-Refresh": "true"})
+            return HttpResponseRedirect(reverse('work.view', args=(work_id,)))
+    else:
+        form = RelationFormRev(instance=relation)
+
+    return render(request, 'works/modals/relation_edit.html',
+                  {'form': form, 'hx_enabled': hx_enabled, 'work': work, "fwd": False})
 
 
 def save_subwork_relations(disp_num, instance, num, publication_id, subwork_relation):

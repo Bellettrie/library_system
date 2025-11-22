@@ -12,10 +12,16 @@ class NamedThing(models.Model):
 
     def get_title(self):
         if not self.title:
-            return None
+            return ""
         if self.article:
             return self.article + " " + self.title
         return self.title
+
+    def get_title_or_no_title(self):
+        title = self.get_title()
+        if title != "":
+            return title
+        return "<No Title>"
 
 
 class TranslatedThing(models.Model):
