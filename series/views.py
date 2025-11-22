@@ -126,8 +126,6 @@ class SeriesList(ListView):
         if words is None:
             return []
         sq = SearchQuery(words=words).search().filter(seriesv2__isnull=False)
-        print(sq.query)
-        print(sq.all())
         return sq
 
 
