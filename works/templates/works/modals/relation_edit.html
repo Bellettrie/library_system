@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="#" method="post">
+        {% component 'tile.Tile' root_class_tags="flex-0" %}
+            {% fill 'title' %}Change Relationship {% endfill %}
+            {% fill 'content' %}
+
+                {% csrf_token %}
+                {% component 'form.Smol' form / %}
+            {% endfill %}
+            {% fill 'footer' %}
+                <input type="submit" value="Save" class="btn btn-success">
+            {% endfill %}
+        {% endcomponent %}
+    </form>
+{% endblock %}

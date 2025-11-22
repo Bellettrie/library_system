@@ -13,6 +13,11 @@ class LocationNumber(models.Model):
     name = models.CharField(max_length=64, null=True, blank=True)
     auto_name = models.BooleanField(default=True)
 
+    def gen_prefix(self):
+        if self.location is None:
+            return None
+        return self.location.category.code + "-" + self.letter + "-" + str(self.number) + "-"
+
 
 class Creator(models.Model):
     given_names = models.CharField(max_length=255, blank=True)
@@ -55,18 +60,8 @@ class Creator(models.Model):
             creators.add(self.is_alias_of)
         for work in Work.objects.filter(creatortowork__creator__in=creators):
             result.append(work)
-        for creator in creators:
-            for s in creator.get_all_series():
-                s.part_of_series_update()
+
         return result
-
-    def author_word_search_update(self):
-        from search.models import AuthorWordMatch
-        AuthorWordMatch.author_rename(self)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.author_word_search_update()
 
     def get_all_series(self):
 
@@ -95,7 +90,9 @@ class Creator(models.Model):
             if len(Recode.objects.filter(item=item)) > 0:
                 old_recode += 1
             else:
-                if not code or re.match("^" + location.category.code + "-" + code.letter + "-" + str(code.number) + "0*-", item.book_code):
+                if not code or re.match(
+                        "^" + location.category.code + "-" + code.letter + "-" + str(code.number) + "0*-",
+                        item.book_code):
                     new_recode += 1
                 else:
                     non_automa += 1
@@ -199,4 +196,5 @@ def relabel_creator(creator, location, old_number, old_letter, new_number, new_l
 
 
 def force_relabel(creatorlocationnumber: CreatorLocationNumber, old_number: int, old_letter: str):
-    relabel_creator(creatorlocationnumber.creator, creatorlocationnumber.location, old_number, old_letter, creatorlocationnumber.number, creatorlocationnumber.letter)
+    relabel_creator(creatorlocationnumber.creator, creatorlocationnumber.location, old_number, old_letter,
+                    creatorlocationnumber.number, creatorlocationnumber.letter)

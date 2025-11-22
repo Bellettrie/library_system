@@ -28,7 +28,7 @@ def get_book_code_no_location(request, publication_id):
 
 def get_book_code_series(series):
     location = series.location
-    code = series.generate_code_full(location)
+    code = series.work.generate_code_full(location)
 
     return code
 

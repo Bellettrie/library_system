@@ -1,23 +1,23 @@
-
 {% component 'search.searchbox' selected_tag="simple" %}
-            <form class="flex flex-1  w-full place-content-center  gap-2" action="/works/search" method="get">
-                <div class="join md:content-center">
-                    <input class="join-item input input-bordered" id="q" type="text" name="q"
-                           value="{{ request.GET.q }}"
-                           placeholder="Dune">
-                    <input type="submit" class="join-item btn btn-primary" value="Search">
-                    <a class="join-item btn " href="/works/search?advanced=True">...</a>
-                </div>
-            {% if perms.change_work or perms.works.change_itemstate or perms.works.change_item  %}<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm/6 font-medium">Admin Mode</dt>
-                    <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input checkbox"
-                                                                             id="admin" type="checkbox"
-                                                                             {% if admin %}
-                                                                                checked
-                                                                             {% endif %}
-                                                                             name="admin"
-                                                                             value="True"></dd>
-                </div>
-            {% endif %}
-            </form>
+    <form class="flex flex-col w-full place-content-center  gap-2" action="/works/search" method="get">
+        <div class="join md:content-center">
+            <input class="join-item input input-bordered" id="q" type="text" name="q"
+                   value="{{ request.GET.q }}"
+                   placeholder="Dune">
+            <input type="submit" class="join-item btn btn-primary" value="Search">
+            <a class="join-item btn " href="/works/search?advanced=True">...</a>
+        </div>
+        {% if perms.change_work or perms.works.change_itemstate or perms.works.change_item %}
+            <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm/6 font-medium">Admin Mode</dt>
+                <dd class="mt-1 text-sm/6  sm:col-span-2 sm:mt-0"><input class="input checkbox"
+                                                                         id="admin" type="checkbox"
+                        {% if admin %}
+                                                                         checked
+                        {% endif %}
+                                                                         name="admin"
+                                                                         value="True"></dd>
+            </div>
+        {% endif %}
+    </form>
 {% endcomponent %}

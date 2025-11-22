@@ -32,8 +32,8 @@
         {% endfill %}
         {% fill "modal_submit_button" %}
             {% if not series.location_code %}
-                <a class="btn join-item" hx-get="{% url 'series.cutter.gen_code' series.pk %}" hx-target="#dialog"
-                hx-swap="innerHTML" href="{% url 'series.cutter.gen_code' series.pk %}">Custom Cutter Number</a>
+                <a class="btn join-item" hx-get="{% url 'series.cutter.gen_code' series.work_id %}" hx-target="#dialog"
+                hx-swap="innerHTML" href="{% url 'series.cutter.gen_code' series.work_id %}">Custom Cutter Number</a>
             {% endif %}
             <input type="submit" class="btn btn-success join-item" value="save" >
         {% endfill %}

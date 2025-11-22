@@ -22,7 +22,7 @@
                     <th></th>
                 </tr>
                 {% for itemRow in items %}
-                    {% component 'works.table.Row' itemRow.get_item skip_header=skip_header %}
+                    {% component 'works.table.Row' row=itemRow skip_header=skip_header %}
                         {% fill "extra_rows" %}
                             <td>
                                 {% if  itemRow.is_item %}
@@ -50,7 +50,7 @@
     </div>
     <div class="lg:hidden flex flex-col gap-5 m-3">
         {% for itemRow in items %}
-            {% component 'works.table.Card' itemRow.get_item True %}
+            {% component 'works.table.Card' row=itemRow all_authors=True %}
                 <div class=" flex  justify-end  join">
                     {% if itemRow.is_item %}
                         {% component "lendings.buttons.Lend" item perms bonus_classes="btn-sm join-item" / %}

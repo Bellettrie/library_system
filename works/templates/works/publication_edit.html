@@ -31,17 +31,11 @@
                             {% component "form.Smol" creator / %}
                             <hr>
                         {% endfor %}
-
                     {% endfill %}
                 {% endcomponent %}
                 {% component "tile.Tile" root_class_tags="flex-0" %}
                     {% fill 'title' %}Series{% endfill %}
                     {% fill 'content' %}
-                        {{ series.management_form }}
-                        {% for serie in series %}
-                            {% component "form.Smol" serie / %}
-                            <hr>
-                        {% endfor %}
                     {% endfill %}
                     {% fill 'footer' %}
                         {% component 'tile.Footer' %}
