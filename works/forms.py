@@ -122,8 +122,8 @@ class ReadOnlyText(TextInput):
 
 relation_choices = [
     (1, 'Is Subwork Of'),
-    # (2, "Is Part of Series"),
-    # (3, "Is Part of Secondary Series"),
+    (2, "Is Part of Series"),
+    (3, "Is Part of Secondary Series"),
     # (4, "Is Translation of"),
 ]
 
