@@ -1,0 +1,14 @@
+{% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
+
+{% block content %}
+    {% component 'modalform.ModalForm' title="Work can be removed" path=request.path form_action="submit" %}
+        {% fill "modal_body" %}
+            {{ work.get_title }} has no more relations, and has no items either. Do you want to remove it?
+        {% endfill %}
+        {% fill 'modal_submit_button' %}
+            <a class="btn btn-error join-item"
+               href="{% url 'work.delete' work.id %}?confirm=True&next={% url "work.view" return_to %}">Yes</a>
+            {% if return_to %}<a class="btn join-item" href="{% url 'work.view' return_to %}">No</a>{% endif %}
+        {% endfill %}
+    {% endcomponent %}
+{% endblock %}

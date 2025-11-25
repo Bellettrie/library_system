@@ -15,17 +15,13 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if subwork_relation.from_work.title %}
-                                        <a class="link link-secondary"
-                                           href="{% url "work.view" subwork_relation.from_work.id %}">
-                                            {{ subwork_relation.from_work.get_title }}
-                                        </a>
-                                        {% if subwork_relation.from_work.sub_title %}
-                                            <br/>
-                                            <i>-{{ subwork_relation.from_work.sub_title }}</i>
-                                        {% endif %}
-                                    {% else %}
-                                        <i>No Title</i>
+                                    <a class="link link-secondary"
+                                       href="{% url "work.view" subwork_relation.from_work.id %}">
+                                        {{ subwork_relation.from_work.get_title_or_no_title }}
+                                    </a>
+                                    {% if subwork_relation.from_work.sub_title %}
+                                        <br/>
+                                        <i>-{{ subwork_relation.from_work.sub_title }}</i>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -37,8 +33,10 @@
                                     <td class="join">
                                         <a href="{% url 'work.subwork.edit' subwork_relation.from_work_id %}"
                                            class="btn btn-primary btn-xs join-item">Edit</a>
-                                        <a href="{% url 'work.subwork.delete' subwork_relation.from_work_id %}"
-                                           class="btn btn-error btn-xs join-item">Delete</a>
+                                        <a hx-get="{% url 'works.relation.remove' subwork_relation.from_work.id subwork_relation.id %}"
+                                           hx-target="#dialog"
+                                           href="{% url 'works.relation.remove' subwork_relation.from_work.id subwork_relation.id %}"
+                                           class="btn btn-xs btn-error join-item">Remove</a>
                                     </td>
                                 {% endif %}
                             </tr>

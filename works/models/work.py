@@ -17,6 +17,12 @@ class Work(NamedTranslatableThing):
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
 
+    def __str__(self):
+        return self.get_description_title()
+
+    def get_description_title(self):
+        return f"{self.get_title()} | {self.pk}"
+
     def get_pub(self):
         return self
 
@@ -150,3 +156,7 @@ class Work(NamedTranslatableThing):
         return WorkRelation.objects.filter(to_work_id=self.id,
                                            relation_kind=WorkRelation.RelationKind.sub_work_of).order_by(
             'relation_index')
+
+    def is_deletable(self):
+        from works.procedures.orphaned_work import orphaned
+        return orphaned(self)
