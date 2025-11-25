@@ -55,7 +55,6 @@ STATIC_ROOT = env("STATIC_ROOT", default=os.path.join(BASE_DIR, 'root'))
 # -----------------------------------------------------
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'bootstrap'),
     os.path.join(BASE_DIR, 'styles/static'),
 ]
 
