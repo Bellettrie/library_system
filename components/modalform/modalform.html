@@ -5,7 +5,8 @@
         });
     </script>
 {% endif %}
-<form {% if hx_enabled %}hx-post="{{ form_path }}"{% else %}action="{{ form_path }}"{% endif %} class="modal-content"  method="post">
+<form {% if hx_enabled %}hx-post="{{ form_path }}"{% else %}action="{{ form_path }}"{% endif %} class="modal-content"
+      method="post">
     {% csrf_token %}
     <h5 class="modal-title text-2xl">{{ form_title }}</h5>
     <div class="modal-body">
@@ -15,16 +16,17 @@
 
     <div class="modal-footer join w-full flex flex-row justify-end">
         {% if form_action == "submit" %}
-              {% slot "modal_submit_button" %}
-                  <button class="btn btn-success join-item">Save</button>
-              {% endslot %}
+            {% slot "modal_submit_button" %}
+                <button class="btn btn-success join-item">Save</button>
+            {% endslot %}
         {% endif %}
+
         {% if form_action == "close" %}
             <div class="modal-action">
                 <form method="dialog join">
-                  {% slot "modal_submit_button" %}
-                      <button class="btn join-item">Close</button>
-                  {% endslot %}
+                    {% slot "modal_submit_button" %}
+                        <button class="btn join-item">Close</button>
+                    {% endslot %}
                 </form>
             </div>
         {% endif %}

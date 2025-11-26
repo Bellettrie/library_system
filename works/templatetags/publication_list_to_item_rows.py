@@ -34,9 +34,10 @@ class RowData:
     def get_book_code(self):
         if self.item:
             return self.item.book_code, self.item.book_code_extension
-
         elif self.series:
             return self.series.book_code, ""
+        elif self.work.as_series():
+            return self.work.as_series().book_code, ""
         return "", ""
 
 
