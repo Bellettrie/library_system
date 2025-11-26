@@ -129,11 +129,88 @@ relation_choices = [
 ]
 
 
+def clean_rel_form(rel_form):
+    kind = rel_form.cleaned_data["relation_kind"]
+    from_work = rel_form.cleaned_data["from_work"]
+    to_work = rel_form.cleaned_data["to_work"]
+    if from_work.id == to_work.id:
+        raise ValidationError("❗From work is to work, that's not allowed")
+
+    relation_index = rel_form.cleaned_data["relation_index"]
+    wr = WorkRelation.objects.filter(to_work=to_work, relation_index=relation_index, relation_kind=kind).exclude(
+        from_work=from_work)
+
+    if len(wr) > 0:
+        raise ValidationError(
+            "❗Another relation exists for {to_work.title} for index {index}, which hits.".format(to_work=to_work,
+                                                                                                 index=relation_index))
+
+    if kind == WorkRelation.RelationKind.sub_work_of:
+        if from_work.as_series():
+            raise ValidationError(
+                "❗{from_work.title} is a series, so cannot be a subwork.".format(from_work=from_work))
+        if to_work.as_series():
+            raise ValidationError(
+                "❗{to_work.title} is a series, so cannot be the top of a subwork.".format(to_work=to_work))
+        if relation_index is None:
+            raise ValidationError("Subwork relationship needs a relation index.")
+
+    if kind == WorkRelation.RelationKind.part_of_series:
+
+        st = set()
+        st.add(to_work.id)
+        nw = to_work
+        while True:
+            ser = nw.part_of_series()
+            if ser is None:
+                break
+            if ser.to_work_id in st:
+                raise ValidationError(
+                    "❗{to_work.title} would now be part of a series loop, loops make the system dizzy.".format(to_work=ser.to_work))
+            if ser.from_work_id in st:
+                raise ValidationError(
+                    "❗{to_work.title} would now be part of a series loop, loops make the system dizzy.".format(to_work=ser.from_work))
+            nw = ser.to_work
+            st.add(nw.id)
+
+        if not to_work.as_series():
+            raise ValidationError(
+                "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
+
+        wr = WorkRelation.objects.filter(from_work=from_work, relation_kind=kind).exclude(relation_index=relation_index)
+
+        if len(wr) > 0:
+            raise ValidationError(
+                "❗One work can be part of only one series. {from_work.get_title} is already part of a series.".format(
+                    from_work=from_work))
+        if relation_index is None:
+            raise ValidationError("Series needs a relation index.")
+
+    if kind == WorkRelation.RelationKind.part_of_secondary_series:
+        if not to_work.as_series():
+            raise ValidationError(
+                "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
+        if relation_index is None:
+            raise ValidationError("Secondary Series needs a relation index.")
+
+    if kind == WorkRelation.RelationKind.translation_of:
+        if (not not to_work.as_series()) != (not not from_work.as_series()):
+            raise ValidationError(
+                "❗{to_work.title} and {from_work.title} need to either both be a series, or both not be.".format(
+                    to_work=to_work, from_work=from_work))
+        if relation_index is not None:
+            raise ValidationError("Subwork relationship needs a relation index.")
+
+
 class RelationForm(ModelForm):
     class Meta:
         model = WorkRelation
         fields = ['from_work', 'relation_kind', 'to_work', 'relation_index', 'relation_index_label']
         widgets = {'to_work': WorkFindWidget, 'from_work': ReadOnlyText}
+
+    def clean(self):
+        super(RelationForm, self).clean()
+        clean_rel_form(self)
 
     def render(self, *args, **kwargs):
         super(RelationForm, self).render(*args, **kwargs)
@@ -160,48 +237,7 @@ class RelationFormRev(ModelForm):
 
     def clean(self):
         super(RelationFormRev, self).clean()
-        kind = self.cleaned_data["relation_kind"]
-        from_work = self.cleaned_data["from_work"]
-        to_work = self.cleaned_data["to_work"]
-        relation_index = self.cleaned_data["relation_index"]
-        wr = WorkRelation.objects.filter(to_work=to_work, relation_index=relation_index, relation_kind=kind).exclude(
-            from_work=from_work)
-
-        if len(wr) > 0:
-            raise ValidationError(
-                "❗Another relation exists for {to_work.title} for index {index}, which hits.".format(to_work=to_work,
-                                                                                                     index=relation_index))
-
-        if kind == WorkRelation.RelationKind.sub_work_of:
-            if from_work.as_series():
-                raise ValidationError(
-                    "❗{from_work.title} is a series, so cannot be a subwork.".format(from_work=from_work))
-            if to_work.as_series():
-                raise ValidationError(
-                    "❗{to_work.title} is a series, so cannot be the top of a subwork.".format(to_work=to_work))
-            if relation_index is None:
-                raise ValidationError("Subwork relationship needs a relation index.")
-
-        if kind == WorkRelation.RelationKind.part_of_series:
-            if not to_work.as_series():
-                raise ValidationError(
-                    "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
-            if relation_index is None:
-                raise ValidationError("Series needs a relation index.")
-
-        if kind == WorkRelation.RelationKind.part_of_secondary_series:
-            if not to_work.as_series():
-                raise ValidationError(
-                    "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
-            if relation_index is None:
-                raise ValidationError("Secondary Series needs a relation index.")
-
-        if kind == WorkRelation.RelationKind.translation_of:
-            if not to_work.as_series():
-                raise ValidationError(
-                    "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
-            if relation_index is not None:
-                raise ValidationError("Subwork relationship needs a relation index.")
+        clean_rel_form(self)
 
     def __init__(self, *args, **kwargs):
         super(RelationFormRev, self).__init__(*args, **kwargs)
