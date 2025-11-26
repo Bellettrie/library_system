@@ -1,5 +1,6 @@
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.forms import ModelForm, inlineformset_factory, Widget
 from django.forms.widgets import TextInput
 from django.template import loader
@@ -156,6 +157,51 @@ class RelationFormRev(ModelForm):
         model = WorkRelation
         fields = ['from_work', 'relation_kind', 'to_work', 'relation_index', 'relation_index_label']
         widgets = {'from_work': WorkFindWidget, 'to_work': ReadOnlyText}
+
+    def clean(self):
+        super(RelationFormRev, self).clean()
+        kind = self.cleaned_data["relation_kind"]
+        from_work = self.cleaned_data["from_work"]
+        to_work = self.cleaned_data["to_work"]
+        relation_index = self.cleaned_data["relation_index"]
+        wr = WorkRelation.objects.filter(to_work=to_work, relation_index=relation_index, relation_kind=kind).exclude(
+            from_work=from_work)
+
+        if len(wr) > 0:
+            raise ValidationError(
+                "❗Another relation exists for {to_work.title} for index {index}, which hits.".format(to_work=to_work,
+                                                                                                     index=relation_index))
+
+        if kind == WorkRelation.RelationKind.sub_work_of:
+            if from_work.as_series():
+                raise ValidationError(
+                    "❗{from_work.title} is a series, so cannot be a subwork.".format(from_work=from_work))
+            if to_work.as_series():
+                raise ValidationError(
+                    "❗{to_work.title} is a series, so cannot be the top of a subwork.".format(to_work=to_work))
+            if relation_index is None:
+                raise ValidationError("Subwork relationship needs a relation index.")
+
+        if kind == WorkRelation.RelationKind.part_of_series:
+            if not to_work.as_series():
+                raise ValidationError(
+                    "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
+            if relation_index is None:
+                raise ValidationError("Series needs a relation index.")
+
+        if kind == WorkRelation.RelationKind.part_of_secondary_series:
+            if not to_work.as_series():
+                raise ValidationError(
+                    "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
+            if relation_index is None:
+                raise ValidationError("Secondary Series needs a relation index.")
+
+        if kind == WorkRelation.RelationKind.translation_of:
+            if not to_work.as_series():
+                raise ValidationError(
+                    "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
+            if relation_index is not None:
+                raise ValidationError("Subwork relationship needs a relation index.")
 
     def __init__(self, *args, **kwargs):
         super(RelationFormRev, self).__init__(*args, **kwargs)
