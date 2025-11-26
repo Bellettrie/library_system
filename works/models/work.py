@@ -17,8 +17,6 @@ class Work(NamedTranslatableThing):
     hidden = models.BooleanField()
     listed_author = models.CharField(max_length=64, default="ZZZZZZZZ")
 
-    # Temporary field for migration
-
     def as_series(self):
         from series.models import SeriesV2
         srs = SeriesV2.objects.filter(work_id=self.id)
@@ -39,8 +37,6 @@ class Work(NamedTranslatableThing):
 
     def get_description_title(self):
         return f"{self.get_title()} | {self.pk}"
-
-    # Temporary field for migration
 
     def get_pub(self):
         return self

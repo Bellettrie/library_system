@@ -11,8 +11,7 @@ class Relations(Component):
         rels = WorkRelation.objects.filter(Q(from_work=work) | Q(to_work=work))
         rels = rels.annotate(iz=Case(When(from_work=work.id, then=0), default=1))
         rels = rels.order_by('relation_kind', "iz", 'relation_index')
-        for rel in rels:
-            print(rel.id, rel.from_work.id, rel.to_work.id)
+
         return {
             "relations": rels,
             "work": work,
