@@ -13,6 +13,9 @@ class WordMatch(models.Model):
     publication = models.ForeignKey(Work, on_delete=CASCADE)
     type = models.CharField(max_length=8, default="TITLE", db_index=True)
 
+    def __hash__(self):
+        return hash((self.word_id, self.publication_id, self.type))
+
     def __str__(self):
         return f"{self.word.word} {self.publication} {self.type}"
 
