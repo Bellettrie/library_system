@@ -1,47 +1,70 @@
 {% component 'tile.Tile' root_class_tags="lg:basis-64" %}
-    {% fill 'title' %}Publication Details{% endfill %}
+    {% fill 'title' %}{% if series %}Series
+        {% else %}{% if work.get_items %}Publication{% else %}Work {% endif %}{% endif %} Details{% endfill %}
     {% fill 'content' %}
         <dl class="w-full divide-y divide-gray-100">
             {% component "datarow.Datarow" "Title" %}
-                {% if object.title %}{{ object.get_title }} {% if object.sub_title %}<br/>
-                    <i>-{{ object.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
+                {% if work.title %}{{ work.get_title }} {% if work.sub_title %}<br/>
+                    <i>-{{ work.sub_title }}</i>{% endif %}{% else %} <i>No Title</i> {% endif %}
             {% endcomponent %}
-            {% if object.language %}
+            {% if work.language %}
                 {% component "datarow.Datarow" "Language" %}
-                    {{ object.language }}
+                    {{ work.language }}
                 {% endcomponent %}
             {% endif %}
-            {% if object.original_title or object.original_subtitle %}
+            {% if work.original_title or work.original_subtitle %}
                 {% component "datarow.Datarow" "Original Title" %}
-                    {% if object.get_original_title %}{{ object.get_original_title }}
-                        {% if object.original_subtitle %}<br/>
-                            <i>-{{ object.original_subtitle }}</i>{% endif %}{% else %}
+                    {% if work.get_original_title %}{{ work.get_original_title }}
+                        {% if work.original_subtitle %}<br/>
+                            <i>-{{ work.original_subtitle }}</i>{% endif %}{% else %}
                         <i>No Title</i> {% endif %}
                 {% endcomponent %}
             {% endif %}
             {% component "datarow.Datarow" "Authors" %}
-                {% for author in object.get_authors %}{% include 'creators/single_line_description.html' %}<br>
+                {% for author in work.get_authors %}{% include 'creators/single_line_description.html' %}<br>
                 {% endfor %}
             {% endcomponent %}
-
-            {% if object.comment %}
+            {% if work.comment %}
                 {% component "datarow.Datarow" "Comments" %}
-                    {{ object.comment }}
+                    {{ work.comment }}
                 {% endcomponent %}
             {% endif %}
-            {% if series %}
+            {% if part_of_series %}
                 {% component "datarow.Datarow" "Series" %}
-                    {% for series in  series %}
+                    {% for part_of in  part_of_series %}
                         {% include 'series/part_of_series_name.html' %}{% if not forloop.last %}<br>{% endif %}
                     {% endfor %}
                 {% endcomponent %}
+
             {% endif %}
-            {% component "datarow.Datarow" "Series" %}
-                {% for series in  wis %}
-                    {% include 'series/part_of_series_name.html' %}{% if not forloop.last %}<br>{% endif %}
-                {% endfor %}
-            {% endcomponent %}
-            {% with part_of_works=object.part_of_works %}
+            {% if series %}
+                {% component "datarow.Datarow" "Series Location" %}
+                    {{ series.location }}
+                {% endcomponent %}
+                {% component "datarow.Datarow" "Series Book Code" %}
+                    {{ series.book_code }}
+                    {% if perms.series.change_series %}
+                        <a class="btn btn-primary btn-sm" hx-get="{% url 'series.gen_code' series.work_id %}"
+                           hx-target="#dialog" href="{% url 'series.gen_code' series.work_id %}">
+                            {% if series.book_code %}
+                                Edit{% else %}New{% endif %}</a>
+                    {% endif %}
+                {% endcomponent %}
+                {% if series.location_code and perms.series.change_series %}
+                    {% component "datarow.Datarow" "Series Location Code" %}
+                        {{ series.location_code.letter }}-{{ series.location_code.number }}
+                        {% if perms.series.change_series %}
+                            <a class="btn btn-danger btn-sm"
+                               hx-get="{% url 'series.cutter.del_code' series.work_id %}"
+                               hx-target="#dialog"
+                               href="{% url 'series.cutter.del_code' series.work_id %}">Delete</a>
+                        {% endif %}
+                        <br>
+                        <small>{{ series.location_code.name }}</small>
+                    {% endcomponent %}
+                {% endif %}
+            {% endif %}
+            {% with part_of_works=work.part_of_works %}
                 {% if part_of_works %}
                     {% component "datarow.Datarow" "Available in Work" %}
                         {% for subwork_relation in  part_of_works %}
@@ -65,15 +88,20 @@
     {% fill 'footer' %}
         {% if perms.works.change_work %}
             {% component 'tile.Footer' %}
-                {% if object.is_deletable %}
+                {% if work.is_deletable %}
                     <a class="btn btn-sm btn-error join-item"
-                       href="{% url "work.delete" object.pk %}">Delete</a>
+                       href="{% url "work.delete" work..pk %}">Delete</a>
                 {% else %}
                     <a class="btn btn-sm btn-error btn-disabled join-item"
-                       >Delete</a>
+                    >Delete</a>
                 {% endif %}
-                <a class="btn btn-sm  btn-primary join-item"
-                   href="{% url 'works.publication.edit' object.pk %}">Edit publication</a>
+                {% if not series %}
+                    <a class="btn btn-sm  btn-primary join-item"
+                       href="{% url 'works.publication.edit' work.pk %}">Edit publication</a>
+                {% else %}
+                    <a class="btn btn-sm  btn-primary join-item"
+                       href="{% url 'series.edit' work.pk %}">Edit series</a>
+                {% endif %}
             {% endcomponent %}
         {% endif %}
     {% endfill %}

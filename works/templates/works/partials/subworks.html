@@ -49,7 +49,7 @@
             {% if perms.works.change_work %}
                 {% component 'tile.Footer' %}
                     <a class=" btn btn-sm  btn-primary join-item"
-                       href="{% url 'work.subwork.new' object.pk %}">Add
+                       href="{% url 'work.subwork.new' work.pk %}">Add
                         Subwork</a>
                 {% endcomponent %}
             {% endif %}

@@ -1,10 +1,13 @@
 <tr class="">
     {% if not skip_header %}
-        <td class="bg-accent text-xs text-center w-[12em]">
-            {% if item.book_code %}<a href="{% url "work.view" item.publication.pk %}"><b>{{ item.book_code }}</b>
-                {% if item.book_code_extension %}({{ item.book_code_extension }}){% endif %}</a>
-                {% if show_recode and item.get_recode %}
-                    {{ item.get_recode }}
+        <td class="{% if series %}bg-secondary {% else %}bg-accent{% endif %} text-xs text-center w-[12em]">
+            {% if series %}[s]{% endif %}
+            {% if book_code %}<a href="{% url "work.view" work.pk %}"><b>{{ book_code }}</b>
+                {% if book_code_extension %}({{ book_code_extension }}){% endif %}</a>
+                {% if item %}
+                    {% if show_recode and item.get_recode %}
+                        {{ item.get_recode }}
+                    {% endif %}
                 {% endif %}
             {% endif %}
         </td>
@@ -12,13 +15,13 @@
     <td>
         <dl>
             <dd class="">
-                <a class="link link-secondary" href="{% url "work.view" item.publication.pk %}">
-                    {% if item.publication.get_title %}{{ item.publication.get_title }}{% else %}&lt;No Title&gt;
+                <a class="link link-secondary" href="{% url "work.view" work.pk %}">
+                    {% if work.get_title %}{{ work.get_title }}{% else %}&lt;No Title&gt;
                     {% endif %}
                 </a>
             </dd>
-            {% if  item.publication.sub_title %}
-                <dd class="text-xs pb-1">{{ item.publication.sub_title }}</dd> {% endif %}
+            {% if  work.sub_title %}
+                <dd class="text-xs pb-1">{{ work.sub_title }}</dd> {% endif %}
             {% if skip_header %}
                 <dd class="text-xs pb-2 ml-2">{{ item.book_code }}</dd>
             {% endif %}
@@ -26,11 +29,14 @@
     </td>
     <td>
         <dl>
-            {% for author in authors %}
+            {% for creator_work in creators %}
                 <dd>
-                    {{ author.role.name }} <a class="link link-secondary"
-                                              href="{% url "creator.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}
-                </a>
+                    {{ creator_work.role.name }}
+                    <a class="link link-secondary"
+                       href="{% url "creator.view" creator_work.creator.pk %}">
+                        <em>{{ creator_work.creator.name }}</em>
+                        , {{ creator_work.creator.given_names }}
+                    </a>
                 </dd>
             {% endfor %}
         </dl>

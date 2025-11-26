@@ -1,12 +1,14 @@
 <div class="bg-base-100 shadow-xl flex relative">
 
     <div class="bg-accent text-accent-content place-items-center basis-[5rem]  " role="link" tabindex="0"
-         onclick="location.href='{% url 'work.view' item.publication.pk %}'">
-        {% if item.book_code %}
+         onclick="location.href='{% url 'work.view' work.pk %}'">
+        {% if book_code %}
             <dl class="items-center flex flex-col items-center justify-center h-full">
+                    {% if series %}<dd>SERIES</dd>{% endif %}
+
                 {% for cd in split_code %}
-                    <dd><b><a href="{% url "work.view" item.publication.pk %}">{{ cd }}</a></b>{% if forloop.last %}
-                        {% if item.book_code_extension %}({{ item.book_code_extension }}){% endif %}{% endif %}</dd>
+                    <dd><b><a href="{% url "work.view" work.pk %}">{{ cd }}</a></b>{% if forloop.last %}
+                        {% if book_code_extension %}({{ book_code_extension }}){% endif %}{% endif %}</dd>
                 {% endfor %}
 
             </dl>
@@ -22,13 +24,13 @@
                 {% endif %}
             </dd>
             <dd class="text-lg">
-                <a class="link link-secondary" href="{% url "work.view" item.publication.pk %}">
-                    {% if item.publication.title %}{{ item.publication.title }}{% else %}&lt;No Title&gt;{% endif %}
+                <a class="link link-secondary" href="{% url "work.view" work.pk %}">
+                    {% if work.title %}{{ work.title }}{% else %}&lt;No Title&gt;{% endif %}
                 </a>
             </dd>
-            {% if  item.publication.sub_title %}
-                <dd class="text-xs pb-1">{{ item.publication.sub_title }}</dd> {% endif %}
-            {% for author in authors %}
+            {% if  work.sub_title %}
+                <dd class="text-xs pb-1">{{ work.sub_title }}</dd> {% endif %}
+            {% for author in creators %}
                 <dd>
                     {{ author.role.name }} <a class="link link-secondary"
                                               href="{% url "creator.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}

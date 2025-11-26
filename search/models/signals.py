@@ -1,5 +1,5 @@
-from datetime import timedelta
 from typing import List
+from datetime import timedelta
 from creators.models import Creator
 from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from search.models import WordMatch
