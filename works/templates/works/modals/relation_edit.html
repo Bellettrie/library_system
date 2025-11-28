@@ -5,7 +5,6 @@
         {% component 'tile.Tile' root_class_tags="flex-0" %}
             {% fill 'title' %}Change Relationship {% endfill %}
             {% fill 'content' %}
-
                 {% csrf_token %}
                 {% component 'form.Smol' form / %}
             {% endfill %}
@@ -14,4 +13,22 @@
             {% endfill %}
         {% endcomponent %}
     </form>
+    {% component 'help_bar' %}
+        <h2>How to use this form</h2>
+        You should read the relation in this panel as 'from_work' 'relation' 'to_work'.<br> Example: "Two Towers" "is
+        Part of Series" "Lord of theRings".
+        <br>
+        If the 'from' and 'to' are in the wrong order, then press the double arrows to change the direction.<br>
+        When editing an existing relation, the 'from_work', 'to_work', 'relation_kind' are all locked. If you want to
+        change those, instead remove the relation and add a new one.
+
+        <h2>Relation Kinds</h2>
+        The system currently supports three relation kinds:
+        <h3>SubWork</h3>
+        indicates that one work is physically a part of the other. This is used for instance to track omnibusses. Example: "Ultimate Hitchhikers Guide to the Galaxy".
+        <h3>Part of Series</h3>
+        This indicates that one work is a part of a series. Example: "The Wheel of Time".
+        <h3>Part of Secondary Series</h3>
+            A secondary series is a series that is not used for generating book-codes or other orderings. It may be used for things such as alternative reading orders.
+    {% endcomponent %}
 {% endblock %}
