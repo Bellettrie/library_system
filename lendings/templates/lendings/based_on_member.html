@@ -53,7 +53,6 @@
                                     {% endif %}
                                 </td>
                             {% endfill %}
-
                         {% endcomponent %}
                     {% endfor %}
                 </table>
@@ -61,7 +60,7 @@
         </div>
         <div class="lg:hidden flex flex-col gap-5 m-3">
             {% for itemRow in items %}
-                {% component "works.table.Card" itemRow.get_item %}
+                {% component "works.table.Card" itemRow %}
                     {% fill "infos" %}
                         <div class=" flex  justify-end  join">
                         {% if itemRow.get_item %}
