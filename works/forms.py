@@ -177,7 +177,7 @@ def clean_rel_form(rel_form):
             raise ValidationError(
                 "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
 
-        wr = WorkRelation.objects.filter(from_work=from_work, relation_kind=kind).exclude(relation_index=relation_index)
+        wr = WorkRelation.objects.filter(from_work=from_work, relation_kind=kind).exclude(to_work=to_work)
 
         if len(wr) > 0:
             raise ValidationError(

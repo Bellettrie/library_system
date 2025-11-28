@@ -36,4 +36,14 @@
             </div>
         {% endwith %}
     {% endwith %}
+    {% if perms.works.change_workrelation %}
+        {% component 'help_bar' %}
+            <h2>Editing Works</h2>
+
+            <h3>Relations</h3>
+            A relation describes that one work links to another work. Relations are edited separately in the 'relations' panel.
+            <h2>Deleting Works</h2>
+            A work may be related if it has no items, and no more relations. The system will automatically ask for deletion if the last relation is removed from a work.
+        {% endcomponent %}
+    {% endif %}
 {% endblock %}

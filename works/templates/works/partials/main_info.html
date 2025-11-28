@@ -90,7 +90,7 @@
             {% component 'tile.Footer' %}
                 {% if work.is_deletable %}
                     <a class="btn btn-sm btn-error join-item"
-                       href="{% url "work.delete" work..pk %}">Delete</a>
+                       href="{% url "work.delete" work.pk %}">Delete</a>
                 {% else %}
                     <a class="btn btn-sm btn-error btn-disabled join-item"
                     >Delete</a>
