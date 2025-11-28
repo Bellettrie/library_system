@@ -3,7 +3,7 @@ from utils.time import get_now
 from works.models import Item
 
 
-def can_lend_more_of_item(member: Member, item:Item, from_reservation=False):
+def can_lend_more_of_item(member: Member, item: Item, from_reservation=False):
     from lendings.models import Lending
     from reservations.models import Reservation
 
