@@ -36,14 +36,12 @@
             </div>
         {% endwith %}
     {% endwith %}
-    {% if perms.works.change_workrelation %}
+    {% if perms.works.change_workrelation  or perms.works.change_work %}
         {% component 'help_bar' %}
-            <h2>Editing Works</h2>
+            <h2>Explanation about the works data structure in the system</h2>
+            To read up on how the data-model works, you can read it at the link below.
 
-            <h3>Relations</h3>
-            A relation describes that one work links to another work. Relations are edited separately in the 'relations' panel.
-            <h2>Deleting Works</h2>
-            A work may be related if it has no items, and no more relations. The system will automatically ask for deletion if the last relation is removed from a work.
+            <a href="{% url 'named_page' 'docs' 'work-edit' %}">Read documentation about it here.</a>
         {% endcomponent %}
     {% endif %}
 {% endblock %}
