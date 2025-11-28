@@ -1,4 +1,5 @@
-{{ form.non_field_errors }}
+<div class="text error text-error">{{ form.non_field_errors }}
+</div>
 {% for hidden_field in form.hidden_fields %}
     {{ hidden_field.errors }}
     {{ hidden_field }}
@@ -10,10 +11,10 @@
             <dt class="text-sm/6 font-medium">{{ field.label }}</dt>
             <dd class="mt-.5 text-sm/6  sm:col-span-2 sm:mt-0">{{ field }}</dd>
         </div>
-    {% if field.errors %}
-        {% for err in field.errors %}
-            <span class=" label label-text-alt text-error">{{ err }}</span>
-        {% endfor %}
-    {% endif %}
+        {% if field.errors %}
+            {% for err in field.errors %}
+                <span class=" label label-text-alt text-error">{{ err }}</span>
+            {% endfor %}
+        {% endif %}
     </div>
 {% endfor %}

@@ -36,4 +36,12 @@
             </div>
         {% endwith %}
     {% endwith %}
+    {% if perms.works.change_workrelation  or perms.works.change_work %}
+        {% component 'help_bar' %}
+            <h2>Explanation about the works data structure in the system</h2>
+            To read up on how the data-model works, you can read it at the link below.
+
+            <a href="{% url 'named_page' 'docs' 'work-edit' %}">Read documentation about it here.</a>
+        {% endcomponent %}
+    {% endif %}
 {% endblock %}

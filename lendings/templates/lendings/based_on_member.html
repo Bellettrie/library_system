@@ -45,17 +45,14 @@
                         <th></th>
                     </tr>
                     {% for itemRow in items %}
-                        {% component 'works.table.Row' itemRow.get_item skip_header=skip_header %}
+                        {% component 'works.table.Row' itemRow skip_header=skip_header %}
                             {% fill "extra_rows" %}
-
-
                                 <td>
-                                    {% if itemRow.is_item %}
-                                        {% component "lendings.buttons.Finalize" item member perms bonus_classes="btn-sm join-item" / %}
+                                    {% if itemRow.get_item %}
+                                        {% component "lendings.buttons.Finalize" itemRow.get_item member perms bonus_classes="btn-sm join-item" / %}
                                     {% endif %}
                                 </td>
                             {% endfill %}
-
                         {% endcomponent %}
                     {% endfor %}
                 </table>
@@ -63,10 +60,10 @@
         </div>
         <div class="lg:hidden flex flex-col gap-5 m-3">
             {% for itemRow in items %}
-                {% component "works.table.Card" itemRow.get_item %}
+                {% component "works.table.Card" itemRow %}
                     {% fill "infos" %}
                         <div class=" flex  justify-end  join">
-                        {% if itemRow.is_item %}
+                        {% if itemRow.get_item %}
                             {% component "lendings.buttons.Finalize" itemRow.get_item member perms bonus_classes="btn-sm join-item" / %}
                         {% endif %}
                         </div>
