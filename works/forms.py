@@ -156,18 +156,19 @@ def clean_rel_form(rel_form):
             raise ValidationError("Subwork relationship needs a relation index.")
 
     if kind == WorkRelation.RelationKind.part_of_series:
-        st = set()
-        st.add(from_work.id)
-        walking_work = to_work
+        # We track the ids of all the works that the works are part of, and if we reach the same one twice that's a problem.
+        series_ids_passed = set()
+        series_ids_passed.add(from_work.id)
+        next_work = to_work
         while True:
-            ser = walking_work.part_of_series()
-            if ser is None:
+            next_relation = next_work.part_of_series()
+            if next_relation is None:
                 break
-            if ser.to_work_id in st:
+            if next_relation.to_work_id in series_ids_passed:
                 raise ValidationError(
-                    "❗{to_work.title} would now be part of a series loop, loops make the system dizzy.".format(to_work=ser.to_work))
-            walking_work = ser.to_work
-            st.add(walking_work.id)
+                    "❗{to_work.title} would now be part of a series loop, loops make the system dizzy.".format(to_work=next_relation.to_work))
+            next_work = next_relation.to_work
+            series_ids_passed.add(next_work.id)
 
         if not to_work.as_series():
             raise ValidationError(
