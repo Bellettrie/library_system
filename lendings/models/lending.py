@@ -33,6 +33,18 @@ class Lending(models.Model):
     # This flag will be used to differentiate between having mailed for being almost too late, and having mailed for being late.
     mailed_for_late = models.BooleanField(default=False)
 
+    def get_item(self):
+        return self.item
+
+    def get_work(self):
+        return self.item.publication
+
+    def get_series(self):
+        return None
+
+    def get_book_code(self):
+        return self.item.book_code, self.item.book_code_extension
+
     def is_simple_extendable(self, now=None):
         if now is None:
             now = get_today()

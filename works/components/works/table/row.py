@@ -4,7 +4,7 @@ from django.urls import reverse
 from django_components import Component, register, types
 
 from works.models import Item
-from works.templatetags.publication_list_to_item_rows import RowData
+from works.models.row_data import RowData
 
 
 @register("works.table.Row")

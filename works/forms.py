@@ -1,5 +1,6 @@
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.forms import ModelForm, inlineformset_factory, Widget
 from django.forms.widgets import TextInput
 from django.template import loader
@@ -128,11 +129,85 @@ relation_choices = [
 ]
 
 
+def clean_rel_form(rel_form):
+    kind = rel_form.cleaned_data["relation_kind"]
+    from_work = rel_form.cleaned_data["from_work"]
+    to_work = rel_form.cleaned_data["to_work"]
+    if from_work.id == to_work.id:
+        raise ValidationError("❗From work is to work, that's not allowed")
+
+    relation_index = rel_form.cleaned_data["relation_index"]
+    wr = WorkRelation.objects.filter(to_work=to_work, relation_index=relation_index, relation_kind=kind).exclude(
+        from_work=from_work)
+
+    if len(wr) > 0:
+        raise ValidationError(
+            "❗Another relation exists for {to_work.title} for index {index}, which hits.".format(to_work=to_work,
+                                                                                                 index=relation_index))
+
+    if kind == WorkRelation.RelationKind.sub_work_of:
+        if from_work.as_series():
+            raise ValidationError(
+                "❗{from_work.title} is a series, so cannot be a subwork.".format(from_work=from_work))
+        if to_work.as_series():
+            raise ValidationError(
+                "❗{to_work.title} is a series, so cannot be the top of a subwork.".format(to_work=to_work))
+        if relation_index is None:
+            raise ValidationError("Subwork relationship needs a relation index.")
+
+    if kind == WorkRelation.RelationKind.part_of_series:
+        # We track the ids of all the works that the works are part of, and if we reach the same one twice that's a problem.
+        series_ids_passed = set()
+        series_ids_passed.add(from_work.id)
+        next_work = to_work
+        while True:
+            next_relation = next_work.part_of_series()
+            if next_relation is None:
+                break
+            if next_relation.to_work_id in series_ids_passed:
+                raise ValidationError(
+                    "❗{to_work.title} would now be part of a series loop, loops make the system dizzy.".format(to_work=next_relation.to_work))
+            next_work = next_relation.to_work
+            series_ids_passed.add(next_work.id)
+
+        if not to_work.as_series():
+            raise ValidationError(
+                "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
+
+        wr = WorkRelation.objects.filter(from_work=from_work, relation_kind=kind).exclude(to_work=to_work)
+
+        if len(wr) > 0:
+            raise ValidationError(
+                "❗One work can be part of only one series. {from_work.get_title} is already part of a series.".format(
+                    from_work=from_work))
+        if relation_index is None:
+            raise ValidationError("Series needs a relation index.")
+
+    if kind == WorkRelation.RelationKind.part_of_secondary_series:
+        if not to_work.as_series():
+            raise ValidationError(
+                "❗{to_work.title} is a not series, so this relation is impossible.".format(to_work=to_work))
+        if relation_index is None:
+            raise ValidationError("Secondary Series needs a relation index.")
+
+    if kind == WorkRelation.RelationKind.translation_of:
+        if (not not to_work.as_series()) != (not not from_work.as_series()):
+            raise ValidationError(
+                "❗{to_work.title} and {from_work.title} need to either both be a series, or both not be.".format(
+                    to_work=to_work, from_work=from_work))
+        if relation_index is not None:
+            raise ValidationError("Subwork relationship needs a relation index.")
+
+
 class RelationForm(ModelForm):
     class Meta:
         model = WorkRelation
         fields = ['from_work', 'relation_kind', 'to_work', 'relation_index', 'relation_index_label']
         widgets = {'to_work': WorkFindWidget, 'from_work': ReadOnlyText}
+
+    def clean(self):
+        super(RelationForm, self).clean()
+        clean_rel_form(self)
 
     def render(self, *args, **kwargs):
         super(RelationForm, self).render(*args, **kwargs)
@@ -156,6 +231,10 @@ class RelationFormRev(ModelForm):
         model = WorkRelation
         fields = ['from_work', 'relation_kind', 'to_work', 'relation_index', 'relation_index_label']
         widgets = {'from_work': WorkFindWidget, 'to_work': ReadOnlyText}
+
+    def clean(self):
+        super(RelationFormRev, self).clean()
+        clean_rel_form(self)
 
     def __init__(self, *args, **kwargs):
         super(RelationFormRev, self).__init__(*args, **kwargs)
