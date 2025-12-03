@@ -73,14 +73,14 @@
         {% component 'works.table.Card' itemRow all_authors=False %}
             <div class=" flex  justify-end gap-2">
                 {% if admin %}
-                    {% if perms.works.change_itemstate %}
+                    {% if perms.works.change_itemstate and itemRow.get_item %}
                         <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
                            href="{% url "works.item_state.create" itemRow.get_item.pk %}"
                            class="btn btn-primary btn-xs join-item">Change
                             state</a>
                     {% endif %}
                     <div class="join">
-                        {% if perms.works.change_item %}
+                        {% if perms.works.change_item and itemRow.get_item %}
                             {% if perms.works.change_item %}
                                 <a hx-get="{% url 'recode.edit' itemRow.get_item.pk %}"
                                    hx-target="#dialog"
