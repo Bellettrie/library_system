@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from members.models import Member, MemberLog
+from tasks.models import Task
 
 
 class Command(BaseCommand):
@@ -11,3 +12,5 @@ class Command(BaseCommand):
         members = Member.objects.all()
         for member in members:
             member.pseudonymise()
+
+        Task.objects.filter(repeats_every_minutes=0).all().delete()
