@@ -13,4 +13,4 @@ class Command(BaseCommand):
         for member in members:
             member.pseudonymise()
 
-        Task.objects.filter(repeats_every_minutes__isnull=True).all().delete()
+        Task.objects.filter(repeats_every_minutes=0).all().delete()
