@@ -4,8 +4,6 @@ services:
   db:
     build:
       context: .
-      args:
-        DUMP_NAME: latest_staging.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: UJ68dyavBrY7NCSP
@@ -14,6 +12,8 @@ services:
       - "5432:5432"
     networks:
       - database
+    volumes:
+      - ./:/docker-entrypoint-initdb.d/
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin4_container
