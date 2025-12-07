@@ -18,7 +18,7 @@ from book_code_generation.procedures.validate_cutter_range import validate_cutte
 from utils.get_query_words import get_query_words
 from works.forms import WorkForm, CreatorToWorkFormSet
 from works.models import CreatorToWork, Work
-from works.views import SearchQuery
+from search.query import SearchQuery
 
 
 def word_to_regex(word: str):
