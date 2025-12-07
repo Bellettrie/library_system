@@ -136,7 +136,6 @@ class SearchQuery:
         if self.only_with_items:
             def only_items_query(query):
                 return query.filter(itemid__isnull=False)
-
             queries.append(only_items_query)
 
         return queries
