@@ -63,11 +63,11 @@ def filter_state(q, states):
 def filter_book_code_get_q(word):
     ww = standardize_code(word.replace("*", ""))
     if word.startswith("*"):
-        return Q(book_code__endswith=word) | Q(book_code_sortable__endswith=ww)
+        return Q(item__book_code__endswith=word) | Q(item__book_code_sortable__endswith=ww)
     elif word.endswith("*"):
-        return Q(book_code__startswith=word) | Q(book_code_sortable__startswith=ww)
+        return Q(item__book_code__startswith=word) | Q(item__book_code_sortable__startswith=ww)
     else:
-        return Q(book_code=word) | Q(book_code_sortable=ww)
+        return Q(item__book_code=word) | Q(item__book_code_sortable=ww)
 
 
 def filter_location(query, categories):
