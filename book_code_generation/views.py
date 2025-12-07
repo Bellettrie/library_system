@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render
 from book_code_generation.helpers import normalize_str
 from book_code_generation.procedures.location_number_generation import generate_location_number, get_location_numbers
 from creators.models import Creator
+from series.models import SeriesV2
 from works.models import Work, Location
 
 
@@ -26,7 +27,7 @@ def get_book_code_no_location(request, publication_id):
     return HttpResponse("Fill in location first")
 
 
-def get_book_code_series(series):
+def get_book_code_series(series: SeriesV2):
     location = series.location
     code = series.work.generate_code_full(location)
 
