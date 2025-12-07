@@ -15,7 +15,7 @@ from book_code_generation.views import get_book_code_series
 from creators.models import LocationNumber
 from search.procedures.search_query.filters import AnyWordFilter
 from series.forms import SeriesForm
-from series.models import SeriesV2, Graph
+from series.models import SeriesV2
 from book_code_generation.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
 from works.forms import WorkForm, CreatorToWorkFormSet

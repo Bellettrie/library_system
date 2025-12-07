@@ -12,8 +12,8 @@ from search.procedures.search_query.filters import AnyWordFilter, CreatorFilter,
     CategoriesFilter, StatesFilter
 from search.procedures.search_query.query_results import AllWorks, ItemsOnly, AvailableItemsOnly
 from search.procedures.search_query.search_query import SearchQuery
+from series.components.series.graph_node import GraphNode
 
-from series.models import Graph
 from utils.get_query_words import get_query_words
 from utils.time import get_now
 from works.forms import ItemStateCreateForm, ItemCreateForm, WorkForm, \
@@ -133,7 +133,7 @@ def publication_view(request, pk):
     }
     if series:
         data['series'] = series
-        data['series_graph'] = Graph.new_from_work(work)
+        data['series_graph'] = GraphNode.new_from_work(work)
 
     return render(request, template_name, data)
 

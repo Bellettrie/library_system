@@ -12,6 +12,10 @@ class WorkRelation(models.Model):
 
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.path = None
+
     class RelationKind(models.IntegerChoices):
         sub_work_of = 1
         part_of_series = 2
@@ -57,7 +61,8 @@ class WorkRelation(models.Model):
         def series_up(work_ids: List[int], further_away_first=False):
             up_types = [WorkRelation.RelationKind.part_of_series]
             down_types = []
-            return WorkRelation.traverse_relations(work_ids, up_types, down_types, further_away_first=further_away_first)
+            return WorkRelation.traverse_relations(work_ids, up_types, down_types,
+                                                   further_away_first=further_away_first)
 
         @staticmethod
         def author_matches(work_ids: List[int]):
