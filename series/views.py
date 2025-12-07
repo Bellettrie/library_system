@@ -2,6 +2,7 @@ import re
 
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
+from django.db.models import QuerySet
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 
 # Create your views here.
@@ -12,13 +13,14 @@ from django.views.generic import ListView
 from book_code_generation.procedures.location_number_generation import generate_location_number
 from book_code_generation.views import get_book_code_series
 from creators.models import LocationNumber
+from search.procedures.search_query.filters import AnyWordFilter
 from series.forms import SeriesForm
 from series.models import SeriesV2, Graph
 from book_code_generation.procedures.validate_cutter_range import validate_cutter_range, InvalidCutterRangeError
 from utils.get_query_words import get_query_words
 from works.forms import WorkForm, CreatorToWorkFormSet
 from works.models import CreatorToWork, Work
-from search.query import SearchQuery
+from search.procedures.search_query.search_query import SearchQuery
 
 
 def word_to_regex(word: str):
@@ -30,14 +32,23 @@ def word_to_regex(word: str):
     return "(?<!\\S)" + word + "(?!\\S)"
 
 
+class SeriesOnlyFilter:
+    def filter(self, query: QuerySet[Work]) -> QuerySet[Work]:
+        return query.filter(seriesv2__isnull=False)
+
+
 def get_series_by_query(request, search_text):
-    sq = SearchQuery(words=search_text).search()
-    series = SeriesV2.objects.filter(work__in=sq)
+    words = get_query_words(search_text)
 
-    for serie in series.order_by('title'):
-        list.append({'id': serie.work_id, 'text': serie.work.get_title()})
+    sq = SearchQuery()
+    sq.add_filter(SeriesOnlyFilter())
+    sq.add_filter(AnyWordFilter(words))
 
-    return JsonResponse({'results': list}, safe=False)
+    result = []
+    for row in sq.search().all():
+        result.append({'id': row.work_id, 'text': row.work.get_title()})
+
+    return JsonResponse({'results': result}, safe=False)
 
 
 @transaction.atomic
@@ -123,10 +134,12 @@ class SeriesList(ListView):
 
     def get_queryset(self):  # new
         words = get_query_words(self.request.GET.get('q', None))
-        if words is None:
+        if len(words) == 0:
             return []
-        sq = SearchQuery(words=words).search().filter(seriesv2__isnull=False)
-        return sq
+        sq = SearchQuery()
+        sq.add_filter(SeriesOnlyFilter())
+        sq.add_filter(AnyWordFilter(words))
+        return sq.search()
 
 
 @transaction.atomic

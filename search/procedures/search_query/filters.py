@@ -1,34 +1,8 @@
 from typing import Protocol
 
 from django.db.models import Q, QuerySet
-from book_code_generation.helpers import standardize_code, normalize_str
+from search.procedures.search_query.helpers import filter_book_code, filter_basic_text_get_q
 from works.models import Work
-
-
-def filter_book_code(word):
-    ww = standardize_code(word.replace("*", ""))
-    if word.startswith("*"):
-        return Q(item__book_code__endswith=word) | Q(item__book_code_sortable__endswith=ww)
-    elif word.endswith("*"):
-        return Q(item__book_code__startswith=word) | Q(item__book_code_sortable__startswith=ww)
-    else:
-        return Q(item__book_code=word) | Q(item__book_code_sortable=ww)
-
-
-def filter_basic_text_get_q(words):
-    if len(words) == 0:
-        return ""
-    queries = []
-    for word in words:
-        word = normalize_str(word)
-        if word.startswith("*"):
-            next_query_part = Q(wordmatch__word__word__endswith=word.replace("*", ""))
-        elif word.endswith("*"):
-            next_query_part = Q(wordmatch__word__word__startswith=word.replace("*", ""))
-        else:
-            next_query_part = Q(wordmatch__word__word=word)
-        queries = queries + [next_query_part]
-    return queries
 
 
 class Filter(Protocol):
@@ -52,7 +26,7 @@ class CreatorFilter(Filter):
 
     def filter(self, query: QuerySet[Work]) -> QuerySet[Work]:
         for q in filter_basic_text_get_q(self.words):
-            query = query.filter(Q(q & Q(Q(wordmatch__type="CREATOR")| Q(wordmatch__type="AUTHOR"))))
+            query = query.filter(Q(q & Q(Q(wordmatch__type="CREATOR") | Q(wordmatch__type="AUTHOR"))))
         return query
 
 

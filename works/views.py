@@ -8,9 +8,11 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import ListView
 
 from recode.procedures.update_recode import update_recode_for_item
-from search.queries import AnyWordFilter, CreatorFilter, SeriesFilter, TitleFilter, BookCodeFilter, StatesFilter, \
-    CategoriesFilter
-from search.query import SearchQuery
+from search.procedures.search_query.filters import AnyWordFilter, CreatorFilter, SeriesFilter, TitleFilter, BookCodeFilter, \
+    CategoriesFilter, StatesFilter
+from search.procedures.search_query.query_results import AllWorks, ItemsOnly, AvailableItemsOnly
+from search.procedures.search_query.search_query import SearchQuery
+
 from series.models import Graph
 from utils.get_query_words import get_query_words
 from utils.time import get_now
@@ -30,15 +32,15 @@ def get_works(request, advanced_override=False):
             request.GET.get('q_title', "").count("*") + \
             request.GET.get('q_bookcode', "").count("*") > 3:
         raise ValueError("That's too much for me, senpai")
-    query = SearchQuery(SearchQuery.AllWorks())
+    query = SearchQuery(AllWorks())
 
     if request.GET.get('advanced', 'False') != 'True' and not advanced_override:
-        query = SearchQuery(SearchQuery.CurrentItemsOnly())
+        query.set_result_base(AvailableItemsOnly())
 
     words = get_query_words(request.GET.get('q', "").upper())
     if len(words) > 0:
         query.add_filter(AnyWordFilter(words))
-        
+
     words_author = get_query_words(request.GET.get('q_author', "").upper())
     if len(words_author) > 0:
         query.add_filter(CreatorFilter(words_author))
