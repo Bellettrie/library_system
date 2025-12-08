@@ -32,7 +32,9 @@ def get_works(request, advanced_override=False):
             request.GET.get('q_title', "").count("*") + \
             request.GET.get('q_bookcode', "").count("*") > 3:
         raise ValueError("That's too much for me, senpai")
+
     query = SearchQuery(AllWorks())
+    any_filters = False
 
     if request.GET.get('advanced', 'False') != 'True' and not advanced_override:
         query.set_result_base(AvailableItemsOnly())
@@ -40,31 +42,42 @@ def get_works(request, advanced_override=False):
     words = get_query_words(request.GET.get('q', "").upper())
     if len(words) > 0:
         query.add_filter(AnyWordFilter(words))
+        any_filters = True
 
     words_author = get_query_words(request.GET.get('q_author', "").upper())
     if len(words_author) > 0:
         query.add_filter(CreatorFilter(words_author))
+        any_filters = True
 
     words_series = get_query_words(request.GET.get('q_series', "").upper())
     if len(words_series) > 0:
         query.add_filter(SeriesFilter(words_series))
+        any_filters = True
 
     words_title = get_query_words(request.GET.get('q_title', "").upper())
     if len(words_title) > 0:
         query.add_filter(TitleFilter(words_title))
+        any_filters = True
 
     book_code = request.GET.get('q_bookcode', "").upper()
     if len(book_code) > 0:
         query.add_filter(BookCodeFilter(book_code))
+        any_filters = True
 
     categories = request.GET.getlist('q_categories', [])
     if len(categories) > 0:
         query.add_filter(CategoriesFilter(categories))
+        any_filters = True
+
     states = request.GET.getlist('q_states', [])
     if len(states) > 0:
         query.add_filter(StatesFilter(states))
+        any_filters = True
 
-    return query.search()
+    if any_filters:
+        return query.search()
+    else:
+        return Work.objects.none()
 
 
 class WorkList(ListView):

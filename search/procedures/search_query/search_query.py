@@ -26,10 +26,9 @@ class SearchQuery:
         self.sorter = sorter
 
     def search(self) -> QuerySet[Work]:
-        if len(self.filters) == 0:
-            return Work.objects.none()
         query = Work.objects
         query = query_annotate(query)
+
         for f in self.filters:
             query = f.filter(query)
 
