@@ -42,4 +42,5 @@ jobs:
           echo "VERSION='${{ github.sha  }}'" > "version.env"           
           docker-compose down -v
           cp /backups/restore/latest.sql db/startup.sql
+          sed -i 's/OWNER TO bellettrie/OWNER TO postgres/g' db/startup.sql
           docker-compose up -d --build
