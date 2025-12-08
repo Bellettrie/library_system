@@ -9,6 +9,7 @@ from members.models import Committee
 class PublicPageGroup(models.Model):
     name = models.CharField(max_length=64)
     committees = models.ForeignKey(Committee, on_delete=PROTECT)
+    publicly_indexed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

@@ -2,7 +2,7 @@ from django.urls import path
 
 from . import views
 from .views import view_named_page, render_page_from_request, test_render_function, edit_named_page, \
-    new_named_page, list_named_pages, delete_page, list_uploads, new_upload, delete_upload
+    new_named_page, list_named_pages, delete_page, list_uploads, new_upload, delete_upload, view_index_page
 
 
 def fun(request):
@@ -21,6 +21,8 @@ urlpatterns = [
     path('list', list_named_pages, name='list_pages'),
 
     path('edit/<page_name>/<sub_page_name>', edit_named_page, name='edit_named_page'),
+    path('<page_name>', view_index_page, name='index_page'),
+
     path('<page_name>/<sub_page_name>', view_named_page, name='named_page'),
 
 ]

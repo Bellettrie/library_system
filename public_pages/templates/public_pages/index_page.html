@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}{% if group.name %}Pages in {{ group.name }}{% endif %}{% endblock %}
+{% block content %}
+    <div class=" w-full flex justify-center ">
+        <div class="max-w-full flex flex-wrap gap-3 max-w-[1600px] prose">
+            {{ index_html |safe  }}
+            <table class="table table-zebra">
+                {% for page_data in pages %}
+                    <tr>
+                        <td>
+                            {{ forloop.counter }}.
+                        </td>
+                        {% if page_data.can_view %}
+                            <td>
+                                <a class="link link-secondary"
+                                   href="{% url 'named_page' group.name page_data.page.name %}">
+                                    {{ page_data.page.title }}
+                                </a>
+                            </td>
+                        {% else %}
+                            <td class="base-100">
+                                {{ page_data.page.title }} <i>[no access]</i>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

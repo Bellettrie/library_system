@@ -4,7 +4,7 @@ import markdown
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
@@ -168,6 +168,32 @@ def forbid_showing_page(page: PublicPage, is_anonymous: bool, member: Member, cu
                 if c in member.committees.all():
                     committee_check = False
     return committee_check
+
+
+def view_index_page(request, page_name):
+    page_group = get_object_or_404(PublicPageGroup, name=page_name)
+    is_anonymous = not not (request.user and request.user.is_anonymous)
+
+    if not page_group.publicly_indexed and is_anonymous:
+        return HttpResponseForbidden("You do not have permission to view this resource.")
+    pages = PublicPage.objects.filter(group=page_group).order_by("title")
+    data = {'group': page_group}
+    page_data = []
+    member = hasattr(request.user, "member") and request.user.member
+    for page in pages:
+        dat = {
+            'can_view': not forbid_showing_page(page, is_anonymous, member),
+            'page': page,
+        }
+        if page.name == '_index':
+            data['index_html'] = render_md(page.text)
+        else:
+            page_data.append(dat)
+
+    data['pages'] = page_data
+
+    return HttpResponse(render(request, template_name='public_pages/index_page.html',
+                               context=data))
 
 
 def view_named_page(request, page_name, sub_page_name):
