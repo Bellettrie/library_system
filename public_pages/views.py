@@ -194,7 +194,6 @@ def view_index_page(request, page_name):
 
     data['pages'] = page_data
 
-
     if not request.user.is_anonymous and (request.user
                                           and (hasattr(request.user, 'member')
                                                and page_group.committees in request.user.member.committees.all())) \
@@ -270,7 +269,7 @@ def edit_named_page(request, page_name, sub_page_name):
             form.save()
             rights_form.save()
             edit_form.save()
-            if form.instance.name =='_index':
+            if form.instance.name == '_index':
                 return HttpResponseRedirect(reverse('index_page', args=(page_name,)))
             return HttpResponseRedirect(reverse('named_page', args=(page_name, sub_page_name)))
         else:
@@ -309,11 +308,12 @@ def new_named_page(request, page_name):
             instance.delete()
     else:
         instance = PublicPage(group=page_group)
-        form = PageEditForm(instance=instance, initial={'name': request.GET.get('page_name','')})
+        form = PageEditForm(instance=instance, initial={'name': request.GET.get('page_name', '')})
         rights_form = PageAccessForm(instance=instance)
         edit_form = EditForm(instance=instance)
     return render(request, 'public_pages/page_edit_form.html',
-                  {'name':request.GET.get('page_name',''), 'MY_URL': settings.BASE_URL, 'form': form, 'rights_form': rights_form, "edit_form": edit_form})
+                  {'name': request.GET.get('page_name', ''), 'MY_URL': settings.BASE_URL, 'form': form,
+                   'rights_form': rights_form, "edit_form": edit_form})
 
 
 @permission_required('public_pages.view_publicpage')
