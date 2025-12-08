@@ -27,7 +27,7 @@ class CreatorFilter(Filter):
 
     def filter(self, query: QuerySet[Work]) -> QuerySet[Work]:
         for q in filter_basic_text_get_q(self.words):
-            subquery_match_author_type = Q(Q(wordmatch__type="CREATOR") | Q(wordmatch__type="AUTHOR"))
+            subquery_match_author_type = Q(wordmatch__type="CREATOR")
             query = query.filter(Q(q & subquery_match_author_type))
         return query
 
