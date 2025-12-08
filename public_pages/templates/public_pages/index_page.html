@@ -4,7 +4,21 @@
 {% block content %}
     <div class=" w-full flex justify-center ">
         <div class="max-w-full flex flex-wrap gap-3 max-w-[1600px] prose">
-            {{ index_html |safe  }}
+            {% if index_html %}
+                {{ index_html |safe }}
+                {% if can_edit %}
+                    <a class="btn btn-primary btn-sm" href="{% url 'edit_named_page' group.name index_path %}">Edit
+                        Description</a>
+
+                {% endif %}
+            {% else %}
+                {% if can_edit %}
+                    <a class="btn btn-primary btn-sm"
+                       href="{% url 'new_named_page' group.name %}?page_name={{ index_path }}">
+                        Add Description</a>
+                {% endif %}
+            {% endif %}
+
             <table class="table table-zebra">
                 {% for page_data in pages %}
                     <tr>
