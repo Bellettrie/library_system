@@ -54,7 +54,7 @@ class AnyWordFilter(Filter):
         else:
             words_queries = filter_basic_text_get_q(self.words)
             for word_query in words_queries:
-                query =  query.filter(word_query)
+                query = query.filter(word_query)
             return query
 
 
