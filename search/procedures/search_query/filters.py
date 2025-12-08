@@ -16,7 +16,8 @@ class TitleFilter(Filter):
 
     def filter(self, query: QuerySet[Work]) -> QuerySet[Work]:
         for q in filter_basic_text_get_q(self.words):
-            query = query.filter(Q(q & Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK")))
+            subquery_match_title_type = Q(Q(wordmatch__type="TITLE") | Q(wordmatch__type="SUBWORK"))
+            query = query.filter(Q(q & subquery_match_title_type))
         return query
 
 
@@ -26,7 +27,8 @@ class CreatorFilter(Filter):
 
     def filter(self, query: QuerySet[Work]) -> QuerySet[Work]:
         for q in filter_basic_text_get_q(self.words):
-            query = query.filter(Q(q & Q(Q(wordmatch__type="CREATOR") | Q(wordmatch__type="AUTHOR"))))
+            subquery_match_author_type = Q(Q(wordmatch__type="CREATOR") | Q(wordmatch__type="AUTHOR"))
+            query = query.filter(Q(q & subquery_match_author_type))
         return query
 
 
