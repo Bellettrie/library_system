@@ -1,8 +1,5 @@
 from django.contrib.auth.decorators import permission_required
 from django.db import transaction
-from django.db.models import QuerySet
-from django.db.models.expressions import F
-from django.db.models.expressions import RawSQL
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 # Create your views here.
@@ -11,9 +8,11 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import ListView
 
 from recode.procedures.update_recode import update_recode_for_item
-from search.queries import filter_state, filter_book_code_get_q, \
-    filter_basic_text_get_q, filter_author_text, filter_series_text, filter_title_text, filter_location, \
-    filter_basic_text
+from search.procedures.search_query.filters import AnyWordFilter, CreatorFilter, SeriesFilter, TitleFilter, BookCodeFilter, \
+    CategoriesFilter, StatesFilter
+from search.procedures.search_query.query_results import AllWorks, ItemsOnly, AvailableItemsOnly
+from search.procedures.search_query.search_query import SearchQuery
+
 from series.models import Graph
 from utils.get_query_words import get_query_words
 from utils.time import get_now
@@ -34,137 +33,51 @@ def get_works(request, advanced_override=False):
             request.GET.get('q_bookcode', "").count("*") > 3:
         raise ValueError("That's too much for me, senpai")
 
-    query = SearchQuery()
+    query = SearchQuery(AllWorks())
+    any_filters = False
+
+    if request.GET.get('advanced', 'False') != 'True' and not advanced_override:
+        query.set_result_base(AvailableItemsOnly())
+
     words = get_query_words(request.GET.get('q', "").upper())
     if len(words) > 0:
-        query.words = words
+        query.add_filter(AnyWordFilter(words))
+        any_filters = True
+
     words_author = get_query_words(request.GET.get('q_author', "").upper())
     if len(words_author) > 0:
-        query.words_author = words_author
+        query.add_filter(CreatorFilter(words_author))
+        any_filters = True
+
     words_series = get_query_words(request.GET.get('q_series', "").upper())
     if len(words_series) > 0:
-        query.words_series = words_series
+        query.add_filter(SeriesFilter(words_series))
+        any_filters = True
+
     words_title = get_query_words(request.GET.get('q_title', "").upper())
     if len(words_title) > 0:
-        query.words_title = words_title
+        query.add_filter(TitleFilter(words_title))
+        any_filters = True
+
     book_code = request.GET.get('q_bookcode', "").upper()
     if len(book_code) > 0:
-        query.book_code = book_code
+        query.add_filter(BookCodeFilter(book_code))
+        any_filters = True
+
     categories = request.GET.getlist('q_categories', [])
     if len(categories) > 0:
-        query.categories = categories
+        query.add_filter(CategoriesFilter(categories))
+        any_filters = True
+
     states = request.GET.getlist('q_states', [])
     if len(states) > 0:
-        query.states = states
+        query.add_filter(StatesFilter(states))
+        any_filters = True
 
-    if len(query.get_subqueries()) > 0 and request.GET.get('advanced', 'False') != 'True' and not advanced_override:
-        query.only_with_items = True
-        statz = get_available_states()
-        query.states = list(map(lambda state: state.state_name, statz))
-
-    return query.search()
-
-
-class SearchQuery:
-    def __init__(self,
-                 book_code=None,
-                 only_with_items=None,
-                 categories=None,
-                 states=None,
-                 words=None,
-                 words_author=None,
-                 words_series=None,
-                 words_title=None):
-        self.book_code = book_code
-        self.only_with_items = only_with_items
-        self.categories = categories
-        self.states = states
-        self.words = words
-        self.words_author = words_author
-        self.words_series = words_series
-        self.words_title = words_title
-
-    def get_subqueries(self):
-        queries = []
-        if self.book_code:
-            def book_code_query(query):
-                return query.filter(filter_book_code_get_q(self.book_code))
-
-            queries.append(book_code_query)
-
-        if self.categories is not None and len(self.categories) > 0:
-            def categories_query(query):
-                return filter_location(query, self.categories)
-
-            queries.append(categories_query)
-
-        if self.states is not None and len(self.states) > 0:
-            def states_query(query):
-                return filter_state(query, self.states)
-
-            queries.append(states_query)
-
-        if self.words is not None and len(self.words) > 0:
-            def words_query(query):
-                if len(self.words) == 1:
-                    fbc = filter_book_code_get_q(self.words[0])
-                    fbt = filter_basic_text_get_q(self.words)[0]
-                    return query.filter(fbc | fbt)
-                else:
-                    return filter_basic_text(query, self.words)
-
-            queries.append(words_query)
-
-        if self.words_author is not None and len(self.words_author) > 0:
-            def author_query(query):
-                return filter_author_text(query, self.words_author)
-
-            queries.append(author_query)
-
-        if self.words_series is not None and len(self.words_series) > 0:
-            def series_query(query):
-                return filter_series_text(query, self.words_series)
-
-            queries.append(series_query)
-
-        if self.words_title is not None and len(self.words_title) > 0:
-            def title_query(query):
-                return filter_title_text(query, self.words_title)
-
-            queries.append(title_query)
-
-        if self.only_with_items:
-            def only_items_query(query):
-                return query.filter(itemid__isnull=False)
-            queries.append(only_items_query)
-
-        return queries
-
-    def search(self) -> QuerySet[Work]:
-        query_fragments = self.get_subqueries()
-        if len(query_fragments) == 0:
-            return Work.objects.none()
-
-        query = Work.objects
-        query = query_annotate_and_sort_bookcodes(query)
-        for fragment in query_fragments:
-            query = fragment(query)
-
-        return query.prefetch_related('creatortowork_set', "creatortowork_set__creator")
-
-
-def query_annotate_and_sort_bookcodes(query):
-    query = query.annotate(
-        itemid=F('item__id'),
-        book_code_sortable=F('item__book_code_sortable'),
-        book_code=F('item__book_code'),
-        book_code_extension=F('item__book_code_extension'),
-        is_series_bookcode_sortable=F('seriesv2__book_code_sortable'),
-        book_codeX=RawSQL('coalesce(works_item.book_code_sortable,series_seriesv2.book_code_sortable)', []),
-    )
-    query = query.order_by("book_codeX", "id", 'itemid')
-    query = query.distinct("book_codeX", "id", 'itemid')
-    return query
+    if any_filters:
+        return query.search()
+    else:
+        return Work.objects.none()
 
 
 class WorkList(ListView):
