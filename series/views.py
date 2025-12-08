@@ -134,7 +134,7 @@ class SeriesList(ListView):
 
     def get_queryset(self):  # new
         words = get_query_words(self.request.GET.get('q', None))
-        if len(words) == 0:
+        if words is None or len(words) == 0:
             return []
         sq = SearchQuery()
         sq.add_filter(SeriesOnlyFilter())
