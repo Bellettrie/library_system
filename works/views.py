@@ -59,10 +59,10 @@ def get_works(request, advanced_override=False):
 
     categories = request.GET.getlist('q_categories', [])
     if len(categories) > 0:
-        query.add_filter(CategoriesFilter(words))
+        query.add_filter(CategoriesFilter(categories))
     states = request.GET.getlist('q_states', [])
     if len(states) > 0:
-        query.add_filter(StatesFilter(words))
+        query.add_filter(StatesFilter(states))
 
     return query.search()
 
