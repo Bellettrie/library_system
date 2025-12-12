@@ -1,6 +1,8 @@
 from typing import Protocol
 
 from django.db.models import Q, QuerySet
+from django.db.models.expressions import RawSQL
+
 from search.procedures.search_query.helpers import filter_book_code, filter_basic_text_get_q
 from works.models import Work
 
@@ -44,22 +46,23 @@ class AnyWordFilter(Filter):
     def __init__(self, words):
         self.words = words
 
-    def __filter_basic_text(self):
-        qq = None
-        for q in filter_basic_text_get_q(self.words):
-            if qq is None:
-                qq = q
-            else:
-                qq = qq & q
-        return qq
-
     def filter(self, query: QuerySet[Work]) -> QuerySet[Work]:
+        if len(self.words) == 0:
+            return query.none()
+
+        text_filter_subqueries = filter_basic_text_get_q(self.words)
+        book_code_subquery = filter_book_code(self.words[0])
+
         if len(self.words) == 1:
-            fbc = filter_book_code(self.words[0])
-            fbt = self.__filter_basic_text()
-            return query.filter(fbc | fbt)
+            # Rare case, defensively programmed
+            if len(text_filter_subqueries) == 0:
+                return query.filter(book_code_subquery)
+            return query.filter(book_code_subquery | text_filter_subqueries[0])
         else:
-            return query.filter(self.__filter_basic_text())
+            words_queries = filter_basic_text_get_q(self.words)
+            for word_query in words_queries:
+                query = query.filter(word_query)
+            return query
 
 
 class SeriesFilter(Filter):
