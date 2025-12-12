@@ -319,7 +319,7 @@ def new_named_page(request, page_name):
 
 @permission_required('public_pages.view_publicpage')
 def list_named_pages(request):
-    pages = PublicPage.objects.all()
+    pages = PublicPage.objects.order_by('name').distinct()
     return render(request, 'public_pages/page_list.html',
                   {'MY_URL': settings.BASE_URL, 'pages': pages, 'groups': PublicPageGroup.objects.all()})
 
