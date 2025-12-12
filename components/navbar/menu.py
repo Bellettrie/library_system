@@ -45,7 +45,7 @@ class Item:
         return self.perm is None or self.perm in perms
 
 
-DOCS = Item("Docs", reverse('named_page', args=("docs", "home",)), perm="works.view_work")
+DOCS = Item("Docs", reverse('index_page', args=("docs",)), perm="works.view_work")
 
 top_bar = [
     Item("Book Search", reverse('works.list')),
@@ -106,7 +106,7 @@ footer = [
         Item("Privacy Policy", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "privacy",)))),
     SuperMenu(
         "Internal Documentation",
-        Item("Documentation", reverse('named_page', args=("docs", "home",)), perm="works.view_work"),
+        Item("Documentation", reverse('index_page', args=("docs",)), perm="works.view_work"),
         Item("Website Source Code", "https://github.com/bellettrie/library_system", perm="works.view_work"),
     ),
 

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{% if group.name %}{{ index_title }}{% endif %}{% endblock %}
+{% block content %}
+    <div class=" w-full flex justify-center ">
+        <div class="max-w-full flex flex-wrap gap-3 max-w-[1600px] prose">
+            {% if index_html %}
+                {{ index_html |safe }}
+                {% if can_edit %}
+                    <a class="btn btn-primary btn-sm" href="{% url 'edit_named_page' group.name index_path %}">Edit
+                        Description</a>
+
+                {% endif %}
+            {% else %}
+                {% if can_edit %}
+                    <a class="btn btn-primary btn-sm"
+                       href="{% url 'new_named_page' group.name %}?page_name={{ index_path }}">
+                        Add Description</a>
+                {% endif %}
+            {% endif %}
+
+            <table class="table table-zebra">
+                {% for page_data in pages %}
+                    <tr>
+                        <td>
+                            {{ forloop.counter }}.
+                        </td>
+                        {% if page_data.can_view %}
+                            <td>
+                                <a class="link link-secondary"
+                                   href="{% url 'named_page' group.name page_data.page.name %}">
+                                    {{ page_data.page.title }}
+                                </a>
+                            </td>
+                        {% else %}
+                            <td class="base-100">
+                                {{ page_data.page.title }} <i>[no access]</i>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
