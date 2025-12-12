@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{% if group.name %}Pages in {{ group.name }}{% endif %}{% endblock %}
+{% block title %}{% if group.name %}{{ index_title }}{% endif %}{% endblock %}
 {% block content %}
     <div class=" w-full flex justify-center ">
         <div class="max-w-full flex flex-wrap gap-3 max-w-[1600px] prose">

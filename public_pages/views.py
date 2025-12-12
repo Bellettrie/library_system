@@ -180,7 +180,7 @@ def view_index_page(request, page_name):
     index_path = '_index'
     data = {'group': page_group, 'index_path': index_path}
     page_data = []
-
+    data['index_title'] = "Index for %s" % page_group.name
     member = hasattr(request.user, "member") and request.user.member
     for page in pages:
         dat = {
@@ -189,6 +189,7 @@ def view_index_page(request, page_name):
         }
         if page.name == '_index':
             data['index_html'] = render_md(page.text)
+            data['index_title'] = page.title
         else:
             page_data.append(dat)
 
@@ -325,7 +326,7 @@ def list_named_pages(request):
 
 @permission_required('public_pages.delete_publicpage')
 @transaction.atomic
-def delete_page(request, pk):
+def delete_page(request, pk, hx_enabled=False):
     page = PublicPage.objects.filter(pk=pk)
     if not request.GET.get('confirm'):
         return render(request, 'are-you-sure.html', {'what': "delete page with name " + page.first().name})
