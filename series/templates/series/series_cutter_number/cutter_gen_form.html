@@ -26,7 +26,7 @@
 
                 <fieldset class="fieldset">
                     <a class="btn btn-bordered"
-                       hx-post="{% url 'series.cutter.gen_code_gen' series.work_id %}"
+                       hx-post="{% url 'series.location_book_code.generate' series.work_id %}"
                        hx-target="#cutter" hx-include="[prefix='prefix']">Generate</a>
                 </fieldset>
                 <div id="cutter">

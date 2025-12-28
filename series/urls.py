@@ -6,14 +6,15 @@ from .views import get_series_by_query, edit_series, new_series, delete_series, 
 
 urlpatterns = [
     path('search/<search_text>', get_series_by_query, name='series.query'),
-    path('edit/<slug:pk>', edit_series, name='series.edit'),
-    path('delete/<slug:pk>', delete_series, name='series.delete'),
-    path('list', SeriesList.as_view(), name='series.list'),
 
     path('new', new_series, name='series.new'),
+    path('list', SeriesList.as_view(), name='series.list'),
+    path('<slug:pk>edit', edit_series, name='series.edit'),
+    path('<slug:pk>/delete', delete_series, name='series.delete'),
 
-    path('code-gen/<slug:pk>', hx_wrap(new_codegen), name='series.gen_code'),
-    path('code-gen/cutter-delete/<slug:pk>', hx_wrap(location_code_delete_form), name='series.cutter.del_code'),
-    path('code-gen/cutter/<slug:pk>', hx_wrap(location_code_set_form), name='series.cutter.gen_code'),
-    path('code-gen/cutter/<slug:pk>/generate', location_code_set_gen, name='series.cutter.gen_code_gen'),
+
+    path('<slug:series_id>/book-code/set', hx_wrap(new_codegen), name='series.book_code.set'),
+    path('<slug:series_id>/location-book-code/delete', hx_wrap(location_code_delete_form), name='series.location_book_code.delete'),
+    path('<slug:series_id>/location-book-code/set', hx_wrap(location_code_set_form), name='series.location_book_code.set'),
+    path('<slug:series_id>/location-book-code/generate', location_code_set_gen, name='series.location_book_code.generate'),
 ]

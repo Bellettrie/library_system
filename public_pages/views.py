@@ -204,18 +204,18 @@ def view_index_page(request, page_name):
                                context=data))
 
 
-def view_named_page(request, page_name, sub_page_name):
-    page_group = get_object_or_404(PublicPageGroup, name=page_name)
+def view_named_page(request, page_group_name, page_name):
+    page_group = get_object_or_404(PublicPageGroup, name=page_group_name)
     can_edit = False
-    if sub_page_name == '_index':
-        return HttpResponseRedirect(reverse('index_page', args=(page_name,)))
+    if page_name == '_index':
+        return HttpResponseRedirect(reverse('index_page', args=(page_group_name,)))
     if not request.user.is_anonymous and (request.user
                                           and (hasattr(request.user, 'member')
                                                and page_group.committees in request.user.member.committees.all())) \
             or request.user.has_perm('public_pages.change_publicpage'):
         can_edit = True
 
-    page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
+    page = get_object_or_404(PublicPage, name=page_name, group=page_group)
     is_anonymous = request.user and request.user.is_anonymous
     member = hasattr(request.user, "member") and request.user.member
     if forbid_showing_page(page, is_anonymous, member):
@@ -247,9 +247,9 @@ def test_render_function(request):
 
 @login_required
 @transaction.atomic
-def edit_named_page(request, page_name, sub_page_name):
-    page_group = get_object_or_404(PublicPageGroup, name=page_name)
-    page = get_object_or_404(PublicPage, name=sub_page_name, group=page_group)
+def edit_named_page(request, page_group_name, page_name):
+    page_group = get_object_or_404(PublicPageGroup, name=page_group_name)
+    page = get_object_or_404(PublicPage, name=page_name, group=page_group_name)
 
     if forbid_showing_page(page, request.user.is_anonymous, request.user.member):
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
@@ -271,8 +271,8 @@ def edit_named_page(request, page_name, sub_page_name):
             rights_form.save()
             edit_form.save()
             if form.instance.name == '_index':
-                return HttpResponseRedirect(reverse('index_page', args=(page_name,)))
-            return HttpResponseRedirect(reverse('named_page', args=(page_name, sub_page_name)))
+                return HttpResponseRedirect(reverse('index_page', args=(page_group_name,)))
+            return HttpResponseRedirect(reverse('named_page', args=(page_group_name, page_name)))
         else:
             print("ERROR")
     else:
@@ -286,8 +286,8 @@ def edit_named_page(request, page_name, sub_page_name):
 
 @login_required()
 @transaction.atomic
-def new_named_page(request, page_name):
-    page_group = get_object_or_404(PublicPageGroup, name=page_name)
+def new_named_page(request, page_group_name):
+    page_group = get_object_or_404(PublicPageGroup, name=page_group_name)
     can_edit = False
     if not request.user.is_anonymous and (
             request.user.member and page_group.committees in request.user.member.committees.all()) \

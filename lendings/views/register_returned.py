@@ -13,9 +13,9 @@ from lendings.procedures.register_returned import register_returned_with_mail
 
 @transaction.atomic
 @permission_required('lendings.return')
-def return_item(request, work_id, hx_enabled=False):
+def return_item(request, item_id, hx_enabled=False):
     return_book_template = 'lendings/modals/return_book.html'
-    item = get_object_or_404(Item, pk=work_id)
+    item = get_object_or_404(Item, pk=item_id)
     lending = item.current_lending_or_404()
 
     late_days = get_today() - lending.end_date

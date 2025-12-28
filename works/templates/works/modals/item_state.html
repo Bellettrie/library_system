@@ -19,8 +19,8 @@
     </table>
 
             {% if perms.works.change_item %}
-                <a hx-get="{% url 'works.item_state.create' item.pk %}" hx-target="#dialog"
-                   href="{% url 'works.item_state.create' item.pk %}" class="card-link">Change state</a>
+                <a hx-get="{% url 'works.item.state.new' item.pk %}" hx-target="#dialog"
+                   href="{% url 'works.item.state.new' item.pk %}" class="card-link">Change state</a>
             {% endif %}
         {% endfill %}
 

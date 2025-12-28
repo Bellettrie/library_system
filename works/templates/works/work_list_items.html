@@ -34,9 +34,9 @@
                             {% if  itemRow.item %}
                                 {% if admin %}
                                     {% if perms.works.change_itemstate %}
-                                        <a hx-get="{% url 'works.item_state.create' itemRow.item.pk %}"
+                                        <a hx-get="{% url 'works.item.state.new' itemRow.item.pk %}"
                                            hx-target="#dialog"
-                                           href="{% url "works.item_state.create" itemRow.item.pk %}"
+                                           href="{% url "works.item.state.new" itemRow.item.pk %}"
                                            class="btn btn-primary btn-xs join-item">Change
                                             state</a>
                                     {% endif %}
@@ -74,8 +74,8 @@
             <div class=" flex  justify-end gap-2">
                 {% if admin %}
                     {% if perms.works.change_itemstate and itemRow.get_item %}
-                        <a hx-get="{% url 'works.item_state.create' itemRow.get_item.pk %}" hx-target="#dialog"
-                           href="{% url "works.item_state.create" itemRow.get_item.pk %}"
+                        <a hx-get="{% url 'works.item.state.new' itemRow.get_item.pk %}" hx-target="#dialog"
+                           href="{% url "works.item.state.new" itemRow.get_item.pk %}"
                            class="btn btn-primary btn-xs join-item">Change
                             state</a>
                     {% endif %}

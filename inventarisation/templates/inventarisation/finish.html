@@ -7,7 +7,7 @@
         {% endfill %}
             {% fill 'footer' %}
         {% component 'tile.Footer' %}
-            <a class="btn btn-success join-item" href="{% url 'inventarisation.finished' inventarisation.pk %}">Finish it</a>
+            <a class="btn btn-success join-item" href="{% url 'inventarisations.inventarisation.finished' inventarisation.pk %}">Finish it</a>
         {% endcomponent %}
     {% endfill %}
     {% endcomponent %}

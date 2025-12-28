@@ -11,9 +11,9 @@
             </table>
 
             <div class="w-full flex flex-row justify-start join">
-                <a href="{%  url 'holiday.list' %}" class="btn join-item">Back to overview</a>
-                <a href="{% url 'holiday.edit' object.id %}" class="btn btn-primary join-item">Edit</a>
-                <a href="{% url 'holiday.delete' object.id %}" class="btn btn-warning join-item">Delete</a>
+                <a href="{%  url 'config.holiday.list' %}" class="btn join-item">Back to overview</a>
+                <a href="{% url 'config.holiday.edit' object.id %}" class="btn btn-primary join-item">Edit</a>
+                <a href="{% url 'config.holiday.delete' object.id %}" class="btn btn-warning join-item">Delete</a>
             </div>
         {% endfill %}
     {% endcomponent %}

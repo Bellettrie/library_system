@@ -45,7 +45,7 @@ class HolidayDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'config.delete_holiday'
     model = Holiday
     template_name = 'config/holiday_confirm_delete.html'
-    success_url = reverse_lazy('holiday.list')
+    success_url = reverse_lazy('config.holiday.list')
 
 
 class HolidayDetail(PermissionRequiredMixin, DetailView):

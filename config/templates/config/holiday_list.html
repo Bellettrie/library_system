@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Holiday List{% endblock %}
 {% block content %}
-    <a href="{% url 'holiday.add' %}" class="btn btn-primary">Add Holiday</a>
+    <a href="{% url 'config.holiday.new' %}" class="btn btn-primary">Add Holiday</a>
     {% component 'config.holiday_table' object_list / %}
     {% component 'help_bar' %}
         <p class="indent-4">

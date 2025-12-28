@@ -2,7 +2,7 @@
     {% if not skip_header %}
         <td class="{% if series %}bg-secondary {% else %}bg-accent{% endif %} text-xs text-center w-[12em]">
             {% if series %}[s]{% endif %}
-            {% if book_code %}<a href="{% url "work.view" work.pk %}"><b>{{ book_code }}</b>
+            {% if book_code %}<a href="{% url "works.view" work.pk %}"><b>{{ book_code }}</b>
                 {% if book_code_extension %}({{ book_code_extension }}){% endif %}</a>
                 {% if item %}
                     {% if show_recode and item.get_recode %}
@@ -15,7 +15,7 @@
     <td>
         <dl>
             <dd class="">
-                <a class="link link-secondary" href="{% url "work.view" work.pk %}">
+                <a class="link link-secondary" href="{% url "works.view" work.pk %}">
                     {% if work.get_title %}{{ work.get_title }}{% else %}&lt;No Title&gt;
                     {% endif %}
                 </a>

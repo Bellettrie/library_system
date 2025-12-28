@@ -12,8 +12,8 @@
         {% endfill %}
         {% fill 'footer' %}
             {% component 'tile.Footer' %}
-                <a class="btn btn-primary join-item" href="{% url 'inventarisation.next' inventarisation.pk  -1 %}">Continue with Inventarisation</a>
-                <a class="btn btn-success join-item" href="{% url 'inventarisation.finished' inventarisation.pk %}">Finish it anyway</a>
+                <a class="btn btn-primary join-item" href="{% url 'inventarisations.inventarisation.next' inventarisation.pk  -1 %}">Continue with Inventarisation</a>
+                <a class="btn btn-success join-item" href="{% url 'inventarisations.inventarisation.finished' inventarisation.pk %}">Finish it anyway</a>
             {% endcomponent %}
         {% endfill %}
     {% endcomponent %}

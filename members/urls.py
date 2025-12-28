@@ -23,22 +23,17 @@ from .views.auth.by_committee import webcie
 
 urlpatterns = [
     path('', MemberList.as_view(), name="members.list"),
-    path('anonymise', AnonMemberList.as_view(), name='members.list.anon'),
-    path('anonymise/<int:member_id>', members.views.anonymise.anonymise, name='members.anonymise'),
-    path('anonymise/list', members.views.anonymise_list.anonymise_list, name='members.anonymise_all'),
     path('new', members.views.member_new.new, name="members.new"),
+
+
+    path('anonymise', AnonMemberList.as_view(), name='members.list.anon'),
+    path('anonymise/list', members.views.anonymise_list.anonymise_list, name='members.anonymise_all'),
+    path('anonymise/<int:member_id>', members.views.anonymise.anonymise, name='members.anonymise'),
 
     path('<int:member_id>/<int:full>', members.views.member_show.show, name="members.view"),
     path('<int:member_id>/edit', members.views.member_edit.edit, name="members.edit"),
     path('<int:member_id>/delete', members.views.member_delete.delete_member, name='members.delete'),
-
     path('<int:member_id>/signup', members.views.user.signup.signup, name='members.signup'),
-    # Backwards compabitility with email links we already sent out.
-    path('signup/<int:member_id>', members.views.user.signup.signup, name='members.signup_old'),
-    path('self/user/password_change', hx_wrap(members.views.user.edit.change_own_password), name='members.change_self'),
-
-    path('user/self-service', self_signup, name='members.self_signup'),
-
     path('<int:member_id>/invite', members.views.user.invite_code_generate.generate_invite_code,
          name='members.generate_invite'),
     path('<int:member_id>/uninvite', members.views.user.invite_code_disable.disable_invite_code,
@@ -55,6 +50,10 @@ urlpatterns = [
          name='members.committee.join'),
     path('<int:member_id>/committee/<int:committee_id>/leave/', hx_wrap(leave_committee),
          name='members.committee.leave'),
+
+    path('self/user/password_change', hx_wrap(members.views.user.edit.change_own_password), name='members.change_self'),
+    path('user/self-service', self_signup, name='members.self_signup'),
     path('auth/by_committee/webcie', members.views.auth.by_committee.webcie, name='members.auth.by_committee.webcie'),
-    path('auth/by_committee/<str:committee_code>', members.views.auth.by_committee.by_committee, name='members.auth.by_committee.any'),
+    path('auth/by_committee/<str:committee_code>', members.views.auth.by_committee.by_committee,
+         name='members.auth.by_committee.any'),
 ]

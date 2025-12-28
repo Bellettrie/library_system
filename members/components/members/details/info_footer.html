@@ -7,7 +7,7 @@
             details</a>
     {% endif %}
     <a href="{% url 'members.edit' member.id %}" class="btn btn-sm btn-primary join-item">Edit</a>
-    <a href="{% url 'lendings.new.member' member.id %}" class="btn btn-sm btn-secondary join-item">Browse for
+    <a href="{% url 'lendings.member.viewmber.new' member.id %}" class="btn btn-sm btn-secondary join-item">Browse for
         member</a>
     {% if member.should_be_anonymised %}
         <a href="{% url 'members.anonymise' member.id %}"

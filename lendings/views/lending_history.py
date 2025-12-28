@@ -14,7 +14,7 @@ class LendingHistory(PermissionRequiredMixin, ListView):
     ordering = 'end_date'
 
     def get_queryset(self, *args, **kwargs):
-        result_set = Lending.objects.filter(item=self.kwargs['work_id']).order_by('-end_date')
+        result_set = Lending.objects.filter(item_id=self.kwargs['item_id']).order_by('-end_date')
         return result_set
 
     def get_context_data(self, **kwargs):

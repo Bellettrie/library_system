@@ -11,13 +11,13 @@
             </thead>
             {% for holiday in holidays %}
                 <tr>
-                    <td><a href="{% url 'holiday.view' holiday.id %}">{{ holiday.name }}</a></td>
+                    <td><a href="{% url 'config.holiday.view' holiday.id %}">{{ holiday.name }}</a></td>
                     <td>{{ holiday.starting_date }}</td>
                     <td>{{ holiday.ending_date }}</td>
                     <td>{{ holiday.skipped_for_fine }}</td>
                     <td>
-                        <a href="{% url 'holiday.edit' holiday.id %}" class="btn">Edit</a>
-                        <a href="{% url 'holiday.delete' holiday.id %}" class="btn btn-warning">Delete</a>
+                        <a href="{% url 'config.holiday.edit' holiday.id %}" class="btn">Edit</a>
+                        <a href="{% url 'config.holiday.delete' holiday.id %}" class="btn btn-warning">Delete</a>
                     </td>
                 </tr>
             {% empty %}
