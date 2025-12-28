@@ -249,7 +249,7 @@ def test_render_function(request):
 @transaction.atomic
 def edit_named_page(request, page_group_name, page_name):
     page_group = get_object_or_404(PublicPageGroup, name=page_group_name)
-    page = get_object_or_404(PublicPage, name=page_name, group=page_group_name)
+    page = get_object_or_404(PublicPage, name=page_name, group=page_group)
 
     if forbid_showing_page(page, request.user.is_anonymous, request.user.member):
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
