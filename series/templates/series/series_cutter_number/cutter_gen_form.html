@@ -1,35 +1,40 @@
 {% extends hx_enabled|yesno:"hx_modal.html,base.html" %}
 
 {% block content %}
-    {% component 'modalform.ModalForm' title="Set Custom Code Range"  path=request.path form_action="submit" %}
+    {% component 'modalform.ModalForm' title="Set Custom Code Range" path=request.path form_action="submit" %}
         {% fill "modal_body" %}
-        Here you can overwrite the book-code range for the series, so the books of the series get placed at a location
-        that may be more logical.<br>
-        This is intended for rare exceptions (such as Star Trek), so series without clear authors can get a location.
-        <hr>
-        {% if error %}
-            <div class="alert-warning">
-                {{ error }}
-            </div>
-        {% endif %}
-        <div class="form-group">
-            <label for="input_string">Input</label>
-            <input type="text" class="form-control" name="prefix" id="prefix" aria-describedby="bookcodehelp"
-                   value="{{ series.work.title }} - {{ series.work_id }}" required>
-            <small id="bookcodehelp" class="form-text text-muted">
-                Overwrite this text to define what text is used to create the custom code
-            </small>
-        </div>
-        <div class="form-group">
-            <input type="button" class="form-control" hx-post="{% url 'series.cutter.gen_code_gen' series.work_id %}"
-                   hx-target="#cutter" hx-include="[prefix='prefix']" value="Generate">
-        </div>
-        <div id="cutter">
-            <div class="form-group">
-                {% include 'book_code_generation/number_result_template.html' %}
-            </div>
-        </div>
+            Here you can overwrite the book-code range for the series, so the books of the series get placed at a
+            location
+            that may be more logical.<br>
+            This is intended for rare exceptions (such as Star Trek), so series without clear authors can get a
+            location.
+            <hr>
+            {% if error %}
+                <div class="alert-warning">
+                    {{ error }}
+                </div>
+            {% endif %}
+            <div class="gap-2">
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Input</legend>
+                    <input type="text" class="input input-bordered" name="prefix" id="prefix"
+                           value="{{ series.work.title }} - {{ series.work_id }}" required>
+                    <p class="label">
+                        Overwrite this text to define what text is used to create the custom code
+                    </p>
+                </fieldset>
 
+                <fieldset class="fieldset">
+                    <a class="btn btn-bordered"
+                       hx-post="{% url 'series.cutter.gen_code_gen' series.work_id %}"
+                       hx-target="#cutter" hx-include="[prefix='prefix']">Generate</a>
+                </fieldset>
+                <div id="cutter">
+                    <div class="form-group">
+                        {% include 'book_code_generation/number_result_template.html' %}
+                    </div>
+                </div>
+            </div>
         {% endfill %}
     {% endcomponent %}
 {% endblock %}
