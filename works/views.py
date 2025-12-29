@@ -339,7 +339,7 @@ def delete_work(request, work_id):
         return HttpResponse(status=404, content=b'Cannot delete work, still linked')
     if request.GET.get('confirm'):
         CreatorToWork.objects.filter(work=work).delete()
-        works.delete()
+        work.delete()
         next_url = request.GET.get("next")
         if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
             return HttpResponseRedirect(request.GET.get("next"))
