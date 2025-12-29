@@ -11,7 +11,7 @@
     $('#{{name}}').select2({
         ajax: {
             url: function (params) {
-                return '{{ BASE_URL }}works/search/json';
+                return "{% url 'works.list.json' %}";
             },
             minimumInputLength: 3,
         },

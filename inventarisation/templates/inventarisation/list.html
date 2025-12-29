@@ -7,13 +7,16 @@
         {% fill 'content' %}
             <script>
                 function doClick(id) {
-                    window.location.href = "/inventarisation/list/" + id + "/" + document.getElementById("pageNr" + id).value;
+                    // we use the magic number to change the url with scripting, after we've loaded the url.
+                    let magic_number = 'f4213370';
+                    let url = "{% url "inventarisations.page" 'f4213370' 'pageNr421337' %}";
+                    url = url.replace(magic_number, id);
+                    window.location.href = url.replace('pageNr421337', document.getElementById("pageNr" + id).value);
                 }
             </script>
             <table class="table table-zebra">
                 {% for inv in inventarisations %}
                     {% if inv.is_active %}
-
                         <tr>
                             <td>
                                 <dl>
