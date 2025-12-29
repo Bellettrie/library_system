@@ -33,7 +33,7 @@
                 <dd>
                     {{ creator_work.role.name }}
                     <a class="link link-secondary"
-                       href="{% url "creator.view" creator_work.creator.pk %}">
+                       href="{% url "creators.view" creator_work.creator.pk %}">
                         <em>{{ creator_work.creator.name }}</em>
                         , {{ creator_work.creator.given_names }}
                     </a>

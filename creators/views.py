@@ -63,7 +63,7 @@ def edit(request, creator_id=None):
                 c2w.creator = instance
                 c2w.save()
 
-            return HttpResponseRedirect(reverse('creator.view', args=(instance.pk,)))
+            return HttpResponseRedirect(reverse('creators.view', args=(instance.pk,)))
     else:
         if creator_id is not None:
             locations = CreatorLocationNumberFormset(instance=creator)
@@ -90,7 +90,7 @@ def delete(request, creator_id):
     CreatorToWork.objects.filter(creator=creator).delete()
     creator.delete()
 
-    return redirect('creator.list')
+    return redirect('creators.list')
 
 
 class CreatorList(ListView):

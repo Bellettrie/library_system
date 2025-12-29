@@ -72,8 +72,8 @@ WEB_MANAGEMENT = SuperMenu("Web Management", UPLOADS, WEB_PAGES)
 
 NEW_WORK = Item("New Work", reverse('works.publication.new'), perm="works.add_publication")
 NEW_SERIES = Item("New Series", reverse("series.new"), perm="series.add_series")
-NEW_CREATOR = Item("New Author", reverse("creator.new"), perm="creators.change_creator")
-INVENTARISATION = Item("Inventarisations", reverse("inventarisations.inventarisation.list"),
+NEW_CREATOR = Item("New Author", reverse("creators.new"), perm="creators.change_creator")
+INVENTARISATION = Item("Inventarisations", reverse("inventarisations.list"),
                        perm="inventarisation.view_inventarisation")
 RECODE_LIST = Item("Recode List", reverse("recode.list"), perm="recode.view_recode")
 CODES = Item("Book Codes", reverse("book_code.code_list"), perm="works.change_work")

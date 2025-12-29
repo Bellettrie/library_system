@@ -32,7 +32,7 @@
                             <td>{{ entry.number }}</td>
                             <td>
                                 {% if entry in misses %}<b>Miss</b>{% endif %}{% if entry.author %}
-                                <a href="{% url 'creator.view' entry.author.pk %}">{{ entry.name }}</a>{% else %}
+                                <a href="{% url 'creators.view' entry.author.pk %}">{{ entry.name }}</a>{% else %}
                                 {{ entry.name }}{% endif %}</td>
                         </tr>
                     {% endfor %}

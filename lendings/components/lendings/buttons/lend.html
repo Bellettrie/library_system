@@ -4,6 +4,6 @@
             <a class="btn btn-disabled btn-secondary {{ bonus_classes }}" disabled="disabled">Lend</a>
         </div>
     {% else %}
-        <a class="btn btn-secondary  {{ bonus_classes }}" href="{% url 'lendings.item.new'  item.pk %}">Lend</a>
+        <a class="btn btn-secondary  {{ bonus_classes }}" href="{% url 'lendings.for_item.new'  item.pk %}">Lend</a>
     {% endif %}
 {% endif %}

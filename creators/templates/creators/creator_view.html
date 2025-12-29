@@ -6,8 +6,8 @@
 {% block title %}{{ creator.given_names }} {{ creator.name }}{% endblock %}
 {% block content %}
     {% if perms.creators.change_creator %}
-        <a class="btn btn-primary" href="{% url 'creator.edit' creator.pk %}">Edit</a>
-        <a class="btn btn-danger" href="{% url 'creator.delete' creator.pk %}">Delete</a>{% endif %}
+        <a class="btn btn-primary" href="{% url 'creators.edit' creator.pk %}">Edit</a>
+        <a class="btn btn-danger" href="{% url 'creators.delete' creator.pk %}">Delete</a>{% endif %}
     {% get_item_rows_for_publications publications as items %}
     <div class="card  p-3 hidden lg:block bg-base-100 ">
         <div class="rounded-box ">

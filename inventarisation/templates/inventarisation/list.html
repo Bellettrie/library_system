@@ -37,7 +37,7 @@
                                 });
                             </script>
                             <td class="join">
-                                <a href="{% url 'inventarisations.inventarisation.print' inv.pk %}" class="btn btn-sm join-item">Print
+                                <a href="{% url 'inventarisations.print' inv.pk %}" class="btn btn-sm join-item">Print
                                     List</a>
                                 <input type="text" class="input input-bordered input-sm join-item" placeholder="Number"
                                        style="width:120px"
@@ -47,7 +47,7 @@
                                         type="button">To
                                     page
                                 </button>
-                                <a href="{% url 'inventarisations.inventarisation.next' inv.pk -1 %}"
+                                <a href="{% url 'inventarisations.page.next' inv.pk -1 %}"
                                    class="btn-primary btn btn-sm  join-item">Next
                                     Page</a>
                         </tr>
@@ -58,7 +58,7 @@
         {% endfill %}
         {% fill 'footer' %}
             {% component 'tile.Footer' %}
-                <a href="{% url 'inventarisations.inventarisation.new' %}" class="btn-primary btn join-item">New</a>
+                <a href="{% url 'inventarisations.new' %}" class="btn-primary btn join-item">New</a>
             {% endcomponent %}
         {% endfill %}
     {% endcomponent %}

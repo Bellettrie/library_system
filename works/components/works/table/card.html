@@ -33,7 +33,7 @@
             {% for author in creators %}
                 <dd>
                     {{ author.role.name }} <a class="link link-secondary"
-                                              href="{% url "creator.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}
+                                              href="{% url "creators.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}
                 </a></dd>
             {% endfor %}
         </dl>
