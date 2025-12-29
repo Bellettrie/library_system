@@ -76,7 +76,8 @@ def clean_link(href: str) -> str:
     parsed_url = urlparse(href)
 
     if not static and parsed_url.scheme not in ('http', 'https'):
-        raise InvalidMarkdown('Must provide an absolute URL (be sure to include https:// or http://)', href)
+        raise InvalidMarkdown(
+            'URL must be a correct type, or be an absolute URL (be sure to include https:// or http://)', href)
 
     return href
 
