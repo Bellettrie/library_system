@@ -1,4 +1,5 @@
 import logging
+import urllib
 
 import markdown
 from django.conf import settings
@@ -50,7 +51,6 @@ def render_find(markdown_text: str, title: str, layout_overrides: str = "", *_):
 
 # The render trafficlight function creates a trafficlight that shows whether the DK is open
 def get_open():
-    import urllib.request
     try:
         f = urllib.request.urlopen(settings.IS_OPEN_URL, timeout=120)
         is_open_result = str(f.read()).lower()
