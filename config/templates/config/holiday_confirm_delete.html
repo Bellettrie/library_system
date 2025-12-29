@@ -9,6 +9,6 @@
             <li><a href="{{ object.get_absolute_url }}">{{ object.name }}</a></li>
         </ul>
         <input type="submit" class="btn btn-danger" value='Confirm deletion' name="confirm_delete"/>
-        <a class="btn btn-primary" href="{% url 'holiday.list' %}" target="_blank">Cancel</a>
+        <a class="btn btn-primary" href="{% url 'config.holiday.list' %}" target="_blank">Cancel</a>
     </form>
 {% endblock %}

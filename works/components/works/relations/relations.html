@@ -19,14 +19,14 @@
                         <td class="p-2">
                             <a
                                     class="link link-secondary"
-                                    href="{% url "work.view" relation.to_work.id %}">
+                                    href="{% url "works.view" relation.to_work.id %}">
                                 {{ relation.to_work.get_title_or_no_title }}
                             </a>
                         </td>
                     {% else %}
                         <td class="p-2">
                             <a class="link link-secondary"
-                               href="{% url "work.view" relation.from_work.id %}">
+                               href="{% url "works.view" relation.from_work.id %}">
                                 {{ relation.from_work.get_title_or_no_title }}
                             </a>
                         </td>
@@ -41,9 +41,9 @@
                                     href="{% url 'works.relation.edit.rev' work.id relation.id %}"
                                     class="btn btn-xs btn-primary join-item">Edit</a>
                         {% endif %}
-                        <a hx-get="{% url 'works.relation.remove' work.id relation.id %}"
+                        <a hx-get="{% url 'works.relation.delete' work.id relation.id %}"
                            hx-target="#dialog"
-                           href="{% url 'works.relation.remove' work.id relation.id %}"
+                           href="{% url 'works.relation.delete' work.id relation.id %}"
                            class="btn btn-xs btn-error join-item">Remove</a>
 
                     </td>

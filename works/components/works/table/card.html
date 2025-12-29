@@ -1,13 +1,13 @@
 <div class="bg-base-100 shadow-xl flex relative">
 
     <div class="bg-accent text-accent-content place-items-center basis-[5rem]  " role="link" tabindex="0"
-         onclick="location.href='{% url 'work.view' work.pk %}'">
+         onclick="location.href='{% url 'works.view' work.pk %}'">
         {% if book_code %}
             <dl class="items-center flex flex-col items-center justify-center h-full">
                     {% if series %}<dd>SERIES</dd>{% endif %}
 
                 {% for cd in split_code %}
-                    <dd><b><a href="{% url "work.view" work.pk %}">{{ cd }}</a></b>{% if forloop.last %}
+                    <dd><b><a href="{% url "works.view" work.pk %}">{{ cd }}</a></b>{% if forloop.last %}
                         {% if book_code_extension %}({{ book_code_extension }}){% endif %}{% endif %}</dd>
                 {% endfor %}
 
@@ -24,7 +24,7 @@
                 {% endif %}
             </dd>
             <dd class="text-lg">
-                <a class="link link-secondary" href="{% url "work.view" work.pk %}">
+                <a class="link link-secondary" href="{% url "works.view" work.pk %}">
                     {% if work.title %}{{ work.title }}{% else %}&lt;No Title&gt;{% endif %}
                 </a>
             </dd>
@@ -33,7 +33,7 @@
             {% for author in creators %}
                 <dd>
                     {{ author.role.name }} <a class="link link-secondary"
-                                              href="{% url "creator.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}
+                                              href="{% url "creators.view" author.creator.pk %}"><em>{{ author.creator.name }}</em>, {{ author.creator.given_names }}
                 </a></dd>
             {% endfor %}
         </dl>

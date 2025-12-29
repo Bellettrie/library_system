@@ -4,6 +4,6 @@
             <a class="btn btn-disabled btn-success {{ bonus_classes }}" disabled="disabled">Finalize</a>
         </div>
     {% else %}
-        <a class="btn btn-success  {{ bonus_classes }}" hx-target="#dialog" data-hx-get="{% url 'lendings.finalize'  item.pk member.pk %}">Finalize</a>
+        <a class="btn btn-success  {{ bonus_classes }}" hx-target="#dialog" data-hx-get="{% url 'lendings.item.finalize'  item.pk member.pk %}">Finalize</a>
     {% endif %}
 {% endif %}

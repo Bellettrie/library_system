@@ -19,13 +19,13 @@ def finalize_hx(request, work_id, member_id):
 
 @transaction.atomic
 @permission_required('lendings.add_lending')
-def finalize(request, work_id, member_id, hx_enabled=False):
+def finalize(request, item_id, member_id, hx_enabled=False):
     cannot_lend_template = 'lendings/modals/cannot_lend.html'
     finalize_template = 'lendings/modals/finalize.html'
     finalized_template = 'lendings/modals/finalized.html'
 
     member = get_object_or_404(Member, pk=member_id)
-    item = get_object_or_404(Item, pk=work_id)
+    item = get_object_or_404(Item, pk=item_id)
     lendingsettings = LendingSettings.get_for_type(item.location.category.item_type, member.is_active())
     fee = ""
     if lendingsettings.borrow_money != 0:

@@ -1,10 +1,10 @@
 {% with part_of=part_of.to_work.part_of_series %}
     {% if part_of %}
-       <a href="{% url 'work.view' part_of.from_work.id %}">{% include 'series/part_of_series_name.html' %} </a> >
+       <a href="{% url 'works.view' part_of.from_work.id %}">{% include 'series/part_of_series_name.html' %} </a> >
     {% endif %}
 {% endwith %}
 {% if part_of and part_of.from_work %}
-    <a class="link link-secondary" href="{% url 'work.view' part_of.to_work.id %}">{{ part_of.to_work.title }}</a>
+    <a class="link link-secondary" href="{% url 'works.view' part_of.to_work.id %}">{{ part_of.to_work.title }}</a>
     {% if part_of.relation_index_label %}[{{ part_of.relation_index_label }}]{% endif %}
     {% if also_show_number %}
         {% if part_of.relation_index %}({{ part_of.relation_index }}){% endif %}

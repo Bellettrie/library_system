@@ -7,13 +7,16 @@
         {% fill 'content' %}
             <script>
                 function doClick(id) {
-                    window.location.href = "/inventarisation/list/" + id + "/" + document.getElementById("pageNr" + id).value;
+                    // we use the magic number to change the url with scripting, after we've loaded the url.
+                    let magic_number = 'f4213370';
+                    let url = "{% url "inventarisations.page" 'f4213370' 'pageNr421337' %}";
+                    url = url.replace(magic_number, id);
+                    window.location.href = url.replace('pageNr421337', document.getElementById("pageNr" + id).value);
                 }
             </script>
             <table class="table table-zebra">
                 {% for inv in inventarisations %}
                     {% if inv.is_active %}
-
                         <tr>
                             <td>
                                 <dl>
@@ -37,7 +40,7 @@
                                 });
                             </script>
                             <td class="join">
-                                <a href="{% url 'inventarisation.print' inv.pk %}" class="btn btn-sm join-item">Print
+                                <a href="{% url 'inventarisations.print' inv.pk %}" class="btn btn-sm join-item">Print
                                     List</a>
                                 <input type="text" class="input input-bordered input-sm join-item" placeholder="Number"
                                        style="width:120px"
@@ -47,7 +50,7 @@
                                         type="button">To
                                     page
                                 </button>
-                                <a href="{% url 'inventarisation.next' inv.pk -1 %}"
+                                <a href="{% url 'inventarisations.page.next' inv.pk -1 %}"
                                    class="btn-primary btn btn-sm  join-item">Next
                                     Page</a>
                         </tr>
@@ -58,7 +61,7 @@
         {% endfill %}
         {% fill 'footer' %}
             {% component 'tile.Footer' %}
-                <a href="{% url 'inventarisation.new' %}" class="btn-primary btn join-item">New</a>
+                <a href="{% url 'inventarisations.new' %}" class="btn-primary btn join-item">New</a>
             {% endcomponent %}
         {% endfill %}
     {% endcomponent %}

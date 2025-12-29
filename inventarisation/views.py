@@ -32,7 +32,7 @@ class InventarisationCreate(PermissionRequiredMixin, CreateView):
     model = Inventarisation
     fields = ['location']
     template_name = 'inventarisation/new.html'
-    success_url = reverse_lazy('inventarisation.list')
+    success_url = reverse_lazy('inventarisations.list')
 
 
 @transaction.atomic
@@ -44,7 +44,7 @@ def inventarisation_form(request, inventarisation_id, page_id):
     page_id = max(0, min(len(item_pages) - 1, int(page_id)))
 
     if len(item_pages) == 0:
-        return HttpResponseRedirect(reverse('inventarisation.finish', args=[inventarisation_id]))
+        return HttpResponseRedirect(reverse('inventarisations.finish', args=[inventarisation_id]))
     item_page = item_pages[page_id]
 
     rows = get_item_rows(inventarisation, item_page)
@@ -119,12 +119,12 @@ def get_inventarisation_next(request, inventarisation_id, page_id):
     inventarisation = get_object_or_404(Inventarisation, pk=inventarisation_id)
     page_id = get_cur_block(inventarisation, page_id)
     if page_id > -2:
-        return HttpResponseRedirect(reverse('inventarisation.by_number', args=(inventarisation_id, page_id)))
+        return HttpResponseRedirect(reverse('inventarisations.page', args=(inventarisation_id, page_id)))
     page_id = get_cur_block(inventarisation, -1)
     if page_id == -2:
-        return HttpResponseRedirect(reverse('inventarisation.finish', args=[inventarisation_id]))
+        return HttpResponseRedirect(reverse('inventarisations.finish', args=[inventarisation_id]))
     else:
-        return HttpResponseRedirect(reverse('inventarisation.early', args=[inventarisation_id]))
+        return HttpResponseRedirect(reverse('inventarisations.finish.early', args=[inventarisation_id]))
 
 
 @permission_required('inventarisation.view_inventarisation')

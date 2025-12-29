@@ -120,8 +120,8 @@ def search_works_json(request):
         return JsonResponse({'results': []})
 
 
-def publication_view(request, pk):
-    work = get_object_or_404(Work, pk=pk)
+def publication_view(request, work_id):
+    work = get_object_or_404(Work, pk=work_id)
     template_name = 'works/publication_view.html'
     series = work.as_series
     part_of_series = WorkRelation.objects.filter(from_work=work,
@@ -153,7 +153,7 @@ def create_item_state(request, item_id, hx_enabled=False):
             instance.save()
             if hx_enabled:
                 return HttpResponse(status=209, headers={"HX-Refresh": "true"})
-            return HttpResponseRedirect(reverse('work.view', args=(instance.item.publication.pk,)))
+            return HttpResponseRedirect(reverse('works.view', args=(instance.item.publication.pk,)))
     else:
         form = ItemStateCreateForm()
     return render(request, 'works/modals/item_state_edit.html',
@@ -174,7 +174,7 @@ def change_item_location(request, item_id, hx_enabled=False):
 
             if hx_enabled:
                 return HttpResponse(status=209, headers={"HX-Refresh": "true"})
-            return HttpResponseRedirect(reverse('work.view', args=(item.publication.pk,)))
+            return HttpResponseRedirect(reverse('works.view', args=(item.publication.pk,)))
     else:
         form = LocationChangeForm(instance=item)
     return render(request, 'works/modals/item_location_edit.html',
@@ -183,8 +183,8 @@ def change_item_location(request, item_id, hx_enabled=False):
 
 @transaction.atomic
 @permission_required('works.add_item')
-def item_new(request, publication_id=None):
-    publication = get_object_or_404(Work, pk=publication_id)
+def item_new(request, work_id=None):
+    publication = get_object_or_404(Work, pk=work_id)
 
     if request.method == 'POST':
         form = ItemCreateForm(request.POST)
@@ -192,7 +192,7 @@ def item_new(request, publication_id=None):
             instance = form.save(commit=False)
             instance.publication = publication
             instance.save()
-            return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
+            return HttpResponseRedirect(reverse('works.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm()
     return render(request, 'works/item_edit.html', {'form': form, 'publication': publication})
@@ -208,7 +208,7 @@ def item_edit(request, item_id):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
-            return HttpResponseRedirect(reverse('work.view', args=(instance.publication.pk,)))
+            return HttpResponseRedirect(reverse('works.view', args=(instance.publication.pk,)))
     else:
         form = ItemCreateForm(instance=item)
     return render(request, 'works/item_edit.html',
@@ -232,13 +232,13 @@ def item_history(request, item_id, hx_enabled=False):
 
 @transaction.atomic
 @permission_required('works.change_publication')
-def publication_edit(request, publication_id=None):
+def edit_work(request, work_id=None):
     from works.forms import CreatorToWorkFormSet
     creator_to_works = None
     publication = None
     if request.method == 'POST':
-        if publication_id is not None:
-            publication = get_object_or_404(Work, pk=publication_id)
+        if work_id is not None:
+            publication = get_object_or_404(Work, pk=work_id)
             form = WorkForm(request.POST, instance=publication)
         else:
             form = WorkForm(request.POST)
@@ -259,11 +259,11 @@ def publication_edit(request, publication_id=None):
                 for error in creator_to_works.errors:
                     form.add_error(None, str(error))
 
-            return HttpResponseRedirect(reverse('work.view', args=(instance.pk,)))
+            return HttpResponseRedirect(reverse('works.view', args=(instance.pk,)))
     else:
         publication = None
-        if publication_id is not None:
-            publication = get_object_or_404(Work, pk=publication_id)
+        if work_id is not None:
+            publication = get_object_or_404(Work, pk=work_id)
             creator_to_works = CreatorToWorkFormSet(instance=publication)
             form = WorkForm(instance=publication)
         else:
@@ -276,16 +276,16 @@ def publication_edit(request, publication_id=None):
 @transaction.atomic
 @permission_required('works.add_publication')
 def publication_new(request):
-    return publication_edit(request, publication_id=None)
+    return edit_work(request, work_id=None)
 
 
 @transaction.atomic
 @permission_required('works.change_publication')
-def subwork_edit(request, subwork_id=None, publication_id=None):
+def subwork_edit(request, work_id=None, super_work_id=None):
     from works.forms import CreatorToWorkFormSet
     subwork_relations = []
-    if subwork_id is not None:
-        subwork_relations = WorkRelation.objects.filter(from_work_id=subwork_id,
+    if work_id is not None:
+        subwork_relations = WorkRelation.objects.filter(from_work_id=work_id,
                                                         relation_kind=WorkRelation.RelationKind.sub_work_of)
     if len(subwork_relations) > 0:
         subwork_relation = subwork_relations[0]
@@ -310,11 +310,11 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
             subwork_instance.save()
             creator_to_works = CreatorToWorkFormSet(request.POST, instance=subwork_instance)
             sub_form_has_errors = save_creator_work_relations(creator_to_works, subwork_instance)
-            subwork_relation = save_subwork_relations(disp_num, subwork_instance, num, publication_id, subwork_relation)
+            subwork_relation = save_subwork_relations(disp_num, subwork_instance, num, super_work_id, subwork_relation)
 
             # Both saves went okay
             if not (sub_form_has_errors or len(form.errors) > 0):
-                return HttpResponseRedirect(reverse('work.view', args=(subwork_relation.to_work_id,)))
+                return HttpResponseRedirect(reverse('works.view', args=(subwork_relation.to_work_id,)))
 
     creator_to_works = CreatorToWorkFormSet(instance=subwork)
     form = SubWorkForm(instance=subwork)
@@ -327,8 +327,8 @@ def subwork_edit(request, subwork_id=None, publication_id=None):
 
 @transaction.atomic
 @permission_required('works.add_publication')
-def subwork_new(request, publication_id):
-    return subwork_edit(request, publication_id=publication_id)
+def subwork_new(request, work_id):
+    return subwork_edit(request, super_work_id=work_id)
 
 
 @transaction.atomic
@@ -366,10 +366,10 @@ def remove_relation(request, work_id, relation_id, hx_enabled=False):
     if request.GET.get('confirm'):
         relation.delete()
         if orphaned(relation.from_work):
-            return HttpResponseRedirect(reverse('work.ask_delete', args=(relation.from_work.id, relation.to_work.id)))
+            return HttpResponseRedirect(reverse('works.delete.ask', args=(relation.from_work.id, relation.to_work.id)))
         if hx_enabled:
             return HttpResponse(status=209, headers={"HX-Refresh": "true"})
-        return HttpResponseRedirect(reverse('work.view', args=(work_id,)))
+        return HttpResponseRedirect(reverse('works.view', args=(work_id,)))
     return render(request, 'are-you-sure.html',
                   {
                       'what': f'delete relation "{relation.from_work.get_title_or_no_title()} {relation.relation_kind_description()} {relation.to_work.get_title_or_no_title()}"?',
@@ -393,7 +393,7 @@ def edit_relation_to_work(request, work_id, relation_id=None, hx_enabled=False):
             form.save()
             if hx_enabled:
                 return HttpResponse(status=209, headers={"HX-Refresh": "true"})
-            return HttpResponseRedirect(reverse('work.view', args=(work_id,)))
+            return HttpResponseRedirect(reverse('works.view', args=(work_id,)))
     else:
         form = RelationForm(instance=relation)
 
@@ -418,7 +418,7 @@ def edit_relation_from_work(request, work_id, relation_id=None, hx_enabled=False
             form.save()
             if hx_enabled:
                 return HttpResponse(status=209, headers={"HX-Refresh": "true"})
-            return HttpResponseRedirect(reverse('work.view', args=(work_id,)))
+            return HttpResponseRedirect(reverse('works.view', args=(work_id,)))
     else:
         form = RelationFormRev(instance=relation)
 

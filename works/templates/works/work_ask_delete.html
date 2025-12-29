@@ -7,8 +7,8 @@
         {% endfill %}
         {% fill 'modal_submit_button' %}
             <a class="btn btn-error join-item"
-               href="{% url 'work.delete' work.id %}?confirm=True&next={% url "work.view" return_to %}">Yes</a>
-            {% if return_to %}<a class="btn join-item" href="{% url 'work.view' return_to %}">No</a>{% endif %}
+               href="{% url 'works.delete' work.id %}?confirm=True&next={% url "works.view" return_to %}">Yes</a>
+            {% if return_to %}<a class="btn join-item" href="{% url 'works.view' return_to %}">No</a>{% endif %}
         {% endfill %}
     {% endcomponent %}
 {% endblock %}

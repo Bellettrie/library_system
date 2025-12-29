@@ -3,5 +3,5 @@
         <br>{% endif %}{% if member.is_anonimysed %}[anon] {% endif %}<a class="link link-secondary"
             href="{% url 'members.view' member.id 0 %}">{{ member.name }}</a>{% if member.nickname %}<br/>
         <i>{{ member.nickname }}</i>{% endif %}</td>
-    <td class="max-w-5 text-right"><a href="{% url 'lendings.new.member' member.id %}" class="btn btn-secondary btn-xs">Lend for</a></td>
+    <td class="max-w-5 text-right"><a href="{% url 'lendings.for_member.new' member.id %}" class="btn btn-secondary btn-xs">Lend for</a></td>
 </tr>

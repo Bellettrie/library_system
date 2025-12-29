@@ -3,7 +3,7 @@
             <a class="link link-secondary" href="/works/publication/{{ from_work.pk }}">
                 {% if relation_index_label %}{{ relation_index_label }} - {% endif %}
             </a>
-                <a class="link {% if home_node.id == from_work.pk %}text-bellered{% else %}link-secondary{% endif %} truncate"  href="{% url 'work.view' from_work.pk %}">
+                <a class="link {% if home_node.id == from_work.pk %}text-bellered{% else %}link-secondary{% endif %} truncate"  href="{% url 'works.view' from_work.pk %}">
                     {% if from_work.article %}{{ from_work.article }}{% endif %} <i>
                     {% if from_work.title %}{{ from_work.title }}{% else %}&lt;No Title&gt;{% endif %}</i></a>
                 <span style="float:right">   {% for item in from_work.get_pub.get_items %}

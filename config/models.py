@@ -18,7 +18,7 @@ class Holiday(models.Model):
     skipped_for_fine = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return reverse('holiday.view', kwargs={'pk': self.pk})
+        return reverse('config.holiday.view', kwargs={'pk': self.pk})
 
     def save(self, *args, **kwargs):
         from lendings.procedures.get_end_date import get_end_date_for_lending

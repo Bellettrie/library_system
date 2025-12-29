@@ -4,22 +4,23 @@
 <select class="select select-sm" style="width:100%" id="{{ name }}" name="{{ name }}">
 
     {% if default %}
-    <option value="{{  default.pk }}" selected="selected">{{ default.get_canonical_name }}</option>
+        <option value="{{ default.pk }}" selected="selected">{{ default.get_canonical_name }}</option>
     {% endif %}
 </select>
 <script>
-$('#{{name}}').select2({
-  ajax: {
-    url: function (params) {
-      return '/creators/search/' + params.term;
-    },
-    minimumInputLength: 3,
-  },
-allowClear: true,
-    placeholder: {
-      id: "-1",
-      text:"No Author",
-      selected:'selected'
-    },
-});
+    $('#{{name}}').select2({
+        ajax: {
+            url: function (params) {
+                let url = "{% url 'creators.query' 'magical_search_param' %}";
+                return url.replace('magical_search_param', params.term);
+            },
+            minimumInputLength: 3,
+        },
+        allowClear: true,
+        placeholder: {
+            id: "-1",
+            text: "No Author",
+            selected: 'selected'
+        },
+    });
 </script>

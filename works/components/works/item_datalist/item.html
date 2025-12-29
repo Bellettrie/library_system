@@ -38,8 +38,8 @@
     {% with item.current_lending as cur_lnd %}
         {% component "datarow.Datarow" "State" %}
             {% if perms.works.view_itemstate %}
-                <a class="link link-secondary" hx-get="{% url 'works.item.states' item.pk %}" hx-target="#dialog"
-                   href="{% url "works.item.states" item.pk %}">{{ item.get_state }}</a>
+                <a class="link link-secondary" hx-get="{% url 'works.item.state.list' item.pk %}" hx-target="#dialog"
+                   href="{% url "works.item.state.list" item.pk %}">{{ item.get_state }}</a>
             {% else %}
                 {{ item.get_state }}
             {% endif %}
@@ -47,8 +47,8 @@
                 ( Lent out )
             {% endif %}
             {% if perms.works.change_itemstate %}
-                <a hx-get="{% url 'works.item_state.create' item.pk %}" hx-target="#dialog"
-                   href="{% url "works.item_state.create" item.pk %}" class="btn btn-primary btn-xs join-item">Change
+                <a hx-get="{% url 'works.item.state.new' item.pk %}" hx-target="#dialog"
+                   href="{% url "works.item.state.new" item.pk %}" class="btn btn-primary btn-xs join-item">Change
                     state</a>
             {% endif %}
         {% endcomponent %}
@@ -60,7 +60,7 @@
                         {% component "lendings.buttons.Return" cur_lnd member perms bonus_classes="btn-xs join-item" / %}
                     {% endif %}
                     {% if perms.lendings.add_lending %}
-                        <a href="{% url "lendings.history" item.pk %}" class="btn btn-xs join-item">History</a>
+                        <a href="{% url "lendings.item.history" item.pk %}" class="btn btn-xs join-item">History</a>
                     {% endif %}
                     </div>
                 {% endcomponent %}

@@ -44,8 +44,8 @@
                 {% component "datarow.Datarow" "Series Book Code" %}
                     {{ series.book_code }}
                     {% if perms.series.change_series %}
-                        <a class="btn btn-primary btn-sm" hx-get="{% url 'series.gen_code' series.work_id %}"
-                           hx-target="#dialog" href="{% url 'series.gen_code' series.work_id %}">
+                        <a class="btn btn-primary btn-sm" hx-get="{% url 'series.book_code.set' series.work_id %}"
+                           hx-target="#dialog" href="{% url 'series.book_code.set' series.work_id %}">
                             {% if series.book_code %}
                                 Edit{% else %}New{% endif %}</a>
                     {% endif %}
@@ -55,9 +55,9 @@
                         {{ series.location_code.letter }}-{{ series.location_code.number }}
                         {% if perms.series.change_series %}
                             <a class="btn btn-danger btn-sm"
-                               hx-get="{% url 'series.cutter.del_code' series.work_id %}"
+                               hx-get="{% url 'series.location_book_code.delete' series.work_id %}"
                                hx-target="#dialog"
-                               href="{% url 'series.cutter.del_code' series.work_id %}">Delete</a>
+                               href="{% url 'series.location_book_code.delete' series.work_id %}">Delete</a>
                         {% endif %}
                         <br>
                         <small>{{ series.location_code.name }}</small>
@@ -69,7 +69,7 @@
                     {% component "datarow.Datarow" "Available in Work" %}
                         {% for subwork_relation in  part_of_works %}
                             {% if subwork_relation.to_work.title %}
-                                <a class="link link-secondary" href="{% url "work.view" subwork_relation.to_work.id %}">
+                                <a class="link link-secondary" href="{% url "works.view" subwork_relation.to_work.id %}">
                                     {{ subwork_relation.to_work.get_title }}
                                 </a>
                                 {% if subwork_relation.to_work.sub_title %}
@@ -90,14 +90,14 @@
             {% component 'tile.Footer' %}
                 {% if work.is_deletable %}
                     <a class="btn btn-sm btn-error join-item"
-                       href="{% url "work.delete" work.pk %}">Delete</a>
+                       href="{% url "works.delete" work.pk %}">Delete</a>
                 {% else %}
                     <a class="btn btn-sm btn-error btn-disabled join-item"
                     >Delete</a>
                 {% endif %}
                 {% if not series %}
                     <a class="btn btn-sm  btn-primary join-item"
-                       href="{% url 'works.publication.edit' work.pk %}">Edit publication</a>
+                       href="{% url 'works.edit' work.pk %}">Edit publication</a>
                 {% else %}
                     <a class="btn btn-sm  btn-primary join-item"
                        href="{% url 'series.edit' work.pk %}">Edit series</a>

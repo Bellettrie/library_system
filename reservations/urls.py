@@ -10,9 +10,9 @@ from .views.reserve_list import reserve_list
 
 urlpatterns = [
     path('list', reserve_list, name='reservations.list'),
-    path('reserve/item/<int:item_id>', reserve_item, name='reservations.item'),
-    path('reserve/finalize/<int:work_id>/<int:member_id>', hx_wrap(reserve_finalize), name='reservations.finalize'),
-    path('reserve/lendfor/<slug:reservation_id>', hx_wrap(finalize_reservation_based), name='reservations.lendfor'),
-    path('reserve/delete/<slug:reservation_id>', hx_wrap(delete_reservation), name='reservations.delete'),
+    path('item/<int:item_id>/reserve', reserve_item, name='reservations.item'),
+    path('item/<int:work_id>/member/<int:member_id>/finalize', hx_wrap(reserve_finalize), name='reservations.finalize'),
+    path('<slug:reservation_id>/lendfor', hx_wrap(finalize_reservation_based), name='reservations.lendfor'),
+    path('<slug:reservation_id>/delete/', hx_wrap(delete_reservation), name='reservations.delete'),
 
 ]

@@ -11,16 +11,16 @@ from works.models import Item
 
 
 @transaction.atomic
-def extend(request, work_id, hx_enabled=False):
+def extend(request, item_id, hx_enabled=False):
     cannot_extend_template = 'lendings/modals/cannot_extend.html'
     extend_finished_template = 'lendings/modals/extend_finished.html'
     extend_template = 'lendings/modals/extend.html'
 
-    item = get_object_or_404(Item, pk=work_id)
+    item = get_object_or_404(Item, pk=item_id)
     lending = item.current_lending_or_404()
 
     # Permission checks
-    if not request.user.has_perm('lendings.extend'):
+    if not request.user.has_perm('lendings.item.extend'):
         if not hasattr(request.user, 'member'):
             # The user who tries to extend is not linked to a member
             return render(request, cannot_extend_template,

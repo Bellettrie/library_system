@@ -31,7 +31,7 @@
                                         {{ recode.book_code_extension }}{% endif %}</td>
                                     <td>{{ item.get_isbn10 }};{{ item.get_isbn13 }}</td>
 
-                                    <td><a href="{% url 'work.view' item.publication.pk %}">{{ item.get_title }}</a>
+                                    <td><a href="{% url 'works.view' item.publication.pk %}">{{ item.get_title }}</a>
                                     </td>
                                     <td>{% if item.is_available %}{{ item.get_state.type }}
                                     {% else %}
