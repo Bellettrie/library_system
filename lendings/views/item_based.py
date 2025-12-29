@@ -12,6 +12,5 @@ def item_based(request, item_id):
     words = get_query_words(request.GET.get("q"))
     members = query_members(words)
     item = get_object_or_404(Item, pk=item_id)
-    rowdata = RowData(item=item, work=item.publication)
     return render(request, 'lendings/based_on_work.html',
-                  {'members': members, 'item': item, 'rowdata': rowdata})
+                  {'members': members, 'item': item})

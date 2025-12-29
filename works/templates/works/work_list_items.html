@@ -70,7 +70,7 @@
 </div>
 <div class="lg:hidden flex flex-col gap-5 m-3">
     {% for itemRow in items %}
-        {% component 'works.table.Card' itemRow all_authors=False %}
+        {% component 'works.table.Card' row=itemRow all_authors=False %}
             <div class=" flex  justify-end gap-2">
                 {% if admin %}
                     {% if perms.works.change_itemstate and itemRow.get_item %}

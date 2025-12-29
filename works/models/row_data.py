@@ -13,7 +13,7 @@ class RowData:
         if self.work:
             return self.work
         if self.item:
-            return self.item.work
+            return self.item.publication
         if self.series:
             return self.series.work
 

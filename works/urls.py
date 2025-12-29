@@ -8,13 +8,14 @@ from . import views
 
 urlpatterns = [
     path('new', publication_new, name='works.publication.new'),
+
+    path('search', WorkList.as_view(), name='works.list'),
+    path('search/json', views.search_works_json, name='works.list.json'),
+
     path('<slug:work_id>', publication_view, name='works.view'),
     path('<slug:work_id>/edit', edit_work, name='works.edit'),
     path('<slug:work_id>/ask_delete/<slug:return_to>', hx_wrap(work_ask_delete), name='works.delete.ask'),
     path('<slug:work_id>/delete', views.delete_work, name='works.delete'),
-
-    path('search', WorkList.as_view(), name='works.list'),
-    path('search/json', views.search_works_json, name='works.list.json'),
 
     path('<slug:work_id>/item/new/', item_new, name='works.item.new'),
     path('item/<slug:item_id>/edit', item_edit, name='works.item.edit'),
