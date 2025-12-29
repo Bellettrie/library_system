@@ -1,5 +1,4 @@
 import logging
-import urllib.request
 
 import markdown
 from django.conf import settings
