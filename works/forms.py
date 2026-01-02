@@ -8,7 +8,6 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from creators.forms import CreatorWidget
-from series.forms import SeriesWidget
 from works.models import ItemState, Item, CreatorToWork, Work, WorkRelation
 
 

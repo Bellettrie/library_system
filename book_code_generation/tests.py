@@ -4,7 +4,7 @@ from book_code_generation.helpers import normalize_str, normalize_number, standa
 from book_code_generation.models import CutterCodeResult, CutterCodeRange
 from book_code_generation.procedures.location_number_generation import get_location_number_bounds, \
     get_recommended_result, get_location_numbers, generate_location_number
-from creators.models import Creator, CreatorLocationNumber, LocationNumber
+from creators.models import Creator, CreatorLocationNumber
 from works.models import Location, Category, ItemType
 
 

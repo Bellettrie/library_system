@@ -10,7 +10,7 @@ from django.views.generic import ListView
 from recode.procedures.update_recode import update_recode_for_item
 from search.procedures.search_query.filters import AnyWordFilter, CreatorFilter, SeriesFilter, TitleFilter, BookCodeFilter, \
     CategoriesFilter, StatesFilter
-from search.procedures.search_query.query_results import AllWorks, ItemsOnly, AvailableItemsOnly
+from search.procedures.search_query.query_results import AllWorks, AvailableItemsOnly
 from search.procedures.search_query.search_query import SearchQuery
 from series.components.series.graph_node import GraphNode
 
@@ -21,7 +21,6 @@ from works.forms import ItemStateCreateForm, ItemCreateForm, WorkForm, \
 from works.forms import RelationForm, RelationFormRev, SubWorkForm
 from works.models import Work, Item, ItemState, \
     Category, WorkRelation, CreatorToWork
-from works.models.item_state import get_available_states
 from works.procedures.orphaned_work import orphaned
 
 

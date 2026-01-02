@@ -3,7 +3,6 @@ from django.conf import settings
 from django.forms import ModelForm, Widget
 from django.template import loader
 
-from members.models import Member
 from public_pages.models import PublicPage, FileUpload
 
 

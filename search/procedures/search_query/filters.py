@@ -1,7 +1,6 @@
 from typing import Protocol
 
 from django.db.models import Q, QuerySet
-from django.db.models.expressions import RawSQL
 
 from search.procedures.search_query.helpers import filter_book_code, filter_basic_text_get_q
 from works.models import Work

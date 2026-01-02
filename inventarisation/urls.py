@@ -1,6 +1,5 @@
 from django.urls import path
 
-from . import views
 from .views import print_list, list_inventarisations, InventarisationCreate, get_inventarisation_next, \
     inventarisation_form, get_inventarisation_finish, get_inventarisation_finished, \
     get_inventarisation_early_end, get_inventarisation_for_all

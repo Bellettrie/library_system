@@ -1,7 +1,9 @@
+from typing import Tuple
+
 from works.models import ItemState
 
 
-def get_next_state_by_action(action: str, prev_state: ItemState) -> (str, str):
+def get_next_state_by_action(action: str, prev_state: ItemState) -> Tuple[str, str]:
     if prev_state.state.is_final_state():
         return prev_state.type, prev_state.reason
     if action == "yes":

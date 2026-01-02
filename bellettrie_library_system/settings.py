@@ -40,8 +40,8 @@ DB = {
     'NAME': env("DB_POSTGRESQL_NAME"),
     'USER': env("DB_POSTGRESQL_USER"),
     'PASSWORD': env("DB_POSTGRESQL_PASSWORD"),
-    'HOST': env("DB_POSTGRESQL_HOST"),
-    'PORT': env("DB_POSTGRESQL_PORT"),
+    'HOST': env("DB_POSTGRESQL_HOST", default="localhost"),
+    'PORT': env("DB_POSTGRESQL_PORT", default="5432"),
 }
 
 DATABASES = {

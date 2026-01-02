@@ -1,5 +1,3 @@
-from typing import Protocol
-
 from django.db.models import QuerySet
 
 from search.procedures.search_query.helpers import query_annotate

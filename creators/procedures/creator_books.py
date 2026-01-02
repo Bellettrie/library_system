@@ -1,4 +1,4 @@
-from django.db.models import Q, QuerySet
+from django.db.models import QuerySet
 
 from creators.models import Creator
 from works.models import Work, WorkRelation, CreatorToWork

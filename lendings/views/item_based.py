@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, get_object_or_404
 
 from works.models import Item
-from works.models.row_data import RowData
 
 
 @permission_required('lendings.add_lending')

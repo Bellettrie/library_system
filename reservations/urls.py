@@ -14,5 +14,4 @@ urlpatterns = [
     path('item/<int:work_id>/member/<int:member_id>/finalize', hx_wrap(reserve_finalize), name='reservations.finalize'),
     path('<slug:reservation_id>/lendfor', hx_wrap(finalize_reservation_based), name='reservations.lendfor'),
     path('<slug:reservation_id>/delete/', hx_wrap(delete_reservation), name='reservations.delete'),
-
 ]

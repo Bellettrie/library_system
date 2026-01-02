@@ -14,7 +14,6 @@ from utils.get_query_words import get_query_words
 from works.models import CreatorToWork
 
 
-# @permission_required('creators.view_creator')
 def get_authors_by_query(request, search_text):
     creators = Creator.objects.all()
     for word in search_text.split(" "):
@@ -31,7 +30,7 @@ def edit(request, creator_id=None):
     creator = None
     if creator_id is not None:
         creator = get_object_or_404(Creator, pk=creator_id)
-    locations = None
+
     location_datas = CreatorLocationNumber.objects.filter(creator=creator)
     location_dict = {}
     for i in location_datas:
@@ -74,7 +73,6 @@ def edit(request, creator_id=None):
     return render(request, 'creators/edit.html', {'form': form, 'creator': creator, 'locations': locations})
 
 
-# @permission_required('creators.view_creator')
 def show(request, creator_id):
     creator = Creator.objects.get(pk=creator_id)
     publications = get_books_for_author(creator)
@@ -94,7 +92,6 @@ def delete(request, creator_id):
 
 
 class CreatorList(ListView):
-    # permission_required = 'creators.view_creator'
     model = Creator
     template_name = 'creators/list.html'
     paginate_by = 10

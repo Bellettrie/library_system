@@ -1,10 +1,9 @@
 from django.db import models
-from django.db.models import PROTECT
 from django.db.models.expressions import RawSQL
 
 from book_code_generation.models import FakeItem
 from lendings.models import Lending
-from works.models.abstract import TranslatedThing, NamedTranslatableThing
+from works.models.abstract import NamedTranslatableThing
 from works.models.code_generators import GENERATORS
 
 
