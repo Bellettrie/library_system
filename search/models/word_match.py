@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.db import models
 from django.db.models import CASCADE
 
@@ -5,6 +7,7 @@ from creators.models import Creator
 from creators.procedures.get_all_author_aliases import get_all_author_aliases_by_ids
 from search.models.helpers import get_word_from_set, get_words_in_str, clean_word
 from search.models.search_word import SearchWord
+from series.models import SeriesV2
 from works.models import Work, WorkRelation, Item
 
 
@@ -62,21 +65,39 @@ class WordMatch(models.Model):
                 matches.append(WordMatch(word=get_word_from_set(word, words), publication=work, type="CREATOR"))
             for word in get_words_in_str(creator.name):
                 matches.append(WordMatch(word=get_word_from_set(word, words), publication=work, type="CREATOR"))
-        for item in Item.objects.filter(publication=work):
-            wrds = [
-                get_word_from_set(clean_word(item.book_code), words),
-                get_word_from_set(clean_word(item.book_code+item.book_code_extension), words),
-                get_word_from_set(clean_word(item.book_code_sortable), words),
-                get_word_from_set(clean_word(item.book_code_sortable + item.book_code_extension), words),
-            ]
-            for wrd in wrds:
-                matches.append(WordMatch(word=wrd, publication=work, type="CODE"))
+
+        for match in WordMatch.get_book_code_matches(work, words):
+            matches.append(match)
+
         matches = list(set(matches))
 
         WordMatch.objects.bulk_create(matches)
 
         # TODO: These two will be history when the subworks and series are migrated.
         return words
+
+    @staticmethod
+    def get_book_code_matches(work: Work, words: dict[Any, Any] | Any):
+        result = []
+        for item in Item.objects.filter(publication=work):
+            wrds = [
+                get_word_from_set(clean_word(item.book_code), words),
+                get_word_from_set(clean_word(item.book_code + item.book_code_extension), words),
+                get_word_from_set(clean_word(item.book_code_sortable), words),
+                get_word_from_set(clean_word(item.book_code_sortable + item.book_code_extension), words),
+            ]
+            for wrd in wrds:
+                result.append(WordMatch(word=wrd, publication=work, type="CODE"))
+
+        srs = SeriesV2.objects.filter(work=work)
+        for sr in srs:
+            wrds = [
+                get_word_from_set(clean_word(sr.book_code), words),
+                get_word_from_set(clean_word(sr.book_code_sortable), words),
+            ]
+            for wrd in wrds:
+                result.append(WordMatch(word=wrd, publication=work, type="CODE"))
+        return result
 
     @staticmethod
     def get_wordmatches_for_work(words, pub: Work, work_for_words: Work, role="TITLE"):
