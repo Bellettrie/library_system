@@ -32,5 +32,5 @@ class SearchQuery:
 
         query = self.result_base.finish_query(query)
         query = self.sorter.sort_query(query)
-
+        print(query.explain())
         return query.prefetch_related('creatortowork_set', "creatortowork_set__creator")
