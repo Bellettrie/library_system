@@ -14,6 +14,9 @@ class SeriesV2(BookCode):
     location = models.ForeignKey(Location, on_delete=PROTECT, null=True, blank=True)
     location_code = models.ForeignKey(LocationNumber, on_delete=PROTECT, null=True, blank=True)
 
+    def generate_book_code(self):
+        return self.work.generate_code_full(self.location)
+
     def relation_index_label(self):
         wr = self.work.part_of_series()
         if wr:

@@ -11,7 +11,6 @@ from django.urls import reverse
 from django.views.generic import ListView
 
 from book_code_generation.procedures.location_number_generation import generate_location_number
-from book_code_generation.views import get_book_code_series
 from creators.models import LocationNumber
 from search.procedures.search_query.filters import AnyWordFilter
 from series.forms import SeriesForm
@@ -159,7 +158,7 @@ def new_codegen(request, series_id, hx_enabled=False):
             else:
                 return HttpResponseRedirect(reverse('works.view', args=(series_id,)))
     return render(request, templ,
-                  {"series": series, "recommended_code": get_book_code_series(series), "hx_enabled": hx_enabled})
+                  {"series": series, "recommended_code": series.generate_book_code(), "hx_enabled": hx_enabled})
 
 
 @transaction.atomic

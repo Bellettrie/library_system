@@ -14,7 +14,7 @@ from utils.get_query_words import get_query_words
 from works.models import CreatorToWork
 
 
-def get_authors_by_query(request, search_text):
+def search_creators_result_json(request, search_text):
     creators = Creator.objects.all()
     for word in search_text.split(" "):
         zz = Creator.objects.filter(Q(name__icontains=word) | Q(given_names__icontains=word))

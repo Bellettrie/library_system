@@ -6,12 +6,14 @@ from django.shortcuts import get_object_or_404, render
 from book_code_generation.helpers import normalize_str
 from book_code_generation.procedures.location_number_generation import generate_location_number, get_location_numbers
 from creators.models import Creator
-from series.models import SeriesV2
 from works.models import Work, Location
 
 
 @permission_required('works.change_work')
-def get_book_code(request, publication_id, location_id):
+def get_book_code(request, publication_id, location_id=None):
+    if location_id is None:
+        return HttpResponse("Fill in location first")
+
     publication = get_object_or_404(Work, pk=publication_id)
     location = get_object_or_404(Location, pk=location_id)
     title = request.GET.get('title')
@@ -20,18 +22,6 @@ def get_book_code(request, publication_id, location_id):
     code = publication.generate_code_full(location)
 
     return HttpResponse(code)
-
-
-@permission_required('works.change_work')
-def get_book_code_no_location(request, publication_id):
-    return HttpResponse("Fill in location first")
-
-
-def get_book_code_series(series: SeriesV2):
-    location = series.location
-    code = series.work.generate_code_full(location)
-
-    return code
 
 
 @permission_required('works.change_work')
