@@ -1,7 +1,10 @@
+from typing import Any
+
 from django.db.models import Q, F
 from django.db.models.expressions import RawSQL
 
 from book_code_generation.helpers import standardize_code, normalize_str
+from search.models.helpers import clean_word
 
 
 def filter_book_code(word):
@@ -19,15 +22,21 @@ def filter_basic_text_get_q(words):
         return ""
     queries = []
     for word in words:
-        word = normalize_str(word)
-        if word.startswith("*"):
-            next_query_part = Q(wordmatch__word__word__endswith=word.replace("*", ""))
-        elif word.endswith("*"):
-            next_query_part = Q(wordmatch__word__word__startswith=word.replace("*", ""))
-        else:
-            next_query_part = Q(wordmatch__word__word=word)
-        queries = queries + [next_query_part]
+        query = single_word_cleanup(word)
+        queries = queries + [query]
+
     return queries
+
+
+def single_word_cleanup(word) -> Any:
+    word = clean_word(word)
+
+    if word.startswith("*"):
+        return Q(wordmatch__word__word__endswith=word.replace("*", ""))
+    elif word.endswith("*"):
+        return Q(wordmatch__word__word__startswith=word.replace("*", ""))
+
+    return Q(wordmatch__word__word=word)
 
 
 def query_annotate(query):

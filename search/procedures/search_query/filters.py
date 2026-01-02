@@ -2,7 +2,8 @@ from typing import Protocol
 
 from django.db.models import Q, QuerySet
 
-from search.procedures.search_query.helpers import filter_book_code, filter_basic_text_get_q
+from book_code_generation.helpers import standardize_code
+from search.procedures.search_query.helpers import filter_book_code, filter_basic_text_get_q, single_word_cleanup
 from works.models import Work
 
 
@@ -38,7 +39,11 @@ class BookCodeFilter(Filter):
         self.book_code = book_code
 
     def filter(self, query: QuerySet[Work]) -> QuerySet[Work]:
-        return query.filter(filter_book_code(self.book_code))
+        q = single_word_cleanup(self.book_code)
+        q2 = single_word_cleanup(standardize_code(self.book_code))
+        code_match_type = Q(wordmatch__type="CODE")
+        query = query.filter(Q((q | q2) & code_match_type))
+        return query
 
 
 class AnyWordFilter(Filter):
@@ -49,19 +54,15 @@ class AnyWordFilter(Filter):
         if len(self.words) == 0:
             return query.none()
 
-        text_filter_subqueries = filter_basic_text_get_q(self.words)
-        book_code_subquery = filter_book_code(self.words[0])
-
-        if len(self.words) == 1:
-            # Rare case, defensively programmed
-            if len(text_filter_subqueries) == 0:
-                return query.filter(book_code_subquery)
-            return query.filter(book_code_subquery | text_filter_subqueries[0])
+        words_queries = filter_basic_text_get_q(self.words)
+        if len(words_queries) == 1:
+            q2 = single_word_cleanup(standardize_code(self.words[0]))
+            query = query.filter(Q(q2 | words_queries[0]))
         else:
-            words_queries = filter_basic_text_get_q(self.words)
             for word_query in words_queries:
                 query = query.filter(word_query)
-            return query
+
+        return query
 
 
 class SeriesFilter(Filter):

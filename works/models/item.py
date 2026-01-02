@@ -25,7 +25,7 @@ class Item(NamedThing, BookCode):
     bought_date = models.DateField(default="1900-01-01", null=True, blank=True)
     added_on = models.DateField(auto_now_add=True)
     last_seen = models.DateField(null=True, blank=True)
-    book_code_extension = models.CharField(max_length=16, blank=True)  # Where in the library is it?
+    book_code_extension = models.CharField(max_length=16, blank=True, db_index=True)  # Where in the library is it?
 
     def get_recode(self):
         from recode.models import Recode
