@@ -10,7 +10,7 @@
                     {% for item in items %}
                         <input {% if forloop.first %}checked="checked"{% endif %} type="radio" name="tab_list"
                                class="tab" role="tab"
-                               aria-label="{{ item.book_code }}"/>
+                               aria-label="{{ item.book_code }}{% if item.book_code_extension %} ({{ item.book_code_extension }}){% endif %}"/>
                         <div class="tab-content bg-base-100 border-base-300 p-10">
                             {% component "works.item_datalist.Item" item perms / %}
                         </div>
