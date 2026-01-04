@@ -6,6 +6,7 @@ from public_pages.renderer.django_markdown import DjangoUrlExtension, ProcessorE
 
 class LineBlock:
     template = "public_pages/elems/prose.html"
+
     def __init__(self):
         self.lines = []
 
@@ -23,7 +24,7 @@ class LineBlock:
             extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()])
         content = md.convert(markdown_text)
         search_template = get_template(self.template)
-        return search_template.render(context={"content":content})
+        return search_template.render(context={"content": content})
 
     def is_verbatim(self):
         return False
