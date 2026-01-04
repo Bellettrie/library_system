@@ -46,7 +46,7 @@ def render(markdown_text):
         lx = line.strip()
         if lx.startswith("#!"):
             previous_element = current_element
-            current_element = handle_custom_keyword(previous_element, line)
+            current_element = handle_custom_keyword(previous_element, lx)
 
             # We should render the previous element if we have moved on to the next
             if previous_element != current_element:
