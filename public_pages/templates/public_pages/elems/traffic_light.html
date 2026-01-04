@@ -2,7 +2,7 @@
 
 {% component "tile.Tile" root_class_tags="w-full lg:w-60" with_standard_flex=False %}
     {% fill "title" %}
-        Are we Open?
+        {{ ctx.title }}
     {% endfill %}
     {% fill "content" %}
         <div class="h-full grid place-items-center">
