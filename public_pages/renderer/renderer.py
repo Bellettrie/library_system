@@ -10,22 +10,21 @@ from public_pages.renderer.elements.traffic_light import  TrafficLight
 from public_pages.renderer.elements.yt import YT
 
 
-
 # The render_md function is the main rendering function.
 # It collects lines if they are not lines that start new components. If they are a line that starts a new component
 # then the previous component is rendered, and a new one is started.
 def render_md(markdown_text: str, show_errors: bool = False):
-    # try:
+    try:
         return render(markdown_text)
-    # except Exception as e:
-    #     if show_errors:
-    #         return str(e)
-    #     return "Could not load page, please contact the site's administrator."
+    except Exception as e:
+        if show_errors:
+            return str(e)
+        return "Could not load page, please contact the site's administrator."
+
 
 def render(markdown_text):
     col = StartColumn()
     result = col.render()
-
     current_element = col.directly_next_element()
 
     for line in markdown_text.split("\n"):
@@ -36,6 +35,7 @@ def render(markdown_text):
             else:
                 current_element.add_block(CodeBlock())
             continue
+
         # Check whether the current block is verbatim.
         if current_element.does_blocks() and hasattr(current_element.current_block(), "is_verbatim") and current_element.current_block().is_verbatim():
             current_element.add_line(line)
@@ -56,8 +56,10 @@ def render(markdown_text):
                     current_element = current_element.directly_next_element()
         else:
             current_element.add_line(line)
+
     result += current_element.render()
     return result + End().render()
+
 
 # We add some extra keywords to our markdown dialect
 # They are defined here.
@@ -84,19 +86,22 @@ def handle_custom_keyword(current_element, ky) -> Base:
         raise Exception(f"No command: {kyw}")
     return cm(current_element, row[1:])
 
+
 # Register elements that we want to render on the page
 def register_element(class_of_element_to_create):
     def inner(*args):
         return class_of_element_to_create()
+
     return inner
+
 
 # We also sometimes want to set specific values in the element we're working on.
 # For instance, title.
 def register_set_context_key(context_key):
     def inner(current_block, context_values: List[str]):
         current_block.add_to_context(context_key, " ".join(context_values).strip())
-
         return current_block
+
     return inner
 
 
