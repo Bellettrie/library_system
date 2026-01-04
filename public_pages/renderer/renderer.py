@@ -57,7 +57,7 @@ def render(markdown_text):
                     result += current_element.render()
                     current_element = current_element.directly_next_element()
         else:
-            current_element.add_line(line)
+            current_element.add_line(lx)
 
     result += current_element.render()
     return result + End().render()
