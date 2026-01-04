@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
 {% block title %}Uploads{% endblock %}
 {% block content %}
+    <script>
+        function getUploadUrl(url){
+                // Copy the text inside the text field
+            console.log(url)
+            navigator.clipboard.writeText(url);
+        }
+    </script>
     <table class="table table-zebra table-sm" >
         {% for upload in uploads %}
             <tr>
                 <td>{{ upload.get_file_url }}</td>
-                <td class="join"><a class="btn btn-primary btn-sm join-item" href="{{ upload.get_full_url }}">View</a>
+                <td class="join">
+                    <a class="btn btn-primary btn-sm join-item" href="{{ upload.get_full_url }}">View</a>
+                    <button class="btn btn-sm join-item" onclick="getUploadUrl('~~{{ upload.get_file_url }}')">Copy url</button>
+                    <a class="btn btn-error btn-sm  join-item" href="{% url 'delete_upload' upload.pk %}">Delete</a>
+                </td>
 
-                <a class="btn btn-danger btn-sm  join-item" href="{% url 'delete_upload' upload.pk %}">Delete</a></td>
             </tr>
         {% endfor %}
     </table>

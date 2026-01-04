@@ -1,16 +1,16 @@
 {% load static %}
 
-{% component "tile.Tile" root_class_tags="w-full lg:w-80" with_standard_flex=False %}
+{% component "tile.Tile" root_class_tags="w-full lg:w-60" with_standard_flex=False %}
     {% fill "title" %}
         Are we Open?
     {% endfill %}
     {% fill "content" %}
         <div class="h-full grid place-items-center">
             {% if open %}
-                <img  class="max-w-60" src="{% static 'images/light/green.png' %}"><br/>
+                <img  class="max-w-3/4" src="{% static 'images/light/green.png' %}"><br/>
                 <h6 class="card-subtitle mt-4 mb-4 text-muted align-right">We are open!<br/></h6>
             {% else %}
-                <img class="max-w-60" src="{% static 'images/light/red.png' %}"><br/>
+                <img class="max-w-3/4" src="{% static 'images/light/red.png' %}"><br/>
                 <h6 class="card-subtitle mt-4 mb-4 text-muted">We are closed :(.<br/></h6>
             {% endif %}
 

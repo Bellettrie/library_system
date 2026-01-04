@@ -12,41 +12,41 @@ from public_pages.renderer.django_markdown import DjangoUrlExtension, ProcessorE
 # The *_ is used to "eat" any unneeded parameters\
 
 # The interrupt ends a bootstrap row component and starts a new one.
-def render_interrupt(markdown_text: str, title: str, layout_overrides: str = "", *_):
+def render_interrupt(markdown_text: str, title: str, ctx:dict, *_):
     search_template = get_template('public_pages/elems/interrupt.html')
     return search_template.render(context={"content": markdown_text})
 
 
 # Shows the youtube vid
-def render_yt(markdown_text: str, title: str, layout_overrides: str = "", *_):
+def render_yt(markdown_text: str, title: str, ctx:dict, *_):
     yt_template = get_template('public_pages/elems/yt.html')
     return yt_template.render(context={"url": markdown_text})
 
 
 # The base section creates a basic text area with a size. Observe that the title parameter is ignored, but it's kept to keep standardised functions.
-def render_base_section(markdown_text: str, title: str, layout_overrides: str = "", *_):
+def render_base_section(markdown_text: str, title: str, ctx:dict, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/basic_area.html')
-    return search_template.render(context={"content": html, "layout": layout_overrides})
+    return search_template.render(context={"content": html, "layout": ctx.get("layout_overrides", "")})
 
 
 # The render square function creates a bootstrap card component.
-def render_square(markdown_text: str, title: str, layout_overrides: str = "", *_):
+def render_square(markdown_text: str, title: str, ctx:dict, *_):
     md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()])
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/square.html')
-    return search_template.render(context={"content": html, "layout": layout_overrides, "title": title})
+    return search_template.render(context={"content": html, "layout": ctx.get("layout_overrides", ""), 'ctx':ctx, "title": title})
 
 
 # The render find function creates a bootstrap card with a search field for finding books.
-def render_find(markdown_text: str, title: str, layout_overrides: str = "", *_):
+def render_find(markdown_text: str, title: str, ctx:dict, *_):
     md = markdown.Markdown(
         extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()], )
 
     html = md.convert(markdown_text)
     search_template = get_template('public_pages/elems/search_field.html')
-    return search_template.render(context={"content": html, "layout": layout_overrides})
+    return search_template.render(context={"content": html, "layout": ctx.get("layout_overrides", "")})
 
 
 # The render trafficlight function creates a trafficlight that shows whether the DK is open
@@ -60,24 +60,24 @@ def get_open():
     return "true" in is_open_result
 
 
-def render_trafficlight(markdown_text: str, title: str, layout_overrides: str = "", *_):
+def render_trafficlight(markdown_text: str, title: str, ctx:dict, *_):
     search_template = get_template('public_pages/elems/traffic_light.html')
     return search_template.render(context={"open": get_open(), "layout": "w-96"})
 
 
-def start_row(markdown_text: str, title: str, layout_overrides: str = "", *_):
-    return '<div class="grow flex flex-col lg:flex-row gap-3 {layout}">'.format(layout=layout_overrides)
+def start_row(markdown_text: str, title: str, ctx:dict, *_):
+    return '<div class="grow flex flex-col lg:flex-row gap-3 {layout}">'.format(layout=ctx.get("layout_overrides", ""))
 
 
-def end_row(markdown_text: str, title: str, layout_overrides: str = "", *_):
+def end_row(markdown_text: str, title: str, ctx:dict, *_):
     return '</div>'
 
 
-def start_column(markdown_text: str, title: str, layout_overrides: str = "", *_):
-    return '<div class="grow flex flex-col gap-3 {layout}">'.format(layout=layout_overrides)
+def start_column(markdown_text: str, title: str, ctx:dict, *_):
+    return '<div class="grow flex flex-col gap-3 {layout}">'.format(layout=ctx.get("layout_overrides", ""))
 
 
-def end_column(markdown_text: str, title: str, layout_overrides: str = "", *_):
+def end_column(markdown_text: str, title: str, ctx:dict, *_):
     return '</div>'
 
 
@@ -117,19 +117,28 @@ def render(markdown_text):
     title = ""
     cms = None
     first_line = True
+
+    ctx = {
+        "layout_overrides": get_overrides(),
+    }
     for line in markdown_text.split("\n"):
+
         # Set the title of the current component
-        if line.startswith("#!title"):
+        if line.startswith("#!title "):
             title = line[7:].strip()
-        elif line.startswith("#!mdflex"):
-            pass
-        elif line.startswith("#!lgflex"):
-            pass
+        elif line.startswith("#!image "):
+            ctx["image_path"] = line[7:].strip()
+        elif line.startswith("#!image_alt "):
+            ctx["image_alt"] = line[11:].strip()
 
         # new component barrier
         elif line.startswith("#!"):
             if not first_line:
-                result += CMDS[cms[0]](lines, title, layout_overrides=get_overrides())
+                cm = CMDS[cms[0]](lines, title, ctx=ctx)
+                result +=cm
+                ctx = {
+                    "layout_overrides": get_overrides(),
+                }
             cms = line[2:].strip().split(" ")
             # Basic sanity check: does the command exist at all
             if cms[0] not in CMDS.keys():
@@ -142,5 +151,5 @@ def render(markdown_text):
     # If no specific blocks are made, make a 12/12 block with *everything*
     if cms is None:
         cms = ["base"]
-    result += CMDS[cms[0]](lines, title, layout_overrides=get_overrides())
+    result += CMDS[cms[0]](lines, title, {'layout_overrides': get_overrides()})
     return result
