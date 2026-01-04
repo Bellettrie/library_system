@@ -1659,6 +1659,43 @@
       box-shadow: 0 1px 3px 0 oklch(0% 0 0/0.1), 0 1px 2px -1px oklch(0% 0 0/0.1);
     }
   }
+  .mockup-code {
+    position: relative;
+    overflow: hidden;
+    overflow-x: auto;
+    border-radius: var(--radius-box);
+    background-color: var(--color-neutral);
+    padding-block: calc(0.25rem * 5);
+    color: var(--color-neutral-content);
+    font-size: 0.875rem;
+    direction: ltr;
+    &:before {
+      content: "";
+      margin-bottom: calc(0.25rem * 4);
+      display: block;
+      height: calc(0.25rem * 3);
+      width: calc(0.25rem * 3);
+      border-radius: calc(infinity * 1px);
+      opacity: 30%;
+      box-shadow: 1.4em 0, 2.8em 0, 4.2em 0;
+    }
+    pre {
+      padding-right: calc(0.25rem * 5);
+      &:before {
+        content: "";
+        margin-right: 2ch;
+      }
+      &[data-prefix] {
+        &:before {
+          content: attr(data-prefix);
+          display: inline-block;
+          width: calc(0.25rem * 8);
+          text-align: right;
+          opacity: 50%;
+        }
+      }
+    }
+  }
   .avatar {
     position: relative;
     display: inline-flex;
