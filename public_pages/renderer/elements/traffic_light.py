@@ -17,11 +17,13 @@ def get_open():
         return False
     return "true" in is_open_result
 
+
 class TrafficLight(Base):
-    template="public_pages/elems/traffic_light.html"
+    template = "public_pages/elems/traffic_light.html"
     allowed_context_keys = ["layout_overrides"]
+
     def add_line(self, line: str):
-        if len(line.strip()) ==0:
+        if len(line.strip()) == 0:
             return self
         raise Exception("Cannot add text to traffic light")
 

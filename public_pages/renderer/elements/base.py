@@ -6,8 +6,8 @@ from public_pages.renderer.elements.blocks.line_block import LineBlock
 
 
 class Base:
-    template="public_pages/elems/base_area.html"
-    allowed_context_keys=["layout_overrides", "title"]
+    template = "public_pages/elems/base_area.html"
+    allowed_context_keys = ["layout_overrides", "title"]
 
     def __init__(self, should_render=True):
         self.should_render = should_render
@@ -31,18 +31,19 @@ class Base:
 
     def add_to_context(self, ky: str, value: Any):
         if ky in self.allowed_context_keys:
-            self.ctx[ky]= value
+            self.ctx[ky] = value
         else:
             raise Exception(f"The key {ky} is not allowed for type {type(self)}")
         return self
 
     def render(self):
         search_template = get_template(self.template)
-        return search_template.render(context={"ctx":self.ctx})
+        return search_template.render(context={"ctx": self.ctx})
 
 
 class Area(Base):
-    allowed_context_keys=Base.allowed_context_keys+ ["title"]
+    allowed_context_keys = Base.allowed_context_keys + ["title"]
+
     def __init__(self, always_render=True):
         super().__init__(always_render)
         self.blocks = [LineBlock()]
@@ -79,4 +80,5 @@ class Area(Base):
             html += block.render()
 
         search_template = get_template(self.template)
-        return search_template.render(context={"content": html, "title":self.ctx.get("title", ""), "layout": self.ctx.get("layout_overrides", ""), 'ctx':self.ctx})
+        return search_template.render(context={"content": html, "title": self.ctx.get("title", ""),
+                                               "layout": self.ctx.get("layout_overrides", ""), 'ctx': self.ctx})

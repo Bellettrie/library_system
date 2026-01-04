@@ -17,6 +17,7 @@ class StartRow(Base):
     def directly_next_element(self):
         return Area(always_render=False)
 
+
 class StartColumn(Base):
     def render(self):
         return '<div class="grow flex flex-col gap-3 {layout}">'.format(layout=self.ctx.get("layout_overrides", ""))
@@ -31,6 +32,7 @@ class StartColumn(Base):
 
     def directly_next_element(self):
         return Area(always_render=False)
+
 
 class End(Base):
     def render(self):

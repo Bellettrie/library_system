@@ -1,12 +1,12 @@
 from typing import List
 
 from public_pages.renderer.elements.base import Base, Area
-from public_pages.renderer.elements.book_search import BookSearch
 from public_pages.renderer.elements.blocks.code_block import CodeBlock
 from public_pages.renderer.elements.blocks.line_block import LineBlock
+from public_pages.renderer.elements.book_search import BookSearch
 from public_pages.renderer.elements.row_cols import StartRow, End, StartColumn
 from public_pages.renderer.elements.square import Square
-from public_pages.renderer.elements.traffic_light import  TrafficLight
+from public_pages.renderer.elements.traffic_light import TrafficLight
 from public_pages.renderer.elements.yt import YT
 
 
@@ -37,7 +37,8 @@ def render(markdown_text):
             continue
 
         # Check whether the current block is verbatim.
-        if current_element.does_blocks() and hasattr(current_element.current_block(), "is_verbatim") and current_element.current_block().is_verbatim():
+        if current_element.does_blocks() and hasattr(current_element.current_block(),
+                                                     "is_verbatim") and current_element.current_block().is_verbatim():
             current_element.add_line(line)
             continue
 
@@ -103,5 +104,3 @@ def register_set_context_key(context_key):
         return current_block
 
     return inner
-
-
