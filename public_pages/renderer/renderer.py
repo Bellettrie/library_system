@@ -1,3 +1,4 @@
+import html
 from typing import List
 
 from public_pages.renderer.elements.base import Base, Area
@@ -18,7 +19,7 @@ def render_md(markdown_text: str, show_errors: bool = False):
         return render(markdown_text)
     except Exception as e:
         if show_errors:
-            return str(e)
+            return html.escape(str(e))
         return "Could not load page, please contact the site's administrator."
 
 

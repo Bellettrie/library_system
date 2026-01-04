@@ -33,7 +33,9 @@ class Base:
         if ky in self.allowed_context_keys:
             self.ctx[ky] = value
         else:
-            raise Exception(f"The key {ky} is not allowed for type {type(self)}")
+            typ = str(type(self))
+            err_str = f"The key {ky} is not allowed for type {typ}"
+            raise Exception(err_str)
         return self
 
     def render(self):
