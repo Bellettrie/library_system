@@ -93,7 +93,6 @@ class DjangoLinkInlineProcessor(LinkInlineProcessor):
 class CustomImageLinkProcessor(ImageInlineProcessor):
     def getLink(self, data, index):
         href, title, index, handled = super().getLink(data, index)
-        print(href, title, index)
         href = clean_link(href)
         return href, title, index, handled
 

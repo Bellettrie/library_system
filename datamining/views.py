@@ -95,7 +95,6 @@ def show_members_by_special(request):
         found_members = filter_members_by_privacy_option("reunions")
     if query == "dms:non_registered":
         found_members = filter_members_missing_dms()
-    print(query)
     member_mails = []
     today = datetime.date.today().strftime("%Y-%m-%d")
 
