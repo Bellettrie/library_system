@@ -1,103 +1,14 @@
-import logging
-import urllib
+from typing import List
 
-import markdown
-from django.conf import settings
-from django.template.loader import get_template
+from public_pages.renderer.elements.base import Base
+from public_pages.renderer.elements.book_search import BookSearch
+from public_pages.renderer.elements.blocks.code_block import CodeBlock
+from public_pages.renderer.elements.blocks.line_block import LineBlock
+from public_pages.renderer.elements.row_cols import StartRow, End, StartColumn
+from public_pages.renderer.elements.square import Square
+from public_pages.renderer.elements.traffic_light import  TrafficLight
+from public_pages.renderer.elements.yt import YT
 
-from public_pages.renderer.django_markdown import DjangoUrlExtension, ProcessorExtension
-
-
-# These functions are responsible for displaying parts of the webpages. These translate quite directly into bootstrap components
-# The *_ is used to "eat" any unneeded parameters\
-
-# The interrupt ends a bootstrap row component and starts a new one.
-def render_interrupt(markdown_text: str, title: str, ctx: dict, *_):
-    search_template = get_template('public_pages/elems/interrupt.html')
-    return search_template.render(context={"content": markdown_text})
-
-
-# Shows the youtube vid
-def render_yt(markdown_text: str, title: str, ctx: dict, *_):
-    yt_template = get_template('public_pages/elems/yt.html')
-    return yt_template.render(context={"url": markdown_text})
-
-
-# The base section creates a basic text area with a size. Observe that the title parameter is ignored, but it's kept to keep standardised functions.
-def render_base_section(markdown_text: str, title: str, ctx: dict, *_):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()])
-    html = md.convert(markdown_text)
-    search_template = get_template('public_pages/elems/basic_area.html')
-    return search_template.render(context={"content": html, "layout": ctx.get("layout_overrides", "")})
-
-
-# The render square function creates a bootstrap card component.
-def render_square(markdown_text: str, title: str, ctx: dict, *_):
-    md = markdown.Markdown(extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()])
-    html = md.convert(markdown_text)
-    search_template = get_template('public_pages/elems/square.html')
-    return search_template.render(
-        context={"content": html, "layout": ctx.get("layout_overrides", ""), 'ctx': ctx, "title": title})
-
-
-# The render find function creates a bootstrap card with a search field for finding books.
-def render_find(markdown_text: str, title: str, ctx: dict, *_):
-    md = markdown.Markdown(
-        extensions=[DjangoUrlExtension(), 'tables', 'md_in_html', 'attr_list', ProcessorExtension()], )
-
-    html = md.convert(markdown_text)
-    search_template = get_template('public_pages/elems/search_field.html')
-    return search_template.render(context={"content": html, "layout": ctx.get("layout_overrides", "")})
-
-
-# The render trafficlight function creates a trafficlight that shows whether the DK is open
-def get_open():
-    try:
-        f = urllib.request.urlopen(settings.IS_OPEN_URL, timeout=120)
-        is_open_result = str(f.read()).lower()
-    except urllib.error.URLError as e:
-        logging.error(e)
-        return False
-    return "true" in is_open_result
-
-
-def render_trafficlight(markdown_text: str, title: str, ctx: dict, *_):
-    search_template = get_template('public_pages/elems/traffic_light.html')
-    return search_template.render(context={"open": get_open(), "layout": "w-96"})
-
-
-def start_row(markdown_text: str, title: str, ctx: dict, *_):
-    return '<div class="grow flex flex-col lg:flex-row gap-3 {layout}">'.format(layout=ctx.get("layout_overrides", ""))
-
-
-def end_row(markdown_text: str, title: str, ctx: dict, *_):
-    return '</div>'
-
-
-def start_column(markdown_text: str, title: str, ctx: dict, *_):
-    return '<div class="grow flex flex-col gap-3 {layout}">'.format(layout=ctx.get("layout_overrides", ""))
-
-
-def end_column(markdown_text: str, title: str, ctx: dict, *_):
-    return '</div>'
-
-
-CMDS = {
-    "base": render_base_section,
-    "square": render_square,
-    "search": render_find,
-    "yt": render_yt,
-    "light": render_trafficlight,
-    "interrupt": render_interrupt,
-    "start_row": start_row,
-    "end_row": end_row,
-    "start_column": start_column,
-    "end_column": end_column,
-}
-
-
-def get_overrides() -> str:
-    return "w-full md:flex-1"
 
 
 # The render_md function is the main rendering function.
@@ -111,46 +22,80 @@ def render_md(markdown_text: str, show_errors: bool = False):
             return str(e)
         return "Could not load page, please contact the site's administrator."
 
-
 def render(markdown_text):
-    lines = ""
-    result = ""
-    title = ""
-    cms = None
-    first_line = True
+    col = StartColumn()
+    result = col.render()
+    current_element = col.directly_next_element()
 
-    ctx = {
-        "layout_overrides": get_overrides(),
-    }
     for line in markdown_text.split("\n"):
+        # Handle code block starts/ends in a way that still ends blocks even if in verbatim mode.
+        if line.startswith("```"):
+            if isinstance(current_element.current_block(), CodeBlock):
+                current_element.add_block(LineBlock())
+            else:
+                current_element.add_block(CodeBlock())
+            continue
+        # Check whether the current block is verbatim.
+        if hasattr(current_element.current_block(), "is_verbatim") and current_element.current_block().is_verbatim():
+            current_element.add_line(line)
+            continue
 
-        # Set the title of the current component
-        if line.startswith("#!title "):
-            title = line[7:].strip()
-        elif line.startswith("#!image "):
-            ctx["image_path"] = line[7:].strip()
-        elif line.startswith("#!image_alt "):
-            ctx["image_alt"] = line[11:].strip()
+        lx = line.strip()
+        if lx.startswith("#!"):
+            previous_element = current_element
+            current_element = handle_custom_keyword(previous_element, line)
 
-        # new component barrier
-        elif line.startswith("#!"):
-            if not first_line:
-                cm = CMDS[cms[0]](lines, title, ctx=ctx)
-                result += cm
-                ctx = {
-                    "layout_overrides": get_overrides(),
-                }
-            cms = line[2:].strip().split(" ")
-            # Basic sanity check: does the command exist at all
-            if cms[0] not in CMDS.keys():
-                return cms[0] + " : not a valid keyword"
-            lines = ""
-            title = ""
+            # We should render the previous element if we have moved on to the next
+            if previous_element != current_element:
+                result += previous_element.render()
+                # Sometimes we want to only quickly stay in a specific element, and directly move to the next
+                # This is mostly for starting and ending rows/columns for now.
+                if hasattr(current_element, "directly_next_element"):
+                    result += current_element.render()
+                    current_element = current_element.directly_next_element()
         else:
-            lines += "\n" + line
-        first_line = False
-    # If no specific blocks are made, make a 12/12 block with *everything*
-    if cms is None:
-        cms = ["base"]
-    result += CMDS[cms[0]](lines, title, {'layout_overrides': get_overrides()})
-    return result
+            current_element.add_line(line)
+    result += current_element.render()
+    return result + End().render()
+
+# We add some extra keywords to our markdown dialect
+# They are defined here.
+def handle_custom_keyword(current_element, ky) -> Base:
+    blocks = {
+        "base": register_element(Base),
+        "square": register_element(Square),
+        "search": register_element(BookSearch),
+        "yt": register_element(YT),
+        "light": register_element(TrafficLight),
+        "start_row": register_element(StartRow),
+        "end_row": register_element(End),
+        "start_column": register_element(StartColumn),
+        "end_column": register_element(End),
+        "title": register_set_context_key("title"),
+        "image": register_set_context_key("image_path"),
+        "image_alt": register_set_context_key("image_alt"),
+    }
+
+    row = ky[2:].strip().split(" ")
+    kyw = row[0].strip()
+    cm = blocks.get(kyw, None)
+    if not cm:
+        raise Exception(f"No command: {kyw}")
+    return cm(current_element, row[1:])
+
+# Register elements that we want to render on the page
+def register_element(class_of_element_to_create):
+    def inner(*args):
+        return class_of_element_to_create()
+    return inner
+
+# We also sometimes want to set specific values in the element we're working on.
+# For instance, title.
+def register_set_context_key(context_key):
+    def inner(current_block, context_values: List[str]):
+        current_block.add_to_context(context_key, " ".join(context_values).strip())
+
+        return current_block
+    return inner
+
+
