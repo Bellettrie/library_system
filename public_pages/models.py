@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 # Create your models here.
@@ -34,4 +35,4 @@ class FileUpload(models.Model):
         return spl[-1]
 
     def get_full_url(self):
-        return "/media/" + self.get_file_url()
+        return settings.MEDIA_URL + self.get_file_url()

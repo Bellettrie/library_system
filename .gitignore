@@ -13,3 +13,4 @@ static/images/logo.png
 docker_local/*.sql
 styles/config/node_modules
 /media/
+/uploads/

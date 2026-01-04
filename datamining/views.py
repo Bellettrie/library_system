@@ -95,7 +95,6 @@ def show_members_by_special(request):
         found_members = filter_members_by_privacy_option("reunions")
     if query == "dms:non_registered":
         found_members = filter_members_missing_dms()
-    print(query)
     member_mails = []
     today = datetime.date.today().strftime("%Y-%m-%d")
 
@@ -178,7 +177,7 @@ def show_membership_stats(request):
 @permission_required('works.view_work')
 def show_lending_stats(request):
     start_date = request.GET.get('start_date', "1583-01-01")
-    end_date = request.GET.get('end_date', (get_today()+datetime.timedelta(days=1)).isoformat())
+    end_date = request.GET.get('end_date', (get_today() + datetime.timedelta(days=1)).isoformat())
     if start_date == "":
         # 1583 is the first year allowed by default
         start_date = "1583-01-01"

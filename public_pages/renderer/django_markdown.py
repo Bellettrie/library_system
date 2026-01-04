@@ -4,6 +4,7 @@
 from typing import Optional
 import re
 import markdown
+from django.conf import settings
 from markdown.inlinepatterns import LinkInlineProcessor, LINK_RE, IMAGE_LINK_RE, ImageInlineProcessor
 from urllib.parse import urlparse
 
@@ -50,7 +51,7 @@ def clean_link(href: str) -> str:
 
     if href.startswith('~~'):
         static = True
-        href = '/media/' + href[2:]
+        href = settings.MEDIA_URL + href[2:]
 
     z = href.split("|")
     href = z[0]
@@ -92,7 +93,6 @@ class DjangoLinkInlineProcessor(LinkInlineProcessor):
 class CustomImageLinkProcessor(ImageInlineProcessor):
     def getLink(self, data, index):
         href, title, index, handled = super().getLink(data, index)
-        print(href, title, index)
         href = clean_link(href)
         return href, title, index, handled
 

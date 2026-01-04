@@ -1,6 +1,12 @@
-<div class="{% if with_standard_flex %}grow max-w-screen {% endif %} card bg-base-100 {{ root_class_tags }} ">
+<div class="{% if with_standard_flex %}grow max-w-screen {% endif %} card  {% if figure_url %}md:card-side{% endif %} bg-base-100 {{ root_class_tags }} ">
     {% slot "direct_into" %}{% endslot %}
-
+    {% if figure_url %}
+      <figure class="min-w-1/4 pt-10 px-10 md:pt-0 md:px-0">
+        <img
+          src="{{ figure_url }}"
+          alt="{{ figure_alt }}" />
+      </figure>
+    {% endif %}
     <div class="card-body">
         <h5 class="card-title">{% slot "title" %}Title{% endslot %}</h5>
         <div class="content grow w-full">
@@ -8,5 +14,4 @@
         </div>
         {% slot "footer" %}{% endslot %}
     </div>
-
 </div>
