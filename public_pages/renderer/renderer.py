@@ -1,6 +1,6 @@
 from typing import List
 
-from public_pages.renderer.elements.base import Base
+from public_pages.renderer.elements.base import Base, Area
 from public_pages.renderer.elements.book_search import BookSearch
 from public_pages.renderer.elements.blocks.code_block import CodeBlock
 from public_pages.renderer.elements.blocks.line_block import LineBlock
@@ -15,16 +15,17 @@ from public_pages.renderer.elements.yt import YT
 # It collects lines if they are not lines that start new components. If they are a line that starts a new component
 # then the previous component is rendered, and a new one is started.
 def render_md(markdown_text: str, show_errors: bool = False):
-    try:
+    # try:
         return render(markdown_text)
-    except Exception as e:
-        if show_errors:
-            return str(e)
-        return "Could not load page, please contact the site's administrator."
+    # except Exception as e:
+    #     if show_errors:
+    #         return str(e)
+    #     return "Could not load page, please contact the site's administrator."
 
 def render(markdown_text):
     col = StartColumn()
     result = col.render()
+
     current_element = col.directly_next_element()
 
     for line in markdown_text.split("\n"):
@@ -36,7 +37,7 @@ def render(markdown_text):
                 current_element.add_block(CodeBlock())
             continue
         # Check whether the current block is verbatim.
-        if hasattr(current_element.current_block(), "is_verbatim") and current_element.current_block().is_verbatim():
+        if current_element.does_blocks() and hasattr(current_element.current_block(), "is_verbatim") and current_element.current_block().is_verbatim():
             current_element.add_line(line)
             continue
 
@@ -62,7 +63,7 @@ def render(markdown_text):
 # They are defined here.
 def handle_custom_keyword(current_element, ky) -> Base:
     blocks = {
-        "base": register_element(Base),
+        "base": register_element(Area),
         "square": register_element(Square),
         "search": register_element(BookSearch),
         "yt": register_element(YT),

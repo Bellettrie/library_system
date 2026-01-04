@@ -1,4 +1,4 @@
-from public_pages.renderer.elements.base import Base
+from public_pages.renderer.elements.base import Base, Area
 
 
 class StartRow(Base):
@@ -15,7 +15,7 @@ class StartRow(Base):
         raise Exception("Cannot add elements to row start")
 
     def directly_next_element(self):
-        return Base(should_render=False)
+        return Area(always_render=False)
 
 class StartColumn(Base):
     def render(self):
@@ -30,7 +30,7 @@ class StartColumn(Base):
         raise Exception("Cannot add elements to column start")
 
     def directly_next_element(self):
-        return Base(should_render=False)
+        return Area(always_render=False)
 
 class End(Base):
     def render(self):
@@ -45,4 +45,4 @@ class End(Base):
         raise Exception("Cannot add elements to end marker")
 
     def directly_next_element(self):
-        return Base(should_render=False)
+        return Area(always_render=False)
