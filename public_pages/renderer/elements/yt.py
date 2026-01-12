@@ -6,6 +6,8 @@ from public_pages.renderer.elements.area import Area
 
 class YT(Area):
     allowed_context_keys = Base.allowed_context_keys + ["url"]
+    template = "public_pages/elems/yt.html"
+
     def __init__(self, **kwargs):
         super().__init__()
         self.ctx["layout_type"] = "yt"

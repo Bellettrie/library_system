@@ -5,23 +5,8 @@ from public_pages.renderer.elements.blocks.line_block import LineBlock
 
 
 class Area(Base):
-    allowed_context_keys = Base.allowed_context_keys + ["title", "layout_type", "image_path", "image_alt"]
-
-    @property
-    def template(self):
-        renderers = {
-            'area':"public_pages/elems/area.html",
-            "tile":"public_pages/elems/tile.html",
-            "image_top":"public_pages/elems/tile.html",
-            "search": "public_pages/elems/search_field.html",
-            "traffic_light": "public_pages/elems/traffic_light.html",
-            "yt":"public_pages/elems/yt.html",
-        }
-        layout_type =  self.ctx.get("layout_type", "area")
-        if layout_type not in renderers:
-            return renderers["area"]
-
-        return renderers[layout_type]
+    allowed_context_keys = Base.allowed_context_keys + ["title", "layout_type"]
+    template = "public_pages/elems/area.html"
 
     def __init__(self, always_render=True):
         super().__init__(always_render)

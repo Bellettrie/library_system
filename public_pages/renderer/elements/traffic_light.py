@@ -21,7 +21,7 @@ def get_open():
 
 class TrafficLight(Area):
     allowed_context_keys = ["layout_overrides", "title"]
-
+    template = "public_pages/elems/traffic_light.html"
     def __init__(self, **kwargs):
         super(TrafficLight, self).__init__(**kwargs)
         self.ctx["layout_type"] = "traffic_light"

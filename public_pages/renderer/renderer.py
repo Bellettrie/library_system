@@ -8,6 +8,7 @@ from public_pages.renderer.elements.blocks.line_block import LineBlock
 from public_pages.renderer.elements.book_search import BookSearch
 from public_pages.renderer.elements.row_cols import StartRow, End, StartColumn
 from public_pages.renderer.elements.tile import Tile
+from public_pages.renderer.elements.top_image import TopImage
 from public_pages.renderer.elements.traffic_light import TrafficLight
 from public_pages.renderer.elements.yt import YT
 
@@ -72,6 +73,7 @@ def handle_custom_keyword(current_element, ky) -> Base:
         "area": register_element(Area),
         "square": register_element(Tile),
         "tile": register_element(Tile),
+        "tile_top_image": register_element(TopImage),
 
         "search": register_element(BookSearch),
         "yt": register_element(YT),
