@@ -1,12 +1,13 @@
 import html
 from typing import List
 
-from public_pages.renderer.elements.base import Base, Area
+from public_pages.renderer.elements.base import Base
+from public_pages.renderer.elements.area import Area
 from public_pages.renderer.elements.blocks.code_block import CodeBlock
 from public_pages.renderer.elements.blocks.line_block import LineBlock
 from public_pages.renderer.elements.book_search import BookSearch
 from public_pages.renderer.elements.row_cols import StartRow, End, StartColumn
-from public_pages.renderer.elements.square import Square
+from public_pages.renderer.elements.tile import Tile
 from public_pages.renderer.elements.traffic_light import TrafficLight
 from public_pages.renderer.elements.yt import YT
 
@@ -68,7 +69,10 @@ def render(markdown_text):
 def handle_custom_keyword(current_element, ky) -> Base:
     blocks = {
         "base": register_element(Area),
-        "square": register_element(Square),
+        "area": register_element(Area),
+        "square": register_element(Tile),
+        "tile": register_element(Tile),
+
         "search": register_element(BookSearch),
         "yt": register_element(YT),
         "light": register_element(TrafficLight),
