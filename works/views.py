@@ -8,6 +8,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import ListView
 
 from recode.procedures.update_recode import update_recode_for_item
+from search.models.helpers import get_words_in_str
 from search.procedures.search_query.filters import AnyWordFilter, CreatorFilter, SeriesFilter, TitleFilter, BookCodeFilter, \
     CategoriesFilter, StatesFilter
 from search.procedures.search_query.query_results import AllWorks, AvailableItemsOnly
@@ -38,22 +39,22 @@ def get_works(request, advanced_override=False):
     if request.GET.get('advanced', 'False') != 'True' and not advanced_override:
         query.set_result_base(AvailableItemsOnly())
 
-    words = get_query_words(request.GET.get('q', "").upper())
+    words = get_words_in_str(request.GET.get('q', "").upper())
     if len(words) > 0:
         query.add_filter(AnyWordFilter(words))
         any_filters = True
 
-    words_author = get_query_words(request.GET.get('q_author', "").upper())
+    words_author = get_words_in_str(request.GET.get('q_author', "").upper())
     if len(words_author) > 0:
         query.add_filter(CreatorFilter(words_author))
         any_filters = True
 
-    words_series = get_query_words(request.GET.get('q_series', "").upper())
+    words_series = get_words_in_str(request.GET.get('q_series', "").upper())
     if len(words_series) > 0:
         query.add_filter(SeriesFilter(words_series))
         any_filters = True
 
-    words_title = get_query_words(request.GET.get('q_title', "").upper())
+    words_title = get_words_in_str(request.GET.get('q_title', "").upper())
     if len(words_title) > 0:
         query.add_filter(TitleFilter(words_title))
         any_filters = True
