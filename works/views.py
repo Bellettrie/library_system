@@ -15,7 +15,6 @@ from search.procedures.search_query.query_results import AllWorks, AvailableItem
 from search.procedures.search_query.search_query import SearchQuery
 from series.components.series.graph_node import GraphNode
 
-from utils.get_query_words import get_query_words
 from utils.time import get_now
 from works.forms import ItemStateCreateForm, ItemCreateForm, WorkForm, \
     LocationChangeForm
