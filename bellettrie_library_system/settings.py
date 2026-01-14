@@ -77,6 +77,6 @@ HOST = env("MY_HOST_NAME", default="-")
 
 IS_OPEN_URL = env("IS_OPEN_URL", default="https://dragoncounter.bellettrie.utwente.nl/crowds/api/")
 
-MEDIA_URL = env("MEDIA_URL", default="/media/")
-MEDIA_ROOT = env("MEDIA_PATH", default="/media/")
+MEDIA_URL = env("MEDIA_URL", default="https://bellettrie.utwente.nl/media/")
+MEDIA_ROOT = env("MEDIA_PATH", default="media/")
 OVERRIDE_MAIL_ADDRESS = env("OVERRIDE_MAIL_ADDRESS", default='')

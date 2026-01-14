@@ -1,4 +1,5 @@
-from public_pages.renderer.elements.base import Base, Area
+from public_pages.renderer.elements.base import Base
+from public_pages.renderer.elements.area import Area
 
 
 class StartRow(Base):

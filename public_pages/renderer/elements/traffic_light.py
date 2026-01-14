@@ -5,6 +5,7 @@ from django.conf import settings
 from django.template.loader import get_template
 
 from public_pages.renderer.elements.base import Base
+from public_pages.renderer.elements.area import Area
 
 
 # The render trafficlight function creates a trafficlight that shows whether the DK is open
@@ -18,19 +19,17 @@ def get_open():
     return "true" in is_open_result
 
 
-class TrafficLight(Base):
-    template = "public_pages/elems/traffic_light.html"
+class TrafficLight(Area):
     allowed_context_keys = ["layout_overrides", "title"]
+    template = "public_pages/elems/traffic_light.html"
 
     def __init__(self, **kwargs):
         super(TrafficLight, self).__init__(**kwargs)
+        self.ctx["layout_type"] = "traffic_light"
         self.ctx["title"] = "Are we open?"
+        self.ctx["open"] = get_open()
 
     def add_line(self, line: str):
         if len(line.strip()) == 0:
             return self
         raise Exception("Cannot add text to traffic light")
-
-    def render(self):
-        search_template = get_template('public_pages/elems/traffic_light.html')
-        return search_template.render(context={"ctx": self.ctx, "open": get_open(), "layout": "w-96"})

@@ -1,0 +1,11 @@
+{% component "tile.Tile" root_class_tags=layout figure_url=image_path figure_alt=image_alt %}
+    {% fill "title" %}
+        {{ title }}
+    {% endfill %}
+    {% fill "content" %}
+        <div class="w-full max-w-[1200px] ">
+            <h2 class="card-subtitle mb-2 text-muted  ">{{ subtitle }}</h2>
+            {{ content|safe }}
+        </div>
+    {% endfill %}
+{% endcomponent %}
