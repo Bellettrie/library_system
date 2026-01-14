@@ -42,5 +42,3 @@ class Base:
 
         search_template = get_template(self.template)
         return search_template.render(context={"ctx": self.ctx})
-
-

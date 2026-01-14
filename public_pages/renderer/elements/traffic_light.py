@@ -22,12 +22,12 @@ def get_open():
 class TrafficLight(Area):
     allowed_context_keys = ["layout_overrides", "title"]
     template = "public_pages/elems/traffic_light.html"
+
     def __init__(self, **kwargs):
         super(TrafficLight, self).__init__(**kwargs)
         self.ctx["layout_type"] = "traffic_light"
         self.ctx["title"] = "Are we open?"
         self.ctx["open"] = get_open()
-        print("HERE")
 
     def add_line(self, line: str):
         if len(line.strip()) == 0:

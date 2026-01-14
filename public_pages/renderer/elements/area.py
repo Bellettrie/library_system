@@ -38,7 +38,6 @@ class Area(Base):
     def render(self):
         if not self.should_render:
             return ""
-
         html = ""
         for block in self.blocks:
             html += block.render()
@@ -47,6 +46,6 @@ class Area(Base):
         ctx = self.ctx.copy()
         ctx["content"] = html
         ctx["title"] = self.ctx.get("title", "")
-        ctx["layout"]= self.ctx.get("layout_overrides", "")
+        ctx["layout"] = self.ctx.get("layout_overrides", "")
 
         return search_template.render(context=ctx)
