@@ -38,7 +38,7 @@ class Base:
 
     def render(self):
         if self.template == "abstract":
-            raise Exception(f"Cannot render abstract block")
+            raise Exception("Cannot render abstract block")
 
         search_template = get_template(self.template)
         return search_template.render(context={"ctx": self.ctx})
