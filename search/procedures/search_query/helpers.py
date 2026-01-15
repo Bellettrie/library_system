@@ -7,16 +7,6 @@ from book_code_generation.helpers import standardize_code, normalize_str
 from search.models.helpers import clean_word
 
 
-def filter_book_code(word):
-    ww = standardize_code(word.replace("*", ""))
-    if word.startswith("*"):
-        return Q(item__book_code__endswith=word) | Q(item__book_code_sortable__endswith=ww)
-    elif word.endswith("*"):
-        return Q(item__book_code__startswith=word) | Q(item__book_code_sortable__startswith=ww)
-    else:
-        return Q(item__book_code=word) | Q(item__book_code_sortable=ww)
-
-
 def filter_basic_text_get_q(words):
     if len(words) == 0:
         return ""

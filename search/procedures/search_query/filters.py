@@ -3,7 +3,7 @@ from typing import Protocol
 from django.db.models import Q, QuerySet
 
 from book_code_generation.helpers import standardize_code
-from search.procedures.search_query.helpers import filter_book_code, filter_basic_text_get_q, single_word_cleanup
+from search.procedures.search_query.helpers import filter_basic_text_get_q, single_word_cleanup
 from works.models import Work
 
 
