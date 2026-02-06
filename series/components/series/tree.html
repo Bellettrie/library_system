@@ -1,6 +1,6 @@
     <li class="ml-1 sm:ml-8 series_tree_other">
         <div style="overflow:auto;">
-            <a class="link link-secondary" href="/works/publication/{{ from_work.pk }}">
+            <a class="link link-secondary" href="{% url 'works.view' from_work.pk %}">
                 {% if relation_index_label %}{{ relation_index_label }} - {% endif %}
             </a>
                 <a class="link {% if home_node.id == from_work.pk %}text-bellered{% else %}link-secondary{% endif %} truncate"  href="{% url 'works.view' from_work.pk %}">
