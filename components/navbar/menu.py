@@ -48,15 +48,21 @@ class Item:
 DOCS = Item("Docs", reverse('index_page', args=("docs",)), perm="works.view_work")
 
 top_bar = [
-    Item("Book Search", reverse('works.list')),
+    Item("Books", reverse('works.list')),
     SuperMenu(
         "Activities",
-        # Item("Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',))),
-        Item("Writing", reverse('named_page', args=("writing", "home",))),
+        Item("Book Club", reverse('named_page', args=("book-club", "home",))),
         Item("Konnichiwa", reverse('named_page', args=("konnichiwa", "home",))),
+        Item("Writing", reverse('named_page', args=("writing", "home",))),
+    ),
+    Item("Join Us", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',))),
+    SuperMenu(
+        "About",
+        # Item("Activities", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'activities',))),
+        Item("Committees", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "committees",))),
+        Item("Contact Us", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, "contact",))),
 
     ),
-    Item("Become Member", reverse('named_page', args=(settings.STANDARD_PAGE_GROUP, 'member',))),
 ]
 
 MEMBERS = Item("Members", reverse("members.list", ), perm="members.change_member")
