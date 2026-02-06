@@ -1,16 +1,15 @@
 markdown~=3.8.2
 django~=5.2
-namegenerator~=1.0.6
-names~=0.3.0
-django-tables2
-flake8
+
+namegenerator
+names
+django-tables2==2.8.0
 django-mail-templated~=2.6.5
-unidecode
-django-environ~=0.11.2
-importlib-metadata==7.0.2
-psycopg~=3.1.18
+unidecode==1.4.0
+django-environ==0.12.0
+importlib-metadata==8.7.1
+psycopg[binary]~=3.3.2
 
 jsonpickle~=3.3.0
-django_components==0.140.1
+django_components==0.148.0
 django-widget-tweaks
-drag

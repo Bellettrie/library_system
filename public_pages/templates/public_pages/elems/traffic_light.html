@@ -6,13 +6,15 @@
     {% endfill %}
     {% fill "content" %}
         <div class="h-full grid place-items-center">
+        <div class="max-w-3/4 flex flex-col items-center">
             {% if open %}
-                <img  class="max-w-3/4" src="{% static 'images/light/green.png' %}"><br/>
+                <img  class="w-full max-w-25" src="{% static 'images/light/green.png' %}"><br/>
                 <h6 class="card-subtitle mt-4 mb-4 text-muted align-right">We are open!<br/></h6>
             {% else %}
-                <img class="max-w-3/4" src="{% static 'images/light/red.png' %}"><br/>
+                <img class="w-full  max-w-25" src="{% static 'images/light/red.png' %}"><br/>
                 <h6 class="card-subtitle mt-4 mb-4 text-muted">We are closed :(.<br/></h6>
             {% endif %}
+        </div>
         </div>
     {% endfill %}
 {% endcomponent %}

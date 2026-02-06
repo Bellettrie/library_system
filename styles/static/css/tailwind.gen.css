@@ -12,6 +12,7 @@
     --color-gray-200: oklch(92.8% 0.006 264.531);
     --color-black: #000;
     --spacing: 0.25rem;
+    --container-3xs: 16rem;
     --container-xs: 20rem;
     --container-lg: 32rem;
     --text-xs: 0.75rem;
@@ -3217,8 +3218,17 @@
   .max-w-3\/4 {
     max-width: calc(3/4 * 100%);
   }
+  .max-w-3xs {
+    max-width: var(--container-3xs);
+  }
   .max-w-5 {
     max-width: calc(var(--spacing) * 5);
+  }
+  .max-w-25 {
+    max-width: calc(var(--spacing) * 25);
+  }
+  .max-w-\[200px\] {
+    max-width: 200px;
   }
   .max-w-\[1200px\] {
     max-width: 1200px;
