@@ -1,5 +1,9 @@
-<tr>
-    <td><a class="link link-secondary" href="{% url 'creators.view' member.id %}">{% if member.given_names %}
-        {{ member.given_names }}{% endif %}
-        <i>{% if member.name %} {{ member.name }}{% else %}&lt;No Surname&gt; {% endif %}</i></a></td>
-</tr>
+<div class="bg-base-100 shadow-xl flex relative">
+    <tr class="flex-1 m-2 text-lg">
+        <td>
+            <a class="link link-secondary" href="{% url 'creators.view' member.id %}">{% if member.given_names %}
+            {{ member.given_names }}{% endif %}
+            <i>{% if member.name %} {{ member.name }}{% else %}&lt;No Surname&gt; {% endif %}</i></a>
+        </td>
+    </tr>
+</div>
