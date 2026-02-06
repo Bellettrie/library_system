@@ -11,6 +11,7 @@
                 {% endif %}
             {% endfill %}
             {% fill "content" %}
+                The password should be at least 10 characters.
                 <form method="post">
                     {% csrf_token %}
                     {% component "form.Compact" form / %}

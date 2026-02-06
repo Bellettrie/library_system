@@ -4,8 +4,7 @@
         {% fill "modal_body" %}
             {% csrf_token %}
             {% component "form.Compact" form / %}
-
-            Observe that after changing your password you will be logged out and redirected to the homepage.
+            The password should be at least 10 characters. Observe that after changing your password you will be logged out and redirected to the homepage.
         {% endfill %}
         {% fill "modal_submit_button" %}
             <button class="btn btn-success join-item">Change Password</button>
