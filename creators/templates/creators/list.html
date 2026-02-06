@@ -17,7 +17,7 @@
         {% component 'tile.Tile' root_class_tags="max-w-screen flex-0 shrink " %}
             {% fill 'title' %}Results{% endfill %}
             {% fill 'content' %}
-                <table class="table table-striped" style="width: auto;">
+                <table class="table table-zebra table-pin-rows table-pin-cols rounded-box">
                     {% for member in object_list %}
                         {% include 'creators/list_item.html' %}
                     {% empty %}
