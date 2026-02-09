@@ -4,10 +4,8 @@
                                       href="{% url 'edit_named_page' page.group.name page.name %}">edit</a> {% endif %}{% endblock %}
 {% block content %}
     <div class=" w-full flex justify-center ">
-        <div class="max-w-full flex flex-wrap gap-3 max-w-[1600px]">
+        <div class="grow flex flex-wrap gap-3 max-w-[1200px]">
             {{ page_content |safe }}
         </div>
-
     </div>
-
 {% endblock %}
