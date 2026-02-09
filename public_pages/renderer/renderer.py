@@ -101,15 +101,19 @@ def register_line_block(area):
     area.add_block(LineBlock())
     return area
 
+
 def register_work(area, *args):
     area.add_block(WorkBlock(*args))
     return area
+
 
 # Register elements that we want to render on the page
 def register_element(class_of_element_to_create):
     def inner(*args):
         return class_of_element_to_create()
+
     return inner
+
 
 # We also sometimes want to set specific values in the element we're working on.
 # For instance, title.
