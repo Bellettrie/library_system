@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM python:3.11-alpine
+FROM python:3.14-alpine
 # This contains the name given to the individual copy of the site that's running this one.
 # This is so we can identify which specific copy of the site is healthy/unhealthy.
 
