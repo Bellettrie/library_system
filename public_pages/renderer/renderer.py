@@ -1,8 +1,8 @@
 import html
-from typing import List
 
 from public_pages.renderer.elements.base import Base
 from public_pages.renderer.elements.area import Area
+from public_pages.renderer.elements.blocks.book_block import WorkBlock
 from public_pages.renderer.elements.blocks.code_block import CodeBlock
 from public_pages.renderer.elements.blocks.line_block import LineBlock
 from public_pages.renderer.elements.book_search import BookSearch
@@ -73,6 +73,8 @@ def handle_custom_keyword(current_element, ky) -> Base:
         "area": register_element(Area),
         "square": register_element(Tile),
         "tile": register_element(Tile),
+        "book_block": register_work,
+        "line_block": register_line_block,
         "tile_top_image": register_element(TopImage),
 
         "search": register_element(BookSearch),
@@ -92,7 +94,17 @@ def handle_custom_keyword(current_element, ky) -> Base:
     cm = blocks.get(kyw, None)
     if not cm:
         raise Exception(f"No command: {kyw}")
-    return cm(current_element, row[1:])
+    return cm(current_element, *row[1:])
+
+
+def register_line_block(area):
+    area.add_block(LineBlock())
+    return area
+
+
+def register_work(area, *args):
+    area.add_block(WorkBlock(*args))
+    return area
 
 
 # Register elements that we want to render on the page
@@ -106,7 +118,7 @@ def register_element(class_of_element_to_create):
 # We also sometimes want to set specific values in the element we're working on.
 # For instance, title.
 def register_set_context_key(context_key):
-    def inner(current_block, context_values: List[str]):
+    def inner(current_block, *context_values: str):
         current_block.add_to_context(context_key, " ".join(context_values).strip())
         return current_block
 
