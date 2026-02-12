@@ -6,6 +6,8 @@ FROM python:3.11-alpine
 WORKDIR /app
 
 # Install requirements
+COPY requirements.txt /app
+RUN pip3 install -r requirements.txt --no-cache-dir
 COPY requirements_production.txt /app
 RUN pip3 install -r requirements_production.txt --no-cache-dir
 
