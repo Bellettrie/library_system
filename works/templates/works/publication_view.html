@@ -15,11 +15,8 @@
                     {% component 'works.relations.Relations' work / %}
                 {% endif %}
                 {% if not series %}
-                    asdf
                     {% with work.get_items as items %}
-                        jkl;
                         {% if perms.works.change_item or items %}
-                            qwert
                             {% include 'works/partials/items.html' %}
                         {% endif %}
                     {% endwith %}
