@@ -78,7 +78,7 @@ class GraphNode:
             works.append(rel.from_work)
             works.append(rel.to_work)
 
-        c2ws = CreatorToWork.objects.filter(work__in=set(works)).select_related('creator')
+        c2ws = CreatorToWork.objects.filter(work__in=set(works)).select_related('creator').order_by('number')
         return c2ws
 
     def __new_parent(self, wr):
