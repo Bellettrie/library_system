@@ -56,15 +56,13 @@ class Work(NamedTranslatableThing):
         work_ids = [self.id]
         for rel in work_rels:
             fw = rel.from_work.id
-            if work_ids[len(work_ids)-1] != fw:
+            if work_ids[len(work_ids) - 1] != fw:
                 work_ids.append(fw)
             tw = rel.to_work.id
-            if work_ids[len(work_ids)-1] != tw:
+            if work_ids[len(work_ids) - 1] != tw:
                 work_ids.append(tw)
 
         work_ids.reverse()
-
-
         creator_to_works = CreatorToWork.objects.filter(work_id__in=work_ids).order_by('number')
 
         result = []
