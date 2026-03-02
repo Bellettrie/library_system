@@ -55,18 +55,23 @@ class Work(NamedTranslatableThing):
         work_rels = WorkRelation.RelationTraversal.series_up([self.id])
         work_ids = [self.id]
         for rel in work_rels:
-            work_ids.append(rel.from_work.id)
-            work_ids.append(rel.to_work.id)
-        work_ids = set(work_ids)
+            fw = rel.from_work.id
+            if work_ids[len(work_ids)-1] != fw:
+                work_ids.append(fw)
+            tw = rel.to_work.id
+            if work_ids[len(work_ids)-1] != tw:
+                work_ids.append(tw)
 
-        creator_to_works = CreatorToWork.objects.filter(work_id__in=work_ids)
+        work_ids.reverse()
+
+
+        creator_to_works = CreatorToWork.objects.filter(work_id__in=work_ids).order_by('number')
 
         result = []
         for work_id in work_ids:
             for creator in creator_to_works:
                 if work_id == creator.work_id:
                     result.append(creator)
-        result.reverse()
         return result
 
     def get_own_authors(self):
