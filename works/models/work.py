@@ -66,6 +66,7 @@ class Work(NamedTranslatableThing):
             for creator in creator_to_works:
                 if work_id == creator.work_id:
                     result.append(creator)
+        result.reverse()
         return result
 
     def get_own_authors(self):
