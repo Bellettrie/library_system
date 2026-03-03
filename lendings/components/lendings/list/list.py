@@ -16,7 +16,6 @@ class List(Component):
         return {
             "skip_header": skip_header,
             "lendings": lendings,
-            "perms": perms,
             "show_member": show_member,
             "small_table": small_table,
             "btn_bonus_classes": btn_bonus_classes,

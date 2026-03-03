@@ -16,6 +16,5 @@ class Button(Component):
             "is_visible": is_visible,
             "cannot_lend_reason": cannot_lend_reason,
             "reservation": reservation,
-            "perms": perms,
             "bonus_classes": bonus_classes,
         }
