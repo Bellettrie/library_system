@@ -30,7 +30,7 @@ As a member of Bellettrie, you can have an account on the catalog system. This w
 <br />
 To create an account, follow the link below, and use this to create an account. After that, you can log in and start using the system.<br />
 <br />
-<a href="{{BASE_URL}}members/signup/{{member.pk}}?key={{member.invitation_code}}">invitation link</a><br />
+<a href="{{BASE_URL}}members/{{member.pk}}/signup?key={{member.invitation_code}}">invitation link</a><br />
 <br />
 If you have any questions regarding this process, feel free to contact us by replying to this email.<br />
 <br />
