@@ -13,6 +13,5 @@ class Button(Component):
         return {
             "is_visible": is_visible,
             "reservation": reservation,
-            "perms": perms,
             "bonus_classes": bonus_classes,
         }

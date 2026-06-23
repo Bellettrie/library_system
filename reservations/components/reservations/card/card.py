@@ -10,7 +10,6 @@ class Card(Component):
         return {
             "reservation": reservation,
             "split_code": code.split("-"),
-            "perms": perms,
             "show_member": show_member,
         }
 

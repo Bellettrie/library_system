@@ -10,8 +10,8 @@ from works.models import Item
 class Reserve(Component):
     template_name = "lendings/buttons/reserve.html"
 
-    def get_context_data(self, item: Item, member: Member, is_lent_out, perms, bonus_classes=""):
-        is_visible = perms["lendings"]["change_lending"]
+    def get_context_data(self, item: Item, member: Member, is_lent_out, user_permissions, bonus_classes=""):
+        is_visible = user_permissions["lendings"]["change_lending"]
         res = "Not logged in"
         if member:
             res = can_reserve(item, member, get_today())
@@ -23,6 +23,5 @@ class Reserve(Component):
             "cannot_reserve_reason": res,
             "is_lent_out": is_lent_out,
             "for_other_reason": for_other,
-            "perms": perms,
             "bonus_classes": bonus_classes,
         }

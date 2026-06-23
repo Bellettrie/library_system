@@ -11,7 +11,6 @@ class Card(Component):
         return {
             "lendings": lending,
             "split_code": code.split("-"),
-            "perms": perms,
             "show_member": show_member,
         }
 

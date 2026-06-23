@@ -8,9 +8,9 @@ from utils.time import get_today
 class Extend(Component):
     template_name = "lendings/buttons/extend.html"
 
-    def get_context_data(self, lending, user_member, perms, bonus_classes=""):
+    def get_context_data(self, lending, user_member, user_permissions, bonus_classes=""):
         is_visible = not lending.handed_in
-        if lending.member != user_member and not perms["lendings"]["change_lending"]:
+        if lending.member != user_member and not user_permissions["lendings"]["change_lending"]:
             is_visible = False
         cannot_extend_reason = can_extend(lending, get_today())
 
@@ -18,6 +18,5 @@ class Extend(Component):
             "is_visible": is_visible,
             "cannot_extend_reason": cannot_extend_reason,
             "lending": lending,
-            "perms": perms,
             "bonus_classes": bonus_classes,
         }
